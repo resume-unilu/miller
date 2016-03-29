@@ -59,7 +59,7 @@ ROOT_URLCONF = 'miller.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'client')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +74,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'miller.wsgi.application'
 
+STATICFILES_DIRS = [
+  os.path.join(BASE_DIR, 'client/src'),
+]
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -142,7 +145,12 @@ REST_FRAMEWORK = {
 STATIC_URL = '/static/'
 
 GIT_ROOT = os.path.join(BASE_DIR, 'contents')
-PROFILE_PATH_ROOT = os.path.join(BASE_DIR, 'contents/users')
+GIT_COMMITTER = {
+    'name': "A committer", 
+    'email': "committer@example.com"
+}
+
+PROFILE_PATH_ROOT = os.path.join(GIT_ROOT, 'users')
 
 
 

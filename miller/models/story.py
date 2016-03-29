@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os,codecs
 
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
@@ -62,6 +63,18 @@ def create_working_md(sender, instance, created, **kwargs):
   f.seek(0)
   f.close()
 
-  # commit
-  
+  from git import Repo, Commit, Actor, Tree
+
+  author = Actor(instance.owner.username, instance.owner.email)
+  committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
+
+  # commit if there are any differences
+  repo = Repo.init(settings.GIT_ROOT)
+
+  # add and commit JUST THIS FILE
+  tree = Tree(repo=repo, path=instance.owner.profile.get_path())
+  print tree
+  repo.index.commit(tree=tree, message=u"saving %s" % instance.title, actor=author, committer=committer)
+
+
     

@@ -2,9 +2,159 @@
 <!DOCTYPE html>
   <html>
   <head>
-    <title></title>
+    <title>{{title}}</title>
+    <meta name='pinterest' content='nopin' description="contents subject to copyright"></meta>
+    
+    <link href='{% static "css/bootstrap.css" %}' rel='stylesheet'></link>
+    <link href='{% static "css/medium-editor.css" %}' rel='stylesheet'></link>
+    <link href='{% static "css/themes/default.css" %}' rel='stylesheet'></link>
+    <link href='{% static "css/style.css" %}' rel='stylesheet'></link>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather|Lato:700' rel='stylesheet' type='text/css'></link>
+    <style>
+      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+      }
+
+      body{
+        background-color:#fff;
+        font-family: 'Merriweather', serif;
+        color: #000000;
+      }
+      .navbar-default{
+        background: white;
+        border-bottom : 2px solid #E7E4E4;
+      }
+
+      header {
+        font-family: 'Lato', sans-serif;
+      }
+
+      .navbar{
+        height: 70px;
+        padding: 0 100px 0 50px;
+
+      }
+
+      .container{
+        margin-left: 100px;
+      }
+
+      .navbar-default .navbar-brand{
+            height: 70px;
+    line-height: 40px;
+      }
+
+      .navbar-default .navbar-nav > li{
+        padding: 22px 0 20px 10px;
+      }
+
+      .navbar-default .navbar-nav > li > a{
+        
+        text-transform: uppercase;
+        font-size: 10px;
+        color: #aaa;
+        border: 2px solid transparent;
+        line-height: 20px;
+        padding: 0 10px;
+        transition: color .25s ease-in-out, border-color .25s ease-in-out;
+      }
+
+      .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+        color: #FF6B6B;
+        border: 2px solid;
+        background-color: transparent;
+      }
+
+      .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus{
+        border: 2px solid #4ECDC4;
+        color: #4ECDC4;
+      }
+
+      span.username{
+        color: #000;
+      }
+
+      .navbar-brand img {
+        height: 30px;
+      }
+      
+    </style>
   </head>
-  <body>
-  
+  <body ng-app='miller'>
+    
+    <header ng-controller='CoreCtrl'>
+      <nav class='navbar navbar-default navbar-fixed-top'>
+        <div container-fluid>
+          <div class="navbar-header">
+            <a class='navbar-brand'>
+              <img src='{% static "images/logo.svg" %}'>
+            </a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
+              <li><a href="#">project</a></li>
+              <li><a href="#">people</a></li>
+              <li><a href="#">e-publications</a></li>
+              <li><a href="#">e-interviews</a></li>
+              <li><a href="#">e-papers</a></li>
+
+              <li><a href="#">news</a></li>
+            </ul>
+            {% verbatim %}
+            <ul class="nav navbar-nav navbar-right">
+              <li><a ui-sref="draft">write</a></li>
+              <li><a href="#" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
+            </ul>
+            {% endverbatim %}
+          </div>
+
+        </div>
+      </nav>
+    </header>
+
+    <div class='container'>
+      <div class='view' ui-view=''>
+      </div>
+    </div>
+
+    <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
+    <script src='{% static "js/lib/medium-editor.min.js" %}'></script>
+    <script src='{% static "js/lib/medium-editor-markdown.min.js" %}'></script>
+
+    <script src='{% static "js/lib/angular.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-route.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-resource.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-cookies.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-sanitize.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-ui-router.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-medium-editor.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-strap.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-strap.tpl.min.js" %}'></script>
+
+    <script src='{% static "js/app.js" %}'></script>
+    <script src='{% static "js/controllers/core.js" %}'></script>
+    <script src='{% static "js/controllers/draft.js" %}'></script>
+    <script src='{% static "js/controllers/index.js" %}'></script>
+    <script src='{% static "js/controllers/items.js" %}'></script>
+    <script src='{% static "js/controllers/login.js" %}'></script>
+    <script src='{% static "js/controllers/me.js" %}'></script>
+      
+    <script src='{% static "js/services.js" %}'></script>
+
+
+    {% autoescape off %}
+    <script>
+      var user = JSON.parse('{{ user }}');
+      /*
+        Apply user and other settings to resume app
+      */
+      angular.module('miller')
+        .constant("RUNTIME", {
+          static: '{% static ""%}',
+          user: user
+        });
+    </script>
+    {% endautoescape %}
   </body>
   </html>

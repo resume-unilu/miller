@@ -1,0 +1,18 @@
+/*
+  the style goes here.
+*/
+body{
+  color: #151515;
+  font-family: Georgia,Cambria,"Times New Roman",Times,serif;
+
+}
+
+.view{
+  margin: 100px 0;
+}
+*:read-write:focus {
+  outline: none;
+}
+.angular-medium-editor p{
+  margin:0;
+}
