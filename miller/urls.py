@@ -23,10 +23,11 @@ from rest_framework import routers
 from miller import views, api
 
 # Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
+router = routers.DefaultRouter(trailing_slash=True)
 
 router.register(r'user', api.UserViewSet)
 router.register(r'story', api.StoryViewSet)
+router.register(r'tag', api.TagViewSet)
 
 
 urlpatterns = [
@@ -36,8 +37,7 @@ urlpatterns = [
   url(r'^api/', include(router.urls)),
   url(r'^api-auth/', include('rest_framework.urls')),
 
-  url(r'^(?P<page>[a-z\-]+)', views.pages)
-  # url(r'^pages/', include('django.contrib.flatpages.urls')),
+  url(r'^(?P<page>[a-z\-]+)$', views.pages)
 
 ]
 

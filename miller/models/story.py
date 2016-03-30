@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 
 from miller import helpers
+from miller.models import Tag
 
 
 
@@ -39,7 +40,11 @@ class Story(models.Model):
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
   authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
-  
+  tags      = models.ManyToManyField(Tag, blank=True) # tags
+
+  # cover thumbnail, e.g. http://www.eleganzadelgusto.com/wordpress/wp-content/uploads/2014/05/Marcello-Mastroianni-for-Arturo-Zavattini.jpg
+  cover = models.URLField(max_length=500, blank=True, null=True)
+
   # set the plural name and fix the default sorting order
   class Meta:
     verbose_name_plural = 'stories'
@@ -48,6 +53,10 @@ class Story(models.Model):
   def get_path(self):
     return os.path.join(self.owner.profile.get_path(), self.short_url+ '.md')
   
+  def __unicode__(self):
+    return '%s - by %s' % (self.title, self.owner.username)
+
+
 
 # create story file if it is not exists; if the story eists already, cfr the followinf post_save
 @receiver(post_save, sender=Story)
@@ -72,9 +81,9 @@ def create_working_md(sender, instance, created, **kwargs):
   repo = Repo.init(settings.GIT_ROOT)
 
   # add and commit JUST THIS FILE
-  tree = Tree(repo=repo, path=instance.owner.profile.get_path())
-  print tree
-  repo.index.commit(tree=tree, message=u"saving %s" % instance.title, actor=author, committer=committer)
+  #tree = Tree(repo=repo, path=instance.owner.profile.get_path())
+  repo.index.add([instance.owner.profile.get_path()])
+  repo.index.commit(message=u"saving %s" % instance.title, author=author, committer=committer)
 
 
     

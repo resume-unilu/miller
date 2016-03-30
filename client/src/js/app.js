@@ -46,7 +46,17 @@ angular
       .state('index', {
         url: '/',
         controller: 'IndexCtrl',
-        templateUrl: RUNTIME.static + 'templates/index.html'
+        templateUrl: RUNTIME.static + 'templates/index.html',
+        resolve:{
+          lastItems: function(StoryFactory){
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                tags__category: 'event'
+                
+              })
+            }).$promise;
+          } 
+        }
       })
       .state('login', {
         url: '/login',
@@ -80,4 +90,43 @@ angular
             }
           }
         })
+
+      .state('blog', {
+        url: '/blog',
+        abstract:true,
+        controller: 'BlogCtrl',
+        templateUrl: RUNTIME.static + 'templates/blog.html',
+        
+      })
+      .state('blog.news', {
+        url: '',
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        resolve: {
+          items: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                tags__category__in: ['event'] 
+              })
+            }).$promise;
+          },
+          model: function() {
+            return 'story';
+          },
+          factory: function(StoryFactory) {
+            return StoryFactory;
+          }
+        }
+      })
+
+      .state('post', {
+        url: '/blog/:postId',
+        controller: 'PostCtrl',
+        templateUrl: RUNTIME.static + 'templates/post.html',
+        resolve: {
+          post: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({id: $stateParams.postId}).$promise;
+          },
+        }
+      })
   });

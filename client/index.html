@@ -123,11 +123,66 @@
         border-radius: 30px;
       }
 
+      #showreel{
+        position: absolute;
+        top: -140px;
+        height: 140px;
+        background: #101010;
+        left:0;
+        width: 100%;
+      }
+
+      .breakingNews{
+        float:left;
+        width:33%;
+        color: white;
+        height: 100%;
+        background: #111;
+      }
+
+      .breakingNews .wrapper{
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+
+      .breakingNews .overlay{
+        position: absolute;
+        bottom: 0px;
+        background-color: rgba(16,16,16,.3);
+        
+        left: 0;
+    right: 0;
+    padding: 10px 20px 0 20px;
+      }
+
+      .breakingNews h3{
+        color: #F0F0F0;
+        font-size: 16px;
+        line-height: 25px;
+        border-bottom: 2px solid #FF6B6B;
+        margin: 0 0 10px 0;
+        padding: 10px 0;
+        max-height: 70px;
+        overflow: hidden;
+      }
+      .breakingNews .tags {
+        font-family: 'Lato', sans-serif;
+        font-size: 10px;
+      }
+
 
     </style>
   </head>
   <body ng-app='miller'>
-    <div ng-controller='CoreCtrl'>
+    <div ng-controller='CoreCtrl' id='wrapper' ng-class='state'>
+      <div id='showreel'>
+        {% verbatim %}
+        <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
+        {% endverbatim %}
+
+      </div>
+
       <header >
         <nav class='navbar navbar-default navbar-fixed-top'>
           <div container-fluid>
@@ -140,10 +195,10 @@
               <ul class="nav navbar-nav">
                 <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
                 <li><a href="/the-project">project</a></li>
-                <li><a href="#">people</a></li>
+                <li><a href="/people">people</a></li>
                 <li class="active"><a href="#">publications</a></li>
                 
-                <li><a href="#">news</a></li>
+                <li><a ui-sref="blog.news">news</a></li>
               </ul>
               {% verbatim %}
               <ul class="nav navbar-nav navbar-right">
@@ -195,8 +250,11 @@
     <script src='{% static "js/controllers/items.js" %}'></script>
     <script src='{% static "js/controllers/login.js" %}'></script>
     <script src='{% static "js/controllers/me.js" %}'></script>
+    <script src='{% static "js/controllers/post.js" %}'></script>
+    <script src='{% static "js/controllers/blog.js" %}'></script>
       
     <script src='{% static "js/services.js" %}'></script>
+    <script src='{% static "js/filters.js" %}'></script>
 
 
     {% autoescape off %}

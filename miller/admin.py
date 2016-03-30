@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from miller.models import Profile, Story
+from miller.models import Profile, Story, Tag
 
 # Define an inline admin descriptor for Profile model
 # which acts a bit like a singleton
@@ -20,7 +20,11 @@ class UserAdmin(BaseUserAdmin):
 class StoryAdmin(admin.ModelAdmin):
   search_field = ['title']
 
+class TagAdmin(admin.ModelAdmin):
+  search_field = ['name', 'slug', 'category']
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Story, StoryAdmin)

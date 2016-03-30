@@ -1,4 +1,5 @@
 from story import StoryViewSet
+from tag import TagViewSet
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
@@ -6,7 +7,7 @@ from rest_framework import routers, serializers, viewsets
 class UserSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = User
-    fields = ('short-url', 'username', 'email', 'is_staff')
+    fields = ('url', 'username', 'email', 'is_staff')
 
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):

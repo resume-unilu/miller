@@ -47,3 +47,12 @@ blockquote{
   margin: 0;
   font-size: 1em;
 }
+
+#wrapper{
+  transition: transform .27s ease-in-out;
+}
+
+#wrapper.index{
+  transform: translateY(140px);
+}
+

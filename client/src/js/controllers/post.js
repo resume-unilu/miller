@@ -6,9 +6,9 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('ItemsCtrl', function ($scope, $log, items, model, factory) {
-    $log.log('ItemsCtrl ready', items);
-    $scope.items = items.results;
+  .controller('PostCtrl', function ($scope, $log, post) {
+    $log.log('PostCtrl ready', post);
+    $scope.post = post;
 
   });
   
