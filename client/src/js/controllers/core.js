@@ -10,5 +10,12 @@ angular.module('miller')
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;
+
+    $scope.hasToC = false;
+
+    $scope.toggleTableOfContents = function() {
+      $scope.hasToC = !$scope.hasToC;
+    };
+
   });
   

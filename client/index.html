@@ -9,7 +9,8 @@
     <link href='{% static "css/medium-editor.css" %}' rel='stylesheet'></link>
     <link href='{% static "css/themes/default.css" %}' rel='stylesheet'></link>
     <link href='{% static "css/style.css" %}' rel='stylesheet'></link>
-    <link href='https://fonts.googleapis.com/css?family=Merriweather|Lato:700' rel='stylesheet' type='text/css'></link>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.2.4/css/simple-line-icons.css' rel='stylesheet' type='text/css'></link>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather|Lato:400,700' rel='stylesheet' type='text/css'></link>
     <style>
       [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
         display: none !important;
@@ -22,7 +23,11 @@
       }
       .navbar-default{
         background: white;
-        border-bottom : 2px solid #E7E4E4;
+        border-bottom : 2px solid transparent;
+      }
+
+      .navbar-default .scrolling{
+        border-bottom-color: #E7E4E4;
       }
 
       header {
@@ -31,7 +36,7 @@
 
       .navbar{
         height: 70px;
-        padding: 0 100px 0 50px;
+        padding: 0 100px 0 25px;
 
       }
 
@@ -40,8 +45,8 @@
       }
 
       .navbar-default .navbar-brand{
-            height: 70px;
-    line-height: 40px;
+        height: 70px;
+        line-height: 40px;
       }
 
       .navbar-default .navbar-nav > li{
@@ -49,7 +54,6 @@
       }
 
       .navbar-default .navbar-nav > li > a{
-        
         text-transform: uppercase;
         font-size: 10px;
         color: #aaa;
@@ -77,44 +81,96 @@
       .navbar-brand img {
         height: 30px;
       }
+
+      #table-of-contents{
+        position: fixed;
+        left:0;
+        top: 70px;
+        width: 250px;
+        bottom: 0;
+        color: white;
+        background: #FF6B6B;
+        transition: transform .27s ease-in-out;
+        transform: translateX(-250px);
+      }
+
+      #table-of-contents.active{
+        transform: translateX(0px);
+      }
+
+      #table-of-contents-toggler{
+        position: fixed;
+        top: 155px;
+        left: 40px;
+        transition: opacity .3s ease-in-out;
+        opacity: 0;
+      }
+
+      #table-of-contents-toggler.active{
+        opacity: 1;
+      }
+
       
+
+      .btn-transparent{
+        background: transparent;
+        border: 0px solid;
+        height: 30px;
+        width: 30px;
+        background: #FF6B6B;
+        line-height: 30px;
+        color: white;
+        border-radius: 30px;
+      }
+
+
     </style>
   </head>
   <body ng-app='miller'>
-    
-    <header ng-controller='CoreCtrl'>
-      <nav class='navbar navbar-default navbar-fixed-top'>
-        <div container-fluid>
-          <div class="navbar-header">
-            <a class='navbar-brand'>
-              <img src='{% static "images/logo.svg" %}'>
-            </a>
-          </div>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-              <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
-              <li><a href="#">project</a></li>
-              <li><a href="#">people</a></li>
-              <li><a href="#">e-publications</a></li>
-              <li><a href="#">e-interviews</a></li>
-              <li><a href="#">e-papers</a></li>
+    <div ng-controller='CoreCtrl'>
+      <header >
+        <nav class='navbar navbar-default navbar-fixed-top'>
+          <div container-fluid>
+            <div class="navbar-header">
+              <a class='navbar-brand'>
+                <img src='{% static "images/logo.svg" %}'>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
+                <li><a href="/the-project">project</a></li>
+                <li><a href="#">people</a></li>
+                <li class="active"><a href="#">publications</a></li>
+                
+                <li><a href="#">news</a></li>
+              </ul>
+              {% verbatim %}
+              <ul class="nav navbar-nav navbar-right">
+                <li><a ui-sref="draft">write</a></li>
+                <li><a href="#" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
+              </ul>
+              {% endverbatim %}
+            </div>
 
-              <li><a href="#">news</a></li>
-            </ul>
-            {% verbatim %}
-            <ul class="nav navbar-nav navbar-right">
-              <li><a ui-sref="draft">write</a></li>
-              <li><a href="#" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
-            </ul>
-            {% endverbatim %}
           </div>
+        </nav>
+      </header>
 
+      <aside id='table-of-contents' ng-class='hasToC? "active":""'>
+        test
+
+      </aside>
+
+      <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' bs-tooltip='{"title":"hello hello"}'>
+        <button class='btn-transparent' ng-click='toggleTableOfContents()'><span class='icon-book-open'></span></button>
+      </div>
+
+      <div class='container'  ng-class='hasToC? "with-ToC":""' >
+        {% block content %}
+        <div class='view'ui-view=''>
         </div>
-      </nav>
-    </header>
-
-    <div class='container'>
-      <div class='view' ui-view=''>
+        {% endblock %}
       </div>
     </div>
 

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'rest_framework',
     'miller'
 ]
@@ -52,6 +54,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
 ]
 
 ROOT_URLCONF = 'miller.urls'
@@ -151,6 +154,8 @@ GIT_COMMITTER = {
 }
 
 PROFILE_PATH_ROOT = os.path.join(GIT_ROOT, 'users')
+
+PAGES_ROOT = os.path.join(BASE_DIR, 'client', 'pages')
 
 
 

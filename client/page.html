@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+{% block content %}
+      
+<div class='view'>
+  {% autoescape off %}
+  {{contents}}
+  {% endautoescape %}
+</div>
+
+{% endblock %}

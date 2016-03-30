@@ -7,12 +7,43 @@ body{
 
 }
 
-.view{
-  margin: 100px 0;
+h2, .h2 {
+  font-size: 40px;
 }
+
+.view{
+  margin: 150px 250px 100px 0;
+  transition: transform .27s ease-in-out;
+}
+.container.with-ToC .view{
+  transform: translateX(200px);
+}
+
 *:read-write:focus {
   outline: none;
 }
 .angular-medium-editor p{
   margin:0;
+}
+
+
+.btn-transparent:hover{
+  background-color: #4ECDC4;
+}
+
+.btn-transparent:active{
+  background-color: #000;
+}
+
+.btn-transparent:focus{
+  outline: none;
+}
+
+blockquote{
+  font-family: 'Lato', sans-serif;
+  text-transform: uppercase;
+  border: 0px;
+  padding: 0;
+  margin: 0;
+  font-size: 1em;
 }
