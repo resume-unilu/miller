@@ -155,7 +155,7 @@ PROFILE_PATH_ROOT = os.path.join(GIT_ROOT, 'users')
 
 PAGES_ROOT = os.path.join(BASE_DIR, 'client', 'pages')
 
-
+SITE_ID=1
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:
