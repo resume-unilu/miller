@@ -129,4 +129,17 @@ angular
           },
         }
       })
+      /*
+        All the rest are static pages and will download the md files directly
+      */
+      .state('page', {
+        url: '/:name',
+        controller: 'PageCtrl',
+        templateUrl: RUNTIME.static + 'templates/md.html',
+        resolve: {
+          page: function(PageFactory, $stateParams) {
+            return PageFactory.get({name: $stateParams.name});
+          },
+        }
+      })
   });

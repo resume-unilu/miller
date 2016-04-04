@@ -9,10 +9,42 @@ body{
 
 h2, .h2 {
   font-size: 40px;
+  line-height: 60px;
+}
+
+h3, .h3 {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5{
+  position: relative;
+  margin-top: 1em;
+}
+
+.anchor-sign{
+  position:absolute;
+  left: -20px;
+  font-size: 15px;
+  color: #aaa;
+  cursor: pointer;
+  transition: color .27s ease-in-out;
+}
+
+.anchor-sign:hover{
+  color: black;
+}
+
+
+.anchor{
+  position:absolute;
+  top: -80px;
 }
 
 .view{
-  margin: 150px 250px 100px 0;
+  margin: 140px 250px 100px 0;
   transition: transform .27s ease-in-out;
 }
 .container.with-ToC .view{
@@ -44,7 +76,7 @@ blockquote{
   text-transform: uppercase;
   border: 0px;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0.5em;
   font-size: 1em;
 }
 
@@ -55,4 +87,64 @@ blockquote{
 #wrapper.index{
   transform: translateY(140px);
 }
+
+#table-of-contents h2{
+  margin-top: 120px;
+  margin-left: 40px;
+  font-family: 'Lato', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: bold;  
+}
+
+#inner-table-of-contents-toggler {
+  position:absolute;
+  top: 85px;
+  left: 40px;
+  transition: opacity .3s ease-in-out;
+}
+
+#inner-table-of-contents-toggler .btn-transparent {
+  background-color: #000;
+}
+#inner-table-of-contents-toggler .btn-transparent:hover {
+  background-color: #4ECDC4;
+}
+
+#table-of-contents ul{
+  padding: 0;
+  margin: 0 20px 0 40px;
+  position: absolute;
+  top: 190px;
+  bottom: 0px;
+  overflow: auto;
+}
+
+#table-of-contents ul li{
+  font-size: 11px;
+  font-weight: normal;
+  color: black;
+  list-style-type: none;
+  padding: 0;
+      margin: 0 0 10px 0;
+}
+
+#table-of-contents ul li a {
+  color: black;
+  cursor: pointer;
+}
+
+#table-of-contents ul li.heading-2{
+  margin-top: 10px;
+}
+
+#table-of-contents ul li.heading-3{
+  margin-left: 10px;
+}
+
+
+#table-of-contents ul li.heading-4{
+  margin-left: 20px;
+}
+
 

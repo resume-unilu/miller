@@ -35,7 +35,11 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       filters = {}
     
-    stories = self.queryset.filter(Q(owner=request.user) | Q(status=Story.PUBLIC)).filter(**filters)
+    if request.user.is_authenticated():
+      stories = self.queryset.filter(Q(owner=request.user) | Q(status=Story.PUBLIC)).filter(**filters)
+    else:
+      stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters)
+
     page    = self.paginate_queryset(stories)
 
     serializer = self.serializer_class(stories, many=True,

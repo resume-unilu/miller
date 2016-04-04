@@ -12,3 +12,13 @@ angular.module('miller')
   .factory('StoryFactory', function ($resource) {
     return $resource('/api/story/:id');
   })
+  /*
+    get static pages
+  */
+  .factory('PageFactory', function ($http, RUNTIME) {
+    return {
+      get: function(params) {
+        return $http.get(RUNTIME.static + 'pages/' + params.name + '.md');
+      }
+    }
+  })
