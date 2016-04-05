@@ -1,6 +1,12 @@
 *.sqlite3
 *.pyc
-contents
-
+contents/
+dist/
+local_settings.py
+*.log
 *.md
 !README.md
+# uwsgi related files
+*.uwsgi.ini
+uwsgi.ini
+uwsgi_params
