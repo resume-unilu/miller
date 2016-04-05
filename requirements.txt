@@ -1,8 +1,14 @@
 Django==1.9.4
 django-filter==0.13.0
+django-websocket-redis==0.4.6
 djangorestframework==3.3.3
+gevent==1.1.1
 gitdb==0.6.4
 GitPython==1.0.2
+greenlet==0.4.9
 Markdown==2.6.6
+redis==2.10.5
 shortuuid==0.4.3
+six==1.10.0
 smmap==0.9.0
+uWSGI==2.0.12

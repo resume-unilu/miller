@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'rest_framework',
+    'ws4redis',
     'miller'
 ]
 
@@ -67,6 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.core.context_processors.static',
+                'ws4redis.context_processors.default',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -156,6 +159,18 @@ PROFILE_PATH_ROOT = os.path.join(GIT_ROOT, 'users')
 PAGES_ROOT = os.path.join(BASE_DIR, 'client', 'pages')
 
 SITE_ID=1
+
+# REDIS
+WEBSOCKET_URL = '/ws/'
+WS4REDIS_EXPIRE = 7200
+WS4REDIS_PREFIX = 'miller'
+# If the Redis datastore uses connection settings other than the defaults, use this dictionary to override these values
+# WS4REDIS_CONNECTION = {
+#     'host': 'localhost',
+#     'port': 16379,
+#     'db': 17,
+#     'password': 'verysecret', # override these settings in your local_settings.py file
+# }
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:
