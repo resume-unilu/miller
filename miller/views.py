@@ -9,6 +9,8 @@ def _share(request):
   if request.user.is_authenticated():
     return {
       'user': json.dumps({
+        'first_name': request.user.first_name,
+        'last_name': request.user.last_name,
         'short_url': request.user.profile.short_url,
         'username': request.user.username
       })

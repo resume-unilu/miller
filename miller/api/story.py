@@ -1,17 +1,34 @@
 import json
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers,viewsets
 from rest_framework.response import Response
 
-from miller.models import Story
+from miller.models import Story, Tag
+
+
+class TagSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Tag
+    fields = ('id', 'category', 'name')
+
+# serializer the authors.
+class AuthorSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ('id', 'username', 'first_name', 'last_name', 'is_staff', 'url')
+
 
 # Serializers define the API representation.
 class StorySerializer(serializers.HyperlinkedModelSerializer):
+  authors = AuthorSerializer(many=True)
+  owner = AuthorSerializer()
+  tags = TagSerializer(many=True)
   class Meta:
     model = Story
-    fields = ('id','url', 'short_url', 'title', 'abstract', 'contents', 'date', 'status', 'cover')
+    fields = ('id','url', 'short_url', 'title', 'abstract', 'contents', 'date', 'status', 'cover', 'authors', 'tags', 'owner')
 
 
     
