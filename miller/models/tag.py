@@ -11,11 +11,13 @@ from miller import helpers
 class Tag(models.Model):
   # categories
   KEYWORD = 'keyword' # i.e, no special category at all
-  EVENT   = 'event' # items tagged as events are "news"
+  BLOG   = 'blog' # items tagged as events are "news"
+  HIGHLIGHTS   = 'highlights'
 
   CATEGORY_CHOICES = (
     (KEYWORD, 'keyword'),
-    (EVENT, 'event'),
+    (BLOG, 'blog'),
+    (HIGHLIGHTS, 'highlights')
   )
 
   name       = models.CharField(max_length=32) # e.g. 'Mr. E. Smith'
