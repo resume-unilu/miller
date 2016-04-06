@@ -48,16 +48,23 @@ angular
         url: '/',
         controller: 'IndexCtrl',
         templateUrl: RUNTIME.static + 'templates/index.html',
-        // resolve:{
-        //   lastItems: function(StoryFactory){
-        //     return StoryFactory.get({
-        //       filters: JSON.stringify({
-        //         tags__category: 'event'
+        resolve:{
+          writings: function(StoryFactory){
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                tags__category: 'writing'
                 
-        //       })
-        //     }).$promise;
-        //   } 
-        // }
+              })
+            }).$promise;
+          },
+          news: function(StoryFactory){
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                tags__category: 'blog'
+              })
+            }).$promise;
+          } 
+        }
       })
       .state('login', {
         url: '/login',
@@ -161,7 +168,7 @@ angular
             items: function(StoryFactory, $stateParams) {
               return StoryFactory.get({
                 filters: JSON.stringify({
-                  tags__category__in: ['paper']
+                  tags__slug: 'paper'
                 })
               }).$promise;
             },

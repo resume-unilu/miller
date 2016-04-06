@@ -28,7 +28,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
   tags = TagSerializer(many=True)
   class Meta:
     model = Story
-    fields = ('id','url', 'short_url', 'title', 'abstract', 'contents', 'date', 'status', 'cover', 'authors', 'tags', 'owner')
+    fields = ('id','url', 'short_url', 'title', 'abstract', 'contents', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
 
     

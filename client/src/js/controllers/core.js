@@ -7,11 +7,14 @@
  */
 angular.module('miller')
   .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $timeout, StoryFactory, RUNTIME) {
+    $log.log('\n    oila!   \n(-(-_(-_-)_-)-)\n\n\n');
+    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;
 
     $scope.hasToC = false;
+    $scope.ToCEnabled = false;
 
     $scope.toggleTableOfContents = function() {
       $scope.hasToC = !$scope.hasToC;
@@ -20,7 +23,12 @@ angular.module('miller')
     $scope.setToC = function(ToC) {
       $log.log('CoreCtrl > setToC data:', ToC);
       $scope.ToC = ToC;
+      $scope.ToCEnabled = false;
     };
+
+    $scope.disableToC = function(){
+      $scope.ToCDisabled = true
+    }
 
     /*
       Set breaking news above the header.

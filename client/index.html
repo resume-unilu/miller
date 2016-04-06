@@ -39,11 +39,15 @@
       .navbar{
         height: 70px;
         padding: 0 100px 0 25px;
-
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
       }
 
       .container{
         margin-left: 100px;
+        margin-top: 120px;
       }
 
       .navbar-default .navbar-brand{
@@ -100,6 +104,17 @@
         z-index: 2;
       }
 
+      #inner-table-of-contents {
+        position:absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
+      }
       #table-of-contents.active{
         transform: translateX(0px);
       }
@@ -132,11 +147,12 @@
 
       #showreel{
         position: absolute;
-        top: -140px;
+        top: 0px;
         height: 140px;
         background: #101010;
         left:0;
         width: 100%;
+        z-index: 3;
       }
 
       .breakingNews{
@@ -168,9 +184,9 @@
         font-size: 16px;
         line-height: 25px;
         border-bottom: 2px solid #FF6B6B;
-        margin: 0 0 10px 0;
+        margin: 0 0 15px 0;
         padding: 10px 0;
-        max-height: 70px;
+        max-height: 65px;
         overflow: hidden;
       }
       .breakingNews .tags {
@@ -198,69 +214,58 @@
         background-color: #C7F464;
       }
 
+
     </style>
   </head>
   <body ng-app='miller' ng-controller='CoreCtrl' >
-    <div id='wrapper' ng-class='state'>
-      <div id='showreel'>
-        {% verbatim %}
-        <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
-        {% endverbatim %}
+    <!-- where highlights are -->
+    <div id='showreel'>
+      {% verbatim %}
+      <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
+      {% endverbatim %}
+    </div>
 
-      </div>
-
-      <header >
-        <nav class='navbar navbar-default navbar-fixed-top'>
-          <div container-fluid>
-            <div class="navbar-header">
-              <a class='navbar-brand' ui-sref='index'>
-                <img src='{% static "images/logo.svg" %}'>
-              </a>
-            </div>
-            <div class="collapse navbar-collapse">
-              <ul class="nav navbar-nav">
-                <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
-                <li ui-sref-active="active"><a href ui-sref='page({name:"project"})'>project</a></li>
-                <li ui-sref-active="active"><a href ui-sref='page({name:"people"})'>people</a></li>
-                <li ng-class="{active: state.includes('publications')}"><a href ui-sref='publications.papers'>publications</a></li>
-                
-                <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything">news</a></li>
-              </ul>
-              {% verbatim %}
-              <ul class="nav navbar-nav navbar-right">
-                <li ui-sref-active="active"><a ui-sref="draft">write</a></li>
-                <li><a href="/admin" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
-              </ul>
-              {% endverbatim %}
-            </div>
-
+    <header>
+      <nav id="navbar" class='navbar navbar-default navbar-fixed-top'>
+        <div container-fluid>
+          <div class="navbar-header">
+            <a class='navbar-brand' ui-sref='index'>
+              <img src='{% static "images/logo.svg" %}'>
+            </a>
           </div>
-        </nav>
-      </header>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
+              <li ui-sref-active="active"><a href ui-sref='page({name:"project"})'>project</a></li>
+              <li ui-sref-active="active"><a href ui-sref='page({name:"people"})'>people</a></li>
+              <li ng-class="{active: state.includes('publications')}"><a href ui-sref='publications.papers'>publications</a></li>
+              
+              <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything">news</a></li>
+            </ul>
+            {% verbatim %}
+            <ul class="nav navbar-nav navbar-right">
+              <li ui-sref-active="active"><a ui-sref="draft">write</a></li>
+              <li><a href="/admin" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
+            </ul>
+            {% endverbatim %}
+          </div>
 
-      <aside id='table-of-contents' ng-class='hasToC? "active":""' ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'>
-        
+        </div>
+      </nav>
+    </header>
 
-
-      </aside>
-
-      <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' bs-tooltip='{"title":"hello hello"}'>
-        <button class='btn-transparent' ng-click='toggleTableOfContents()'><span class='icon-book-open'></span></button>
-      </div>
-
+    <!-- CONTENTS -->
+    <div id='wrapper' ng-class='state'>
       <div class='container'  ng-class='hasToC? "with-ToC":""' >
         {% block content %}
-        <div class='view' ui-view=''>
+        <div class='view' ng-class='state' ui-view=''>
         </div>
         {% endblock %}
       </div>
-
-       <div class="push"></div>
-
+      <div class="push"></div>
     </div>
 
     <div id="footer" ng-class='state'>
-        
       <div class='container-fluid'>
         <div class='row'>
           <div class='col-sm-4'>
@@ -272,10 +277,16 @@
             <p>CVCE (c) 2016</p>
           </div>
         </div>
-
       </div>
     </div>
 
+    <aside id='table-of-contents' ng-class='hasToC? "active":""'>
+      <div id="inner-table-of-contents"><div ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'></div></div>
+    </aside>
+
+    <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' bs-tooltip='{"title":"hello hello"}'>
+      <button class='btn-transparent' ng-click='toggleTableOfContents()'><span class='icon-book-open'></span></button>
+    </div>
 
     <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
     <script src='{% static "js/lib/marked.min.js" %}'></script>
@@ -313,6 +324,34 @@
     {% autoescape off %}
     <script>
       var user = JSON.parse('{{ user }}');
+
+      var _windox  = $(window),
+          _offsetables = [
+            $('#navbar'),
+            $('#table-of-contents-toggler'),
+            $('#inner-table-of-contents')
+          ],
+
+          _navbar_offset = 140;
+          floatinglimit = 140;
+
+      _windox.scroll(function(){
+        var st = _windox.scrollTop(),
+            navbar_offset = Math.max(floatinglimit - st, 0);
+
+        if(navbar_offset != _navbar_offset)
+          for(var i in _offsetables)
+            _offsetables[i].css({
+              transform: 'translateY('+navbar_offset+'px)',
+              '-webkit-transform': 'translateY('+navbar_offset+'px)',
+              '-moz-transform': 'translateY('+navbar_offset+'px)',
+              '-ms-transform': 'translateY('+navbar_offset+'px)',
+            });
+
+        
+        _navbar_offset = navbar_offset;
+      })
+      
       /*
         Apply user and other settings to resume app
       */

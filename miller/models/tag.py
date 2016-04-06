@@ -13,11 +13,13 @@ class Tag(models.Model):
   KEYWORD = 'keyword' # i.e, no special category at all
   BLOG   = 'blog' # items tagged as events are "news"
   HIGHLIGHTS   = 'highlights'
+  WRITING      = 'writing'
 
   CATEGORY_CHOICES = (
     (KEYWORD, 'keyword'),
     (BLOG, 'blog'),
-    (HIGHLIGHTS, 'highlights')
+    (HIGHLIGHTS, 'highlights'),
+    (WRITING, 'writing')
   )
 
   name       = models.CharField(max_length=32) # e.g. 'Mr. E. Smith'

@@ -45,6 +45,9 @@ class Story(models.Model):
   # cover thumbnail, e.g. http://www.eleganzadelgusto.com/wordpress/wp-content/uploads/2014/05/Marcello-Mastroianni-for-Arturo-Zavattini.jpg
   cover = models.URLField(max_length=500, blank=True, null=True)
 
+  # cover copyright or caption, markdown flavoured. If any
+  cover_copyright = models.CharField(max_length=140, blank=True, null=True)
+
   # set the plural name and fix the default sorting order
   class Meta:
     verbose_name_plural = 'stories'
