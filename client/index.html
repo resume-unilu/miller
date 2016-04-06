@@ -15,7 +15,9 @@
       [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
         display: none !important;
       }
-
+      html, body {
+        height: 100%;
+      }
       body{
         background-color:#fff;
         font-family: 'Merriweather', serif;
@@ -92,6 +94,9 @@
         background: #FF6B6B;
         transition: transform .27s ease-in-out;
         transform: translateX(-250px);
+        -webkit-transform: translateX(-250px);
+        -moz-transform: translateX(-250px);
+        -ms-transform: translateX(-250px);
         z-index: 2;
       }
 
@@ -172,12 +177,31 @@
         font-family: 'Lato', sans-serif;
         font-size: 10px;
       }
+      .breakingNews a{
+        color: #f0f0f0;
+      }
+      .breakingNews a:hover, a:focus{
+        color: white
+      }
 
+      #wrapper {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        margin: 0 auto -100px;
+      }
+      #footer, .push {
+        height: 100px;
+      }
+
+      #footer{
+        background-color: #C7F464;
+      }
 
     </style>
   </head>
-  <body ng-app='miller'>
-    <div ng-controller='CoreCtrl' id='wrapper' ng-class='state'>
+  <body ng-app='miller' ng-controller='CoreCtrl' >
+    <div id='wrapper' ng-class='state'>
       <div id='showreel'>
         {% verbatim %}
         <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
@@ -189,7 +213,7 @@
         <nav class='navbar navbar-default navbar-fixed-top'>
           <div container-fluid>
             <div class="navbar-header">
-              <a class='navbar-brand'>
+              <a class='navbar-brand' ui-sref='index'>
                 <img src='{% static "images/logo.svg" %}'>
               </a>
             </div>
@@ -198,14 +222,14 @@
                 <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
                 <li ui-sref-active="active"><a href ui-sref='page({name:"project"})'>project</a></li>
                 <li ui-sref-active="active"><a href ui-sref='page({name:"people"})'>people</a></li>
-                <li ui-sref-active="active"><a href ui-sref='index'>publications</a></li>
+                <li ng-class="{active: state.includes('publications')}"><a href ui-sref='publications.papers'>publications</a></li>
                 
-                <li><a ui-sref="blog.news">news</a></li>
+                <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything">news</a></li>
               </ul>
               {% verbatim %}
               <ul class="nav navbar-nav navbar-right">
-                <li><a ui-sref="draft">write</a></li>
-                <li><a href="#" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
+                <li ui-sref-active="active"><a ui-sref="draft">write</a></li>
+                <li><a href="/admin" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
               </ul>
               {% endverbatim %}
             </div>
@@ -230,7 +254,28 @@
         </div>
         {% endblock %}
       </div>
+
+       <div class="push"></div>
+
     </div>
+
+    <div id="footer" ng-class='state'>
+        
+      <div class='container-fluid'>
+        <div class='row'>
+          <div class='col-sm-4'>
+            <p>
+              <img style='height:50px' src='http://eacea.ec.europa.eu/img/logos/erasmus_plus/eu_flag_co_funded_pos_%5Brgb%5D_right.jpg'>
+            </p>
+          </div>
+          <div class='col-sm-4'>
+            <p>CVCE (c) 2016</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
 
     <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
     <script src='{% static "js/lib/marked.min.js" %}'></script>
@@ -246,6 +291,7 @@
     <script src='{% static "js/lib/angular-medium-editor.min.js" %}'></script>
     <script src='{% static "js/lib/angular-strap.min.js" %}'></script>
     <script src='{% static "js/lib/angular-strap.tpl.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-elastic.js" %}'></script>
 
     <script src='{% static "js/app.js" %}'></script>
     <script src='{% static "js/controllers/core.js" %}'></script>

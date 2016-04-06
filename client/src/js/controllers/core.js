@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $timeout, RUNTIME) {
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $timeout, StoryFactory, RUNTIME) {
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;
@@ -61,6 +61,17 @@ angular.module('miller')
 
     });
 
+    /*
+      First load
+    */
+    StoryFactory.get({
+      filters: JSON.stringify({
+        tags__category: 'highlights'
+      })
+    }, function(data){
+      $log.info('CoreCtrl breaking news loaded', data)
+      $scope.setBreakingNews(data.results)
+    }); 
 
   });
   

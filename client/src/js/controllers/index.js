@@ -5,9 +5,9 @@
  * # IndexCtrl
  */
 angular.module('miller')
-  .controller('IndexCtrl', function ($scope, $log, lastItems) {
-    $log.debug('IndexCtrl welcome', lastItems);
+  .controller('IndexCtrl', function ($scope, $log) {
+    $log.debug('IndexCtrl welcome');
 
-    $scope.setBreakingNews(lastItems.results);
+    
   });
   

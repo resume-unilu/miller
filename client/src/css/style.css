@@ -17,6 +17,14 @@ h3, .h3 {
   line-height: 30px;
 }
 
+a{
+  color: #4ECDC4;
+}
+
+a:hover, a:focus {
+  color: #000;
+  text-decoration: underline;
+}
 
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5{
@@ -82,9 +90,6 @@ blockquote{
 
 #wrapper{
   transition: transform .27s ease-in-out;
-}
-
-#wrapper.index{
   transform: translateY(140px);
 }
 
@@ -147,4 +152,57 @@ blockquote{
   margin-left: 20px;
 }
 
+#footer{
+  transition: transform .27s ease-in-out;
+  transform: translateY(140px);
+}
 
+/*
+  bootstrap tabs
+*/
+.nav-tabs {
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.nav-tabs > li{
+  padding: 22px 10px 20px 0px;
+}
+
+.nav-tabs > li > a{
+  font-family: 'Lato', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #aaa;
+  border: 2px solid transparent;
+  border-radius: 0;
+  line-height: 20px;
+  padding: 0 10px;
+  transition: color .25s ease-in-out, border-color .25s ease-in-out;
+}
+
+.nav > li > a:hover, .nav > li > a:focus{
+  color: #4ECDC4;
+  border: 2px solid #4ECDC4;
+  background-color: transparent;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus{
+  color: #FF6B6B;
+  border: 2px solid #FF6B6B;
+    
+}
+
+
+#draft-title{
+      border: 0px solid transparent;
+    display: block;
+    font-size: 40px;
+    font-family: 'Merriweather';
+    font-size: bold;
+}
+
+
+#draft-contents{
+  margin-top:50px;
+}

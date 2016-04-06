@@ -1,7 +1,13 @@
-<div class="row">
-  <div class='col-md-6'>
-  	<div style='min-height: 50px'>
-    <medium-editor ng-model='contents' bind-options="mediumOptions"></medium-editor>
+<textarea id='draft-title' rows="1" msd-elastic ng-model='title' type='text' placeholder='Untitled'></textarea>
+
+by <a href>{{user.username}}</a>
+
+<div id="draft-contents">
+  <div class="row">
+    <div class='col-md-6'>
+    	<div style='min-height: 50px'>
+      <medium-editor ng-model='contents' bind-options="mediumOptions"></medium-editor>
+      </div>
     </div>
   </div>
 </div>

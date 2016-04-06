@@ -13,7 +13,8 @@ angular
     'ngSanitize',
     'ngCookies',
     'angular-medium-editor',
-    'mgcrea.ngStrap'
+    'mgcrea.ngStrap',
+    'monospaced.elastic'
   ])
   .constant('LOCALES', {
     'locales': {
@@ -47,16 +48,16 @@ angular
         url: '/',
         controller: 'IndexCtrl',
         templateUrl: RUNTIME.static + 'templates/index.html',
-        resolve:{
-          lastItems: function(StoryFactory){
-            return StoryFactory.get({
-              filters: JSON.stringify({
-                tags__category: 'event'
+        // resolve:{
+        //   lastItems: function(StoryFactory){
+        //     return StoryFactory.get({
+        //       filters: JSON.stringify({
+        //         tags__category: 'event'
                 
-              })
-            }).$promise;
-          } 
-        }
+        //       })
+        //     }).$promise;
+        //   } 
+        // }
       })
       .state('login', {
         url: '/login',
@@ -98,7 +99,7 @@ angular
         templateUrl: RUNTIME.static + 'templates/blog.html',
         
       })
-      .state('blog.news', {
+      .state('blog.everything', {
         url: '',
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/blog.news.html',
@@ -106,7 +107,7 @@ angular
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category__in: ['event'] 
+                tags__category__in: ['blog'] 
               })
             }).$promise;
           },
@@ -118,6 +119,82 @@ angular
           }
         }
       })
+      .state('blog.events', {
+        url: '/events',
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        resolve: {
+          items: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                tags__category__in: ['blog'] ,
+                tags__slug__in: ['event'] 
+              })
+            }).$promise;
+          },
+          model: function() {
+            return 'story';
+          },
+          factory: function(StoryFactory) {
+            return StoryFactory;
+          }
+        }
+      })
+
+      /*
+        Three publications
+      */
+      .state('publications', {
+        url: '/publications',
+        abstract: true,
+        controller: function(){
+
+        },
+        templateUrl: RUNTIME.static + 'templates/publications.html',
+        
+      })
+        .state('publications.papers', {
+          url: '',
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/blog.news.html',
+            resolve: {
+            items: function(StoryFactory, $stateParams) {
+              return StoryFactory.get({
+                filters: JSON.stringify({
+                  tags__category__in: ['paper']
+                })
+              }).$promise;
+            },
+            model: function() {
+              return 'story';
+            },
+            factory: function(StoryFactory) {
+              return StoryFactory;
+            }
+          }
+        })
+        .state('publications.interviews', {
+          url: '',
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/blog.news.html',
+            resolve: {
+            items: function(StoryFactory, $stateParams) {
+              return StoryFactory.get({
+                filters: JSON.stringify({
+                  tags__category__in: ['interviews']
+                })
+              }).$promise;
+            },
+            model: function() {
+              return 'story';
+            },
+            factory: function(StoryFactory) {
+              return StoryFactory;
+            }
+          }
+        })
+
+
 
       .state('post', {
         url: '/blog/:postId',
