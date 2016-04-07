@@ -204,7 +204,7 @@ angular
 
 
       .state('post', {
-        url: '/blog/:postId',
+        url: '/story/:postId',
         controller: 'PostCtrl',
         templateUrl: RUNTIME.static + 'templates/post.html',
         resolve: {
@@ -213,6 +213,8 @@ angular
           },
         }
       })
+
+
       /*
         All the rest are static pages and will download the md files directly
       */

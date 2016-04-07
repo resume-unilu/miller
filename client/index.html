@@ -32,11 +32,8 @@
         border-bottom-color: #E7E4E4;
       }
 
-      header {
-        font-family: 'Lato', sans-serif;
-      }
-
       .navbar{
+        font-family: 'Lato', sans-serif;
         height: 70px;
         padding: 0 100px 0 25px;
         transform: translateY(140px);
@@ -126,6 +123,10 @@
         transition: opacity .3s ease-in-out;
         opacity: 0;
         z-index: 1;
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
       }
 
       #table-of-contents-toggler.active{
@@ -225,8 +226,7 @@
       {% endverbatim %}
     </div>
 
-    <header>
-      <nav id="navbar" class='navbar navbar-default navbar-fixed-top'>
+    <nav id="navbar" class='navbar navbar-default navbar-fixed-top'>
         <div container-fluid>
           <div class="navbar-header">
             <a class='navbar-brand' ui-sref='index'>
@@ -252,7 +252,7 @@
 
         </div>
       </nav>
-    </header>
+    
 
     <!-- CONTENTS -->
     <div id='wrapper' ng-class='state'>
@@ -348,7 +348,7 @@
               '-ms-transform': 'translateY('+navbar_offset+'px)',
             });
 
-        
+
         _navbar_offset = navbar_offset;
       })
       

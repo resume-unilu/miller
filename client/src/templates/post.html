@@ -4,10 +4,15 @@
     <blockquote>
       {{post.abstract}}
     </blockquote>
-    <div class="tags">RESUME CLASSICS {{post.status}}</div>
-    
+    <div class="tags" ng-if="post.tags.length">
+      <span ng-repeat='tag in post.tags' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+    </div>
+  
+    <div class='authors' ng-if="post.authors.length">
+      by <span ng-repeat='author in post.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+    </div>
     <div class="contents">
-    {{post.contents}}
+     <div marked='post.contents' settoc='setToC(ToC)'></div>
     </div>  
   </div>
 </div>

@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 
 from miller import helpers
-from miller.models import Tag
+from miller.models import Tag, Document
 
 
 
@@ -40,6 +40,8 @@ class Story(models.Model):
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
   authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
+  documents = models.ManyToManyField(Document, through='Caption', blank=True)
+
   tags      = models.ManyToManyField(Tag, blank=True) # tags
 
   # cover thumbnail, e.g. http://www.eleganzadelgusto.com/wordpress/wp-content/uploads/2014/05/Marcello-Mastroianni-for-Arturo-Zavattini.jpg

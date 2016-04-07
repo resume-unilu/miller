@@ -6,8 +6,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers,viewsets
 from rest_framework.response import Response
 
-from miller.models import Story, Tag
+from miller.models import Story, Tag, Document
 
+
+class DocumentSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Document
+    fields = ('id', 'title', 'short_url', 'url')
 
 class TagSerializer(serializers.ModelSerializer):
   class Meta:
@@ -26,16 +31,25 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
+  documents = DocumentSerializer(many=True, read_only=True)
   class Meta:
     model = Story
-    fields = ('id','url', 'short_url', 'title', 'abstract', 'contents', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
+    fields = ('id','url', 'short_url', 'title', 'abstract', 'documents', 'contents', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
+
+class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
+  authors = AuthorSerializer(many=True)
+  owner = AuthorSerializer()
+  tags = TagSerializer(many=True)
+  class Meta:
+    model = Story
+    fields = ('id','url', 'short_url', 'title', 'abstract', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
 
     
 # ViewSets define the view behavior. Filter by status
 class StoryViewSet(viewsets.ModelViewSet):
   queryset = Story.objects.all()
-  serializer_class = StorySerializer
+  serializer_class = LiteStorySerializer
 
 
   def list(self, request):
@@ -53,24 +67,28 @@ class StoryViewSet(viewsets.ModelViewSet):
       filters = {}
     
     if request.user.is_authenticated():
-      stories = self.queryset.filter(Q(owner=request.user) | Q(status=Story.PUBLIC)).filter(**filters)
+      stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
     else:
-      stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters)
-
+      stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
+    print stories.query
     page    = self.paginate_queryset(stories)
 
-    serializer = self.serializer_class(stories, many=True,
+    serializer = LiteStorySerializer(stories, many=True,
         context={'request': request}
     )
     return self.get_paginated_response(serializer.data)
 
   def retrieve(self, request, pk=None):
-    queryset = self.queryset.filter(pk=pk).filter(Q(owner=request.user) | Q(status=Story.PUBLIC))
+    if request.user.is_authenticated():
+      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC))
+    else:
+      queryset = self.queryset.filter(status=Story.PUBLIC)
+
     story = get_object_or_404(queryset, pk=pk)
 
     # // serialize with text content
 
-    serializer = self.serializer_class(story,
+    serializer = StorySerializer(story,
         context={'request': request}
     )
     return Response(serializer.data)

@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from miller.models import Profile, Story, Tag
+from miller.models import Profile, Story, Tag, Document, Caption
 
 # Define an inline admin descriptor for Profile model
 # which acts a bit like a singleton
@@ -17,7 +17,15 @@ class ProfileInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
   inlines = (ProfileInline, )
 
+class DocumentAdmin(admin.ModelAdmin):
+  search_field = ['title']
+
+class CaptionInline(admin.TabularInline):
+  model = Caption
+  extra = 2 # how many rows to show
+
 class StoryAdmin(admin.ModelAdmin):
+  inlines = (CaptionInline,)
   search_field = ['title']
 
 class TagAdmin(admin.ModelAdmin):
@@ -28,3 +36,4 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Story, StoryAdmin)
+admin.site.register(Document, DocumentAdmin)
