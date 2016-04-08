@@ -10,3 +10,5 @@ local_settings.py
 *.uwsgi.ini
 uwsgi.ini
 uwsgi_params
+media/*
+!media/.gitkeep

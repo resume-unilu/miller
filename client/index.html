@@ -10,7 +10,7 @@
     <link href='{% static "css/themes/default.css" %}' rel='stylesheet'></link>
     <link href='{% static "css/style.css" %}' rel='stylesheet'></link>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.2.4/css/simple-line-icons.css' rel='stylesheet' type='text/css'></link>
-    <link href='https://fonts.googleapis.com/css?family=Merriweather|Lato:400,700' rel='stylesheet' type='text/css'></link>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,400italic|Lato:400,700' rel='stylesheet' type='text/css'></link>
     <style>
       [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
         display: none !important;
@@ -112,9 +112,8 @@
         -moz-transform: translateY(140px);
         -ms-transform: translateY(140px);
       }
-      #table-of-contents.active{
-        transform: translateX(0px);
-      }
+
+      
 
       #table-of-contents-toggler{
         position: fixed;
@@ -133,6 +132,37 @@
         opacity: 1;
       }
 
+      #table-of-documents{
+        position: fixed;
+        right: 0;
+        top: 70px;
+        bottom: 0;
+        transition: transform .27s ease-in-out;
+        /*transform: translateX(210px);
+        -webkit-transform: translateX(210px);
+        -moz-transform: translateX(210px);
+        -ms-transform: translateX(210px);
+        z-index: 2;
+        width: 210px;*/
+        background: #E6E5E5;
+      }
+
+      #table-of-contents.active, #table-of-documents.active{
+        transform: translateX(0px);
+      }
+
+      #inner-table-of-documents{
+        position:absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0px;
+        overflow: scroll;
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
+      }
       
 
       .btn-transparent{
@@ -284,6 +314,10 @@
       <div id="inner-table-of-contents"><div ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'></div></div>
     </aside>
 
+    <aside id='table-of-documents' class='active'>
+      <div id="inner-table-of-documents"><div ng-include='"templates/partials/table-of-documents.html"|prefixTemplate'></div></div>
+    </aside>
+
     <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' bs-tooltip='{"title":"hello hello"}'>
       <button class='btn-transparent' ng-click='toggleTableOfContents()'><span class='icon-book-open'></span></button>
     </div>
@@ -316,7 +350,8 @@
     <script src='{% static "js/controllers/page.js" %}'></script>
 
     <script src='{% static "js/directives/marked.js" %}'></script>
-      
+    <script src='{% static "js/directives/lazy.js" %}'></script>  
+
     <script src='{% static "js/services.js" %}'></script>
     <script src='{% static "js/filters.js" %}'></script>
 
@@ -329,7 +364,8 @@
           _offsetables = [
             $('#navbar'),
             $('#table-of-contents-toggler'),
-            $('#inner-table-of-contents')
+            $('#inner-table-of-contents'),
+            $('#inner-table-of-documents')
           ],
 
           _navbar_offset = 140;
@@ -347,7 +383,6 @@
               '-moz-transform': 'translateY('+navbar_offset+'px)',
               '-ms-transform': 'translateY('+navbar_offset+'px)',
             });
-
 
         _navbar_offset = navbar_offset;
       })

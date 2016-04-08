@@ -104,7 +104,7 @@ blockquote{
   transform: translateY(140px);
 }*/
 
-#table-of-contents h2{
+#table-of-contents h2, #table-of-documents h2{
   margin-top: 120px;
   margin-left: 40px;
   font-family: 'Lato', sans-serif;
@@ -163,6 +163,20 @@ blockquote{
   margin-left: 20px;
 }
 
+#table-of-documents ul{
+  padding: 0;
+  margin:0 ;
+  list-style-type: none;
+}
+
+#table-of-documents .divider{
+  margin-top: 10px;
+  margin-left: 20px;
+  width: 20px;
+  background-color: black;
+  margin-bottom: 10px;
+}
+
 #footer{
   transition: transform .27s ease-in-out;
   transform: translateY(140px);
@@ -172,7 +186,26 @@ blockquote{
 /*
   elements
 */
-.type{
+
+.doc blockquote{
+  font-size: 12px;
+  font-family: 'Merriweather';
+  text-transform: none;
+  font-style: italic;
+  margin: 10px 50px 10px 20px;
+}
+
+.doc .caption, .doc .copyright{
+  font-size: 12px;
+  margin: 10px 50px 10px 20px;
+}
+
+
+.doc {
+  border-bottom: 1px solid #B7B2B2;
+}
+
+.type, .copyright{
   text-transform: uppercase;
   font-family: 'Lato', sans-serif;
   font-size: 12px;
@@ -247,4 +280,21 @@ blockquote{
 
 #draft-contents{
   margin-top:50px;
+}
+
+
+/*
+  bootstrap media 
+*/
+@media (min-width: 992px){
+  .container {
+    width: 800px;
+  }
+  #table-of-documents{
+    transform: translateX(300px);
+    -webkit-transform: translateX(300px);
+    -moz-transform: translateX(300px);
+    -ms-transform: translateX(300px);
+    width: 300px;
+  }
 }

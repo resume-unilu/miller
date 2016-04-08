@@ -10,7 +10,7 @@ from miller import helpers
 
 
 def attachment_file_name(instance, filename):
-  return os.path.join(settings.MEDIA_ROOT, instance.type, filename)
+  return os.path.join(instance.type, filename)
 
 
 class Document(models.Model):
@@ -29,7 +29,7 @@ class Document(models.Model):
   short_url  = models.CharField(max_length=22, default=helpers.create_short_url, unique=True)
   
   title      = models.CharField(max_length=500)
-  slug       = models.CharField(max_length=100)
+  slug       = models.CharField(max_length=100, unique=True)
 
   contents   = models.TextField() # markdown flavoured metadata field, in different languages if available.
   copyrights = models.TextField()
@@ -37,3 +37,6 @@ class Document(models.Model):
   url        = models.URLField(max_length=500, null=True, blank=True)
   owner      = models.ForeignKey(User); # at least the first author, the one who owns the file.
   attachment = models.FileField(upload_to=attachment_file_name)
+
+  def __unicode__(self):
+    return '%s (%s)' % (self.slug, self.type)

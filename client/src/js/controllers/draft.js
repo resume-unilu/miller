@@ -12,12 +12,13 @@ angular.module('miller')
     $scope.contents = ""// from markdown
     $scope.mediumOptions = {
       autoLink: true,
-      toolbar:{
-        buttons: ['bold', 'italic','h2','h3','quote','anchor','orderedlist', 'unorderedlist']
-      },
+      // toolbar:{
+      //   buttons: ['bold', 'italic','h2','h3','quote','anchor','orderedlist', 'unorderedlist']
+      // },
     	extensions: {
     		markdown: new MeMarkdown(function (md) {
                $scope.markdown = md;
+               // console.log(md)
                // socketizza socketizza che é meglio
             })
         }

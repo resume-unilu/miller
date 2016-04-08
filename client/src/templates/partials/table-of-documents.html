@@ -1,0 +1,18 @@
+<!-- <h2>table of documents</h2>
+ -->
+
+<ul>
+  <li ng-repeat="document in documents" class='doc doc-{{document.type}}'>
+    <div class='divider'></div>
+
+    <div ng-if='document.type=="picture"'>
+      
+      <div lazy-image src='{{document.src}}'></div>
+      <blockquote>{{document.citation}}</blockquote>
+      <div class='caption'>{{document.caption}}</div>
+      <div class='copyright'>{{document.copyrights}}</div>
+
+    </div>
+  </li>
+
+</ul>

@@ -6,14 +6,24 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers,viewsets
 from rest_framework.response import Response
 
-from miller.models import Story, Tag, Document
+from miller.models import Story, Tag, Document, Caption
 
 
-class DocumentSerializer(serializers.ModelSerializer):
+class CaptionSerializer(serializers.HyperlinkedModelSerializer):
+  document_id    = serializers.ReadOnlyField(source='document.id')
+  type  = serializers.ReadOnlyField(source='document.type')
+  title = serializers.ReadOnlyField(source='document.title')
+  slug  = serializers.ReadOnlyField(source='document.slug')
+  src   = serializers.ReadOnlyField(source='document.attachment.url')
+  short_url = serializers.ReadOnlyField(source='document.short_url')
+  copyrights = serializers.ReadOnlyField(source='document.copyrights')
+  caption = serializers.ReadOnlyField(source='contents')
+
   class Meta:
-    model = Document
-    fields = ('id', 'title', 'short_url', 'url')
+    model = Caption
+    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src')
 
+# tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
   class Meta:
     model = Tag
@@ -31,7 +41,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
-  documents = DocumentSerializer(many=True, read_only=True)
+  documents = CaptionSerializer(source='caption_set', many=True)
   class Meta:
     model = Story
     fields = ('id','url', 'short_url', 'title', 'abstract', 'documents', 'contents', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')

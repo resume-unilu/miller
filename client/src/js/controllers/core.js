@@ -30,6 +30,12 @@ angular.module('miller')
       $scope.ToCDisabled = true
     }
 
+    // add document items to the table-of)documents
+    $scope.setDocuments = function(documents) {
+      $log.log('CoreCtrl > setDocuments items n.:', documents.length);
+      $scope.documents = documents;
+    };
+
     /*
       Set breaking news above the header.
       Cfr indexCtrl

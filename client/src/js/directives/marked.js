@@ -11,13 +11,15 @@ angular.module('miller')
       restrict : 'A',
       scope:{
         marked: '=',
-        settoc: '&'
+        settoc: '&',
+        setdocs: '&'
       },
       link : function(scope, element, attrs) {
         var entities = [],
             renderer = new marked.Renderer(),
             annotable = false,
             ToC = [],
+            docs = [],
             lp; // previous opened heading level, for ToC purposes
         
         function slugify(text){
@@ -40,6 +42,10 @@ angular.module('miller')
         scope.hash = function(what) {
           $location.hash(what)
         };
+
+        scope.miller = function(url){
+          debugger
+        }
         /*
           render headings with anchor links and fill the ToC. once everything is rendered, the ToC is sent to the proper function
         */
@@ -56,6 +62,23 @@ angular.module('miller')
         }
 
 
+        renderer.link = function(url, boh, text) {
+          if(url.trim().indexOf('doc:') == 0){
+            // collect document
+            var documents = url.trim().replace('doc:','').split(',');
+
+            for(var i in documents){
+              docs.push({
+                citation: text,
+                slug: documents[i]
+              });
+            }
+            
+            return '<a href ng-click="miller(\''+url+'\')">'+text+'</a>';
+          }
+
+          return '<a href>'+text+'</a>'
+        }
 
         element.html(marked(scope.marked, {
           renderer: renderer
@@ -66,6 +89,8 @@ angular.module('miller')
         $compile(element.contents())(scope);
 
         scope.settoc({ToC:ToC});
+        if(scope.setdocs)
+          scope.setdocs({items:docs})
       }
     };
   })
