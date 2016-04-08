@@ -42,6 +42,10 @@
         -ms-transform: translateY(140px);
       }
 
+      .navbar.below-floating{
+        border-bottom: 2px solid #f0f0f0;
+      }
+
       .container{
         margin-left: 100px;
         margin-top: 120px;
@@ -144,7 +148,7 @@
         -ms-transform: translateX(210px);
         z-index: 2;
         width: 210px;*/
-        background: #E6E5E5;
+        
       }
 
       #table-of-contents.active, #table-of-documents.active{
@@ -242,7 +246,7 @@
       }
 
       #footer{
-        background-color: #C7F464;
+        /*background-color: #C7F464;*/
       }
 
 
@@ -296,7 +300,7 @@
     </div>
 
     <div id="footer" ng-class='state'>
-      <div class='container-fluid'>
+      <div class='container'>
         <div class='row'>
           <div class='col-sm-4'>
             <p>
@@ -314,7 +318,7 @@
       <div id="inner-table-of-contents"><div ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'></div></div>
     </aside>
 
-    <aside id='table-of-documents' class='active'>
+    <aside id='table-of-documents' ng-class='hasToC? "":"active"'>
       <div id="inner-table-of-documents"><div ng-include='"templates/partials/table-of-documents.html"|prefixTemplate'></div></div>
     </aside>
 
@@ -369,7 +373,8 @@
           ],
 
           _navbar_offset = 140;
-          floatinglimit = 140;
+          floatinglimit = 140,
+          isBelowFloating = false;
 
       _windox.scroll(function(){
         var st = _windox.scrollTop(),
@@ -383,6 +388,19 @@
               '-moz-transform': 'translateY('+navbar_offset+'px)',
               '-ms-transform': 'translateY('+navbar_offset+'px)',
             });
+
+        if(st > floatinglimit) {
+          if(!isBelowFloating){
+            _offsetables[0].addClass('below-floating');
+          }
+          isBelowFloating = true;
+        } else {
+          if(isBelowFloating){
+            _offsetables[0].removeClass('below-floating');
+          }
+          isBelowFloating = false;
+        }
+
 
         _navbar_offset = navbar_offset;
       })
