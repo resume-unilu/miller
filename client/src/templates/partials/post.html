@@ -1,12 +1,19 @@
 <div class="wrapper">
-  <div class="date">{{post.date}}</div>
+  <div ng-if='!$first' class="divider"></div>
+  <div class="date">{{post.date|date:'mediumDate'}}</div>
+
   <h3><a ui-sref="post({postId: post.id})">{{post.title}} {{post.status != 'public'? '(DRAFT)': ''}}</a></h3>  
-  {{post.abstract}} 
-  <div class="tags" ng-if="post.tags.length">
-    <span ng-repeat='tag in post.tags' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
-  </div>
   
-  <div class='authors' ng-if="post.authors.length">
-    by <span ng-repeat='author in post.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-  </div>
+  <blockquote class="reduced">{{post.excerpt}}.<a href ui-sref="post({postId: post.id})"><span class='icon-arrow-right-circle'></span></a></blockquote>
+  <em ng-if="post.difference">{{post.difference}}</em>
+
+  <span class="tags" ng-if="post.tags.length">
+    <span class='tag' ng-repeat='tag in post.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+  </span>
+  <span class='authors' ng-if="post.authors.length">
+    written by <span ng-repeat='author in post.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+  </span>
+  <span class='authors' ng-if="post.authors.length == 0">
+    written by <span ng-init='author=post.owner;$last=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+  </span>
 </div>

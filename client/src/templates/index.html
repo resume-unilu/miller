@@ -35,6 +35,16 @@
 
   </div>
   <div class="col-sm-4">
-  what's on today
+    <div ng-repeat='story in news'>
+        <div class="coverstory">
+          <div ng-if='!$first' class="divider"></div>
+          <div class="date">{{story.date|date:'mediumDate'}}</div>
+          <h4><a href ui-sref="post({postId: story.id})">{{story.title}}</a></h4>
+
+          <blockquote class="reduced">{{story.excerpt}} <span class='icon-arrow-right-circle'></span></blockquote>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

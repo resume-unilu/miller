@@ -26,6 +26,10 @@ angular.module('miller')
     $scope.coverstory = writings.results.shift();
     $scope.otherstories = writings.results;
 
+    $scope.news = news.results.map(function(d) {
+      d.excerpt = tokenize(d.abstract, 10)[0];
+      return d;
+    })
 
 
 

@@ -19,7 +19,7 @@ h3, .h3 {
 
 h4, .h4{
   font-size: 16px;
-    line-height: 24px;
+  line-height: 24px;
 }
 
 a{
@@ -66,7 +66,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5{
 }
 
 .view.index{
-  margin-right: 100px;
+  margin-right: 0px;
   margin-top: 100px;
 }
 
@@ -218,7 +218,7 @@ blockquote{
   border-bottom: 1px solid #B7B2B2;
 }
 
-.type, .copyright, .tag{
+.type, .copyright, .tag, .date{
   text-transform: uppercase;
   font-family: 'Lato', sans-serif;
   font-size: 12px;
@@ -231,6 +231,36 @@ blockquote{
 .tag{
   font-weight: bold;
 }
+
+.date {
+  color: #FF6B6B ;
+  margin-top: 20px;
+}
+
+p{
+  position: relative;
+}
+.anchor-wrapper{
+  position: absolute;
+  left: -30px;
+  width:10px;
+  height: 10px;
+  margin-top: 5px;
+  background: #4ECDC4;
+  border-radius: 10px;
+  moz-border-radius: 10px;
+}
+    
+.contents h2, .contents .h2 {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.contents h3, .contents .h3{
+  font-size: 16px;
+  line-height: 24px;
+}
+
 
 .coverstory blockquote{
   font-size: 12px;
@@ -248,9 +278,9 @@ blockquote{
 }
 
 .divider {
-  width: 20%;
+  width: 40px;
   height: 2px;
-  background: red;
+  background: #FF6B6B;
   margin-top: 20px;
 }
 
@@ -309,10 +339,31 @@ blockquote{
 
 
 /*
+  bootstrap dropdown
+*/
+ul.dropdown-menu{
+  text-transform: uppercase;
+    font-size: 10px;
+  background:#e7e7e7;
+  border: 0px;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.navbar-default .navbar-nav > li.dropdown.open > a:hover, .navbar-default .navbar-nav > li.dropdown.open > a:focus{
+  border: 2px solid transparent;
+  color: black;
+}
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus{
+  background: transparent;
+  color: #FF6B6B;
+}
+/*
   bootstrap media 
 */
 @media (min-width: 768px){
-  .container {
+  .post .container {
     width: 680px;
   }
   #table-of-documents{
@@ -324,7 +375,7 @@ blockquote{
   }
 }
 @media (min-width: 992px){
-  .container {
+  .post .container {
     width: 800px;
   }
   #table-of-documents{

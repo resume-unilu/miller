@@ -280,6 +280,15 @@
             <ul class="nav navbar-nav navbar-right">
               <li ui-sref-active="active"><a ui-sref="draft">write</a></li>
               <li><a href="/admin" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
+              <li class="dropdown">
+
+                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> more</button>
+                <ul class="dropdown-menu" role="menu">
+                  
+                  <li ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})'>terms of use</a></li>
+                  
+                </ul>
+              </li>
             </ul>
             {% endverbatim %}
           </div>
@@ -309,6 +318,7 @@
           </div>
           <div class='col-sm-4'>
             <p>CVCE (c) 2016</p>
+            <div href ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})'>terms of use</a></div>
           </div>
         </div>
       </div>
@@ -322,7 +332,7 @@
       <div id="inner-table-of-documents"><div ng-include='"templates/partials/table-of-documents.html"|prefixTemplate'></div></div>
     </aside>
 
-    <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' bs-tooltip='{"title":"hello hello"}'>
+    <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' bs-tooltip='{"title":"show / hide Table of Contents"}'>
       <button class='btn-transparent' ng-click='toggleTableOfContents()'><span class='icon-book-open'></span></button>
     </div>
 

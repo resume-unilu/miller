@@ -74,7 +74,7 @@ angular.module('miller')
               });
             }
             
-            return '<a name="' + documents[0] +'" href="#' + documents[0] +'" ng-click="hash(\''+url+'\')">'+text+'</a>';
+            return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
           }
 
           return '<a href>'+text+'</a>'
