@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rest_framework',
     'ws4redis',
+    'simplemde',
     'miller'
 ]
 

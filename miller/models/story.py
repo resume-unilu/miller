@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from miller import helpers
 from miller.models import Tag, Document
 
+from simplemde.fields import SimpleMDEField
 
 
 class Story(models.Model):
@@ -29,7 +30,7 @@ class Story(models.Model):
   title     = models.CharField(max_length=500)
   slug      = models.CharField(max_length=140, unique=True) # force the unicity of the slug (story lookup from the short_url)
   abstract  = models.CharField(max_length=500, blank=True, null=True)
-  contents  = models.TextField(default='') # It will store the last markdown contents.
+  contents  = SimpleMDEField(verbose_name=u'mardown content',default='') # It will store the last markdown contents.
 
   date               = models.DateTimeField(blank=True, null=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
