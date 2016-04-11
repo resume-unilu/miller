@@ -46,6 +46,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
     model = Story
     fields = ('id','url', 'short_url', 'title', 'abstract', 'documents', 'contents', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
+# Serializer to use in list of story items
 class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
   owner = AuthorSerializer()
@@ -88,11 +89,12 @@ class StoryViewSet(viewsets.ModelViewSet):
     )
     return self.get_paginated_response(serializer.data)
 
+
   def retrieve(self, request, pk=None):
     if request.user.is_authenticated():
-      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC))
+      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).distinct()
     else:
-      queryset = self.queryset.filter(status=Story.PUBLIC)
+      queryset = self.queryset.filter(status=Story.PUBLIC).distinct()
 
     story = get_object_or_404(queryset, pk=pk)
 
