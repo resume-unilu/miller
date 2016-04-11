@@ -181,14 +181,14 @@ angular
           }
         })
         .state('publications.interviews', {
-          url: '',
+          url: '/interviews',
           controller: 'ItemsCtrl',
           templateUrl: RUNTIME.static + 'templates/blog.news.html',
             resolve: {
             items: function(StoryFactory, $stateParams) {
               return StoryFactory.get({
                 filters: JSON.stringify({
-                  tags__category__in: ['interviews']
+                  tags__slug: 'interview'
                 })
               }).$promise;
             },

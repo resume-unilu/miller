@@ -53,6 +53,11 @@ angular.module('miller')
       var h =  $location.hash();
 
       $log.debug('CoreCtrl @stateChangeSuccess', state.name, h);
+
+      // clean
+      $scope.ToC = [];
+      $scope.documents = []
+
       // the ui.router state (cfr app.js)
       $scope.state = state.name;
       $timeout($anchorScroll, 0); // wait for the next digest cycle (cfr marked directive)

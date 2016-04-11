@@ -8,8 +8,8 @@
         <span ng-repeat='tag in coverstory.tags' ng-if='tag.category == "writing"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
       </div>
 
-      <h3>{{coverstory.title}}</h3>
-      <blockquote>{{coverstory.excerpt}} <span class='icon-arrow-right-circle'></span></blockquote>
+      <h3><a href ui-sref="post({postId: coverstory.id})">{{coverstory.title}}</a></h3>
+      <blockquote>{{coverstory.excerpt}} <a href ui-sref="post({postId: coverstory.id})"><span class='icon-arrow-right-circle'></span></a></blockquote>
       <div class='authors' ng-if="coverstory.authors.length">
         by <span ng-repeat='author in coverstory.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
       </div>
@@ -27,7 +27,7 @@
       <div ng-repeat='story in otherstories' class="col-sm-6">
         <div class="coverstory">
           <div class="divider"></div>
-          <h4>{{story.title}}</h4>
+          <h4><a href ui-sref="post({postId: story.id})">{{story.title}}</a></h4>
           <blockquote class="reduced">{{story.excerpt}} <span class='icon-arrow-right-circle'></span></blockquote>
         </div>
       </div>

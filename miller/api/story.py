@@ -27,7 +27,7 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
   class Meta:
     model = Tag
-    fields = ('id', 'category', 'name')
+    fields = ('id', 'category', 'name', 'status')
 
 # serializer the authors.
 class AuthorSerializer(serializers.ModelSerializer):

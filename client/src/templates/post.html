@@ -5,7 +5,7 @@
       {{post.abstract}}
     </blockquote>
     <div class="tags" ng-if="post.tags.length">
-      <span ng-repeat='tag in post.tags' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+      <span class='tag' ng-repeat='tag in post.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
     </div>
   
     <div class='authors' ng-if="post.authors.length">
