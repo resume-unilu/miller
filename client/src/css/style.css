@@ -74,6 +74,14 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5{
   transform: translateX(200px);
 }
 
+.cover{
+  margin-left: -115px;
+}
+
+.container.with-ToC .view .cover{
+  margin-left: -65px;
+}
+
 *:read-write:focus {
   outline: none;
 }

@@ -10,6 +10,7 @@ angular.module('miller')
     $log.log('PostCtrl ready', post);
     $scope.post = post;
 
+    // guess if there's a document interview
     // cfr corectrl setDocuments function.
     $scope.setDocuments = function(items) {
       $log.log('PostCtrl > setDocuments items n.:', items.length);

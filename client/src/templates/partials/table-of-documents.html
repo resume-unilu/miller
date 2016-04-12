@@ -12,6 +12,15 @@
         <blockquote>{{document.citation}}</blockquote>
         <div class='caption'>{{document.caption}}</div>
         <div class='copyright'>{{document.copyrights}}</div>
+        
+      </div>
+
+      <div ng-if='document.type=="pdf"'>
+        
+        <div lazy-image src='{{document.snapshot}}'></div>
+        <blockquote>{{document.citation}}</blockquote>
+        <div class='caption'>{{document.caption}}</div>
+        <div class='copyright'>{{document.copyrights}}</div>
 
       </div>
     </div>

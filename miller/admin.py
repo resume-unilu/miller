@@ -19,6 +19,7 @@ class UserAdmin(BaseUserAdmin):
 
 class DocumentAdmin(admin.ModelAdmin):
   search_field = ['title']
+  exclude=['snapshot']
 
 class CaptionInline(admin.TabularInline):
   model = Caption

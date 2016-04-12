@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs
+import os,codecs, mimetypes
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import pre_delete, post_save
+from django.dispatch import receiver
 
 from miller import helpers
 
@@ -15,14 +17,18 @@ def attachment_file_name(instance, filename):
 
 class Document(models.Model):
   BIBLIOGRAPHIC_REFERENCE = 'bibtex'
+  VIDEO_COVER = 'video cover'
   PICTURE = 'picture'
   VIDEO   = 'video'
   AUDIO   = 'audio'
+  PDF     = 'pdf'
 
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
+    (VIDEO_COVER, 'video'),
     (VIDEO, 'video'),
     (PICTURE, 'picture'),
+    (PDF, 'pdf'),
   )
 
   type       = models.CharField(max_length=24, choices=TYPE_CHOICES)
@@ -37,6 +43,27 @@ class Document(models.Model):
   url        = models.URLField(max_length=500, null=True, blank=True)
   owner      = models.ForeignKey(User); # at least the first author, the one who owns the file.
   attachment = models.FileField(upload_to=attachment_file_name)
+  snapshot   = models.URLField(null=True, blank=True)
+
 
   def __unicode__(self):
     return '%s (%s)' % (self.slug, self.type)
+
+# dep. brew install ghostscript, brew install imagemagick
+@receiver(post_save, sender=Document)
+def create_snapshot(sender, instance, created, **kwargs):
+  if instance.attachment:
+    import mimetypes
+    mimetype = mimetypes.MimeTypes().guess_type(instance.attachment.path)[0]
+    print mimetype
+    if mimetype == 'application/pdf':
+      import PyPDF2
+      pdf_im = PyPDF2.PdfFileReader(instance.attachment)
+      from wand.image import Image
+      
+      # Converting first page into JPG
+      with Image(filename=instance.attachment.path + '[0]', resolution=150) as img:
+        img.save(filename=instance.attachment.path + '.png')
+        snapshot = instance.attachment.url + '.png'
+        Document.objects.filter(pk=instance.pk).update(snapshot=snapshot)
+

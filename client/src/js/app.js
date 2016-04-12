@@ -106,6 +106,7 @@ angular
         templateUrl: RUNTIME.static + 'templates/blog.html',
         
       })
+
       .state('blog.everything', {
         url: '',
         controller: 'ItemsCtrl',

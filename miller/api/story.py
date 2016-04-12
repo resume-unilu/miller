@@ -18,10 +18,11 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   short_url = serializers.ReadOnlyField(source='document.short_url')
   copyrights = serializers.ReadOnlyField(source='document.copyrights')
   caption = serializers.ReadOnlyField(source='contents')
+  snapshot = serializers.ReadOnlyField(source='document.snapshot')
 
   class Meta:
     model = Caption
-    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src')
+    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot')
 
 # tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
