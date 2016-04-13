@@ -8,8 +8,12 @@ gitdb==0.6.4
 GitPython==1.0.2
 greenlet==0.4.9
 Markdown==2.6.6
+MySQL-python==1.2.5
+PyPDF2==1.25.1
 redis==2.10.5
 shortuuid==0.4.3
 six==1.10.0
 smmap==0.9.0
 uWSGI==2.0.12
+Wand==0.4.2
+Whoosh==2.7.4
