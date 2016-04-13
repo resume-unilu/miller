@@ -25,7 +25,7 @@ class Document(models.Model):
 
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
-    (VIDEO_COVER, 'video'),
+    (VIDEO_COVER, 'video interview'),
     (VIDEO, 'video'),
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
@@ -37,12 +37,12 @@ class Document(models.Model):
   title      = models.CharField(max_length=500)
   slug       = models.CharField(max_length=100, unique=True)
 
-  contents   = models.TextField() # markdown flavoured metadata field, in different languages if available.
-  copyrights = models.TextField()
+  contents   = models.TextField(null=True, blank=True, default='') # OEMBED or markdown flavoured metadata field, in different languages if available.
+  copyrights = models.TextField(null=True, blank=True,  default='')
 
   url        = models.URLField(max_length=500, null=True, blank=True)
   owner      = models.ForeignKey(User); # at least the first author, the one who owns the file.
-  attachment = models.FileField(upload_to=attachment_file_name)
+  attachment = models.FileField(upload_to=attachment_file_name, null=True, blank=True)
   snapshot   = models.URLField(null=True, blank=True)
 
 

@@ -9,20 +9,33 @@ from rest_framework.response import Response
 from miller.models import Story, Tag, Document, Caption
 
 
+class OptionalFileField(serializers.Field):
+  def to_representation(self, obj):
+    if hasattr(obj, 'url'):
+      return obj.url
+    return None
+
+class JsonField(serializers.Field):
+  def to_representation(self, obj):
+    if obj:
+      return json.loads(obj)
+    return obj
+
 class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   document_id    = serializers.ReadOnlyField(source='document.id')
   type  = serializers.ReadOnlyField(source='document.type')
   title = serializers.ReadOnlyField(source='document.title')
   slug  = serializers.ReadOnlyField(source='document.slug')
-  src   = serializers.ReadOnlyField(source='document.attachment.url')
+  src   = OptionalFileField(source='document.attachment')
   short_url = serializers.ReadOnlyField(source='document.short_url')
   copyrights = serializers.ReadOnlyField(source='document.copyrights')
   caption = serializers.ReadOnlyField(source='contents')
+  metadata = JsonField(source='document.contents')
   snapshot = serializers.ReadOnlyField(source='document.snapshot')
 
   class Meta:
     model = Caption
-    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot')
+    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
 
 # tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
@@ -99,9 +112,9 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     story = get_object_or_404(queryset, pk=pk)
 
-    # // serialize with text content
+    # // serialize with text conten
 
     serializer = StorySerializer(story,
-        context={'request': request}
+        context={'request': request},
     )
     return Response(serializer.data)
