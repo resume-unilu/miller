@@ -10,6 +10,10 @@ angular.module('miller')
     $log.log('PostCtrl ready', post);
     $scope.post = post;
 
+    $scope.hasCoverVideo = post.documents.filter(function(d){
+      return d.type =='video cover'
+    }).length != 0;
+    
     // guess if there's a document interview
     // cfr corectrl setDocuments function.
     $scope.setDocuments = function(items) {
