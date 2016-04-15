@@ -17,7 +17,7 @@ def attachment_file_name(instance, filename):
 
 class Document(models.Model):
   BIBLIOGRAPHIC_REFERENCE = 'bibtex'
-  VIDEO_COVER = 'video cover'
+  VIDEO_COVER = 'video-cover'
   PICTURE = 'picture'
   VIDEO   = 'video'
   AUDIO   = 'audio'
@@ -52,7 +52,7 @@ class Document(models.Model):
 # dep. brew install ghostscript, brew install imagemagick
 @receiver(post_save, sender=Document)
 def create_snapshot(sender, instance, created, **kwargs):
-  if instance.attachment:
+  if instance.attachment and hasattr(instance.attachment, 'path'):
     import mimetypes
     mimetype = mimetypes.MimeTypes().guess_type(instance.attachment.path)[0]
     print mimetype
@@ -60,10 +60,21 @@ def create_snapshot(sender, instance, created, **kwargs):
       import PyPDF2
       pdf_im = PyPDF2.PdfFileReader(instance.attachment)
       from wand.image import Image
-      
-      # Converting first page into JPG
-      with Image(filename=instance.attachment.path + '[0]', resolution=150) as img:
-        img.save(filename=instance.attachment.path + '.png')
-        snapshot = instance.attachment.url + '.png'
-        Document.objects.filter(pk=instance.pk).update(snapshot=snapshot)
+      try:
+        # Converting first page into JPG
+        with Image(filename=instance.attachment.path + '[0]', resolution=150) as img:
+          img.save(filename=instance.attachment.path + '.png')
+          snapshot = instance.attachment.url + '.png'
+          Document.objects.filter(pk=instance.pk).update(snapshot=snapshot)
+      except Exception:
+        print 'could not save snapshot of the required resource', instance.id
+
+# automatically fill metadata if contents field is empty
+@receiver(post_save, sender=Document)
+def fill_contents(sender, instance, created, **kwargs):
+  pass
+
+
+
+
 

@@ -14,13 +14,17 @@ angular
     'ngCookies',
     'angular-medium-editor',
     'mgcrea.ngStrap',
-    'monospaced.elastic'
+    'monospaced.elastic',
+    'LocalStorageModule'
   ])
   .constant('LOCALES', {
     'locales': {
       'en_US': 'English'
     },
     'preferredLocale': 'en_US'
+  })
+  .constant('EVENTS', {
+    'SAVE': 'save'
   })
   /*
     Angular-translate configs
@@ -36,7 +40,17 @@ angular
   //   $translateProvider.preferredLanguage('en_US');// is applied on first load
     
   // })
-
+  .config(function (localStorageServiceProvider) {
+    localStorageServiceProvider
+      .setPrefix('miller');
+  })
+  .config(function($resourceProvider) {
+    $resourceProvider.defaults.stripTrailingSlashes = false;
+  })
+  .config(function($httpProvider) {
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken'
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken'
+  })
   .config(function($locationProvider) {
     // $locationProvider.html5Mode(true);
   })
@@ -75,6 +89,16 @@ angular
         url: '/create',
         controller: 'DraftCtrl',
         templateUrl: RUNTIME.static + 'templates/draft.html'
+      })
+      .state('writing', {
+        url: '/writing/:storyId',
+        controller: 'WritingCtrl',
+        templateUrl: RUNTIME.static + 'templates/draft.html',
+        resolve: {
+          story: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({id: $stateParams.storyId}).$promise;
+          },
+        }
       })
       .state('me', {
         abstract: true,

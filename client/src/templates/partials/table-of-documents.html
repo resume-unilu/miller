@@ -5,6 +5,13 @@
   <li ng-repeat="document in documents">
     <div class='doc doc-{{document.type}}'>
       <div class='divider'>&nbsp;</div>
+      <!-- this element has fixed height. -->
+      <div ng-if='document.type=="video-cover"'>
+        
+        <div class='caption reference' markdown='document.metadata.reference.fr'></div>
+        <div class='copyright'>{{document.copyrights}}</div>
+        
+      </div>
 
       <div ng-if='document.type=="picture"'>
         

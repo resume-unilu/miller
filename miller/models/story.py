@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 from miller import helpers
 from miller.models import Tag, Document
@@ -28,7 +29,7 @@ class Story(models.Model):
   short_url = models.CharField(max_length=22, default=helpers.create_short_url, unique=True)
   
   title     = models.CharField(max_length=500)
-  slug      = models.CharField(max_length=140, unique=True) # force the unicity of the slug (story lookup from the short_url)
+  slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
   abstract  = models.CharField(max_length=500, blank=True, null=True)
   contents  = SimpleMDEField(verbose_name=u'mardown content',default='') # It will store the last markdown contents.
 
@@ -62,6 +63,9 @@ class Story(models.Model):
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)
 
+  def save(self, *args, **kwargs):
+    self.slug = slugify(self.title)
+    super(Story, self).save(*args, **kwargs)
 
 
 # create story file if it is not exists; if the story eists already, cfr the followinf post_save

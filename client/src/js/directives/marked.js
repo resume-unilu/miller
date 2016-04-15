@@ -6,6 +6,19 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
+  .directive('markdown', function($compile, $log, $location){
+    return {
+      restrict : 'A',
+      scope:{
+        markdown: '=',
+      },
+      link : function(scope, element, attrs) {
+        
+        element.html(marked(scope.markdown));
+        $compile(element.contents())(scope);
+      }
+    }
+  })
   .directive('marked', function ($compile, $log, $location) {
    return {
       restrict : 'A',

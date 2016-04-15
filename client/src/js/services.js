@@ -10,7 +10,11 @@ angular.module('miller')
     Get a list of stories
   */
   .factory('StoryFactory', function ($resource) {
-    return $resource('/api/story/:id');
+    return $resource('/api/story/:id/', {},{
+      update: {
+        method:'PUT'
+      }
+    });
   })
   /*
     get static pages

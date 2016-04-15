@@ -1,13 +1,34 @@
+
+<div>writing </div>
+<span ng-if='!isDraft'>
+  <div ng-if='metadata.owner.is_staff' class='btn-line-group'>
+    <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
+    <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
+  </div>
+  <span ng-if='!metadata.owner.is_staff'>your document is {{metadata.status}}. Ask staff in order to change that.</span>
+</span>
+<span class='btn-line-group'><button class='btn-line active' ng-click='save()'>{{isSaving? "saving...":"save"}}</button></span>
+
 <textarea id='draft-title' rows="1" msd-elastic ng-model='title' type='text' placeholder='Untitled'></textarea>
 
+<blockquote>
+  <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
+</blockquote>
+
+
+tags:
+
+<div class='authors' ng-if='!isDraft'>
+by <a href>{{metadata.owner.username}}</a>
+</div>
+<div class='authors' ng-if='isDraft'>
 by <a href>{{user.username}}</a>
+</div>
 
 <div id="draft-contents">
-  <div class="row">
-    <div class='col-md-6'>
-    	<div style='min-height: 50px'>
-      <medium-editor ng-model='contents' bind-options="mediumOptions"></medium-editor>
+  <div style='min-height: 50px; position:relative'>
+      <!-- <medium-editor ng-model='contents' bind-options="mediumOptions"></medium-editor> -->
+      <div id='wand'><span class='icon-plus'></span></div>
+      <textarea mde='contents'></textarea>
       </div>
-    </div>
-  </div>
 </div>

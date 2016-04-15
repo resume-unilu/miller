@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $timeout, StoryFactory, RUNTIME) {
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $timeout, StoryFactory, RUNTIME, EVENTS) {
     $log.log('\n    oila!   \n(-(-_(-_-)_-)-)\n\n\n');
     
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
@@ -36,6 +36,28 @@ angular.module('miller')
       $scope.documents = documents;
     };
 
+    $scope.save = function(){
+      $log.log('CoreCtrl > @SAVE ...'); 
+      $scope.$broadcast(EVENTS.SAVE);
+    }
+
+    $scope.update = function(key, value){
+      $log.log('CoreCtrl > @UPDATE ',key,':',value,' ...'); 
+      var _d = {};
+      _d[key] = value;
+      $scope.$broadcast(EVENTS.UPDATE, _d);
+    }
+
+
+    $scope.lock = function(){
+      $log.log('CoreCtrl > lock .............'); 
+      
+    }
+
+    $scope.unlock = function(){
+      $log.log('CoreCtrl > unlock .............'); 
+      
+    }
     /*
       Set breaking news above the header.
       Cfr indexCtrl

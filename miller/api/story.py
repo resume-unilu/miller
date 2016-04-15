@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-from rest_framework import serializers,viewsets
+from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
 
 from miller.models import Story, Tag, Document, Caption
@@ -15,6 +15,7 @@ class OptionalFileField(serializers.Field):
       return obj.url
     return None
 
+
 class JsonField(serializers.Field):
   def to_representation(self, obj):
     if obj:
@@ -23,6 +24,7 @@ class JsonField(serializers.Field):
       except ValueError:
         return obj
     return obj
+
 
 class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   document_id    = serializers.ReadOnlyField(source='document.id')
@@ -40,11 +42,13 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
     model = Caption
     fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
 
+
 # tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
   class Meta:
     model = Tag
     fields = ('id', 'category', 'name', 'status')
+
 
 # serializer the authors.
 class AuthorSerializer(serializers.ModelSerializer):
@@ -59,25 +63,36 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
+  
   class Meta:
     model = Story
     fields = ('id','url', 'short_url', 'title', 'abstract', 'documents', 'contents', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
+
 
 # Serializer to use in list of story items
 class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
+
   class Meta:
     model = Story
     fields = ('id','url', 'short_url', 'title', 'abstract', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
 
+class CreateStorySerializer(serializers.ModelSerializer):
+  owner = serializers.HiddenField(
+    default=serializers.CurrentUserDefault()
+  )
+
+  class Meta:
+    model = Story
     
+
 # ViewSets define the view behavior. Filter by status
 class StoryViewSet(viewsets.ModelViewSet):
   queryset = Story.objects.all()
-  serializer_class = LiteStorySerializer
+  serializer_class = CreateStorySerializer
 
 
   def list(self, request):
@@ -107,6 +122,8 @@ class StoryViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
 
+  
+  
   def retrieve(self, request, pk=None):
     if request.user.is_authenticated():
       queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).distinct()

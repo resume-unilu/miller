@@ -8,10 +8,10 @@
   
     <link href='{% static "css/bootstrap.css" %}' rel='stylesheet'></link>
     <link href='{% static "css/medium-editor.css" %}' rel='stylesheet'></link>
-    <link href='{% static "css/themes/default.css" %}' rel='stylesheet'></link>
+    <link href='{% static "css/simplemde.min.css" %}' rel='stylesheet'></link>
     <link href='{% static "css/style.css" %}' rel='stylesheet'></link>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.2.4/css/simple-line-icons.css' rel='stylesheet' type='text/css'></link>
-    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,400italic|Lato:400,700' rel='stylesheet' type='text/css'></link>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,400italic,700|Lato:400,700' rel='stylesheet' type='text/css'></link>
     <style>
       [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
         display: none !important;
@@ -23,6 +23,11 @@
         background-color:#fff;
         font-family: 'Merriweather', serif;
         color: #000000;
+      }
+      .CodeMirror{
+        padding: 0;
+        border: 0;
+        background: #f0f0f0;
       }
       .navbar-default{
         background: white;
@@ -118,6 +123,22 @@
         -ms-transform: translateY(140px);
       }
 
+
+      #writing-tools {
+        position:fixed;
+        top: 70px;
+        left: 115px;
+        height: 30px;
+        
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
+      }
+
+      #writing-tools.below-floating{
+        background: #f0f0f0;
+      }
       
 
       #table-of-contents-toggler{
@@ -179,6 +200,33 @@
         line-height: 30px;
         color: white;
         border-radius: 30px;
+      }
+
+      .btn-line{
+        font-family: 'Lato', sans-serif;
+        text-transform: uppercase;
+        background-color: white;
+        border: 2px solid transparent;
+        color: #151515;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 0px 15px;
+        line-height: 18px;
+      }
+
+      .btn-line:focus{
+        outline: none;
+
+      }
+      .btn-line.active{
+        background: #151515;
+        color: white;
+      }
+
+      .btn-line-group{
+        border: 2px solid #B7B2B2;
+        padding: 2px;
+        display: inline-block;
       }
 
       #showreel{
@@ -333,14 +381,25 @@
       <div id="inner-table-of-documents"><div ng-include='"templates/partials/table-of-documents.html"|prefixTemplate'></div></div>
     </aside>
 
-    <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' bs-tooltip='{"title":"show / hide Table of Contents"}'>
-      <button class='btn-transparent' ng-click='toggleTableOfContents()'><span class='icon-book-open'></span></button>
+    <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' >
+      <div bs-tooltip='{"title":"show / hide Table of Contents"}' >
+        <button class='btn-transparent' ng-click='toggleTableOfContents()'><span  class='icon-book-open'></span></button>
+      </div>
+      
+      
     </div>
+    
+    
 
     <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
     <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
-    
+
+
+
+    <script src='{% static "js/lib/lodash.core.min.js" %}'></script>
     <script src='{% static "js/lib/marked.min.js" %}'></script>
+    <script src='{% static "js/lib/simplemde.min.js" %}'></script>
+
     <script src='{% static "js/lib/medium-editor.min.js" %}'></script>
     <script src='{% static "js/lib/medium-editor-markdown.min.js" %}'></script>
 
@@ -354,6 +413,7 @@
     <script src='{% static "js/lib/angular-strap.min.js" %}'></script>
     <script src='{% static "js/lib/angular-strap.tpl.min.js" %}'></script>
     <script src='{% static "js/lib/angular-elastic.js" %}'></script>
+    <script src='{% static "js/lib/angular-local-storage.min.js" %}'></script>
 
     <script src='{% static "js/app.js" %}'></script>
     <script src='{% static "js/controllers/core.js" %}'></script>
@@ -365,8 +425,10 @@
     <script src='{% static "js/controllers/post.js" %}'></script>
     <script src='{% static "js/controllers/blog.js" %}'></script>
     <script src='{% static "js/controllers/page.js" %}'></script>
+    <script src='{% static "js/controllers/writing.js" %}'></script>
 
     <script src='{% static "js/directives/marked.js" %}'></script>
+    <script src='{% static "js/directives/mde.js" %}'></script>
     <script src='{% static "js/directives/lazy.js" %}'></script>  
 
     <script src='{% static "js/services.js" %}'></script>
@@ -378,18 +440,19 @@
       var user = JSON.parse('{{ user }}');
 
       var _windox  = $(window),
-          _offsetables = [
-            $('#navbar'),
-            $('#table-of-contents-toggler'),
-            $('#inner-table-of-contents'),
-            $('#inner-table-of-documents')
-          ],
+          _offsetables = {
+            navbar: $('#navbar'),
+            'table-of-contents-toggler': $('#table-of-contents-toggler'),
+            'inner-table-of-contents': $('#inner-table-of-contents'),
+            'inner-table-of-documents': $('#inner-table-of-documents'),
+            'writing-tools': $('#writing-tools')
+          };
 
           _navbar_offset = 140;
           floatinglimit = 140,
           isBelowFloating = false;
 
-      _windox.scroll(function(){
+      function evaluateFloating(e){
         var st = _windox.scrollTop(),
             navbar_offset = Math.max(floatinglimit - st, 0);
 
@@ -404,19 +467,23 @@
 
         if(st > floatinglimit) {
           if(!isBelowFloating){
-            _offsetables[0].addClass('below-floating');
+            for(var i in _offsetables)
+              _offsetables[i].addClass('below-floating');
           }
           isBelowFloating = true;
         } else {
           if(isBelowFloating){
-            _offsetables[0].removeClass('below-floating');
+            for(var i in _offsetables)
+              _offsetables[i].removeClass('below-floating');
           }
           isBelowFloating = false;
         }
 
 
         _navbar_offset = navbar_offset;
-      })
+      };
+
+      _windox.scroll(evaluateFloating)
       
       /*
         Apply user and other settings to resume app

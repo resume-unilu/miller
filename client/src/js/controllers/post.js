@@ -10,9 +10,9 @@ angular.module('miller')
     $log.log('PostCtrl ready', post);
     $scope.post = post;
 
-    $scope.hasCoverVideo = post.documents.filter(function(d){
-      return d.type =='video cover'
-    }).length != 0;
+    $scope.cover = _(post.documents).filter({type: 'video-cover'}).first();
+
+    $scope.hasCoverVideo = $scope.cover != undefined;
     
     // guess if there's a document interview
     // cfr corectrl setDocuments function.
@@ -21,7 +21,8 @@ angular.module('miller')
       var documents = [],
           unlinkeddocument = [];
 
-      documents = items.map(function(item){
+
+      documents = _.compact([$scope.cover].concat(items.map(function(item){
         var _docs = post.documents.filter(function(doc){
           return doc.slug == item.slug
         });
@@ -34,10 +35,7 @@ angular.module('miller')
           citation: item.citation
         }, _docs[0]);
 
-      }).filter(function(d){
-        console.log(d)
-        return !!d
-      });
+      })))
 
       $scope.$parent.setDocuments(documents.concat(unlinkeddocument));
     }
