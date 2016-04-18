@@ -15,7 +15,6 @@ class OptionalFileField(serializers.Field):
       return obj.url
     return None
 
-
 class JsonField(serializers.Field):
   def to_representation(self, obj):
     if obj:
@@ -24,6 +23,7 @@ class JsonField(serializers.Field):
       except ValueError:
         return obj
     return obj
+
 
 
 class CaptionSerializer(serializers.HyperlinkedModelSerializer):

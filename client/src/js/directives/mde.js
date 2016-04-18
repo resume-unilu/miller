@@ -6,22 +6,33 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('mde', function ($log, $timeout) {
+  .directive('mde', function ($log, $timeout, $modal, DocumentFactory, RUNTIME) {
     return {
       restrict: 'AE',
       scope: {
         mde: '=',
       },
-
+      templateUrl: RUNTIME.static + 'templates/partials/mde.html',
       link: function(scope, el, attributes){
-
-        el.hide();
-        var wand = $('#wand');
+        console.log('MDE',el)
+        var simplemde,
+            timer,
+            wand = el.find('.wand').hide(),
+            textarea = el.find('textarea').hide(),
+            lookups=[],
+            referenceModal = $modal({
+              scope: scope,
+              title: 'h',
+              template: RUNTIME.static + 'templates/partials/modals/mde-enrich.html',
+              show: false
+            });
 
         function init(){
-          el.show();
-          var simplemde = new SimpleMDE({
-            element: el[0],
+          textarea.show();
+          wand.show();
+
+          simplemde = new SimpleMDE({
+            element: textarea[0],
             spellChecker: false,
             status: false,
             toolbar: false,
@@ -31,101 +42,95 @@ angular.module('miller')
           var cursor,
               pcursor;// = simplemde.codemirror.display.find('.Codemirror-cursor');
 
+          function move(){
+            if(timer)
+              clearTimeout(timer);
+
+            timer = setTimeout(function(){
+              if(simplemde.codemirror.display.cursorDiv.firstChild){
+                console.log('moving cruising')
+                cursor = {
+                  top: simplemde.codemirror.display.cursorDiv.firstChild.offsetTop,
+                  left: simplemde.codemirror.display.cursorDiv.firstChild.offsetLeft
+                };
+                wand.css('transform', 'translateY('+cursor.top+'px)');
+              }
+            }, 10);
+            
+          }
+
           simplemde.codemirror.on('update', function(e){
             var value = simplemde.value();
-            if(el.val() != value){
+            if(textarea.val() != value){
               scope.mde = value; // set model
-              el.val(value);
+              textarea.val(value); // get headers after some time
               scope.$apply();
             }
             move();
 
             
           });
-
-          function move(){
-            cursor = {
-              top: simplemde.codemirror.display.cursorDiv.firstChild.offsetTop,
-              left: simplemde.codemirror.display.cursorDiv.firstChild.offsetLeft
-            };
-            wand.css('transform', 'translateY('+cursor.top+'px)')
-          }
-
+          console.log('simplemde:', simplemde)
           simplemde.codemirror.on('cursorActivity', move);
+          
+          
+          
+          
+        };
 
-          // simplemde.codemirror.on('cursorActivity', function(e){
-          //   cursor = {
-          //     top: simplemde.codemirror.display.cursorDiv.firstChild.offsetTop,
-          //     left: simplemde.codemirror.display.cursorDiv.firstChild.offsetLeft
-          //   };
 
-          //   wand.css('transform', 'translateY('+cursor.top+'px)')
+        /*
+          Modal tabs
+        */
+        // open
+        scope.showReferenceModal = function(){
+          $log.debug('::mde -> showReferenceModal')
+          referenceModal.$promise.then(function(){
+            $log.debug('::mde -> showReferenceModal done')
             
-          //   pcursor = cursor
-          //   // console.log($(simplemde.codemirror.display.cursorDiv).css('top'))
-          //   console.log(cursor)
-          //   // debugger
-          // })
+            referenceModal.show();
+          });
+          
+          DocumentFactory.get(function(res){
+            console.log('list', res)
+            $log.debug('::mde -> showReferenceModal loaded', res.results)
+            
+            scope.lookups = res.results;
+          })
+          // console.log(simplemde)
+          // debugger
         }
 
-        $timeout(init, 200)
-        
+        scope.addDocument = function(){
+          if(!scope.selectedDocument) {
+            $log.warning('::mde -> addDocument() no document selected')
+          } 
+          $log.debug('::mde -> addDocument() doc:', scope.selectedDocument)       
+          referenceModal.hide();
+          SimpleMDE.drawLink(simplemde,{
+            url: scope.selectedDocument.slug
+          });
+        }
 
-       
+        scope.selectDocument = function(doc){
+          if(scope.selectedDocument)
+            scope.selectedDocument.isSelected = false;
+          if(scope.selectedDocument && scope.selectedDocument.id == doc.id){
+            scope.isSomethingSelected = false;
+            scope.selectedDocument = false;
+          } else {
+            doc.isSelected = true;
+            scope.isSomethingSelected = true;
+            scope.selectedDocument = doc;
+          }
+          
+          
+        }
+        
+        // take into account custom font-face rendering.
+        $timeout(init, 200);
         return;
 
-        // simplemde.initialValue
-
-
-        // if(scope.ngObject && scope.ngObject.$promise)
-        //   scope.ngObject.$promise.then(function(){
-        //     init()
-        //   });
-        // else
-        //   init();
-
-        // function init(){
-          
-        //   scope.$watch('ngModel', function(){
-        //     el.change()
-        //   });
-
-          
-
-        //   cm = simplemde.codemirror
-
-        //   cm.on('update', function(){
-        //     console.log('updating')
-        //     console.log(el.val() == simplemde.value())
-        //     var value = simplemde.value();
-        //     if(el.val() != value){
-        //       scope.ngModel = value; // set model
-        //       el.val(value);
-        //       scope.$apply();
-        //     }
-        //     // $scope.ngModel = simplemde.value()
-        //   });
-        //   // cm.on('update', function(){
-        //   //   value = simplemde.value()
-        //   //   if(el.val() != value){
-        //   //     console.log('UPDATE CHANGE')
-        //   //     el.val = value;
-        //   //     el.change();
-        //   //     if(scope.ngObject)
-        //   //       scope.ngObject.$dirty = true;
-        //   //   }
-        //   // });
-
-        //   el.on('change', function(){
-
-        //     // console.log('changed', el.val().length, simplemde.value.length)
-        //     value = el.val();
-        //     if(simplemde.value() != value){
-        //       console.log('changing')
-        //       simplemde.value(value);
-        //     }
-        //   });
-        // };
 
       }
     };

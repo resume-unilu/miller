@@ -45,6 +45,8 @@ class Document(models.Model):
   attachment = models.FileField(upload_to=attachment_file_name, null=True, blank=True)
   snapshot   = models.URLField(null=True, blank=True)
 
+  class Meta:
+    ordering = ['-id']
 
   def __unicode__(self):
     return '%s (%s)' % (self.slug, self.type)

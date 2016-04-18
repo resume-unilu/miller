@@ -13,9 +13,10 @@ angular.module('miller')
         markdown: '=',
       },
       link : function(scope, element, attrs) {
-        
-        element.html(marked(scope.markdown));
-        $compile(element.contents())(scope);
+        if(scope.markdown && scope.markdown.length) {
+          element.html(marked(scope.markdown));
+          $compile(element.contents())(scope);
+        }
       }
     }
   })

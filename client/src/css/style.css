@@ -208,6 +208,11 @@ blockquote{
   height:320px;
       background: #B7B2B2;
 }
+
+.doc .lazy-box{
+  height: 200px;
+}
+
 .doc blockquote{
   font-size: 12px;
   font-family: 'Merriweather';
@@ -375,22 +380,90 @@ p{
   background: #f0f0f0
 }
 
-#wand{
-    position: absolute;
-    left: -30px;
-    font-size: 18px;
-    color: #B2B2B7;
-    height: 30px;
-    width: 30px;
-    text-align: center;
-    line-height: 33px;
+.mde .wand{
+  position: absolute;
+  left: -30px;
+  font-size: 18px;
+  color: white;
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  line-height: 33px;
+  background: #151515;
+  /*transition: transform .27s ease-in-out;*/
+}
+
+.modal .tab-content ul {
+    margin: 0 -10px;
+    padding: 0;
+}
+.modal .tab-content ul li{
+  width: 190px;
+  list-style-type: none;
+  padding: 0;
+  float: left;
+  height: 150px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.modal .tab-content ul li .doc{
+  margin: 0 10px;
+  padding: 0;
+  height: 150px;
+   border: 2px solid transparent;
+  background: #f0f0f0
+}
+
+.modal .tab-content ul .doc.active{
+  border: 2px solid #FF6B6B;
+}
+
+.modal .tab-content ul li .doc .copyright{
+  display: none;
+}
+
+.modal .tab-content ul li .doc .caption{
+  margin: 0;
+  padding: 10px;
+  font-size: 11px;
+}
+
+.modal .tab-content ul li .doc .lazy-box{
+  height: 100px;
+}
+.modal .tab-content ul li .doc .divider{
+  display: none;
+}
+
+/*
+  bootstrap modal
+*/
+h4.modal-title{
+  font-family: 'Lato', sans-serif;
+  margin-right: 50px;
+  text-transform: uppercase;
+  font-size: 11px;
+  line-height: 20px;
+  font-weight: bold;
+}
+
+.modal-backdrop.am-fade{
+  opacity:0.17;
+}
+
+.modal-content{
+  border-radius: 2px;
+  border: none;
+  -webkit-box-shadow:0 0 8px #a7a7a7;
+  box-shadow: 0 0 8px #a7a7a7;
 }
 /*
   bootstrap dropdown
 */
 ul.dropdown-menu{
   text-transform: uppercase;
-    font-size: 10px;
+  font-size: 10px;
   background:#e7e7e7;
   border: 0px;
   box-shadow: none;
@@ -405,6 +478,13 @@ ul.dropdown-menu{
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus{
   background: transparent;
   color: #FF6B6B;
+}
+/*
+  Codemirror hack
+*/
+.CodeMirror .CodeMirror-code .cm-link{
+  color: #FF6B6B;
+  font-weight: bold;
 }
 /*
   bootstrap media 

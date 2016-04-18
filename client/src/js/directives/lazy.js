@@ -12,8 +12,7 @@ angular.module('miller')
       link : function(scope, element, attrs) {
         $log.log(':::lazy on ',attrs.src);
 
-        element.css({
-          height: 200,
+        element.addClass('lazy-box').css({
           'background-color': '#B7B2B2',
         }).html('<div class="loading">...</div>')
         

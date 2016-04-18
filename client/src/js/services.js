@@ -17,6 +17,17 @@ angular.module('miller')
     });
   })
   /*
+    get a list of ralreeady saved document accessible by the user
+  */
+  // http://localhost:8888/api/document/
+  .factory('DocumentFactory', function ($resource) {
+    return $resource('/api/document/:id/', {},{
+      update: {
+        method:'PUT'
+      }
+    });
+  })
+  /*
     get static pages
   */
   .factory('PageFactory', function ($http, RUNTIME) {

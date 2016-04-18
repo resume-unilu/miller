@@ -1,0 +1,38 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1050; display: block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" ng-show="title">
+      <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+      <span aria-hidden="true" class='icon-close'></span>
+      </button>
+      <h4 class="modal-title">add resources or references</h4></div>
+      
+      <div class="modal-body">
+
+        <input type='text' class="form-control" placeholder="search ...">
+
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a aria-controls="home" role="tab" data-toggle="tab">saved by you</a></li>
+          <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
+          <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">new</a></li>
+          
+        </ul>
+
+        <div class="tab-content">
+        
+          <ul><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
+          </ul>
+          <div style='clear:both'></div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument()">select</button>
+        </span>
+        <span class='btn-line-group'>
+        <button type="button" class="btn-line" ng-click="$hide()">Close</button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

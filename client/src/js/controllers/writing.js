@@ -6,7 +6,7 @@
  * handle saved story writing ;)
  */
 angular.module('miller')
-  .controller('WritingCtrl', function ($scope, $log, story, localStorageService, StoryFactory, EVENTS) {
+  .controller('WritingCtrl', function ($scope, $log, $modal, story, localStorageService, StoryFactory, DocumentFactory, EVENTS, RUNTIME) {
     $log.debug('WritingCtrl welcome', story);
 
     $scope.isDraft = false;
@@ -25,6 +25,9 @@ angular.module('miller')
       $scope.save();
     }
 
+    $scope.references = [];
+    $scope.lookups = [];// ref and docs and urls...
+
     $scope.mediumOptions = {
       autoLink: true,
       // toolbar:{
@@ -39,6 +42,17 @@ angular.module('miller')
         })
       }
     }
+
+
+
+
+    $scope.suggestReferences = function(service) {
+      if(!service)
+        DocumentFactory.get(function(){
+          console.log('list')
+        })
+    }
+    
 
     $scope.save = function() {
       $log.debug('WritingCtrl @SAVE');
