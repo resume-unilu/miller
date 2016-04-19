@@ -48,7 +48,8 @@ angular.module('miller')
 
             timer = setTimeout(function(){
               if(simplemde.codemirror.display.cursorDiv.firstChild){
-                console.log('moving cruising')
+                console.log('moving cruising', simplemde.codemirror.getSelection(), 'crui')
+                
                 cursor = {
                   top: simplemde.codemirror.display.cursorDiv.firstChild.offsetTop,
                   left: simplemde.codemirror.display.cursorDiv.firstChild.offsetLeft

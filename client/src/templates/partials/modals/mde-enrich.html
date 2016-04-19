@@ -9,25 +9,41 @@
       
       <div class="modal-body">
 
-        <input type='text' class="form-control" placeholder="search ...">
+        <div class='section'>
+          <label>caption (optional)</label>
+          <div class='elastic-textarea-wrapper'>
+            <textarea class='elastic-textarea' rows="3" msd-elastic ng-model='caption' type='text' placeholder='write something'></textarea>
+          </div>
+        </div>
 
-        <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active"><a aria-controls="home" role="tab" data-toggle="tab">saved by you</a></li>
-          <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
-          <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">new</a></li>
-          
-        </ul>
-
-        <div class="tab-content">
-        
-          <ul><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
+        <div class='section' ng-init='tab="a"'>
+        <!-- <input type='text' class="form-control" placeholder="search ..."> -->
+          <label>select resource or reference: {{tab}}</label>
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" ng-class="tab == 'a'? 'active':''"><a ng-click='tab="a"' aria-controls="home" role="tab" data-toggle="tab">saved by you</a></li>
+            <li role="presentation" ng-class="tab == 'b'? 'active':''"><a ng-click='tab="b"' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
+            <li role="presentation" ng-class="tab == 'c'? 'active':''"><a ng-click='tab="c"' aria-controls="messages" role="tab" data-toggle="tab">new</a></li>
+            
           </ul>
+
+          <div ng-if="tab == 'a'" class="tab-content">
+        
+            <ul ><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
+            </ul>
+          </div>
+          <div ng-if="tab == 'b'" class="tab-content">
+          </div>
+          <div ng-if="tab == 'c'" class="tab-content">
+            <div class='elastic-textarea-wrapper'>
+              <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='contents' type='text' placeholder='bibliographi reference'></textarea>
+            </div>
+          </div>
           <div style='clear:both'></div>
         </div>
 
       </div>
       <div class="modal-footer">
-        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument()">select</button>
+        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument()">aad</button>
         </span>
         <span class='btn-line-group'>
         <button type="button" class="btn-line" ng-click="$hide()">Close</button>

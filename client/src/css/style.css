@@ -22,6 +22,7 @@ h4, .h4{
   line-height: 24px;
 }
 
+
 a{
   color: #4ECDC4;
 }
@@ -39,6 +40,12 @@ h3 a, h4 a{
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5{
   position: relative;
   margin-top: 1em;
+}
+
+.page h4{
+  color: #FF6B6B;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .anchor-sign{
@@ -349,14 +356,24 @@ p{
     
 }
 
+textarea.elastic-textarea{
+  font-size: 12px;
+  line-height: 20px;
+}
 
-#draft-title, #draft-abstract{
+#draft-title, #draft-abstract,  .elastic-textarea{
   border: 0px solid transparent;
   display: block;
   font-size: 1em;
   width: 100%;
   background: #f0f0f0
 }
+
+.elastic-textarea-wrapper{
+  padding: 10px;
+  background: #f0f0f0
+}
+
 
 #draft-title{
   font-size: 40px;
@@ -434,6 +451,16 @@ p{
 }
 .modal .tab-content ul li .doc .divider{
   display: none;
+}
+
+.modal .modal-body{
+  padding: 0;
+}
+
+.modal .modal-body .section{
+  padding: 20px 15px 10px 15px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 /*
