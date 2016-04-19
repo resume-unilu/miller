@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'social.apps.django_app.default',
     'rest_framework',
     'ws4redis',
     'simplemde',
@@ -66,6 +67,8 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -172,7 +175,27 @@ PAGES_ROOT = os.path.join(BASE_DIR, 'client', 'pages')
 
 SITE_ID=1
 
+#............
+#
+# SOCIAL AUTH
+#
+#............
+LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_USER_MODEL = 'auth.User'
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'email']
+SOCIAL_AUTH_UUID_LENGTH = 16
+# override these settings in your local_settings.py file, cfr. http://psa.matiasaguirre.net/docs/configuration/settings.html
+AUTHENTICATION_BACKENDS = (
+  #'social.backends.google.GoogleOAuth2',
+  # 'social.backends.twitter.TwitterOAuth',
+  'django.contrib.auth.backends.ModelBackend',
+)
+
+#............
+#
 # REDIS
+#
+#............
 WEBSOCKET_URL = '/ws/'
 WS4REDIS_EXPIRE = 7200
 WS4REDIS_PREFIX = 'miller'
@@ -183,6 +206,13 @@ WS4REDIS_PREFIX = 'miller'
 #     'db': 17,
 #     'password': 'verysecret', # override these settings in your local_settings.py file
 # }
+
+#............
+#
+# MILLER APP
+#
+#............
+MILLER_TITLE = 'miller'
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:

@@ -32,12 +32,14 @@ router.register(r'tag', api.TagViewSet)
 
 
 urlpatterns = [
-  url(r'^$', views.home),
+  url(r'^$', views.home, name='home'),
   url(r'^admin/', admin.site.urls),
   url(r'^sitemap\.xml$', sitemap, name='sitemap-xml'),
   url(r'^api/', include(router.urls)),
   url(r'^api-auth/', include('rest_framework.urls')),
-
+  url(r'^login/$', views.login_view, name='login_view'),
+  url(r'^logout/$', views.logout_view, name='logout_view'),
+  url(r'^social/', include('social.apps.django_app.urls', namespace='social'))
 ]
 
 

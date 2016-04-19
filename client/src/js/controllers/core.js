@@ -20,6 +20,8 @@ angular.module('miller')
       $scope.hasToC = !$scope.hasToC;
     };
 
+    $scope.locationPath = '';
+
     $scope.setToC = function(ToC) {
       $log.log('CoreCtrl > setToC data:', ToC);
       $scope.ToC = ToC;
@@ -99,7 +101,7 @@ angular.module('miller')
     $scope.$on('$locationChangeSuccess', function (e, path) {
       $log.debug('CoreCtrl @locationChangeSuccess', path);
       $scope.qs = $location.search();
-
+      $scope.locationPath = path;
     });
 
     /*

@@ -459,6 +459,17 @@ h4.modal-title{
   box-shadow: 0 0 8px #a7a7a7;
 }
 /*
+  bootstrap label
+*/
+label{
+  font-family: 'Lato', sans-serif;
+  text-transform: uppercase;
+  font-size: 11px
+}
+input.form-control{
+  font-family: 'Lato', sans-serif;
+}
+/*
   bootstrap dropdown
 */
 ul.dropdown-menu{

@@ -301,6 +301,7 @@
 
     </style>
   </head>
+  {% block body %}
   <body ng-app='miller' ng-controller='CoreCtrl' >
     <!-- where highlights are -->
     <div id='showreel'>
@@ -325,21 +326,38 @@
               
               <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything">news</a></li>
             </ul>
-            {% verbatim %}
+            
             <ul class="nav navbar-nav navbar-right">
               <li ui-sref-active="active"><a ui-sref="draft">write</a></li>
-              <li><a href="/admin" ng-cloak><span class='username'>{{user.username}}</span> (you)</a></li>
+              <li class="dropdown">
+                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> <span class='username'> {% if user.is_authenticated %}{{user.username}} {% endif %}</span><b>(you)</b></a>
+
+                <ul class="dropdown-menu" role="menu">
+                  {% if user.is_authenticated %}
+                  <li><a href='{% url "logout_view" %}'>log out</a></li> 
+                    {% if user.is_staff %}
+                    <li><a href='{% url "admin:index" %}'>admin</a></li>
+                    {% endif %}
+                  {% else %}
+                  <li><a href='{% url "login_view" %}'>log in</a></li> 
+                  {% endif %}
+                </ul>
+                
+              </li>
+
+              {% verbatim %}
               <li class="dropdown">
 
-                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> more</button>
+                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> more</a>
                 <ul class="dropdown-menu" role="menu">
                   
                   <li ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})'>terms of use</a></li>
                   
                 </ul>
               </li>
+              {% endverbatim %}
             </ul>
-            {% endverbatim %}
+           
           </div>
 
         </div>
@@ -436,8 +454,13 @@
 
 
     {% autoescape off %}
+
     <script>
-      var user = JSON.parse('{{ user }}');
+      var user = {
+        username: "{{user.username}}",
+        first_name: "{{user.first_name}}",
+        last_name: "{{user.last_name}}"
+      };
 
       var _windox  = $(window),
           _offsetables = {
@@ -496,4 +519,5 @@
     </script>
     {% endautoescape %}
   </body>
+  {% endblock %}
   </html>
