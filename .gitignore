@@ -12,3 +12,4 @@ uwsgi.ini
 uwsgi_params
 media/*
 !media/.gitkeep
+

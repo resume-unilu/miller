@@ -75,6 +75,12 @@ angular.module('miller')
                   text + '</h' + level + '>';
         }
 
+        renderer.image = function(src, title, alt){
+          if((alt||'').indexOf('profile/') == 0){
+            return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
+          }
+          return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
+        }
 
         renderer.link = function(url, boh, text) {
           if(url.trim().indexOf('doc:') == 0){

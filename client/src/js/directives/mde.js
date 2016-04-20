@@ -17,9 +17,11 @@ angular.module('miller')
         console.log('MDE',el)
         var simplemde,
             timer,
+            timer_recompile,
             wand = el.find('.wand').hide(),
             textarea = el.find('textarea').hide(),
             lookups=[],
+            renderer = new marked.Renderer(),
             referenceModal = $modal({
               scope: scope,
               title: 'h',
@@ -60,6 +62,51 @@ angular.module('miller')
             
           }
 
+          /*
+            @todo: Should be put as angular filter.
+          */
+          function slugify(text){
+            var strip  = /[^\w\s-]/g,
+                hyphen = /[-\s]+/g,
+                slug   = text.toLowerCase();
+
+            var map = {
+              from: 'àáäãâèéëêìíïîòóöôõùúüûñç·/_,:;', 
+              to  : 'aaaaaeeeeiiiiooooouuuunc------'
+            };
+
+            
+            for (var i=0, j=map.from.length; i<j; i++) {
+              slug = slug.replace(new RegExp(map.from.charAt(i), 'g'), map.to.charAt(i));
+            }
+            return slug.replace(strip, '').trim().replace(hyphen, '-');
+          }
+
+          /*
+            Recompile with marked, analyzing the documents and
+            the different stuff in the contents
+          */
+          function recompile(){
+            $log.debug('::mde -> recompile() ...');
+            var ToC = [];
+            renderer.heading = function(text, level){
+              // toc is empty
+              var h = {
+                text: text,
+                level: level,
+                slug: slugify(text)
+              };
+              ToC.push(h);
+            };
+
+            marked(simplemde.value(), {
+              renderer: renderer
+            });
+
+            $log.log('::mde -> recompile() items:',ToC);
+          }
+
+
           simplemde.codemirror.on('update', function(e){
             var value = simplemde.value();
             if(textarea.val() != value){
@@ -69,6 +116,9 @@ angular.module('miller')
             }
             move();
 
+            if(timer_recompile)
+              clearTimeout(timer_recompile);
+            timer_recompile = setTimeout(recompile, 1000);
             
           });
           console.log('simplemde:', simplemde)
@@ -106,7 +156,10 @@ angular.module('miller')
           if(!scope.selectedDocument) {
             $log.warning('::mde -> addDocument() no document selected')
           } 
-          $log.debug('::mde -> addDocument() doc:', scope.selectedDocument)       
+          $log.debug('::mde -> addDocument() doc:', scope.selectedDocument);
+          // lock ui
+          // draw link at the end of the db
+
           referenceModal.hide();
           SimpleMDE.drawLink(simplemde,{
             url: scope.selectedDocument.slug

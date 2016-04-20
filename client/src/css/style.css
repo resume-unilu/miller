@@ -10,6 +10,7 @@ body{
 h2, .h2 {
   font-size: 40px;
   line-height: 60px;
+
 }
 
 h3, .h3 {
@@ -40,6 +41,16 @@ h3 a, h4 a{
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5{
   position: relative;
   margin-top: 1em;
+}
+
+.profile-thumb{
+  width: 80px;
+  height: 80px;
+  float: left;
+  margin: 0 20px 10px 0;
+  background-size: cover;
+  border: 2px solid #ccc;
+  border-radius: 0;
 }
 
 .page h4{
@@ -287,6 +298,7 @@ p{
 .contents h2, .contents .h2 {
   font-size: 20px;
   line-height: 30px;
+  margin-top: 60px;
 }
 
 .contents h3, .contents .h3{
@@ -521,8 +533,9 @@ ul.dropdown-menu{
   Codemirror hack
 */
 .CodeMirror .CodeMirror-code .cm-link{
-  color: #FF6B6B;
-  font-weight: bold;
+  color: #4ECDC4;
+  font-weight: normal;
+  text-decoration: none;
 }
 /*
   bootstrap media 
@@ -551,6 +564,12 @@ ul.dropdown-menu{
     -moz-transform: translateX(300px);
     -ms-transform: translateX(300px);
     width: 300px;
+  }
+}
+
+@media (min-width: 992px){
+  .container {
+    width: 870px;
   }
 }
 

@@ -18,6 +18,16 @@ class JsonField(serializers.Field):
         return obj
     return obj
 
+# define the 
+class CreateDocumentSerializer(serializers.ModelSerializer):
+  owner = serializers.HiddenField(
+    default=serializers.CurrentUserDefault()
+  )
+
+  class Meta:
+    model = Document
+
+
 # Serializers define the API representation.
 class DocumentSerializer(serializers.ModelSerializer):
   # authors = AuthorSerializer(many=True)
@@ -33,7 +43,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 class DocumentViewSet(viewsets.ModelViewSet):
   queryset = Document.objects.all()
-  serializer_class = DocumentSerializer
+  serializer_class = CreateDocumentSerializer
 
   def list(self, request):
     filters = self.request.query_params.get('filters', None)
