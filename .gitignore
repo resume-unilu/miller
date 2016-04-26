@@ -13,3 +13,5 @@ uwsgi_params
 media/*
 !media/.gitkeep
 
+client/src/images/*
+!client/src/images/.gitkeep

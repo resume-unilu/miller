@@ -12,10 +12,11 @@ angular
     'ngResource',
     'ngSanitize',
     'ngCookies',
-    'angular-medium-editor',
+    // 'angular-medium-editor',
     'mgcrea.ngStrap',
     'monospaced.elastic',
-    'LocalStorageModule'
+    'LocalStorageModule',
+    'pascalprecht.translate'
   ])
   .constant('LOCALES', {
     'locales': {
@@ -30,16 +31,16 @@ angular
     Angular-translate configs
     Cfr. https://scotch.io/tutorials/internationalization-of-angularjs-applications
   */
-  // .config(function ($translateProvider) {
-  //   // $translateProvider.useMissingTranslationHandlerLog();
-  //   $translateProvider.useSanitizeValueStrategy('sanitize');
-  //   $translateProvider.useStaticFilesLoader({
-  //       prefix: 'locale/locale-',// path to translations files
-  //       suffix: '.json'// suffix, currently- extension of the translations
-  //   });
-  //   $translateProvider.preferredLanguage('en_US');// is applied on first load
+  .config(function ($translateProvider, RUNTIME) {
+    // $translateProvider.useMissingTranslationHandlerLog();
+    $translateProvider.useSanitizeValueStrategy('sanitize');
+    $translateProvider.useStaticFilesLoader({
+        prefix: RUNTIME.static + 'locale/locale-',// path to translations files
+        suffix: '.json'// suffix, currently- extension of the translations
+    });
+    $translateProvider.preferredLanguage('en_US');// is applied on first load
     
-  // })
+  })
   .config(function (localStorageServiceProvider) {
     localStorageServiceProvider
       .setPrefix('miller');
@@ -139,7 +140,7 @@ angular
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category__in: ['blog'] 
+                tags__category: 'blog'
               })
             }).$promise;
           },
@@ -151,16 +152,24 @@ angular
           }
         }
       })
-      .state('blog.events', {
+      
+      .state('events', {
         url: '/events',
+        abstract:true,
+        // controller: function(){},
+        templateUrl: RUNTIME.static + 'templates/events.html',
+        
+      })
+
+      .state('events.everything', {
+        url: '',
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/blog.news.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category__in: ['blog'] ,
-                tags__slug__in: ['event'] 
+                tags__category: 'event'
               })
             }).$promise;
           },

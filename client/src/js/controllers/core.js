@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $timeout, StoryFactory, RUNTIME, EVENTS) {
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, localStorageService, $translate, $timeout, StoryFactory, RUNTIME, EVENTS) {
     $log.log('\n    oila!   \n(-(-_(-_-)_-)-)\n\n\n');
     
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
@@ -94,6 +94,12 @@ angular.module('miller')
     $scope.setHash = function(hash) {
       $location.hash(hash);
     }
+
+    $scope.changeLanguage = function(key) {
+      $scope.language = key;
+      localStorageService.set('lang', $scope.language)
+      $translate.use(key);
+    }
     /*
       On location change, collect the parameters.
       Since this is called BEFORE statehangeSuccess, the scrolling cannot be made at this level.
@@ -104,9 +110,14 @@ angular.module('miller')
       $scope.locationPath = path;
     });
 
+
     /*
       First load
     */
+    // load language
+    $scope.language = localStorageService.get('lang') || 'en_US';
+    $scope.changeLanguage($scope.language);
+    // load "huighlights"
     StoryFactory.get({
       filters: JSON.stringify({
         tags__category: 'highlights'
@@ -115,6 +126,8 @@ angular.module('miller')
       $log.info('CoreCtrl breaking news loaded', data)
       $scope.setBreakingNews(data.results)
     }); 
+
+
 
   });
   

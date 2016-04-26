@@ -4,9 +4,12 @@
   "button.agree": "agree",
   "button.back": "back",
 
-  "headline.project": "project",
-  "headline.people": "people",
+  "headline.project": "projet",
+  "headline.people": "qui ?",
   "headline.publications": "publications",
   "headline.blogs": "blogs",
-  "headline.events": "events"
+  "headline.events": "évenements",
+
+
+  "tags.paper": "articles"
 }
