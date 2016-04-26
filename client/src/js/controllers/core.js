@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, localStorageService, $translate, $timeout, StoryFactory, RUNTIME, EVENTS) {
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, localStorageService, $translate, $timeout, StoryFactory, TagFactory, RUNTIME, EVENTS) {
     $log.log('\n    oila!   \n(-(-_(-_-)_-)-)\n\n\n');
     
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
@@ -25,7 +25,7 @@ angular.module('miller')
     $scope.setToC = function(ToC) {
       $log.log('CoreCtrl > setToC data:', ToC);
       $scope.ToC = ToC;
-      $scope.ToCEnabled = false;
+      // $scope.ToCEnabled = false;
     };
 
     $scope.disableToC = function(){
@@ -59,6 +59,19 @@ angular.module('miller')
     $scope.unlock = function(){
       $log.log('CoreCtrl > unlock .............'); 
       
+    }
+
+    /*
+      Suggest tags for writing purposes
+    */
+    $scope.suggestTags = function(query, options) {
+      $log.log('CoreCtrl -> suggestTags', query, options);
+      var filters = options || {}
+      return TagFactory.get({
+        filters: JSON.stringify(filters)
+      }).$promise.then(function(response) {
+        return response.results
+      })
     }
     /*
       Set breaking news above the header.

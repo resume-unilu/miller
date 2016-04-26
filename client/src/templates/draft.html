@@ -1,11 +1,10 @@
 
-<div>writing </div>
 <span ng-if='!isDraft'>
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
     <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
     <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
   <!-- </div> -->
-  <span ng-if='!metadata.owner.is_staff'>your document is {{metadata.status}}. Ask staff in order to change that.</span>
+  
 </span>
 <span class='btn-line-group'><button class='btn-line active' ng-click='save()'>{{isSaving? "saving...":"save"}}</button></span>
 
@@ -15,20 +14,37 @@
   <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 </blockquote>
 
+<div ng-if='!isDraft && user.is_staff'>
+<label translate="displayed-as"></label>
+<tags-input class='tags-input' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
+  <auto-complete source="suggestTags($query, {category__in:['blog','writing']})" ></auto-complete>
 
-tags:
+</tags-input>
+
+
+<label translate="keywords"></label>
+<tags-input class='tags-input' key-property='id' display-property='name' ng-model="tags">
+  <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
+
+</tags-input>
+</div>
 
 <div class='authors' ng-if='!isDraft'>
 by <a href>{{metadata.owner.username}}</a>
 </div>
 <div class='authors' ng-if='isDraft'>
-by <a href>{{user.username}}</a>
+  <div ng-if='user.username'>
+    by <a href>{{user.username}}</a>
+  </div>
+  <div ng-if='!user.username'>
+    by <a href>anonymous</a>
+  </div>
 </div>
 
 <div id="draft-contents">
   <div style='min-height: 50px; position:relative'>
       <!-- <medium-editor ng-model='contents' bind-options="mediumOptions"></medium-editor> -->
-      <div mde='contents'></div>
+      <div mde='contents' settoc='setToC(items)'></div>
       
   </div>
 </div>

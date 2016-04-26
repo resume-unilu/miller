@@ -11,6 +11,8 @@ angular.module('miller')
       restrict: 'AE',
       scope: {
         mde: '=',
+        settoc: '&',
+        setdocs: '&'
       },
       templateUrl: RUNTIME.static + 'templates/partials/mde.html',
       link: function(scope, el, attributes){
@@ -42,6 +44,8 @@ angular.module('miller')
           });
           
           var cursor,
+              // table of contents hash. Are there differences?
+              ToCHash = '',
               pcursor;// = simplemde.codemirror.display.find('.Codemirror-cursor');
 
           function move(){
@@ -50,7 +54,7 @@ angular.module('miller')
 
             timer = setTimeout(function(){
               if(simplemde.codemirror.display.cursorDiv.firstChild){
-                console.log('moving cruising', simplemde.codemirror.getSelection(), 'crui')
+                // console.log('moving cruising', simplemde.codemirror.getSelection(), 'crui')
                 
                 cursor = {
                   top: simplemde.codemirror.display.cursorDiv.firstChild.offsetTop,
@@ -87,8 +91,9 @@ angular.module('miller')
             the different stuff in the contents
           */
           function recompile(){
-            $log.debug('::mde -> recompile() ...');
-            var ToC = [];
+            // $log.debug('::mde -> recompile() ...');
+            var _ToC = [],
+                _ToCHash;
             renderer.heading = function(text, level){
               // toc is empty
               var h = {
@@ -96,18 +101,25 @@ angular.module('miller')
                 level: level,
                 slug: slugify(text)
               };
-              ToC.push(h);
+              _ToC.push(h);
             };
 
             marked(simplemde.value(), {
               renderer: renderer
             });
 
-            $log.log('::mde -> recompile() items:',ToC);
+            _ToCHash = md5(JSON.stringify(_ToC))
+            if(_ToCHash != ToCHash){
+              ToCHash = _ToCHash;
+              $log.log('::mde -> recompile() items:',_ToC, ' (differences)');
+              scope.settoc({items:_ToC});
+              scope.$apply();
+            }
           }
 
 
           simplemde.codemirror.on('update', function(e){
+            $log.debug('::mde @codemirror.update');
             var value = simplemde.value();
             if(textarea.val() != value){
               scope.mde = value; // set model
@@ -118,12 +130,13 @@ angular.module('miller')
 
             if(timer_recompile)
               clearTimeout(timer_recompile);
-            timer_recompile = setTimeout(recompile, 1000);
+            timer_recompile = setTimeout(recompile, 500);
             
           });
-          console.log('simplemde:', simplemde)
+
           simplemde.codemirror.on('cursorActivity', move);
           
+          timer_recompile = setTimeout(recompile, 0);
           
           
           

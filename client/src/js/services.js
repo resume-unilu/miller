@@ -13,6 +13,16 @@ angular.module('miller')
     return $resource('/api/story/:id/', {},{
       update: {
         method:'PUT'
+      },
+      patch: {
+        method:'PATCH'
+      }
+    });
+  })
+  .factory('StoryTagsFactory', function ($resource) {
+    return $resource('/api/story/:id/tags/', {},{
+      update: {
+        method:'PUT'
       }
     });
   })
@@ -22,6 +32,16 @@ angular.module('miller')
   // http://localhost:8888/api/document/
   .factory('DocumentFactory', function ($resource) {
     return $resource('/api/document/:id/', {},{
+      update: {
+        method:'PUT'
+      }
+    });
+  })
+  /*
+    list tags
+  */
+  .factory('TagFactory', function ($resource) {
+    return $resource('/api/tag/:id/', {},{
       update: {
         method:'PUT'
       }

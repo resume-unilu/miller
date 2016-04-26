@@ -28,6 +28,19 @@ angular
     'SAVE': 'save'
   })
   /*
+    multiple input tags configuration
+  */
+  .config(function(tagsInputConfigProvider, RUNTIME){
+    tagsInputConfigProvider
+    .setDefaults('tagsInput', {
+      replaceSpacesWithDashes:false,
+      template: RUNTIME.static + 'templates/partials/tag.input.html' 
+    })
+    .setDefaults('autoComplete', {
+      loadOnDownArrow: true
+    })
+  })
+  /*
     Angular-translate configs
     Cfr. https://scotch.io/tutorials/internationalization-of-angularjs-applications
   */

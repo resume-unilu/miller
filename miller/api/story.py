@@ -2,9 +2,11 @@ import json
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAdminUser
 
 from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
+from rest_framework.decorators import  api_view, permission_classes, detail_route # cfr StoryViewSet
 
 from miller.models import Story, Tag, Document, Caption
 
@@ -102,9 +104,9 @@ class StoryViewSet(viewsets.ModelViewSet):
       print filters
       try:
         filters = json.loads(filters)
-        print "filters,",filters
+        # print "filters,",filters
       except Exception, e:
-        print e
+        # print e
         filters = {}
     else:
       filters = {}
@@ -113,7 +115,7 @@ class StoryViewSet(viewsets.ModelViewSet):
       stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
     else:
       stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
-    print stories.query
+    # print stories.query
     page    = self.paginate_queryset(stories)
 
     serializer = LiteStorySerializer(stories, many=True,
@@ -121,9 +123,26 @@ class StoryViewSet(viewsets.ModelViewSet):
     )
     return self.get_paginated_response(serializer.data)
 
+  # for some tags require the request user to be staff user
+  @permission_classes((IsAdminUser, ))
+  def partial_update(self, request, *args, **kwargs):
+    return super(StoryViewSet, self).partial_update(request, *args, **kwargs)
 
+
+  @detail_route(methods=['put'])
+  def tags(self, request, pk=None):
+    queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user))
+
+    story = get_object_or_404(queryset, pk=12333)
+
+
+    # save, then return tagged items according to tagform
+    serializer = StorySerializer(story,
+        context={'request': request},
+    )
+    return Response(serializer.data)
   
-  
+
   def retrieve(self, request, pk=None):
     if request.user.is_authenticated():
       queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).distinct()

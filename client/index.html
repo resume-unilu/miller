@@ -26,7 +26,7 @@
       .CodeMirror{
         padding: 0;
         border: 0;
-        background: #ffffff;
+        background: transparent;
       }
       .navbar-default{
         background: white;
@@ -279,7 +279,7 @@
       .breakingNews a{
         color: #f0f0f0;
       }
-      .breakingNews a:hover, a:focus{
+      .breakingNews a:hover, .breakingNews a:focus{
         color: white
       }
 
@@ -415,13 +415,16 @@
     
 
     <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
+    <script src='{% static "js/lib/md5.js" %}'></script>
     <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
 
 
 
     <script src='{% static "js/lib/lodash.core.min.js" %}'></script>
     <script src='{% static "js/lib/marked.min.js" %}'></script>
+
     <script src='{% static "js/lib/simplemde.min.js" %}'></script>
+    <!-- <script src='{% static "js/lib/codemirror.addons.placeholder.js'></script> -->
 
     
 
@@ -466,7 +469,8 @@
       var user = {
         username: "{{user.username}}",
         first_name: "{{user.first_name}}",
-        last_name: "{{user.last_name}}"
+        last_name: "{{user.last_name}}",
+        is_staff: "{{user.is_staff}}" === "True"
       };
 
       var _windox  = $(window),
