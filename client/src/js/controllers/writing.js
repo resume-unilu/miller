@@ -28,20 +28,7 @@ angular.module('miller')
     $scope.references = [];
     $scope.lookups = [];// ref and docs and urls...
 
-    $scope.mediumOptions = {
-      autoLink: true,
-      // toolbar:{
-      //   buttons: ['bold', 'italic','h2','h3','quote','anchor','orderedlist', 'unorderedlist']
-      // },
-      extensions: {
-        markdown: new MeMarkdown(function (md) {
-               $scope.markdown = md;
-               // localStorageService.set('contents', 'Add this!');
-               // console.log(md)
-               // socketizza socketizza che é meglio
-        })
-      }
-    }
+    
 
 
 

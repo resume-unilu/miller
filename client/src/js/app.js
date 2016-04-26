@@ -12,7 +12,7 @@ angular
     'ngResource',
     'ngSanitize',
     'ngCookies',
-    // 'angular-medium-editor',
+    'ngTagsInput',
     'mgcrea.ngStrap',
     'monospaced.elastic',
     'LocalStorageModule',

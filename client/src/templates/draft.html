@@ -1,10 +1,10 @@
 
 <div>writing </div>
 <span ng-if='!isDraft'>
-  <div ng-if='metadata.owner.is_staff' class='btn-line-group'>
+  <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
     <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
     <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
-  </div>
+  <!-- </div> -->
   <span ng-if='!metadata.owner.is_staff'>your document is {{metadata.status}}. Ask staff in order to change that.</span>
 </span>
 <span class='btn-line-group'><button class='btn-line active' ng-click='save()'>{{isSaving? "saving...":"save"}}</button></span>
