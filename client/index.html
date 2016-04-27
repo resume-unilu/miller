@@ -321,7 +321,7 @@
               <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
               <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
               <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
-              <li ng-class="{active: state.includes('publications')}"><a href ui-sref='publications.papers'>publications</a></li>
+              <li ng-class="{active: state.includes('publications')}"><a href ui-sref='publications.all'>publications</a></li>
               
               <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" >news</a></li>
 
@@ -525,7 +525,25 @@
       angular.module('miller')
         .constant("RUNTIME", {
           static: '{% static ""%}',
-          user: user
+          user: user,
+          stories: {
+            writing: [
+              {
+                name: 'all',
+                url: ''
+              },
+              {
+                name: 'interviews',
+                slug: 'interview',
+                url: '/interviews'
+              },
+              {
+                name: 'glossary',
+                slug: 'term',
+                url: '/glossary'
+              }
+            ]
+          }
         });
     </script>
     {% endautoescape %}

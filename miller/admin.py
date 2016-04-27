@@ -31,6 +31,7 @@ class StoryAdmin(admin.ModelAdmin):
 
 class TagAdmin(admin.ModelAdmin):
   search_field = ['name', 'slug', 'category']
+  list_filter = ('category',)
 
 # Re-register UserAdmin
 admin.site.unregister(User)

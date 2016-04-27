@@ -196,60 +196,49 @@ angular
       })
 
       /*
-        Three publications
+        Kind of story:writings publications
       */
       .state('publications', {
         url: '/publications',
         abstract: true,
-        controller: function(){
-
+        controller: function($scope){
+          $scope.urls = RUNTIME.stories.writing;
         },
         templateUrl: RUNTIME.static + 'templates/publications.html',
         
-      })
-        .state('publications.papers', {
-          url: '',
-          controller: 'ItemsCtrl',
-          templateUrl: RUNTIME.static + 'templates/blog.news.html',
-            resolve: {
-            items: function(StoryFactory, $stateParams) {
-              return StoryFactory.get({
-                filters: JSON.stringify({
-                  tags__slug: 'paper'
-                })
-              }).$promise;
-            },
-            model: function() {
-              return 'story';
-            },
-            factory: function(StoryFactory) {
-              return StoryFactory;
+      });
+
+      _.each(RUNTIME.stories.writing, function(d){
+        $stateProvider
+          .state('publications.' + d.name, {
+            url: d.url,
+            controller: 'ItemsCtrl',
+            templateUrl: RUNTIME.static + 'templates/blog.news.html',
+              resolve: {
+              items: function(StoryFactory, $stateParams) {
+                return StoryFactory.get({
+                  filters: d.slug? JSON.stringify({
+                    tags__category: 'writing',
+                    tags__slug: d.slug
+                  }): JSON.stringify({
+                    tags__category: 'writing'
+                  })
+                }).$promise;
+              },
+
+              model: function() {
+                return 'story';
+              },
+              factory: function(StoryFactory) {
+                return StoryFactory;
+              }
             }
-          }
-        })
-        .state('publications.interviews', {
-          url: '/interviews',
-          controller: 'ItemsCtrl',
-          templateUrl: RUNTIME.static + 'templates/blog.news.html',
-            resolve: {
-            items: function(StoryFactory, $stateParams) {
-              return StoryFactory.get({
-                filters: JSON.stringify({
-                  tags__slug: 'interview'
-                })
-              }).$promise;
-            },
-            model: function() {
-              return 'story';
-            },
-            factory: function(StoryFactory) {
-              return StoryFactory;
-            }
-          }
-        })
+          })
+      });
+      
 
 
-
+    $stateProvider
       .state('post', {
         url: '/story/:postId',
         controller: 'PostCtrl',
