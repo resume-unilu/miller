@@ -14,7 +14,8 @@ from miller.forms import LoginForm
 # return a shared object to be sent to normal views
 def _share(request, extra={}):
   d = {
-    'title': settings.MILLER_TITLE
+    'title': settings.MILLER_TITLE,
+    'oembeds': json.dumps(settings.MILLER_OEMBEDS)
   }
 
   # if request.user.is_authenticated():

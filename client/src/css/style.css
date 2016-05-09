@@ -416,14 +416,31 @@ textarea.elastic-textarea{
 .mde .wand{
   position: absolute;
   left: -30px;
+  top: 3px;
   font-size: 18px;
   color: white;
-  height: 30px;
-  width: 30px;
-  text-align: center;
-  line-height: 33px;
-  background: #151515;
+  height: 22px;
+  right: 0px;
+  text-align: left;
+  border-bottom: 1px solid #353535;
+   /*transition: transform .27s ease-in-out; */
+  
   /*transition: transform .27s ease-in-out;*/
+}
+.mde .wand .btn{
+  background: white;
+  padding: 0;
+  border-radius: 0;
+  line-height: 22px;
+  width: 30px;
+  height: 22px;
+}
+
+.mde .wand .btn .icon-plus{
+  color: #151515;
+  font-size:17px;
+  line-height: 22px;
+  background: white;
 }
 
 .mde .toolbox{
@@ -432,15 +449,15 @@ textarea.elastic-textarea{
   top: -30px;
   font-size: 18px;
   height: 30px;
-  background: #151515;
-  transition: opacity .27s ease-in-out;
-  -webkit-transition: opacity .27s ease-in-out;
-  opacity: .9;
+  background: rgba(79, 74, 74, 0.9);
+  transition:  background-color .27s ease-in-out;
+  -webkit-transition: background-color .27s ease-in-out;
+ 
   z-index: 1000;
 }
 
 .mde .toolbox:hover{
-  opacity: 1;
+ background: #151515;
 }
 
 .mde .toolbox .btn{

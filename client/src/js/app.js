@@ -16,7 +16,9 @@ angular
     'mgcrea.ngStrap',
     'monospaced.elastic',
     'LocalStorageModule',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    // 'angular-embedly',
+    'angular-embed'
   ])
   .constant('LOCALES', {
     'locales': {

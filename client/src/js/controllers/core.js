@@ -6,9 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, localStorageService, $translate, $timeout, StoryFactory, TagFactory, RUNTIME, EVENTS) {
-    $log.log('\n    oila!   \n(-(-_(-_-)_-)-)\n\n\n');
-    
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, localStorageService, $translate, $timeout, StoryFactory, TagFactory, RUNTIME, EVENTS) {    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;

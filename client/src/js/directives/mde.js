@@ -6,7 +6,7 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('mde', function ($log, $timeout, $modal, DocumentFactory, RUNTIME) {
+  .directive('mde', function ($log, $timeout, $modal, DocumentFactory, embedService, RUNTIME) {
     return {
       restrict: 'AE',
       scope: {
@@ -16,10 +16,13 @@ angular.module('miller')
       },
       templateUrl: RUNTIME.static + 'templates/partials/mde.html',
       link: function(scope, el, attributes){
-        console.log('MDE',el)
+        // active tab
+        
+
         var simplemde,
             timer,
             timer_recompile,
+            timer_preview,
             wand = el.find('.wand').hide(),
             textarea = el.find('textarea').hide(),
             toolbox =  el.find('.toolbox').hide(),
@@ -31,7 +34,7 @@ angular.module('miller')
               template: RUNTIME.static + 'templates/partials/modals/mde-enrich.html',
               show: false
             });
-
+            
         function init(){
           textarea.show();
           wand.show();
@@ -150,6 +153,32 @@ angular.module('miller')
         /*
           Modal tabs
         */
+
+        // open modal tab and store previously open tab in this scope.
+        scope.setTab = function(tab){
+          scope.tab = tab;
+        }
+        scope.tab = 'url';
+
+        // preview url
+        scope.previewUrl = function(url){
+          if(timer_preview)
+            $timeout.cancel(timer_preview);
+          // check url
+          var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&&#37;@!\-\/]))?/
+          if(!regexp.test(url)){
+            $log.error('::mde -> previewUrl url provided:', url, 'is not valid')
+            return false;
+          };
+
+          timer_preview = $timeout(function(){
+            $log.debug('::mde -> previewUrl', url)
+            embedService.get(url).then(function(data){
+              scope.embed = data;
+            });
+          }, 20);
+        }
+
         // open
         scope.showReferenceModal = function(){
           $log.debug('::mde -> showReferenceModal')
@@ -169,9 +198,20 @@ angular.module('miller')
           // debugger
         }
 
-        scope.addDocument = function(){
+      
+
+        scope.addDocument = function(type, contents, reference){
+          $log.debug('::mde -> addDocument() type:', arguments);
+
+          if(type=='bibtex'){
+            $log.debug('    reference:', bibtexParse.toJSON(reference));
+            return;
+          }
           if(!scope.selectedDocument) {
-            $log.warning('::mde -> addDocument() no document selected')
+            $log.warn('::mde -> addDocument() no document selected');
+
+
+            return;
           } 
           $log.debug('::mde -> addDocument() doc:', scope.selectedDocument);
           // lock ui
