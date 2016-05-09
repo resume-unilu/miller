@@ -426,6 +426,47 @@ textarea.elastic-textarea{
   /*transition: transform .27s ease-in-out;*/
 }
 
+.mde .toolbox{
+  position: absolute;
+  left: 0;
+  top: -30px;
+  font-size: 18px;
+  height: 30px;
+  background: #151515;
+  transition: opacity .27s ease-in-out;
+  -webkit-transition: opacity .27s ease-in-out;
+  opacity: .9;
+  z-index: 1000;
+}
+
+.mde .toolbox:hover{
+  opacity: 1;
+}
+
+.mde .toolbox .btn{
+  height: 30px;
+  width: 30px;
+  margin: 0;
+  line-height: 30px;
+  padding: 0;
+  color: #f0f0f0;
+  background: transparent;
+  border-radius: 0px;
+}
+
+.mde .toolbox .btn .icon-plus{
+  font-size: 17px;
+  line-height: 30px;;
+}
+
+.mde .toolbox .btn:hover{
+  background: #FF6B6B;
+}
+
+.mde .toolbox .btn:active{
+  background: #B7B2B2;
+}
+
 .modal .tab-content ul {
     margin: 0 -10px;
     padding: 0;
@@ -686,6 +727,13 @@ ul.dropdown-menu{
     -moz-transform: translateX(300px);
     -ms-transform: translateX(300px);
     width: 300px;
+  }
+}
+
+@media (min-width: 1200px){
+  .post .container, .draft .container, .writing .container {
+    width: 900px;
+    margin-right: 285px;
   }
 }
 

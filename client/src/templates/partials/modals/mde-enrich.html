@@ -5,24 +5,19 @@
       <button type="button" class="close" aria-label="Close" ng-click="$hide()">
       <span aria-hidden="true" class='icon-close'></span>
       </button>
-      <h4 class="modal-title">add resources or references</h4></div>
+      <h4 class="modal-title">add resource</h4></div>
       
       <div class="modal-body">
 
-        <div class='section'>
-          <label>caption (optional)</label>
-          <div class='elastic-textarea-wrapper'>
-            <textarea class='elastic-textarea' rows="3" msd-elastic ng-model='caption' type='text' placeholder='write something'></textarea>
-          </div>
-        </div>
-
         <div class='section' ng-init='tab="a"'>
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
-          <label>select resource or reference: {{tab}}</label>
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" ng-class="tab == 'a'? 'active':''"><a ng-click='tab="a"' aria-controls="home" role="tab" data-toggle="tab">saved by you</a></li>
+            <li role="presentation" ng-class="tab == 'a'? 'active':''"><a ng-click='tab="a"' aria-controls="home" role="tab" data-toggle="tab">your resources</a></li>
             <li role="presentation" ng-class="tab == 'b'? 'active':''"><a ng-click='tab="b"' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
-            <li role="presentation" ng-class="tab == 'c'? 'active':''"><a ng-click='tab="c"' aria-controls="messages" role="tab" data-toggle="tab">new</a></li>
+            
+            <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='tab="url"' aria-controls="messages" role="tab" data-toggle="tab">from url</a></li>
+
+            <li role="presentation" ng-class="tab == 'c'? 'active':''"><a ng-click='tab="c"' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li>
             
           </ul>
 
@@ -31,11 +26,22 @@
             <ul ><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
             </ul>
           </div>
+
           <div ng-if="tab == 'b'" class="tab-content">
           </div>
-          <div ng-if="tab == 'c'" class="tab-content">
+
+          <div ng-if="tab == 'url'" class="tab-content">
+            <label>url</label>
             <div class='elastic-textarea-wrapper'>
               <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='contents' type='text' placeholder='bibliographi reference'></textarea>
+            </div>
+          </div>
+
+          <div ng-if="tab == 'c'" class="tab-content">
+            Add a bibreference and find it again
+            <label>bibtex</label>
+            <div class='elastic-textarea-wrapper'>
+              <textarea class="elastic-textarea" style="font-family: monospace;" rows="8" msd-elastic ng-model='contents' type='text' placeholder='bibliographi reference'></textarea>
             </div>
           </div>
           <div style='clear:both'></div>
@@ -43,7 +49,7 @@
 
       </div>
       <div class="modal-footer">
-        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument()">aad</button>
+        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument()" translate='button.add'></button>
         </span>
         <span class='btn-line-group'>
         <button type="button" class="btn-line" ng-click="$hide()">Close</button>

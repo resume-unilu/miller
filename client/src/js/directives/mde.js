@@ -22,6 +22,7 @@ angular.module('miller')
             timer_recompile,
             wand = el.find('.wand').hide(),
             textarea = el.find('textarea').hide(),
+            toolbox =  el.find('.toolbox').hide(),
             lookups=[],
             renderer = new marked.Renderer(),
             referenceModal = $modal({
@@ -34,6 +35,7 @@ angular.module('miller')
         function init(){
           textarea.show();
           wand.show();
+          toolbox.show();
 
           simplemde = new SimpleMDE({
             element: textarea[0],
@@ -61,6 +63,7 @@ angular.module('miller')
                   left: simplemde.codemirror.display.cursorDiv.firstChild.offsetLeft
                 };
                 wand.css('transform', 'translateY('+cursor.top+'px)');
+                toolbox.css('transform', 'translate('+(cursor.left)+'px,'+(cursor.top)+'px)');
               }
             }, 10);
             
@@ -124,7 +127,7 @@ angular.module('miller')
             if(textarea.val() != value){
               scope.mde = value; // set model
               textarea.val(value); // get headers after some time
-              scope.$apply();
+              // scope.$apply();
             }
             move();
 
@@ -136,7 +139,8 @@ angular.module('miller')
 
           simplemde.codemirror.on('cursorActivity', move);
           
-          timer_recompile = setTimeout(recompile, 0);
+          if(scope.settoc)
+            timer_recompile = setTimeout(recompile, 0);
           
           
           
@@ -192,6 +196,10 @@ angular.module('miller')
           }
           
           
+        }
+
+        scope.action = function(action) {
+          SimpleMDE[action](simplemde);
         }
         
         // take into account custom font-face rendering.

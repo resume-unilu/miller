@@ -1,6 +1,16 @@
 <div class='mde'>
-  <div class='wand' ng-click='showReferenceModal()'>  <span class='icon-plus'></span>
+  <div class='toolbox'>
+      <button class='btn' ng-click='action("toggleBold")'>B</button>
+      <button class='btn' style='font-style:italic' ng-click='action("toggleItalic")'>I</button>
+      <button class='btn' ng-click='action("toggleHeading1")'>H1</button>
+      <button class='btn' ng-click='action("toggleHeading2")'>H2</button>
+      <button class='btn' ng-click='action("toggleHeading3")'>H3</button>
+      <button class='btn' ng-click='showReferenceModal()'><span class='icon-plus'></span></button>
+    </div>
+  <div class='wand' ng-click='showReferenceModal()'>
+    <span class='icon-plus'></span>
+    
   </div>
 
-<textarea class='mde-textarea' placeholder="write something..."></textarea>
+	<textarea class='mde-textarea' placeholder="write something..."></textarea>
 </div>
