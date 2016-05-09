@@ -227,7 +227,11 @@ blockquote{
       background: #B7B2B2;
 }
 
-.doc .lazy-box{
+.lazy-box{
+  height: 200px;
+}
+
+.lazy-box img{
   height: 200px;
 }
 

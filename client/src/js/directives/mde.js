@@ -45,6 +45,7 @@ angular.module('miller')
             spellChecker: false,
             status: false,
             toolbar: false,
+            toolbarTips: false,
             initialValue: scope.mde
           });
           
@@ -63,9 +64,10 @@ angular.module('miller')
                 
                 cursor = {
                   top: simplemde.codemirror.display.cursorDiv.firstChild.offsetTop,
-                  left: simplemde.codemirror.display.cursorDiv.firstChild.offsetLeft
+                  left: simplemde.codemirror.display.cursorDiv.firstChild.offsetLeft,
+                  height: simplemde.codemirror.display.cursorDiv.firstChild.offsetHeight
                 };
-                wand.css('transform', 'translateY('+cursor.top+'px)');
+                wand.css('transform', 'translateY('+(cursor.top+cursor.height-20)+'px)');
                 toolbox.css('transform', 'translate('+(cursor.left)+'px,'+(cursor.top)+'px)');
               }
             }, 10);
