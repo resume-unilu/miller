@@ -298,7 +298,10 @@ p{
   border-radius: 10px;
   moz-border-radius: 10px;
 }
-    
+
+.contents p{
+  text-align:justify;
+}    
 .contents h2, .contents .h2 {
   font-size: 20px;
   line-height: 30px;

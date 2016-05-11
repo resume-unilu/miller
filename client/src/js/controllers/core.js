@@ -27,8 +27,8 @@ angular.module('miller')
     };
 
     $scope.disableToC = function(){
-      $scope.ToCDisabled = true
-    }
+      $scope.ToCDisabled = true;
+    };
 
     // add document items to the table-of)documents
     $scope.setDocuments = function(documents) {
@@ -39,38 +39,38 @@ angular.module('miller')
     $scope.save = function(){
       $log.log('CoreCtrl > @SAVE ...'); 
       $scope.$broadcast(EVENTS.SAVE);
-    }
+    };
 
     $scope.update = function(key, value){
       $log.log('CoreCtrl > @UPDATE ',key,':',value,' ...'); 
       var _d = {};
       _d[key] = value;
       $scope.$broadcast(EVENTS.UPDATE, _d);
-    }
+    };
 
 
     $scope.lock = function(){
       $log.log('CoreCtrl > lock .............'); 
       
-    }
+    };
 
     $scope.unlock = function(){
       $log.log('CoreCtrl > unlock .............'); 
       
-    }
+    };
 
     /*
       Suggest tags for writing purposes
     */
     $scope.suggestTags = function(query, options) {
       $log.log('CoreCtrl -> suggestTags', query, options);
-      var filters = options || {}
+      var filters = options || {};
       return TagFactory.get({
         filters: JSON.stringify(filters)
       }).$promise.then(function(response) {
-        return response.results
-      })
-    }
+        return response.results;
+      });
+    };
     /*
       Set breaking news above the header.
       Cfr indexCtrl
@@ -78,11 +78,11 @@ angular.module('miller')
     $scope.breakingNews = [];
     $scope.setBreakingNews = function(breakingNews) {
       $scope.breakingNews = breakingNews;
-    }
+    };
 
     $rootScope.$on('$stateChangeStart', function (e, state) {
       $log.log('CoreCtrl @stateChangeStart', state);
-    })
+    });
 
     $rootScope.$on('$stateChangeSuccess', function (e, state) {
       var h =  $location.hash();
@@ -91,7 +91,7 @@ angular.module('miller')
 
       // clean
       $scope.ToC = [];
-      $scope.documents = []
+      $scope.documents = [];
 
       // the ui.router state (cfr app.js)
       $scope.state = state.name;
@@ -104,13 +104,13 @@ angular.module('miller')
 
     $scope.setHash = function(hash) {
       $location.hash(hash);
-    }
+    };
 
     $scope.changeLanguage = function(key) {
       $scope.language = key;
-      localStorageService.set('lang', $scope.language)
+      localStorageService.set('lang', $scope.language);
       $translate.use(key);
-    }
+    };
     /*
       On location change, collect the parameters.
       Since this is called BEFORE statehangeSuccess, the scrolling cannot be made at this level.
@@ -134,8 +134,8 @@ angular.module('miller')
         tags__category: 'highlights'
       })
     }, function(data){
-      $log.info('CoreCtrl breaking news loaded', data)
-      $scope.setBreakingNews(data.results)
+      $log.info('CoreCtrl breaking news loaded', data);
+      $scope.setBreakingNews(data.results);
     }); 
 
 

@@ -17,7 +17,7 @@ angular.module('miller')
 
         element.addClass('lazy-box').css({
           'background-color': '#B7B2B2',
-        }).html('<div class="loading">...</div>')
+        }).html('<div class="loading">...</div>');
         
         function wakeup(){
           element.css({
@@ -35,4 +35,4 @@ angular.module('miller')
 
       }
     };
-  })
+  });

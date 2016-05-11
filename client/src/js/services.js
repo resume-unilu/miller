@@ -72,7 +72,7 @@ angular.module('miller')
       get: function(params) {
         return $http.get(RUNTIME.static + 'pages/' + params.name + '.md');
       }
-    }
+    };
   })
   /*
     Apply marked service for custom markdown ;)
@@ -113,7 +113,7 @@ angular.module('miller')
 
       // collect miller document
       renderer.link = function(url, boh, text) {
-        if(url.trim().indexOf('doc/') == 0){
+        if(url.trim().indexOf('doc/') === 0){
           var documents = url.trim().replace('doc/','').split(',');
           for(var i in documents){
             docs.push({
@@ -124,10 +124,10 @@ angular.module('miller')
           return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
         }
         return '<a href='+url+'>'+text+'</a>';
-      }
+      };
 
       renderer.image = function(src, title, alt){
-        if((alt||'').indexOf('profile/') == 0){
+        if((alt||'').indexOf('profile/') === 0){
           return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
         }
         return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
@@ -143,5 +143,5 @@ angular.module('miller')
         ToC: ToC,
         docs: docs
       };
-    } 
+    }; 
   });

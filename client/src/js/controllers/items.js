@@ -17,7 +17,7 @@ angular.module('miller')
       var sentences = text.split(/[\.!\?]/);
       console.log(text, sentences);
       return sentences;
-    };
+    }
 
     $scope.items = items.results.map(function(d){
       if(!d.abstract)

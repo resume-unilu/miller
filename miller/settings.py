@@ -212,6 +212,8 @@ WS4REDIS_PREFIX = 'miller'
 # MILLER APP
 #
 #............
+MILLER_DEBUG = True
+
 MILLER_TITLE = 'miller'
 # feel free to add your own oembed service in localsettings.
 MILLER_OEMBEDS = {

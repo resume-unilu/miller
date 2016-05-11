@@ -18,7 +18,7 @@ angular.module('miller')
           $compile(element.contents())(scope);
         }
       }
-    }
+    };
   })
   .directive('marked', function ($compile, $log, $location, markedService) {
    return {
@@ -39,12 +39,12 @@ angular.module('miller')
             lp; // previous opened heading level, for ToC purposes
 
         scope.hash = function(what) {
-          $location.hash(what)
+          $location.hash(what);
         };
 
         scope.miller = function(url){
-          debugger
-        }
+          // ?
+        };
         
         function init(){
           var rendered  = markedService(scope.marked, scope.language);
@@ -54,7 +54,7 @@ angular.module('miller')
           if(scope.settoc)
             scope.settoc({ToC:rendered.ToC});
           if(scope.setdocs)
-            scope.setdocs({items:rendered.docs})
+            scope.setdocs({items:rendered.docs});
         }
 
         
@@ -62,10 +62,10 @@ angular.module('miller')
         if(scope.language)
           scope.$watch('language', function(language){
             if(language)
-              init()
-          })
+              init();
+          });
         else
           init();
       }
     };
-  })
+  });

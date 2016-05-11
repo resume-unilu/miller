@@ -40,7 +40,7 @@ angular
     })
     .setDefaults('autoComplete', {
       loadOnDownArrow: true
-    })
+    });
   })
   /*
     Angular-translate configs
@@ -64,8 +64,8 @@ angular
     $resourceProvider.defaults.stripTrailingSlashes = false;
   })
   .config(function($httpProvider) {
-    $httpProvider.defaults.xsrfCookieName = 'csrftoken'
-    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken'
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
   })
   .config(function($locationProvider) {
     // $locationProvider.html5Mode(true);
@@ -235,7 +235,7 @@ angular
                 return StoryFactory;
               }
             }
-          })
+          });
       });
       
 
@@ -265,5 +265,5 @@ angular
             return PageFactory.get({name: $stateParams.name});
           },
         }
-      })
+      });
   });

@@ -419,11 +419,10 @@
     </div>
     
     
-
+    {% if debug %}
     <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
     <script src='{% static "js/lib/md5.js" %}'></script>
-    <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
-
+    
 
     <!-- lodash build with lodash-cli:
          lodash include=map,filter,each,compact,uniq,value,keyBy,first,chunk,fromPairs,mapValues -->
@@ -453,7 +452,7 @@
     <script src='{% static "js/lib/angular-translate-loader-static-files.min.js" %}'></script>
     <script src='{% static "js/lib/ng-tags-input.min.js" %}'></script>
     
-
+   
     <script src='{% static "js/app.js" %}'></script>
     <script src='{% static "js/controllers/core.js" %}'></script>
     <script src='{% static "js/controllers/draft.js" %}'></script>
@@ -472,7 +471,11 @@
 
     <script src='{% static "js/services.js" %}'></script>
     <script src='{% static "js/filters.js" %}'></script>
-
+    <script src='{% static "js/templates.js" %}'></script>
+    {% else %}
+    <script src='{% static "js/scripts.lib.min.js" %}'></script>
+    <script src='{% static "js/scripts.min.js" %}'></script>
+    {% endif %}
 
     {% autoescape off %}
 

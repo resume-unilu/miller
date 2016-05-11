@@ -19,8 +19,8 @@ angular.module('miller')
         abstract: $scope.abstract,
         contents: $scope.contents
       }, $scope.metadata), function(res) {
-        console.log(res)
-      })
+        $log.log('DraftCtrl -> @EVENTS.SAVE saved:', res);
+      });
     });
 
     _offsetables['writing-tools'] = $('#writing-tools');
@@ -52,7 +52,7 @@ angular.module('miller')
       if(!_.isEmpty(metadata)) {
         localStorageService.set('metadata', metadata);
       }
-    }, true)
+    }, true);
 
     /*
       load from localstorageservice

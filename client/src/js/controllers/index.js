@@ -16,12 +16,12 @@ angular.module('miller')
       var sentences = text.split(/[\.!\?]/);
       console.log(text, sentences);
       return sentences;
-    };
+    }
 
     writings.results = writings.results.map(function(d) {
       d.excerpt = tokenize(d.abstract, 10)[0];
       return d;
-    })
+    });
 
     $scope.coverstory = writings.results.shift();
     $scope.otherstories = writings.results;
@@ -29,7 +29,7 @@ angular.module('miller')
     $scope.news = news.results.map(function(d) {
       d.excerpt = tokenize(d.abstract, 10)[0];
       return d;
-    })
+    });
 
 
 

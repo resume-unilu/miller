@@ -15,6 +15,7 @@ from miller.forms import LoginForm
 def _share(request, extra={}):
   d = {
     'title': settings.MILLER_TITLE,
+    'debug': settings.MILLER_DEBUG,
     'oembeds': json.dumps(settings.MILLER_OEMBEDS)
   }
 
