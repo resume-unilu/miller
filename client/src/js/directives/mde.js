@@ -72,7 +72,7 @@ angular.module('miller')
                 toolbox.css('transform', 'translate('+(cursor.left)+'px,'+(cursor.top)+'px)');
 
                 // check cursor position: is it inside a BOLD or ITALIC?
-                pos = simplemde.codemirror.getCursor("start"),
+                pos = simplemde.codemirror.getCursor("start");
                 stat = simplemde.codemirror.getTokenAt(pos);
                 
                 scope.activeStates = (stat.type || '').split(' ');
@@ -128,7 +128,7 @@ angular.module('miller')
           if(scope.settoc)
             timer_recompile = setTimeout(recompile, 0);
           
-        };
+        }
 
 
         /*
@@ -138,7 +138,7 @@ angular.module('miller')
         // open modal tab and store previously open tab in this scope.
         scope.setTab = function(tab){
           scope.tab = tab;
-        }
+        };
         scope.tab = 'CVCE';
 
         // preview url
@@ -146,28 +146,28 @@ angular.module('miller')
           if(timer_preview)
             $timeout.cancel(timer_preview);
           // check url
-          var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&&#37;@!\-\/]))?/
+          var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&&#37;@!\-\/]))?/;
           if(!regexp.test(url)){
-            $log.error('::mde -> previewUrl url provided:', url, 'is not valid')
+            $log.error('::mde -> previewUrl url provided:', url, 'is not valid');
             return false;
-          };
-          url = url.replace('#', '.hash.')
+          }
+          url = url.replace('#', '.hash.');
           timer_preview = $timeout(function(){
-            $log.debug('::mde -> previewUrl', url)
+            $log.debug('::mde -> previewUrl', url);
             embedService.get(url).then(function(data){
               scope.embed = data;
             });
           }, 20);
-        }
+        };
 
         // suggest from different archives, w timeout
         scope.suggestResults = [];
         scope.suggestMessage = '';
         scope.suggest = function(query, service){
-          $log.log('::mde -> suggest()', scope.query, query, OembedSearchFactory)
+          $log.log('::mde -> suggest()', scope.query, query, OembedSearchFactory);
           if(query.length < 3) {
             scope.suggestMessage = '(write something more)';
-            scope.suggestResults = []
+            scope.suggestResults = [];
             return;
           }
           scope.suggestMessage = '(loading...)';
@@ -175,13 +175,13 @@ angular.module('miller')
             OembedSearchFactory[service](query).then(function(res){
               scope.suggestResults = res.data.results;
               scope.suggestMessage = '(<b>' + res.data.count + '</b> results)';
-            })
-        }
+            });
+        };
 
         // open
         scope.showReferenceModal = function(){
           referenceModal.$promise.then(function(){
-            $log.log('::mde -> showReferenceModal called')
+            $log.log('::mde -> showReferenceModal called');
             referenceModal.show();
           });
           
@@ -189,14 +189,16 @@ angular.module('miller')
             $log.log('::mde -> showReferenceModal documents loaded', res.results.length);
 
             scope.lookups = res.results;
-          })
+          });
           // console.log(simplemde)
           // debugger
-        }
+        };
 
       
 
         scope.addDocument = function(type, contents, reference, url, embed){
+          var slug;
+
           $log.debug('::mde -> addDocument() type:', type);
 
           if(type=='bibtex'){
@@ -205,7 +207,7 @@ angular.module('miller')
           }
           // case it is an url
           if(type=='url'){
-            var slug = $filter('slugify')(embed.title);
+            slug = $filter('slugify')(embed.title);
 
             DocumentFactory.save({
               title: embed.title,
@@ -239,7 +241,7 @@ angular.module('miller')
           }
 
           if(type == 'CVCE'){
-            var slug = 'cvce/'+scope.selectedDocument.details.doi;
+            slug = 'cvce/'+scope.selectedDocument.details.doi;
             $log.debug('::mde -> addDocument() doc:', slug);
             DocumentFactory.save({
               title: scope.selectedDocument.title,
@@ -275,10 +277,10 @@ angular.module('miller')
           SimpleMDE.drawLink(simplemde,{
             url: 'doc/' + scope.selectedDocument.slug
           });
-        }
+        };
 
         scope.selectDocument = function(doc){
-          $log.log('::mde -> selectDocument()', doc)
+          $log.log('::mde -> selectDocument()', doc);
           if(scope.selectedDocument)
             scope.selectedDocument.isSelected = false;
           if(scope.selectedDocument && (scope.selectedDocument.id == doc.id)){
@@ -291,11 +293,11 @@ angular.module('miller')
           }
           
           
-        }
+        };
 
         scope.action = function(action) {
           SimpleMDE[action](simplemde);
-        }
+        };
         
         // take into account custom font-face rendering.
         $timeout(init, 200);
@@ -304,4 +306,4 @@ angular.module('miller')
 
       }
     };
-  })
+  });

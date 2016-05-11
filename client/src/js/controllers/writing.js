@@ -18,18 +18,18 @@ angular.module('miller')
     $scope.keywords = _.filter(story.tags, {category: 'keyword'});
 
     $scope.displayedTags = _.filter(story.tags, function(d){
-      return d.category != 'keyword'
+      return d.category != 'keyword';
     });
 
     $scope.metadata = {
       status: story.status,
       owner: story.owner
-    }
+    };
 
     $scope.setStatus = function(status) {
       $scope.metadata.status = status;
       $scope.save();
-    }
+    };
 
     /*
       Save or delete documents according to text contents.
@@ -48,11 +48,11 @@ angular.module('miller')
 
       var included = _.map(documents, 'slug');
 
-      console.log(documentSlugs)
+      // console.log(documentSlugs)
       $log.log('WritingCtrl -> setDocuments()', documents.length, '- to be saved:', saveable, '- to be deleted:');
       
       documents = story.documents.filter(function(d){
-        return included.indexOf(d.slug) != -1
+        return included.indexOf(d.slug) != -1;
       });
 
       if(saveable.length || deletable.length){
@@ -63,8 +63,8 @@ angular.module('miller')
               document: d
             }, function(res){
               documents.push(res);
-            }).promise
-            return p
+            }).promise;
+            return p;
           })
           // .concat(deletable.map(function(d) {
           //   return CaptionFactory.save({
@@ -81,16 +81,13 @@ angular.module('miller')
       } else{
         var indexed = _.keyBy(story.documents, 'slug'),
             docs = _(documents).uniq('slug').map(function(d){
-              return indexed[d.slug]
+              return indexed[d.slug];
             }).value();
-        console.log('indexed', docs)
+        // console.log('indexed', docs)
 
         $scope.$parent.setDocuments(docs);
       }
-
-      
-
-    }
+    };
 
     $scope.references = [];
     $scope.lookups = [];// ref and docs and urls...
@@ -106,12 +103,12 @@ angular.module('miller')
         $log.debug('WritingCtrl -> attachTag() tag success', res);
         $scope.unlock();
         $scope.isSaving =false;
-        return true
+        return true;
       }, function(){
         // error
-        return false
+        return false;
       });
-    }
+    };
 
     /*
       Detach a tag that was attached before.
@@ -127,19 +124,19 @@ angular.module('miller')
         $log.debug('WritingCtrl -> detachTag() tag success', res);
         $scope.unlock();
         $scope.isSaving =false;
-        return true
+        return true;
       }, function(){
         // error
-        return false
+        return false;
       });
-    }
+    };
 
     $scope.suggestReferences = function(service) {
       if(!service)
         DocumentFactory.get(function(){
-          console.log('list')
-        })
-    }
+          console.log('list');
+        });
+    };
     
 
     $scope.save = function() {
@@ -151,16 +148,16 @@ angular.module('miller')
         abstract: $scope.abstract,
         contents: $scope.contents
       }, $scope.metadata), function(res) {
-        console.log(res)
+        $log.debug('WritingCtrl @SAVE: success');
         $scope.unlock();
         $scope.isSaving =false;
-      })
+      });
     };
 
     $scope.$on(EVENTS.SAVE, $scope.save);
 
-    $scope.$watch('contents', function(v){
-      console.log('changed contents')
-    })
+    // $scope.$watch('contents', function(v){
+    //   console.log('changed contents');
+    // });
   });
   
