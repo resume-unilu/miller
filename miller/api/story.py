@@ -9,22 +9,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route # cfr StoryViewSet
 
 from miller.models import Story, Tag, Document, Caption
+from miller.api.common import OptionalFileField, JsonField
 
-
-class OptionalFileField(serializers.Field):
-  def to_representation(self, obj):
-    if hasattr(obj, 'url'):
-      return obj.url
-    return None
-
-class JsonField(serializers.Field):
-  def to_representation(self, obj):
-    if obj:
-      try:
-        return json.loads(obj)
-      except ValueError:
-        return obj
-    return obj
 
 
 

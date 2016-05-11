@@ -1,0 +1,10 @@
+<div class='doc doc-{{document.type}} {{document.isSelected?"active":""}}' ng-click='selectDocument(document)'>
+
+  <div class='divider'>&nbsp;</div>
+  
+  
+  <div ng-if='document.urls.Preview' lazy-image src='document.urls.Preview'></div>
+  
+  <div class='caption title' markdown='document.title'></div>
+  <div class='caption reference' markdown='document.reference'></div>
+</div>

@@ -6,7 +6,7 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('mde', function ($log, $timeout, $modal,  $filter, DocumentFactory, embedService, markedService, RUNTIME) {
+  .directive('mde', function ($log, $timeout, $modal,  $filter, DocumentFactory, OembedSearchFactory, embedService, markedService, RUNTIME) {
     return {
       restrict: 'AE',
       scope: {
@@ -108,7 +108,7 @@ angular.module('miller')
 
 
           simplemde.codemirror.on('update', function(e){
-            $log.debug('::mde @codemirror.update');
+            // $log.debug('::mde @codemirror.update');
             var value = simplemde.value();
             if(textarea.val() != value){
               scope.mde = value; // set model
@@ -139,7 +139,7 @@ angular.module('miller')
         scope.setTab = function(tab){
           scope.tab = tab;
         }
-        scope.tab = 'url';
+        scope.tab = 'CVCE';
 
         // preview url
         scope.previewUrl = function(url){
@@ -158,6 +158,24 @@ angular.module('miller')
               scope.embed = data;
             });
           }, 20);
+        }
+
+        // suggest from different archives, w timeout
+        scope.suggestResults = [];
+        scope.suggestMessage = '';
+        scope.suggest = function(query, service){
+          $log.log('::mde -> suggest()', scope.query, query, OembedSearchFactory)
+          if(query.length < 3) {
+            scope.suggestMessage = '(write something more)';
+            scope.suggestResults = []
+            return;
+          }
+          scope.suggestMessage = '(loading...)';
+          if(OembedSearchFactory[service])
+            OembedSearchFactory[service](query).then(function(res){
+              scope.suggestResults = res.data.results;
+              scope.suggestMessage = '(<b>' + res.data.count + '</b> results)';
+            })
         }
 
         // open
@@ -179,7 +197,7 @@ angular.module('miller')
       
 
         scope.addDocument = function(type, contents, reference, url, embed){
-          $log.debug('::mde -> addDocument() type:', arguments);
+          $log.debug('::mde -> addDocument() type:', type);
 
           if(type=='bibtex'){
             $log.debug('    reference:', bibtexParse.toJSON(reference));
@@ -188,12 +206,12 @@ angular.module('miller')
           // case it is an url
           if(type=='url'){
             var slug = $filter('slugify')(embed.title);
-            
+
             DocumentFactory.save({
               title: embed.title,
               contents: JSON.stringify(embed),
               type: (embed.type|| 'link').toLowerCase(),
-              slug:  $filter('slugify')(embed.title),
+              slug:  slug,
               url: url
             }, function(res){
               $log.debug('::mde -> addDocument() document saved:', res.slug, res.id, res.short_url);
@@ -214,8 +232,39 @@ angular.module('miller')
             });
             return;
           }
+
           if(!scope.selectedDocument) {
             $log.warn('::mde -> addDocument() no document selected');
+            return;
+          }
+
+          if(type == 'CVCE'){
+            var slug = 'cvce/'+scope.selectedDocument.details.doi;
+            $log.debug('::mde -> addDocument() doc:', slug);
+            DocumentFactory.save({
+              title: scope.selectedDocument.title,
+              contents: JSON.stringify(scope.selectedDocument),
+              type: (scope.selectedDocument.type|| 'link').toLowerCase(),
+              slug:  slug,
+              url: url
+            }, function(res){
+              $log.debug('::mde -> addDocument() document saved:', res.slug, res.id, res.short_url);
+              if(res.slug){
+                referenceModal.hide();
+                SimpleMDE.drawLink(simplemde,{
+                  url: 'doc/' + res.slug
+                });
+              }
+            }, function(err){
+              // debugger
+              // ignore duplicates and put it directly.
+              if(err.data.slug){
+                $log.debug('::mde -> addDocument() document already saved:', slug);
+                SimpleMDE.drawLink(simplemde,{
+                  url: 'doc/' + slug
+                });
+              }
+            });
             return;
           }
           // the document has been selected.
@@ -229,9 +278,10 @@ angular.module('miller')
         }
 
         scope.selectDocument = function(doc){
+          $log.log('::mde -> selectDocument()', doc)
           if(scope.selectedDocument)
             scope.selectedDocument.isSelected = false;
-          if(scope.selectedDocument && scope.selectedDocument.id == doc.id){
+          if(scope.selectedDocument && (scope.selectedDocument.id == doc.id)){
             scope.isSomethingSelected = false;
             scope.selectedDocument = false;
           } else {

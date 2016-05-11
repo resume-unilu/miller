@@ -412,7 +412,9 @@
       <div >
         <button class='btn-transparent' ng-click='toggleTableOfContents()'><span  class='icon-book-open'></span></button>
       </div>
-      
+      <div style='margin-top:20px'>
+        <button class='btn-transparent' style='background:#151515' ng-click=''><span  class='icon-book-open'></span></button>
+      </div>
       
     </div>
     
@@ -424,7 +426,7 @@
 
 
     <!-- lodash build with lodash-cli:
-         lodash include=map,filter,each,compact,uniq -->
+         lodash include=map,filter,each,compact,uniq,value,keyBy,first,chunk,fromPairs,mapValues -->
     <script src='{% static "js/lib/lodash.custom.min.js" %}'></script>
     <script src='{% static "js/lib/marked.min.js" %}'></script>
 
@@ -589,9 +591,28 @@
               }
             ]
           }
-        })
+        });
 
-        ;
+        /*
+          Register search function for each oembed service having a search endpoint
+        */
+        angular.module('miller')
+          .factory('OembedSearchFactory', function($http) {
+            return _(oembeds)
+              .filter('search')
+              .keyBy('name')
+              .mapValues(function(o, k) {
+                return function(query) {
+                  return $http.get(o.search, {
+                    params: {
+                      q: query
+                    }
+                  })
+                }
+              })
+              .value();
+          });
+        
     </script>
     {% endautoescape %}
   </body>

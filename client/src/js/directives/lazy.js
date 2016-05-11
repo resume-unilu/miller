@@ -25,6 +25,7 @@ angular.module('miller')
             'background-position': 'center center',
             'background-image': 'url(' + scope.src + ')'
           });
+          element.find('.loading').hide();
         }
 
         scope.$watch('src', function(v){

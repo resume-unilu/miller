@@ -9,25 +9,37 @@
       
       <div class="modal-body">
 
-        <div class='section'>
+        
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab">your resources</a></li>
-            <li role="presentation" ng-class="tab == 'b'? 'active':''"><a ng-click='setTab("b")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
-            
-            <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab">from url</a></li>
+        <ul class="nav nav-tabs" style='padding-left:15px' role="tablist">
+          <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab">your resources</a></li>
+          <li role="presentation" ng-class="tab == 'CVCE'? 'active':''"><a ng-click='setTab("CVCE")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
+          
+          <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab">from url</a></li>
 
-            <li role="presentation" ng-class="tab == 'bibtex'? 'active':''"><a ng-click='setTab("bibtex")' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li>
-            
-          </ul>
+          <li role="presentation" ng-class="tab == 'bibtex'? 'active':''"><a ng-click='setTab("bibtex")' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li>
+          
+        </ul>
 
+        <div class='section'>
           <div ng-show="tab == 'favourite'" class="tab-content">
         
             <ul ><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
             </ul>
           </div>
 
-          <div ng-show="tab == 'b'" class="tab-content">
+          <div ng-show="tab == 'CVCE'" class="tab-content">
+            <p>
+              <label>
+                <span translate='search'></span>
+                <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
+              </label>
+              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
+            </p>
+            <ul >
+              <li ng-repeat='document in suggestResults' ng-include='"templates/partials/oembed-search-results.html"|prefixTemplate'>
+              </li>
+            </ul>
           </div>
 
           <div ng-show="tab == 'url'" class="tab-content">

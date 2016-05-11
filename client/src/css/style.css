@@ -382,13 +382,15 @@ textarea.elastic-textarea{
   display: block;
   font-size: 1em;
   width: 100%;
-  border-bottom: 2px solid #B7B2B2;
+  border-bottom: 2px solid #E6E5E5;
   transition: border-color .25s ease-in-out, border-color .25s ease-in-out;
   border-bottom-width: 2px;
 }
 
+
 #draft-title:focus, #draft-abstract:focus,  .elastic-textarea:focus{
   border-color: #4ECDC4 ;
+  background: #f0f0f0;
 }
 
 .elastic-textarea-wrapper{
@@ -541,7 +543,7 @@ textarea.elastic-textarea{
 }
 
 .modal .modal-body .section{
-  padding: 20px 15px 10px 15px;
+  padding: 0px 15px 10px 15px;
   margin-bottom: 10px;
   border-bottom: 1px solid #f0f0f0;
 }

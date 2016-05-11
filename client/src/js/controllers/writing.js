@@ -58,13 +58,13 @@ angular.module('miller')
       if(saveable.length || deletable.length){
         $q.all(_.compact(
           saveable.map(function(d) {
-            return CaptionFactory.save({
+            var p = CaptionFactory.save({
               story: story.id,
               document: d
             }, function(res){
-              console.log('saved', res);
-              return res
+              documents.push(res);
             }).promise
+            return p
           })
           // .concat(deletable.map(function(d) {
           //   return CaptionFactory.save({
@@ -75,7 +75,7 @@ angular.module('miller')
           //   }).promise
           // }))
         )).then(function(){
-          debugger;
+          $scope.save();
           $scope.$parent.setDocuments(documents);
         });
       } else{
