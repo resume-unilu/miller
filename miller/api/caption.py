@@ -1,7 +1,7 @@
 import json
 from rest_framework import serializers, viewsets, status
 from rest_framework.response import Response
-from miller.api.common import OptionalFileField, JsonField
+from miller.api.fields import OptionalFileField, JsonField
 from miller.models import Document, Story, Caption
 
 
