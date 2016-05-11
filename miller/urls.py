@@ -27,6 +27,7 @@ router = routers.DefaultRouter(trailing_slash=True)
 
 router.register(r'user', api.UserViewSet)
 router.register(r'story', api.StoryViewSet)
+router.register(r'caption', api.CaptionViewSet)
 router.register(r'document', api.DocumentViewSet)
 router.register(r'tag', api.TagViewSet)
 

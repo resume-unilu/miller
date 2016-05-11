@@ -9,8 +9,11 @@ angular.module('miller')
   .directive('lazyImage', function ($log) {
     return {
       restrict : 'A',
+      scope: {
+        src: '='
+      },
       link : function(scope, element, attrs) {
-        $log.log(':::lazy on ',attrs.src);
+        $log.log(':::lazy on ',scope.src);
 
         element.addClass('lazy-box').css({
           'background-color': '#B7B2B2',
@@ -20,12 +23,15 @@ angular.module('miller')
           element.css({
             'background-size': 'cover',
             'background-position': 'center center',
-            'background-image': 'url(' + attrs.src + ')'
+            'background-image': 'url(' + scope.src + ')'
           });
         }
 
+        scope.$watch('src', function(v){
+          if(v)
+            wakeup(); // or start watching for in page
+        });
 
-        wakeup();
       }
     };
   })

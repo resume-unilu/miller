@@ -29,6 +29,7 @@ class Document(models.Model):
     (VIDEO, 'video'),
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
+    ("image", 'picture')
   )
 
   type       = models.CharField(max_length=24, choices=TYPE_CHOICES)

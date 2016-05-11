@@ -15,3 +15,6 @@ class Caption(models.Model):
   class Meta:
     ordering = ["-date_created"]
     verbose_name_plural = "captions"
+
+  def __unicode__(self):
+    return '%s (%s)' % (self.story.slug, self.document.slug)

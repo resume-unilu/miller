@@ -21,6 +21,10 @@ class DocumentAdmin(admin.ModelAdmin):
   search_field = ['title']
   exclude=['snapshot']
 
+class CaptionAdmin(admin.ModelAdmin):
+  search_field = ['contents']
+
+
 class CaptionInline(admin.TabularInline):
   model = Caption
   extra = 2 # how many rows to show
@@ -39,3 +43,4 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Document, DocumentAdmin)
+admin.site.register(Caption, CaptionAdmin)

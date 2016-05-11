@@ -6,7 +6,7 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('mde', function ($log, $timeout, $modal, DocumentFactory, embedService, RUNTIME) {
+  .directive('mde', function ($log, $timeout, $modal,  $filter, DocumentFactory, embedService, markedService, RUNTIME) {
     return {
       restrict: 'AE',
       scope: {
@@ -17,7 +17,7 @@ angular.module('miller')
       templateUrl: RUNTIME.static + 'templates/partials/mde.html',
       link: function(scope, el, attributes){
         // active tab
-        
+        scope.activeStates = [];
 
         var simplemde,
             timer,
@@ -27,7 +27,6 @@ angular.module('miller')
             textarea = el.find('textarea').hide(),
             toolbox =  el.find('.toolbox').hide(),
             lookups=[],
-            renderer = new marked.Renderer(),
             referenceModal = $modal({
               scope: scope,
               title: 'h',
@@ -50,6 +49,8 @@ angular.module('miller')
           });
           
           var cursor,
+              pos,
+              stat,
               // table of contents hash. Are there differences?
               ToCHash = '',
               pcursor;// = simplemde.codemirror.display.find('.Codemirror-cursor');
@@ -69,60 +70,40 @@ angular.module('miller')
                 };
                 wand.css('transform', 'translateY('+(cursor.top+cursor.height-20)+'px)');
                 toolbox.css('transform', 'translate('+(cursor.left)+'px,'+(cursor.top)+'px)');
+
+                // check cursor position: is it inside a BOLD or ITALIC?
+                pos = simplemde.codemirror.getCursor("start"),
+                stat = simplemde.codemirror.getTokenAt(pos);
+                
+                scope.activeStates = (stat.type || '').split(' ');
+                scope.$apply();
               }
-            }, 10);
+            }, 20);
             
+
           }
 
-          /*
-            @todo: Should be put as angular filter.
-          */
-          function slugify(text){
-            var strip  = /[^\w\s-]/g,
-                hyphen = /[-\s]+/g,
-                slug   = text.toLowerCase();
-
-            var map = {
-              from: 'àáäãâèéëêìíïîòóöôõùúüûñç·/_,:;', 
-              to  : 'aaaaaeeeeiiiiooooouuuunc------'
-            };
-
-            
-            for (var i=0, j=map.from.length; i<j; i++) {
-              slug = slug.replace(new RegExp(map.from.charAt(i), 'g'), map.to.charAt(i));
-            }
-            return slug.replace(strip, '').trim().replace(hyphen, '-');
-          }
+          
 
           /*
             Recompile with marked, analyzing the documents and
-            the different stuff in the contents
+            the different stuff in the contents.
           */
           function recompile(){
             // $log.debug('::mde -> recompile() ...');
-            var _ToC = [],
-                _ToCHash;
-            renderer.heading = function(text, level){
-              // toc is empty
-              var h = {
-                text: text,
-                level: level,
-                slug: slugify(text)
-              };
-              _ToC.push(h);
-            };
+            var marked   = markedService(simplemde.value()),
+                _ToCHash = md5(JSON.stringify(marked.ToC));
 
-            marked(simplemde.value(), {
-              renderer: renderer
-            });
+            $log.log('::mde -> recompile() items ToC:',marked.ToC.length, 'docs:', marked.docs.length);
 
-            _ToCHash = md5(JSON.stringify(_ToC))
-            if(_ToCHash != ToCHash){
-              ToCHash = _ToCHash;
-              $log.log('::mde -> recompile() items:',_ToC, ' (differences)');
-              scope.settoc({items:_ToC});
+            // if(_ToCHash != ToCHash){
+            //   ToCHash = _ToCHash;
+              scope.settoc({items:marked.ToC});
+              scope.setdocs({documents: marked.docs});
               scope.$apply();
-            }
+            // }
+            // save the new documents?
+            
           }
 
 
@@ -147,8 +128,6 @@ angular.module('miller')
           if(scope.settoc)
             timer_recompile = setTimeout(recompile, 0);
           
-          
-          
         };
 
 
@@ -172,7 +151,7 @@ angular.module('miller')
             $log.error('::mde -> previewUrl url provided:', url, 'is not valid')
             return false;
           };
-
+          url = url.replace('#', '.hash.')
           timer_preview = $timeout(function(){
             $log.debug('::mde -> previewUrl', url)
             embedService.get(url).then(function(data){
@@ -183,17 +162,14 @@ angular.module('miller')
 
         // open
         scope.showReferenceModal = function(){
-          $log.debug('::mde -> showReferenceModal')
           referenceModal.$promise.then(function(){
-            $log.debug('::mde -> showReferenceModal done')
-            
+            $log.log('::mde -> showReferenceModal called')
             referenceModal.show();
           });
           
           DocumentFactory.get(function(res){
-            console.log('list', res)
-            $log.debug('::mde -> showReferenceModal loaded', res.results)
-            
+            $log.log('::mde -> showReferenceModal documents loaded', res.results.length);
+
             scope.lookups = res.results;
           })
           // console.log(simplemde)
@@ -202,26 +178,53 @@ angular.module('miller')
 
       
 
-        scope.addDocument = function(type, contents, reference){
+        scope.addDocument = function(type, contents, reference, url, embed){
           $log.debug('::mde -> addDocument() type:', arguments);
 
           if(type=='bibtex'){
             $log.debug('    reference:', bibtexParse.toJSON(reference));
             return;
           }
+          // case it is an url
+          if(type=='url'){
+            var slug = $filter('slugify')(embed.title);
+            
+            DocumentFactory.save({
+              title: embed.title,
+              contents: JSON.stringify(embed),
+              type: (embed.type|| 'link').toLowerCase(),
+              slug:  $filter('slugify')(embed.title),
+              url: url
+            }, function(res){
+              $log.debug('::mde -> addDocument() document saved:', res.slug, res.id, res.short_url);
+              if(res.slug){
+                referenceModal.hide();
+                SimpleMDE.drawLink(simplemde,{
+                  url: 'doc/' + res.slug
+                });
+              }
+            }, function(err){
+              // debugger
+              // ignore duplicates and put it directly.
+              if(err.data.slug){
+                SimpleMDE.drawLink(simplemde,{
+                  url: 'doc/' + slug
+                });
+              }
+            });
+            return;
+          }
           if(!scope.selectedDocument) {
             $log.warn('::mde -> addDocument() no document selected');
-
-
             return;
-          } 
+          }
+          // the document has been selected.
           $log.debug('::mde -> addDocument() doc:', scope.selectedDocument);
           // lock ui
           // draw link at the end of the db
-
           referenceModal.hide();
           SimpleMDE.drawLink(simplemde,{
-            url: scope.selectedDocument.slug
+            url: 'doc/' + scope.selectedDocument.slug
           });
         }
 

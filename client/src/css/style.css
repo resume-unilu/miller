@@ -470,9 +470,14 @@ textarea.elastic-textarea{
   margin: 0;
   line-height: 30px;
   padding: 0;
-  color: #f0f0f0;
+  color: #e0e0e0;
   background: transparent;
   border-radius: 0px;
+}
+
+.mde .toolbox .btn.active{
+  background: #000000;
+  color: white;
 }
 
 .mde .toolbox .btn .icon-plus{

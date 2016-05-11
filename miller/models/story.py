@@ -42,7 +42,7 @@ class Story(models.Model):
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
   authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
-  documents = models.ManyToManyField(Document, through='Caption', blank=True)
+  documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
 
   tags      = models.ManyToManyField(Tag, blank=True) # tags
 

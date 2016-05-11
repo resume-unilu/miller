@@ -32,7 +32,7 @@ angular.module('miller')
 
     // add document items to the table-of)documents
     $scope.setDocuments = function(documents) {
-      $log.log('CoreCtrl > setDocuments items n.:', documents.length);
+      $log.log('CoreCtrl > setDocuments items n.:', documents.length, documents);
       $scope.documents = documents;
     };
 

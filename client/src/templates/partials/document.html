@@ -1,4 +1,5 @@
 <div class='doc doc-{{document.type}} {{document.isSelected?"active":""}}' ng-click='selectDocument(document)'>
+
       <div class='divider'>&nbsp;</div>
       <!-- this element has fixed height. -->
       <div ng-if='document.type=="video-cover"'>
@@ -8,12 +9,16 @@
         
       </div>
 
-      <div ng-if='document.type=="picture"' lazy-image src='{{document.src}}'></div>
+      <div ng-if='document.type=="picture"' lazy-image src='document.src'></div>
+      
+      <div ng-if='document.type=="image" && document.metadata.urls' lazy-image src='document.metadata.urls.Preview'></div>
 
-      <div ng-if='document.type=="pdf"' lazy-image src='{{document.snapshot}}'></div>
+      <div ng-if='document.type=="pdf"' lazy-image src='document.snapshot'></div>
       
 
       <blockquote ng-if='document.citation' markdown='document.citation'></blockquote>
+
+
       <div ng-if='document.metadata'>
         <div class='caption title' markdown='document.metadata.title.fr'></div>
         <div class='caption reference' markdown='document.metadata.reference.fr'></div>

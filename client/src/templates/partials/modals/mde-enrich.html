@@ -12,7 +12,7 @@
         <div class='section'>
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("a")' aria-controls="home" role="tab" data-toggle="tab">your resources</a></li>
+            <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab">your resources</a></li>
             <li role="presentation" ng-class="tab == 'b'? 'active':''"><a ng-click='setTab("b")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
             
             <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab">from url</a></li>
@@ -53,7 +53,7 @@
 
       </div>
       <div class="modal-footer">
-        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument(tab, contents, reference)" translate='button.add'></button>
+        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument(tab, contents, reference, url, embed)" translate='button.add'></button>
         </span>
         <span class='btn-line-group'>
         <button type="button" class="btn-line" ng-click="$hide()">Close</button>

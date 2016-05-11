@@ -26,6 +26,13 @@ angular.module('miller')
       }
     });
   })
+  .factory('StoryDocumentsFactory', function ($resource) {
+    return $resource('/api/story/:id/documents/', {},{
+      update: {
+        method:'PUT'
+      }
+    });
+  })
   /*
     get a list of ralreeady saved document accessible by the user
   */
@@ -34,6 +41,16 @@ angular.module('miller')
     return $resource('/api/document/:id/', {},{
       update: {
         method:'PUT'
+      }
+    });
+  })
+  .factory('CaptionFactory', function ($resource) {
+    return $resource('/api/caption/:id/', {},{
+      update: {
+        method:'PUT'
+      },
+      patch: {
+        method:'PATCH'
       }
     });
   })
@@ -57,3 +74,74 @@ angular.module('miller')
       }
     }
   })
+  /*
+    Apply marked service for custom markdown ;)
+  */
+  .service('markedService', function($filter) {
+    return function(value, language){
+      var renderer = new marked.Renderer(),
+          result = '',
+          ToC = [],
+          docs = [];
+
+      // split value according to language(reduce pairs)
+      if(language){
+        var candidate = _(value.split(/<!--\s*(lang:[a-zA-Z_]{2,5})\s*-->/))
+          .compact()
+          .chunk(2)
+          .fromPairs()
+          .value();
+        // console.log(language, candidate)
+        if(candidate['lang:'+language]) {
+          value = candidate['lang:'+language];
+        }
+        //value = value.split();
+      }
+      // collect h1,h2, hn and get the table of contents ToC
+      renderer.heading = function(text, level){
+        var h = {
+          text: text,
+          level: level,
+          slug: $filter('slugify')(text)
+        };
+
+        ToC.push(h);
+
+        return '<h' + level + '><div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div><a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>' + 
+          text + '</h' + level + '>';
+      };
+
+      // collect miller document
+      renderer.link = function(url, boh, text) {
+        if(url.trim().indexOf('doc/') == 0){
+          var documents = url.trim().replace('doc/','').split(',');
+          for(var i in documents){
+            docs.push({
+              citation: text,
+              slug: documents[i]
+            });
+          }
+          return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
+        }
+        return '<a href='+url+'>'+text+'</a>';
+      }
+
+      renderer.image = function(src, title, alt){
+        if((alt||'').indexOf('profile/') == 0){
+          return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
+        }
+        return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
+      };
+
+      // get the new documents and save them in background if needed.
+      result = marked(value, {
+        renderer: renderer
+      });
+
+      return {
+        html: result,
+        ToC: ToC,
+        docs: docs
+      };
+    } 
+  });
