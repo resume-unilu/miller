@@ -32,6 +32,8 @@ class CaptionInline(admin.TabularInline):
 class StoryAdmin(admin.ModelAdmin):
   inlines = (CaptionInline,)
   search_field = ['title']
+  list_filter = ('tags',)
+
 
 class TagAdmin(admin.ModelAdmin):
   search_field = ['name', 'slug', 'category']
