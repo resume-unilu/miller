@@ -81,7 +81,16 @@ angular.module('miller')
     };
 
     $rootScope.$on('$stateChangeStart', function (e, state) {
-      $log.log('CoreCtrl @stateChangeStart', state);
+      $log.log('CoreCtrl @stateChangeStart new:', state.name, '- previous:', $scope.state);
+      // for specific state only.
+
+      if($scope.state && ['draft', 'writing'].indexOf($scope.state) !== -1){
+        // check the user has wirtten sometihing..
+        var answer = confirm("Are you sure you want to leave this page?")
+        if (!answer) {
+            e.preventDefault();
+        }
+      }
     });
 
     $rootScope.$on('$stateChangeSuccess', function (e, state) {
@@ -111,6 +120,23 @@ angular.module('miller')
       localStorageService.set('lang', $scope.language);
       $translate.use(key);
     };
+
+    /*
+      Prevent from closing
+    */
+    window.onbeforeunload = function (event) {
+      if($scope.state && ['draft', 'writing'].indexOf($scope.state) !== -1){
+        var message = 'Sure you want to leave?';
+        if (typeof event == 'undefined') {
+          event = window.event;
+        }
+        if (event) {
+          event.returnValue = message;
+        }
+        return message;
+      }
+    }
+
     /*
       On location change, collect the parameters.
       Since this is called BEFORE statehangeSuccess, the scrolling cannot be made at this level.

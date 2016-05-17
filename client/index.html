@@ -414,9 +414,10 @@
       <div >
         <button class='btn-transparent' ng-click='toggleTableOfContents()'><span  class='icon-book-open'></span></button>
       </div>
-      <!-- <div style='margin-top:20px'>
-        <button class='btn-transparent' style='background:#151515' ng-click=''><span  class='icon-book-open'></span></button>
-      </div> -->
+      <div ng-if='state == "writing" || state == "draft"' style='margin-top:20px' ng-click='save()'>
+        <button class='btn-transparent btn-line'><span  class='icon-disc'></span></button>
+        <div class='sans-serif' style='text-transform: uppercase; font-size:11px; text-align:center; line-height:20px' translate='save'></div>
+      </div>
       
     </div>
     

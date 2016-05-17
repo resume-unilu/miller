@@ -43,6 +43,10 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5{
   margin-top: 1em;
 }
 
+.sans-serif{
+  font-family: 'Lato', sans-serif;
+}
+
 .profile-thumb{
   width: 80px;
   height: 80px;
@@ -125,6 +129,13 @@ right border is due to the font used
 
 .btn-transparent:focus{
   outline: none;
+}
+
+.btn-transparent.btn-line{
+  border: 2px solid #151515;
+  background-color: white;
+  padding:0;
+  font-size: 15px;
 }
 
 blockquote{

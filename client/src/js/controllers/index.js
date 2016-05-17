@@ -6,7 +6,7 @@
  */
 angular.module('miller')
   .controller('IndexCtrl', function ($scope, $log, writings, news) {
-    $log.debug('IndexCtrl welcome');
+    $log.debug('IndexCtrl welcome', writings);
 
     /*
       Get the firs n sentence until the number of words are covered.
@@ -14,12 +14,12 @@ angular.module('miller')
     */
     function tokenize(text, words){
       var sentences = text.split(/[\.!\?]/);
-      console.log(text, sentences);
+      // console.log(text, sentences);
       return sentences;
     }
 
     writings.results = writings.results.map(function(d) {
-      d.excerpt = tokenize(d.abstract, 10)[0];
+      d.excerpt = d.abstract? tokenize(d.abstract, 10)[0]: '';
       return d;
     });
 
