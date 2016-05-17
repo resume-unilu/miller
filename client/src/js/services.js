@@ -122,6 +122,17 @@ angular.module('miller')
             });
           }
           return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
+        } else if (url.trim().indexOf('voc/') === 0){
+          var terms = url.trim().replace('voc/','').split(',');
+          for(var i in terms){
+            docs.push({
+              citation: text,
+              slug: terms[i],
+              type: 'glossary'
+            });
+          }
+          return '<a class="glossary" name="' + terms[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+' <span class="icon icon-arrow-right-circle"></span></a>';
+        
         }
         return '<a href='+url+'>'+text+'</a>';
       };

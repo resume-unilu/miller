@@ -121,6 +121,21 @@ angular.module('miller')
       $translate.use(key);
     };
 
+
+    /*
+      When requested, fullsize for documents
+    */
+    $scope.fullsize = function(doc) {
+      $log.log('CoreCtrl -> fullsize', doc);
+      // Pre-fetch an external template populated with a custom scope
+      // var myOtherModal = $modal({scope: $scope, template: 'modal/docs/modal.demo.tpl.html', show: false});
+      // // Show when some event occurs (use $promise property to ensure the template has been loaded)
+      // $scope.showModal = function() {
+      //   myOtherModal.$promise.then(myOtherModal.show);
+      // };
+
+    };
+
     /*
       Prevent from closing
     */
@@ -147,22 +162,6 @@ angular.module('miller')
       $scope.locationPath = path;
     });
 
-    /*
-      When requested, fullsize for documents
-    */
-    $scope.fullsize = function(doc) {
-      $log.log('CoreCtrl -> fullsize', doc);
-      // Pre-fetch an external template populated with a custom scope
-      // var myOtherModal = $modal({scope: $scope, template: 'modal/docs/modal.demo.tpl.html', show: false});
-      // // Show when some event occurs (use $promise property to ensure the template has been loaded)
-      // $scope.showModal = function() {
-      //   myOtherModal.$promise.then(myOtherModal.show);
-      // };
-
-    };
-
-
-
     // watch 400 bad request form error. Cfr app.js interceptors.
     $rootScope.$on(EVENTS.BAD_REQUEST, function(e, rejection){
       $alert({
@@ -175,6 +174,18 @@ angular.module('miller')
         show: true, 
         type:'error'
       });
+    });
+
+    var timer_event_message;
+    // watch for saving or MESSAGE events
+    $scope.$on(EVENTS.MESSAGE, function (e, message) {
+      $log.log('CoreCtrl @MESSAGE', message);
+      $scope.message = message;
+      if(timer_event_message)
+        $timeout.cancel(timer_event_message);
+      timer_event_message = $timeout(function(){
+        $scope.message = null;
+      }, 2000);
     });
     /*
       First load

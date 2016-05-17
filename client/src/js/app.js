@@ -29,6 +29,7 @@ angular
   })
   .constant('EVENTS', {
     'SAVE': 'save',
+    'MESSAGE': 'message',
     'BAD_REQUEST':'bad_request'
   })
   /*

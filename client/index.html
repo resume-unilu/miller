@@ -301,7 +301,22 @@
         /*background-color: #C7F464;*/
       }
 
-
+      #messenger{
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        margin-left: -100px;
+        width: 200px;
+        background-color: #fff;
+        display: none;
+        z-index: 100;
+        text-align: center;
+        border: 2px solid;
+        padding: 10px 0;
+      }
+      #messenger.active{
+        display: block;
+      }
     </style>
   </head>
   {% block body %}
@@ -420,8 +435,9 @@
       </div>
       
     </div>
-    
-    
+    {% verbatim %}
+    <div id="messenger" ng-class='{"active":message}' translate="{{message}}"></div>
+    {% endverbatim %}
     {% if debug %}
     <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
     <script src='{% static "js/lib/md5.js" %}'></script>

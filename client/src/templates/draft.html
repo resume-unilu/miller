@@ -1,18 +1,22 @@
 
-<span ng-if='!isDraft'>
-  <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
-    <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
-    <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
-  <!-- </div> -->
-  
-</span>
-<span class='btn-line-group'><button class='btn-line active' ng-click='save()'>{{isSaving? "saving...":"save"}}</button></span>
+
+<!-- <span class='btn-line-group'><button class='btn-line active' ng-click='save()'>{{isSaving? "saving...":"save"}}</button></span> -->
 
 <textarea id='draft-title' rows="1" msd-elastic ng-model='title' type='text' placeholder='Untitled'></textarea>
 
 <blockquote>
   <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 </blockquote>
+
+<div ng-if='!isDraft'>
+  <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
+  <div class='btn-line-group'>
+    <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
+    <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
+  </div>
+  <!-- </div> -->
+  
+</div>
 
 <div ng-if='user.is_staff'>
   <label translate="displayed-as"></label>
@@ -21,6 +25,7 @@
 
   </tags-input>
 </div>
+
 <div ng-if='!isDraft && user.is_staff'>
   <label translate="keywords"></label>
   <tags-input class='tags-input' key-property='id' display-property='name' ng-model="tags">

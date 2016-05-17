@@ -60,9 +60,9 @@ class DocumentViewSet(viewsets.ModelViewSet):
       filters = {}
     
     if request.user.is_authenticated():
-      docs = Document.objects.all()
+      docs = Document.objects.filter(**filters)
     else:
-      docs = Document.objects.all()
+      docs = Document.objects.filter(**filters)
     # if request.user.is_authenticated():
     #   docs = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
     # else:

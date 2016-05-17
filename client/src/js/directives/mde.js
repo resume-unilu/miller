@@ -6,7 +6,7 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('mde', function ($log, $timeout, $modal,  $filter, DocumentFactory, OembedSearchFactory, embedService, markedService, RUNTIME) {
+  .directive('mde', function ($log, $timeout, $modal,  $filter, DocumentFactory, StoryFactory, OembedSearchFactory, embedService, markedService, RUNTIME) {
     return {
       restrict: 'AE',
       scope: {
@@ -165,17 +165,52 @@ angular.module('miller')
         scope.suggestMessage = '';
         scope.suggest = function(query, service){
           $log.log('::mde -> suggest()', scope.query, query, OembedSearchFactory);
+          scope.suggestMessage = '(loading...)';
+          // internal search
+          if(service == 'favourite'){
+            DocumentFactory.get({
+              filters: JSON.stringify(query.length > 2? {contents__icontains: query}: {})
+            },function(res){
+              $log.log('::mde -> showReferenceModal documents loaded', res.results.length);
+
+              scope.lookups = res.results;
+              scope.suggestMessage = '(<b>' + res.count + '</b> results)';
+            });
+            return;
+          }
+
+          if(service == 'glossary') {
+            var params = {
+              tags__slug: 'glossary'
+            }
+            if(query.length > 2)
+              params.contents__icontains = query;
+
+            StoryFactory.get({
+              filters: JSON.stringify(params)
+            },function(res){
+              $log.log('::mde -> showReferenceModal documents loaded', res.results.length);
+
+              scope.glossary = res.results;
+              scope.suggestMessage = '(<b>' + res.count + '</b> results)';
+            });
+            return;
+          } 
+
           if(query.length < 3) {
             scope.suggestMessage = '(write something more)';
             scope.suggestResults = [];
             return;
           }
-          scope.suggestMessage = '(loading...)';
+
+            // external search
+          
           if(OembedSearchFactory[service])
             OembedSearchFactory[service](query).then(function(res){
               scope.suggestResults = res.data.results;
               scope.suggestMessage = '(<b>' + res.data.count + '</b> results)';
             });
+          
         };
 
         // open
@@ -203,6 +238,14 @@ angular.module('miller')
 
           if(type=='bibtex'){
             $log.debug('    reference:', bibtexParse.toJSON(reference));
+            return;
+          }
+
+          if(type=='glossary'){
+            debugger
+            SimpleMDE.drawLink(simplemde,{
+              url: 'voc/' + scope.selectedDocument.slug
+            });
             return;
           }
           // case it is an url

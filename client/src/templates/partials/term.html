@@ -1,0 +1,9 @@
+<div ng-class='{"active": term.isSelected}' class='doc term' ng-click='selectDocument(term)'>
+  <div class='divider'>&nbsp;</div>
+  <!-- this element has fixed height. -->
+  
+  <div class='caption title' markdown='term.title'></div>
+  <div class='caption reference' markdown='term.abstract'></div>
+  <div class='copyright' markdown='document.copyright'></div>
+
+</div>

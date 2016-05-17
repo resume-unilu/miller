@@ -14,6 +14,7 @@ angular.module('miller')
     $scope.tags = [];
 
     $scope.$on(EVENTS.SAVE, function() {
+      $scope.$emit(EVENTS.MESSAGE, 'saving');
       StoryFactory.save({}, {
         title: $scope.title,
         abstract: $scope.abstract,
@@ -21,7 +22,7 @@ angular.module('miller')
         status: 'draft',
         tags: _.map($scope.tags, 'id')
       }, function(res) {
-
+        $scope.$emit(EVENTS.MESSAGE, 'saved');
         $log.log('DraftCtrl -> @EVENTS.SAVE saved:', res);
         // handle redirection.
         $state.go('writing', {

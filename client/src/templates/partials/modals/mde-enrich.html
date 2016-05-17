@@ -13,6 +13,7 @@
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
         <ul class="nav nav-tabs" style='padding-left:15px' role="tablist">
           <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab">your resources</a></li>
+          <li role="presentation" ng-class='{"active": tab == "glossary"}'><a ng-click='setTab("glossary")' aria-controls="home" role="tab" data-toggle="tab">glossary</a></li>
           <li role="presentation" ng-class="tab == 'CVCE'? 'active':''"><a ng-click='setTab("CVCE")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
           
           <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab">from url</a></li>
@@ -23,8 +24,26 @@
 
         <div class='section'>
           <div ng-show="tab == 'favourite'" class="tab-content">
-        
+            <p>
+              <label>
+                <span translate='search'></span>
+                <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
+              </label>
+              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
+            </p>
             <ul ><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
+            </ul>
+          </div>
+
+          <div ng-show="tab == 'glossary'" class="tab-content">
+            <p>
+              <label>
+                <span translate='search'></span>
+                <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
+              </label>
+              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
+            </p>
+            <ul ><li ng-repeat='term in glossary' ng-include='"templates/partials/term.html"|prefixTemplate'></li>
             </ul>
           </div>
 

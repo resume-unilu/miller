@@ -141,6 +141,7 @@ angular.module('miller')
 
     $scope.save = function() {
       $log.debug('WritingCtrl @SAVE');
+      $scope.$emit(EVENTS.MESSAGE, 'saving');
       $scope.isSaving = true;
       $scope.lock();
       StoryFactory.update({id: story.id}, angular.extend({
@@ -149,6 +150,7 @@ angular.module('miller')
         contents: $scope.contents
       }, $scope.metadata), function(res) {
         $log.debug('WritingCtrl @SAVE: success');
+        $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.unlock();
         $scope.isSaving =false;
       });
