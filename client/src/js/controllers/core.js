@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, localStorageService, $translate, $timeout, StoryFactory, TagFactory, RUNTIME, EVENTS) {    
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, TagFactory, RUNTIME, EVENTS) {    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;
@@ -121,7 +121,35 @@ angular.module('miller')
       $scope.locationPath = path;
     });
 
+    /*
+      When requested, fullsize for documents
+    */
+    $scope.fullsize = function(doc) {
+      $log.log('CoreCtrl -> fullsize', doc);
+      // Pre-fetch an external template populated with a custom scope
+      // var myOtherModal = $modal({scope: $scope, template: 'modal/docs/modal.demo.tpl.html', show: false});
+      // // Show when some event occurs (use $promise property to ensure the template has been loaded)
+      // $scope.showModal = function() {
+      //   myOtherModal.$promise.then(myOtherModal.show);
+      // };
 
+    };
+
+
+
+    // watch 400 bad request form error. Cfr app.js interceptors.
+    $rootScope.$on(EVENTS.BAD_REQUEST, function(e, rejection){
+      $alert({
+        placement: 'top',
+        title: 'form errors', 
+        'animation': 'bounceIn',
+        content: _(rejection.data).map(function(d,k){
+          return '<div><b>'+k+'</b>: '+d+'</div>';
+        }).value().join(''),
+        show: true, 
+        type:'error'
+      });
+    });
     /*
       First load
     */

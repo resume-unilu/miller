@@ -14,19 +14,19 @@
   <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 </blockquote>
 
+<div ng-if='user.is_staff'>
+  <label translate="displayed-as"></label>
+  <tags-input class='tags-input' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
+    <auto-complete source="suggestTags($query, {category__in:['blog','writing']})" ></auto-complete>
+
+  </tags-input>
+</div>
 <div ng-if='!isDraft && user.is_staff'>
-<label translate="displayed-as"></label>
-<tags-input class='tags-input' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
-  <auto-complete source="suggestTags($query, {category__in:['blog','writing']})" ></auto-complete>
+  <label translate="keywords"></label>
+  <tags-input class='tags-input' key-property='id' display-property='name' ng-model="tags">
+    <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
 
-</tags-input>
-
-
-<label translate="keywords"></label>
-<tags-input class='tags-input' key-property='id' display-property='name' ng-model="tags">
-  <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
-
-</tags-input>
+  </tags-input>
 </div>
 
 <div class='authors' ng-if='!isDraft'>

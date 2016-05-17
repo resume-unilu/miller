@@ -9,6 +9,7 @@
 angular
   .module('miller', [
     'ui.router',
+    'ngAnimate',
     'ngResource',
     'ngSanitize',
     'ngCookies',
@@ -27,7 +28,8 @@ angular
     'preferredLocale': 'en_US'
   })
   .constant('EVENTS', {
-    'SAVE': 'save'
+    'SAVE': 'save',
+    'BAD_REQUEST':'bad_request'
   })
   /*
     multiple input tags configuration
@@ -66,6 +68,19 @@ angular
   .config(function($httpProvider) {
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+    // intercept BAD request errors
+    $httpProvider.interceptors.push(function($q, $rootScope, EVENTS) {
+      return {
+        responseError: function(rejection) {
+          // emit on 400 error (bad request, mostly form errors)
+          if(rejection.status == 400){
+            $rootScope.$emit(EVENTS.BAD_REQUEST, rejection);
+          }
+          return $q.reject(rejection);
+        }
+      };
+    });
   })
   .config(function($locationProvider) {
     // $locationProvider.html5Mode(true);

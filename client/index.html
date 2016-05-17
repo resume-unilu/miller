@@ -381,8 +381,10 @@
         {% endblock %}
       </div>
       <div class="push"></div>
+      
     </div>
 
+    
     <div id="footer" ng-class='state'>
       <div class='container'>
         <div class='row'>
@@ -425,7 +427,7 @@
     
 
     <!-- lodash build with lodash-cli:
-         lodash include=map,filter,each,compact,uniq,value,keyBy,first,chunk,fromPairs,mapValues -->
+         lodash include=map,filter,each,compact,uniq,value,keyBy,first,chunk,fromPairs,mapValues,isEmpty -->
     <script src='{% static "js/lib/lodash.custom.min.js" %}'></script>
     <script src='{% static "js/lib/marked.min.js" %}'></script>
 
@@ -440,7 +442,8 @@
     <script src='{% static "js/lib/angular-resource.min.js" %}'></script> 
     <script src='{% static "js/lib/angular-cookies.min.js" %}'></script> 
     <script src='{% static "js/lib/angular-sanitize.min.js" %}'></script> 
-    <script src='{% static "js/lib/angular-ui-router.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-ui-router.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-animate.min.js" %}'></script> 
     <script src='{% static "js/lib/angular-strap.min.js" %}'></script>
     <script src='{% static "js/lib/angular-strap.tpl.min.js" %}'></script>
     <script src='{% static "js/lib/angular-elastic.js" %}'></script>
@@ -589,7 +592,7 @@
               },
               {
                 name: 'glossary',
-                slug: 'term',
+                slug: 'glossary',
                 url: '/glossary'
               }
             ]
