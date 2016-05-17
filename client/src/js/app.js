@@ -9,7 +9,7 @@
 angular
   .module('miller', [
     'ui.router',
-    'ngAnimate',
+    // 'ngAnimate',
     'ngResource',
     'ngSanitize',
     'ngCookies',
