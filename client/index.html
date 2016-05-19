@@ -518,15 +518,16 @@
             'inner-table-of-contents': $('#inner-table-of-contents'),
             'inner-table-of-documents': $('#inner-table-of-documents'),
             'writing-tools': $('#writing-tools')
-          };
+          },
 
-          _navbar_offset = 140;
+          _navbar_offset = 140,
+          st,
           floatinglimit = 140,
           isBelowFloating = false;
 
       function evaluateFloating(e){
-        var st = _windox.scrollTop(),
-            navbar_offset = Math.max(floatinglimit - st, 0);
+          st = _windox.scrollTop();
+          navbar_offset = Math.max(floatinglimit - st, 0);
 
         if(navbar_offset != _navbar_offset)
           for(var i in _offsetables)

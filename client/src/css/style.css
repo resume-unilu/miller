@@ -289,6 +289,12 @@ blockquote{
   border-bottom: 1px solid #B7B2B2;
 }
 
+.authors{
+  margin: 20px 0;
+}
+
+
+
 .type, .copyright, .tag, .date{
   text-transform: uppercase;
   font-family: 'Lato', sans-serif;
@@ -336,6 +342,9 @@ p{
   line-height: 24px;
 }
 
+.section{
+  margin-top:20px;
+}
 
 .coverstory blockquote{
   font-size: 12px;
@@ -481,15 +490,15 @@ textarea.elastic-textarea{
   top: -30px;
   font-size: 18px;
   height: 30px;
-  background: rgba(79, 74, 74, 0.9);
+  background: #fff;/*rgba(79, 74, 74, 0.9);*/
   transition:  background-color .27s ease-in-out;
   -webkit-transition: background-color .27s ease-in-out;
- 
+ border-bottom: 2px solid #f0f0f0;
   z-index: 1000;
 }
 
 .mde .toolbox:hover{
- background: #151515;
+ background: #f0f0f0;
 }
 
 .mde .toolbox .btn{
@@ -498,7 +507,7 @@ textarea.elastic-textarea{
   margin: 0;
   line-height: 30px;
   padding: 0;
-  color: #e0e0e0;
+  color: #d0d0d0;
   background: transparent;
   border-radius: 0px;
 }

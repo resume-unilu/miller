@@ -8,7 +8,7 @@
   <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 </blockquote>
 
-<div ng-if='!isDraft'>
+<div style='position:absolute; top:220px' ng-if='!isDraft'>
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
   <div class='btn-line-group'>
     <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
@@ -18,16 +18,16 @@
   
 </div>
 
-<div ng-if='user.is_staff'>
-  <label translate="displayed-as"></label>
+<div class='section' ng-if='user.is_staff'>
+  <!-- <label translate="displayed-as"></label> -->
   <tags-input class='tags-input' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
     <auto-complete source="suggestTags($query, {category__in:['blog','writing']})" ></auto-complete>
 
   </tags-input>
 </div>
 
-<div ng-if='!isDraft && user.is_staff'>
-  <label translate="keywords"></label>
+<div class='section' ng-if='!isDraft && user.is_staff'>
+  <!-- <label translate="keywords"></label> -->
   <tags-input class='tags-input' key-property='id' display-property='name' ng-model="tags">
     <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
 
