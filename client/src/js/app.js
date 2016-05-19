@@ -92,6 +92,7 @@ angular
     $stateProvider
       .state('index', {
         url: '/',
+        reloadOnSearch : false,
         controller: 'IndexCtrl',
         templateUrl: RUNTIME.static + 'templates/index.html',
         resolve:{
@@ -114,16 +115,19 @@ angular
       })
       .state('login', {
         url: '/login',
+        reloadOnSearch : false,
         controller: 'LoginCtrl',
         templateUrl: RUNTIME.static + 'templates/login.html'
       })
       .state('draft', {
         url: '/create',
+        reloadOnSearch : false,
         controller: 'DraftCtrl',
         templateUrl: RUNTIME.static + 'templates/draft.html'
       })
       .state('writing', {
         url: '/writing/:storyId',
+        reloadOnSearch : false,
         controller: 'WritingCtrl',
         templateUrl: RUNTIME.static + 'templates/draft.html',
         resolve: {
@@ -134,12 +138,14 @@ angular
       })
       .state('me', {
         abstract: true,
+        reloadOnSearch : false,
         url: '/me',
         controller: 'MeCtrl',
         templateUrl: RUNTIME.static + 'templates/me.html'
       })
         .state('me.stories', {
           url: '/stories',
+          reloadOnSearch : false,
           controller: 'ItemsCtrl',
           templateUrl: RUNTIME.static + 'templates/me.stories.html',
           resolve: {
@@ -157,6 +163,7 @@ angular
 
       .state('blog', {
         url: '/blog',
+        reloadOnSearch : false,
         abstract:true,
         controller: 'BlogCtrl',
         templateUrl: RUNTIME.static + 'templates/blog.html',
@@ -165,6 +172,7 @@ angular
 
       .state('blog.everything', {
         url: '',
+        reloadOnSearch : false,
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/blog.news.html',
         resolve: {
@@ -187,6 +195,7 @@ angular
       .state('events', {
         url: '/events',
         abstract:true,
+        reloadOnSearch : false,
         // controller: function(){},
         templateUrl: RUNTIME.static + 'templates/events.html',
         
@@ -195,6 +204,7 @@ angular
       .state('events.everything', {
         url: '',
         controller: 'ItemsCtrl',
+        reloadOnSearch : false,
         templateUrl: RUNTIME.static + 'templates/blog.news.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
@@ -219,6 +229,7 @@ angular
       .state('publications', {
         url: '/publications',
         abstract: true,
+        reloadOnSearch : false,
         controller: function($scope){
           $scope.urls = RUNTIME.stories.writing;
         },
@@ -260,6 +271,7 @@ angular
       .state('post', {
         url: '/story/:postId',
         controller: 'PostCtrl',
+        reloadOnSearch : false,
         templateUrl: RUNTIME.static + 'templates/post.html',
         resolve: {
           post: function(StoryFactory, $stateParams) {

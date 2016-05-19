@@ -20,6 +20,20 @@ angular.module('miller')
       }
     };
   })
+  .directive('markedLanguage', function($compile, $log, $location){
+    return {
+      restrict : 'A',
+      scope:{
+        markedLanguage: '=',
+      },
+      link : function(scope, element, attrs) {
+        if(scope.markdown && scope.markdown.length) {
+          element.html(marked(scope.markdown));
+          $compile(element.contents())(scope);
+        }
+      }
+    };
+  })
   .directive('marked', function ($compile, $log, $location, markedService) {
    return {
       restrict : 'A',
@@ -47,6 +61,10 @@ angular.module('miller')
         };
         
         function init(){
+          if(!scope.marked || !scope.marked.length){
+            $log.warn(':: marked init(), no text to be marked');
+            return;
+          }
           var rendered  = markedService(scope.marked, scope.language);
 
           element.html(rendered.html);

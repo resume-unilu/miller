@@ -21,8 +21,9 @@ angular.module('miller')
         
         function wakeup(){
           element.css({
-            'background-size': 'cover',
+            'background-size': attrs.size || 'cover',
             'background-position': 'center center',
+            'background-repeat': 'no-repeat',
             'background-image': 'url(' + scope.src + ')'
           });
           element.find('.loading').hide();

@@ -34,6 +34,16 @@ angular.module('miller')
     $scope.setDocuments = function(documents) {
       $log.log('CoreCtrl > setDocuments items n.:', documents.length, documents);
       $scope.documents = documents;
+      if($scope.qs.view) {
+        // check if it's somewhere in the scope, otherwise callit
+        for(var i=0,j=$scope.documents.length;i<j;i++){
+          if($scope.qs.view == $scope.documents[i].short_url){
+            $scope.fullsized = $scope.documents[i];
+            fullsizeModal.$promise.then(fullsizeModal.show);
+            break;
+          }
+        }
+      };
     };
 
     $scope.save = function(){
@@ -108,6 +118,7 @@ angular.module('miller')
 
 
 
+
     });
 
 
@@ -123,18 +134,27 @@ angular.module('miller')
 
 
     /*
-      When requested, fullsize for documents
+      When requested, fullsize for documents.
+      Cfr also locationChangeSuccess listener 
     */
+    var fullsizeModal = $modal({
+      scope: $scope, 
+      template: RUNTIME.static + 'templates/partials/modals/fullsize.html',
+      id: 'dii',
+      show: false
+    });
+    
+    $scope.$on('modal.hide', function(e,modal){
+      if(modal.$id== 'dii')
+        $location.search('view', null);
+    });
+
     $scope.fullsize = function(doc) {
       $log.log('CoreCtrl -> fullsize', doc);
-      // Pre-fetch an external template populated with a custom scope
-      // var myOtherModal = $modal({scope: $scope, template: 'modal/docs/modal.demo.tpl.html', show: false});
-      // // Show when some event occurs (use $promise property to ensure the template has been loaded)
-      // $scope.showModal = function() {
-      //   myOtherModal.$promise.then(myOtherModal.show);
-      // };
-
+      $scope.fullsized = doc;
+      $location.search('view', doc.short_url);
     };
+
 
     /*
       Prevent from closing
@@ -160,6 +180,11 @@ angular.module('miller')
       $log.debug('CoreCtrl @locationChangeSuccess', path);
       $scope.qs = $location.search();
       $scope.locationPath = path;
+
+      if($scope.qs.view && $scope.fullsized && $scope.fullsized.short_url == $scope.qs.view){
+        // normal behaviour, after fullsize has been called the view param is present in location
+        fullsizeModal.$promise.then(fullsizeModal.show);
+      }
     });
 
     // watch 400 bad request form error. Cfr app.js interceptors.

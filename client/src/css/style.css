@@ -572,6 +572,50 @@ textarea.elastic-textarea{
   margin-bottom:10px;
 }
 
+.modal .oversize{
+  position: absolute;
+  background: #151515;
+  top:50px;
+  left:50px;
+  right: 50px;
+  bottom: 0px;
+  overflow:auto;
+  color: #f0f0f0;
+}
+
+.modal .oversize > .wrapper .heading{
+  position:absolute;
+  bottom: 20px;
+  left:100px;
+  right: 100px;
+  background: rgba(5,5,5,.9);
+  padding: 20px 50px;
+}
+.modal .oversize > .wrapper .heading h2{
+  margin: 0;
+  padding:0;
+}
+
+.modal .oversize > .wrapper{
+  height:100%;
+}
+
+.modal .oversize > .wrapper > .lazy-box{
+  height:100%;
+}
+
+.modal .oversize > .wrapper > .inner{
+  background: #fff;
+  padding: 50px 100px 50px;
+  width: 100%;
+  color: #151515;
+}
+
+.modal .oversize .inner .text{
+  background: #fff;
+  max-width: 1000px;
+}
+
 .modal .tab-content ul {
   margin: 0 -10px;
   padding: 0;

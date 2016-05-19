@@ -1,1 +1,21 @@
-fullsize
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1050; display: block;">
+  <div ng-click='$hide()'>close 
+  <span class='icon-close'></span>
+  </div>
+  <div class='oversize' style=''>
+    <div class='wrapper' ng-if='fullsized.type == "image"'>
+
+      <div lazy-image size='contain' src='fullsized.metadata.urls.Publishable'></div>
+
+      <div class='heading'>
+        <h2 marked='fullsized.metadata.title'></h2>
+        <div marked='fullsized.metadata.reference'></div>
+        
+      </div>
+      <div class='inner'>
+        <div class='text caption' marked='fullsized.metadata.caption'></div>
+        <div class='text copyright' marked='fullsized.metadata.copyright'></div>
+      </div>
+    </div>
+  </div>
+</div>
