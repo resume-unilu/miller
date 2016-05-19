@@ -19,6 +19,18 @@ angular.module('miller')
         // active tab
         scope.activeStates = [];
 
+        function drawRedText(editor) {
+
+    var cm = editor.codemirror;
+    var output = '';
+    var selectedText = cm.getSelection();
+    var text = selectedText || 'placeholder';
+
+    output = '!!' + text + '!!';
+    cm.replaceSelection(output);
+
+}
+
         var simplemde,
             timer,
             timer_recompile,
@@ -80,7 +92,7 @@ angular.module('miller')
                 // check cursor position: is it inside a BOLD or ITALIC?
                 pos = simplemde.codemirror.getCursor("start");
                 stat = simplemde.codemirror.getTokenAt(pos);
-                // $log.log('     ', stat, pos, simplemde.codemirror)
+                $log.log('     ', stat)
                 scope.activeStates = (stat.type || '').split(' ');
                 scope.$apply();
               }
@@ -157,7 +169,6 @@ angular.module('miller')
           
 
           _isToolbarVisible = isToolbarVisible;
-          console.log('dkflskflskfsmlkfsdf', toolbarOffset )
         });
 
         // on destry, destroy scroll event
@@ -249,6 +260,11 @@ angular.module('miller')
 
         // open
         scope.showReferenceModal = function(){
+          if(scope.activeStates.indexOf("link") !== -1){
+            $log.warn('oh dear, you should not click on it')
+            return;
+          }
+          // if there is already a link, should add it.
           referenceModal.$promise.then(function(){
             $log.log('::mde -> showReferenceModal called');
             referenceModal.show();

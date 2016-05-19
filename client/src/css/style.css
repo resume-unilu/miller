@@ -342,6 +342,14 @@ p{
   line-height: 24px;
 }
 
+.contents blockquote{
+  text-transform: none;
+
+  font-family: inherit;
+  color: #959595;
+  padding-bottom: 10px;
+}
+
 .section{
   margin-top:20px;
 }
@@ -463,7 +471,7 @@ textarea.elastic-textarea{
   height: 22px;
   right: 0px;
   text-align: left;
-  border-bottom: 1px solid #353535;
+  /*border-bottom: 1px solid #353535;*/
    /*transition: transform .27s ease-in-out; */
   
   /*transition: transform .27s ease-in-out;*/
@@ -529,6 +537,7 @@ textarea.elastic-textarea{
 .mde .toolbox .btn:active{
   background: #B7B2B2;
 }
+
 
 /*
   Alert bootstrap override
@@ -679,6 +688,20 @@ ul.dropdown-menu{
   color: #4ECDC4;
   font-weight: normal;
   text-decoration: none;
+}
+
+.CodeMirror .CodeMirror-code .cm-quote{
+font-size: 0.9em;
+    color: #959595;
+}
+
+.CodeMirror .CodeMirror-code .cm-quote.cm-link{
+  color: #4ECDC4;
+}
+
+.CodeMirror .CodeMirror-code .cm-quote.cm-url{
+  color: #d5d5d5;
+
 }
 /*
   ng-tags-input
