@@ -17,5 +17,16 @@
         <div class='text copyright' marked='fullsized.metadata.copyright'></div>
       </div>
     </div>
+
+    <div class='wrapper' ng-if='fullsized.type == "video"'>
+      <!-- <div class='heading'>
+        <h2 marked='fullsized.metadata.title'></h2>
+        <div ng-if='fullsized.metadata.reference' marked='fullsized.metadata.reference'></div>
+        
+      </div> -->
+
+   
+      <div style='height: 100%' ng-if='fullsized.metadata.html' marked='fullsized.metadata.html'></div>
+    </div>
   </div>
 </div>

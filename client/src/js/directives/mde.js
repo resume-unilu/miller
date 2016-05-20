@@ -19,18 +19,6 @@ angular.module('miller')
         // active tab
         scope.activeStates = [];
 
-        function drawRedText(editor) {
-
-    var cm = editor.codemirror;
-    var output = '';
-    var selectedText = cm.getSelection();
-    var text = selectedText || 'placeholder';
-
-    output = '!!' + text + '!!';
-    cm.replaceSelection(output);
-
-}
-
         var simplemde,
             timer,
             timer_recompile,
@@ -193,13 +181,14 @@ angular.module('miller')
           // check url
           var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&&#37;@!\-\/]))?/;
           if(!regexp.test(url)){
-            $log.error('::mde -> previewUrl url provided:', url, 'is not valid');
+            $log.error('::mde -> previewUrl() url provided:', url, 'is not valid');
             return false;
           }
           url = url.replace('#', '.hash.');
           timer_preview = $timeout(function(){
-            $log.debug('::mde -> previewUrl', url);
+            $log.debug('::mde -> previewUrl() url:', url);
             embedService.get(url).then(function(data){
+              $log.debug(':: mde -> previewUrl() received:', data)
               scope.embed = data;
             });
           }, 20);

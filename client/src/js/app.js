@@ -86,6 +86,10 @@ angular
   .config(function($locationProvider) {
     // $locationProvider.html5Mode(true);
   })
+  .config(function(embedlyServiceProvider, RUNTIME) {
+    if(RUNTIME.oembeds.EMBEDLY_API_KEY)
+      embedlyServiceProvider.setKey(RUNTIME.oembeds.EMBEDLY_API_KEY);
+  })
   .config(function ($stateProvider, $urlRouterProvider, RUNTIME) {
     $urlRouterProvider
       .otherwise("/");

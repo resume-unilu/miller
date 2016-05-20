@@ -23,9 +23,17 @@
       </div>
 
       <div ng-if='document.type=="image"'>
-        <div lazy-image src='document.metadata.urls.Preview'></div>
+        <div lazy-image ng-click='fullsize(document)' src='document.metadata.urls.Preview'></div>
         <div class='caption'>{{document.title}}</div>
         <div ng-if='document.caption' class='caption'>{{document.caption}}</div>
+      </div>
+
+      <div ng-if='document.type=="video"'>
+        <div ng-if="document.metadata.thumbnail_url" ng-click='fullsize(document)' lazy-image src='document.metadata.thumbnail_url'></div>
+        <div ng-if="!document.metadata.thumbnail_url && document.metadata.urls.Preview" lazy-image src='document.metadata.urls.Preview'></div>
+        <div class='caption' marked='document.metadata.title'></div>
+        <div ng-if='document.metadata.caption' class='caption' marked='document.metadata.caption'></div>
+        <div ng-if='document.metadata.author_name' class='copyright' marked='document.metadata.author_name'></div>
       </div>
 
       <div ng-if='document.type=="pdf"'>
@@ -37,7 +45,6 @@
 
       </div>
 
-      <div ng-click='fullsize(document)'>open in fullmode</div>
     </div>
   </li>
 
