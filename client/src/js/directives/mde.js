@@ -90,14 +90,18 @@ angular.module('miller')
           }
 
           // // listener for the selection object.
-          // function beforeSelectionChange(e, sel){
-          //   var isSelection = (sel.ranges[0].head.ch - sel.ranges[0].anchor.ch) !== 0;
+          var _isSelection;
+          function beforeSelectionChange(e, sel){
+            var isSelection = (sel.ranges[0].head.ch - sel.ranges[0].anchor.ch) !== 0;
+            // selection is on and it has changed. 
+            if(isSelection && isSelection != _isSelection){
+              toolbox.addClass('active');
+            } else if(!isSelection && isSelection != _isSelection){
+              toolbox.removeClass('active');
+            }
             
-          //   if(!isSelection && followCursor !== isSelection){
-          //     toolbox.css('transform', 'translate(0px,0px)');
-          //   }
-          //   followCursor = isSelection;
-          // }
+            _isSelection = isSelection
+          }
 
           
 
@@ -137,6 +141,7 @@ angular.module('miller')
 
           // listener codemirror@cursorActivity
           simplemde.codemirror.on('cursorActivity', move);
+          simplemde.codemirror.on('beforeSelectionChange', beforeSelectionChange);
           
           // if a settoc, ask for recompiling
           if(scope.settoc)
@@ -187,9 +192,11 @@ angular.module('miller')
           url = url.replace('#', '.hash.');
           timer_preview = $timeout(function(){
             $log.debug('::mde -> previewUrl() url:', url);
+            scope.suggestMessage = '(loading...)';
             embedService.get(url).then(function(data){
               $log.debug(':: mde -> previewUrl() received:', data)
               scope.embed = data;
+              scope.suggestMessage = '(<b>done</b>)';
             });
           }, 20);
         };

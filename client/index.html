@@ -565,7 +565,9 @@
         //     embedlyServiceProvider.setKey('your key');
         // })
         // add custom oembed services, cfr settings.py
-        .run(function($log, $q, $http, embedService){
+        .run(function($log, $q, $http, embedService, ngEmbedYoutubeHandler){
+          embedService.registerHandler(ngEmbedYoutubeHandler);
+
           for (var i in oembeds){
             $log.log('registering embed handler:', i, '- endpoint: ',oembeds[i].endpoint);
             embedService.registerHandler({

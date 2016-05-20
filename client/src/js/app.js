@@ -19,7 +19,8 @@ angular
     'LocalStorageModule',
     'pascalprecht.translate',
     // 'angular-embedly',
-    'angular-embed'
+    'angular-embed',
+    'angular-embed.handlers'
   ])
   .constant('LOCALES', {
     'locales': {

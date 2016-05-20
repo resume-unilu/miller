@@ -62,13 +62,15 @@
           </div>
 
           <div ng-show="tab == 'url'" class="tab-content">
-            <label translate='url'></label>
+            <label translate='url'></label>zz
+            <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
             <div class='elastic-textarea-wrapper'>
               <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='url' ng-change='previewUrl(url)' type='text' placeholder='http://'></textarea>
             </div>
             <p>
             <label translate='preview'></label>
-            <div ng-if='embed.provider_name=="CVCE"' ng-include='"templates/partials/embeds/cvce.html"|prefixTemplate'></div>
+              <div ng-if='embed.provider_name=="CVCE"' ng-include='"templates/partials/embeds/cvce.html"|prefixTemplate'></div>
+              <div ng-if='embed.provider_name=="YouTube"' ng-include='"templates/partials/embeds/YouTube.html"|prefixTemplate'></div>
             </p>
           </div>
 

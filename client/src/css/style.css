@@ -505,9 +505,10 @@ textarea.elastic-textarea{
   z-index: 1000;
 }
 
-.mde .toolbox:hover{
- background: #f0f0f0;
+.mde .toolbox.active, .mde .toolbox:hover{
+  background: #151515;
 }
+
 
 .mde .toolbox .btn{
   height: 30px;
