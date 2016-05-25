@@ -38,7 +38,7 @@ class Document(models.Model):
   short_url  = models.CharField(max_length=22, default=helpers.create_short_url, unique=True)
   
   title      = models.CharField(max_length=500)
-  slug       = models.CharField(max_length=100, unique=True)
+  slug       = models.CharField(max_length=150, unique=True)
 
   contents   = models.TextField(null=True, blank=True, default='') # OEMBED or markdown flavoured metadata field, in different languages if available.
   copyrights = models.TextField(null=True, blank=True,  default='')
