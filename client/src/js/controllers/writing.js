@@ -62,7 +62,10 @@ angular.module('miller')
               story: story.id,
               document: d
             }, function(res){
+              $log.warn('WritingCtrl -> setDocuments() CaptionFactory.save success', res);
               documents.push(res);
+            }, function(err) {
+              $log.warn('WritingCtrl -> setDocuments() CaptionFactory.save failed', err);
             }).promise;
             return p;
           })
@@ -74,9 +77,13 @@ angular.module('miller')
           //     console.log('saved', res);
           //   }).promise
           // }))
-        )).then(function(){
-          $scope.save();
-          $scope.$parent.setDocuments(documents);
+        )).then(function(results){
+          if(results.length){
+            $scope.save();
+            $scope.$parent.setDocuments(documents);
+          } else {
+            $scope.$parent.setDocuments(documents);
+          }
         });
       } else{
         var indexed = _.keyBy(story.documents, 'slug'),

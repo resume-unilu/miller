@@ -18,11 +18,12 @@ class UserAdmin(BaseUserAdmin):
   inlines = (ProfileInline, )
 
 class DocumentAdmin(admin.ModelAdmin):
-  search_field = ['title']
+  search_fields = ['title', 'contents']
   exclude=['snapshot']
+  list_filter = ('type',)
 
 class CaptionAdmin(admin.ModelAdmin):
-  search_field = ['contents']
+  search_fields = ['contents']
 
 
 class CaptionInline(admin.TabularInline):
@@ -31,12 +32,12 @@ class CaptionInline(admin.TabularInline):
 
 class StoryAdmin(admin.ModelAdmin):
   inlines = (CaptionInline,)
-  search_field = ['title']
+  search_fields = ['title']
   list_filter = ('tags',)
 
 
 class TagAdmin(admin.ModelAdmin):
-  search_field = ['name', 'slug', 'category']
+  search_fields = ['name', 'slug', 'category']
   list_filter = ('category',)
 
 # Re-register UserAdmin

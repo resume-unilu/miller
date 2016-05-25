@@ -74,12 +74,22 @@ angular.module('miller')
       }
     };
   })
+
+  /*
+    Apply MLA or other citation style
+  */
+  .service('bibtexService', function($filter) {
+    return function(json){
+
+    }
+  })
   /*
     Apply marked service for custom markdown ;)
   */
   .service('markedService', function($filter) {
     return function(value, language){
       var renderer = new marked.Renderer(),
+          linkIndex = 0,
           result = '',
           ToC = [],
           docs = [];
@@ -117,6 +127,7 @@ angular.module('miller')
           var documents = url.trim().replace('doc/','').split(',');
           for(var i in documents){
             docs.push({
+              _index: 'link-' + (linkIndex++), // internal id
               citation: text,
               slug: documents[i]
             });
@@ -126,6 +137,7 @@ angular.module('miller')
           var terms = url.trim().replace('voc/','').split(',');
           for(var i in terms){
             docs.push({
+              _index: 'link-' + (linkIndex++), // internal id
               citation: text,
               slug: terms[i],
               type: 'glossary'

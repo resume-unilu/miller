@@ -8,43 +8,47 @@
       <!-- this element has fixed height. -->
       <div ng-if='document.type=="video-cover"'>
         
-        <div class='caption reference' markdown='document.metadata.reference.fr'></div>
-        <div class='copyright'>{{document.copyrights}}</div>
         
       </div>
 
       <div ng-if='document.type=="picture"'>
         
         <div lazy-image src='document.src'></div>
-        <blockquote>{{document.citation}}</blockquote>
-        <div class='caption'>{{document.caption}}</div>
-        <div class='copyright'>{{document.copyrights}}</div>
         
       </div>
 
       <div ng-if='document.type=="image"'>
         <div lazy-image ng-click='fullsize(document)' src='document.metadata.urls.Preview'></div>
-        <div class='caption'>{{document.title}}</div>
-        <div ng-if='document.caption' class='caption'>{{document.caption}}</div>
       </div>
 
       <div ng-if='document.type=="video"'>
         <div ng-if="document.metadata.thumbnail_url" ng-click='fullsize(document)' lazy-image src='document.metadata.thumbnail_url'></div>
         <div ng-if="!document.metadata.thumbnail_url && document.metadata.urls.Preview" lazy-image src='document.metadata.urls.Preview'></div>
-        <div class='caption' marked='document.metadata.title'></div>
-        <div ng-if='document.metadata.caption' class='caption' marked='document.metadata.caption'></div>
-        <div ng-if='document.metadata.author_name' class='copyright' marked='document.metadata.author_name'></div>
+      </div>
+
+      <div ng-if='document.type=="text"'>
+        <div lazy-image ng-click='fullsize(document)' src='document.metadata.urls.Preview'></div>
       </div>
 
       <div ng-if='document.type=="pdf"'>
-        
         <div lazy-image src='{{document.snapshot}}'></div>
+      </div>
+
+      <div ng-if='!document.metadata.title'>
         <blockquote>{{document.citation}}</blockquote>
         <div class='caption'>{{document.caption}}</div>
         <div class='copyright'>{{document.copyrights}}</div>
-
+        
       </div>
 
+      <div ng-if='document.metadata.title'>
+        <div class='caption' markdown='document.metadata.title'></div>
+        <div ng-if='document.metadata.reference' class='caption reference' markdown='document.metadata.reference'></div>
+        <div ng-if='document.metadata.copyright' class='copyright' markdown='document.metadata.copyright'></div>
+        <div ng-if='document.metadata.author_name' class='copyright'>
+          <a ng-href='{{document.metadata.author_url}}' target='_blank' markdown='document.metadata.author_name'></a>
+        </div>
+      </div>
     </div>
   </li>
 

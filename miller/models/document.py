@@ -21,12 +21,14 @@ class Document(models.Model):
   PICTURE = 'picture'
   VIDEO   = 'video'
   AUDIO   = 'audio'
+  TEXT    = 'text'
   PDF     = 'pdf'
 
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
     (VIDEO_COVER, 'video interview'),
     (VIDEO, 'video'),
+    (TEXT, 'text'),
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
     ("image", 'picture')

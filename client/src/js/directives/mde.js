@@ -55,9 +55,10 @@ angular.module('miller')
               stat,
               followCursor,
               // table of contents hash. Are there differences?
-              ToCHash = '',
               pcursor;// = simplemde.codemirror.display.find('.Codemirror-cursor');
 
+
+          // listener codemirror@cursorActivity
           function move(){
             if(timer)
               clearTimeout(timer);
@@ -80,7 +81,7 @@ angular.module('miller')
                 // check cursor position: is it inside a BOLD or ITALIC?
                 pos = simplemde.codemirror.getCursor("start");
                 stat = simplemde.codemirror.getTokenAt(pos);
-                $log.log('     ', stat)
+                // $log.log('     ', stat)
                 scope.activeStates = (stat.type || '').split(' ');
                 scope.$apply();
               }
@@ -109,25 +110,32 @@ angular.module('miller')
             Recompile with marked, analyzing the documents and
             the different stuff in the contents.
           */
+          var _ToCHash,
+              _docsHash;
+
           function recompile(){
             // $log.debug('::mde -> recompile() ...');
             var marked   = markedService(simplemde.value()),
-                _ToCHash = md5(JSON.stringify(marked.ToC));
-
-            $log.log('::mde -> recompile() items ToC:',marked.ToC.length, 'docs:', marked.docs.length);
-
-            // if(_ToCHash != ToCHash){
-            //   ToCHash = _ToCHash;
-              scope.settoc({items:marked.ToC});
-              scope.setdocs({documents: marked.docs});
-              scope.$apply();
-            // }
-            // save the new documents?
+                ToCHash = md5(JSON.stringify(marked.ToC)),
+                docsHash = md5(_.map(marked.docs,'slug').join('--'));
             
+            if(_ToCHash != ToCHash){
+              $log.log('::mde -> recompile() items ToC:',marked.ToC.length, 'docs:', marked.docs.length, ToCHash);
+              scope.settoc({items:marked.ToC});
+            }
+            if(_docsHash != docsHash){
+              $log.log('::mde -> recompile() items docs:', _docsHash);
+              scope.setdocs({documents: marked.docs});
+            }
+            scope.$apply();
+            // apply toc hash not to reload twice
+            _ToCHash = ToCHash;
+            _docsHash = docsHash;
           }
 
           // listener codemirror@update
-          simplemde.codemirror.on('update', function(e){
+          // update event, recompile after n milliseconds
+          function onUpdate(e){
             var value = simplemde.value();
             if(textarea.val() != value){
               scope.mde = value; // set model
@@ -137,11 +145,24 @@ angular.module('miller')
             if(timer_recompile)
               clearTimeout(timer_recompile);
             timer_recompile = setTimeout(recompile, 500);  
-          });
+          }
 
-          // listener codemirror@cursorActivity
+          // listener codemirror@changeEnd
+          function onChange(e, change){
+            var from = change.from;
+            var text = change.text.join("\n");
+            var removed = change.removed.join("\n");
+            var to =  simplemde.codemirror.posFromIndex(simplemde.codemirror.indexFromPos(from) + text.length);
+
+            simplemde.codemirror.markText(from, to, {
+              className: 'mde-modified'
+            })
+          };
+
+          simplemde.codemirror.on('update', onUpdate);
           simplemde.codemirror.on('cursorActivity', move);
           simplemde.codemirror.on('beforeSelectionChange', beforeSelectionChange);
+          simplemde.codemirror.on('change', onChange);
           
           // if a settoc, ask for recompiling
           if(scope.settoc)
@@ -296,7 +317,7 @@ angular.module('miller')
           }
           // case it is an url
           if(type=='url'){
-            slug = $filter('slugify')(embed.title);
+            slug = $filter('slugify')(embed.title).substr(0,100);
 
             DocumentFactory.save({
               title: embed.title,
@@ -313,12 +334,13 @@ angular.module('miller')
                 });
               }
             }, function(err){
-              // debugger
-              // ignore duplicates and put it directly.
-              if(err.data.slug){
+              // ignore duplicates (slug field) and put it directly.
+              if(err.data.slug && _.keys(err.data).join('') == 'slug'){
                 SimpleMDE.drawLink(simplemde,{
                   url: 'doc/' + slug
                 });
+              } else {
+                $log.error('::mde -> addDocument() cannot save document', err);
               }
             });
             return;

@@ -1,8 +1,13 @@
 import json
+
+from django.shortcuts import get_object_or_404
+
 from rest_framework import serializers, viewsets, status
 from rest_framework.response import Response
+
 from miller.api.fields import OptionalFileField, JsonField
 from miller.models import Document, Story, Caption
+
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -47,8 +52,8 @@ class CaptionViewSet(viewsets.ModelViewSet):
     # get the document id from the slug
     # print request.data
 
-    doc = Document.objects.get(slug=request.data['document']['slug']);
-    story = Story.objects.get(pk=request.data['story'])
+    doc = get_object_or_404(Document, slug=request.data['document']['slug']);
+    story = get_object_or_404(Story, pk=request.data['story'])
 
     # Create the book instance
     caption, created = Caption.objects.get_or_create(document=doc, story=story)

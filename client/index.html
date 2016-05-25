@@ -347,24 +347,33 @@
               <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
             </ul>
             
+            
+
             <ul class="nav navbar-nav navbar-right">
+              {% if user.is_authenticated %}
               <li class="dropdown">
-                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> <span class='username'> {% if user.is_authenticated %}{{user.first_name}} {% endif %}</span><b>(you)</b></a>
+                
+                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false">
+                
+                  <span class='username'> {{user.first_name}}</span>
+                  <b>(you)</b>
+                </a>
 
                 <ul class="dropdown-menu" role="menu">
-                  {% if user.is_authenticated %}
                   <li ui-sref-active="active"><a ui-sref="draft">write</a></li>
                   <li ui-sref-active="active"><a ui-sref="draft">your writings</a></li>
                   <li><a href='{% url "logout_view" %}'>log out</a></li> 
-                    {% if user.is_staff %}
-                    <li><a href='{% url "admin:index" %}'>admin</a></li>
-                    {% endif %}
-                  {% else %}
-                  <li><a href='{% url "login_view" %}'>log in</a></li> 
+                  {% if user.is_staff %}
+                  <li><a href='{% url "admin:index" %}'>admin</a></li>
                   {% endif %}
                 </ul>
                 
               </li>
+              {% else %}
+              <li>
+                <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}'>log in</a>
+              </li>
+              {% endif %}
               <li ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
               <li ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
               {% verbatim %}
@@ -560,31 +569,31 @@
       
       
       angular.module('miller')
-        // .config(function(embedlyServiceProvider) {
-        //     // set your embed.ly key
-        //     embedlyServiceProvider.setKey('your key');
-        // })
-        // add custom oembed services, cfr settings.py
         .run(function($log, $q, $http, embedService, ngEmbedYoutubeHandler){
-          embedService.registerHandler(ngEmbedYoutubeHandler);
-
+          
           for (var i in oembeds){
+            // ignore if there ys no pattern.
+            if(!oembeds[i].patterns)
+              continue;
+            // register if the settings are complete enough
+            var endpoint = oembeds[i].endpoint;
             $log.log('registering embed handler:', i, '- endpoint: ',oembeds[i].endpoint);
+            
             embedService.registerHandler({
                 name: i,
                 patterns: oembeds[i].patterns,
                 embed: function(url, max_width) {
                   var deferred = $q.defer();
-
+                  $log.debug('embedService handler', endpoint)
                   return $http({
                     method: 'GET',
-                    url: oembeds[i].endpoint + '?url=' + url
+                    url: endpoint + '?url=' + url
                   }).then(function successCallback(response) {
                     // this callback will be called asynchronously
                     // when the response is available
                     return response.data
                     
-                  }, function errorCallback(response) {
+                  }, function errorCallback(response) {debugger
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                     return response.data
@@ -592,6 +601,10 @@
                 }
             });
           }
+
+          // embedly key : cfr app.js, KEY it is shipped with RUNTIME const.
+          embedService.registerHandler(ngEmbedYoutubeHandler);
+
 
          
         })

@@ -177,9 +177,10 @@ angular.module('miller')
       Since this is called BEFORE statehangeSuccess, the scrolling cannot be made at this level.
     */
     $scope.$on('$locationChangeSuccess', function (e, path) {
-      $log.debug('CoreCtrl @locationChangeSuccess', path);
+      $log.debug('CoreCtrl @locationChangeSuccess', path, $location);
       $scope.qs = $location.search();
       $scope.locationPath = path;
+      $scope.path = $location.path();
 
       if($scope.qs.view && $scope.fullsized && $scope.fullsized.short_url == $scope.qs.view){
         // normal behaviour, after fullsize has been called the view param is present in location
