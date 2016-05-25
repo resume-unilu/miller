@@ -11,7 +11,7 @@ class Command(BaseCommand):
         parser.add_argument('filepath', nargs='+', type=str)
 
     def handle(self, *args, **options): 
-      filepath = '/Users/danieleguido/Documents/resume/zotero.bib'
+      filepath = 'zotero.bib'
       
       owner = Profile.objects.filter(user__is_staff=True)[0]
       print owner.user
