@@ -36,8 +36,8 @@ angular.module('miller')
             
         function init(){
           textarea.show();
-          wand.show();
-          toolbox.show();
+          // wand.show();
+          // toolbox.show();
 
           simplemde = new SimpleMDE({
             element: textarea[0],
@@ -159,14 +159,27 @@ angular.module('miller')
             })
           };
 
+          // listener codemirror@focus
+          function onFocus(e) {
+            toolbox.show();
+            wand.show()
+          };
+          // listener codemirror@focus
+          function onBlur(e) {
+            toolbox.hide();
+            wand.hide();
+          };
+
           simplemde.codemirror.on('update', onUpdate);
           simplemde.codemirror.on('cursorActivity', move);
           simplemde.codemirror.on('beforeSelectionChange', beforeSelectionChange);
           simplemde.codemirror.on('change', onChange);
+          simplemde.codemirror.on('focus', onFocus);
+          simplemde.codemirror.on('blur', onBlur);
           
           // if a settoc, ask for recompiling
           if(scope.settoc)
-            timer_recompile = setTimeout(recompile, 0);
+            timer_recompile = setTimeout(recompile, 5);
         
         }
 
@@ -310,6 +323,7 @@ angular.module('miller')
 
           if(type=='glossary'){
             debugger
+            referenceModal.hide();
             SimpleMDE.drawLink(simplemde,{
               url: 'voc/' + scope.selectedDocument.slug
             });
@@ -317,6 +331,13 @@ angular.module('miller')
           }
           // case it is an url
           if(type=='url'){
+            if(!embed.title){
+              referenceModal.hide();
+              SimpleMDE.drawLink(simplemde,{
+                url: url
+              });
+              return;
+            }
             slug = $filter('slugify')(embed.title).substr(0,100);
 
             DocumentFactory.save({
@@ -411,7 +432,7 @@ angular.module('miller')
         };
         
         // take into account custom font-face rendering.
-        $timeout(init, 200);
+        $timeout(init, 500);
         return;
 
 

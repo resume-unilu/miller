@@ -140,33 +140,131 @@ angular
             return StoryFactory.get({id: $stateParams.storyId}).$promise;
           },
         }
-      })
+      });
+
+    /*
+
+      My stories, settings etc. (even drafts whenever available)
+      ---
+    
+    */
+    $stateProvider
       .state('me', {
         abstract: true,
         reloadOnSearch : false,
         url: '/me',
-        controller: 'MeCtrl',
-        templateUrl: RUNTIME.static + 'templates/me.html'
-      })
-        .state('me.stories', {
-          url: '/stories',
-          reloadOnSearch : false,
-          controller: 'ItemsCtrl',
-          templateUrl: RUNTIME.static + 'templates/me.stories.html',
-          resolve: {
-            items: function(StoryFactory) {
-              return StoryFactory.get().$promise;
-            },
-            model: function() {
-              return 'story';
-            },
-            factory: function(StoryFactory) {
-              return StoryFactory;
-            }
+        controller: 'AuthorCtrl',
+        templateUrl: RUNTIME.static + 'templates/author.html',
+        resolve: {
+          profile: function(ProfileFactory, RUNTIME){
+            return ProfileFactory.get({
+              username: RUNTIME.user.username
+            }).$promise;
           }
-        })
+        }
+      })
+      .state('me.publications', {
+        url: '/publications',
+        abstract:true,
+        reloadOnSearch : false,
+        controller: function($scope){
+          $scope.urls = RUNTIME.stories.writing;
+        },
+        templateUrl: RUNTIME.static + 'templates/author.publications.html',
+      })
+      .state('me.publications.drafts', {
+        url: '/drafts',
+        reloadOnSearch : false,
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        resolve: {
+          items: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                tags__category: 'writing',
+                status: 'draft',
+                owner__username: RUNTIME.user.username,
+                // authors__username__in: [RUNTIME.user.username]
+              })
+            }).$promise;
+          },
 
-      .state('blog', {
+          model: function() {
+            return 'story';
+          },
+          factory: function(StoryFactory) {
+            return StoryFactory;
+          }
+        }
+      });
+
+      _.each(RUNTIME.stories.writing, function(d){
+        $stateProvider
+          .state('me.publications.' + d.name, {
+            url: d.url,
+            controller: 'ItemsCtrl',
+            templateUrl: RUNTIME.static + 'templates/blog.news.html',
+              resolve: {
+              items: function(StoryFactory, $stateParams) {
+                return StoryFactory.get({
+                  filters: d.slug? JSON.stringify({
+                    tags__category: 'writing',
+                    tags__slug: d.slug,
+                    owner__username: RUNTIME.user.username
+                  }): JSON.stringify({
+                    tags__category: 'writing',
+                    owner__username: RUNTIME.user.username
+                  })
+                }).$promise;
+              },
+
+              model: function() {
+                return 'story';
+              },
+              factory: function(StoryFactory) {
+                return StoryFactory;
+              }
+            }
+          });
+      });
+
+    /*
+      Other user stories
+      ---
+    */
+    $stateProvider
+      .state('author', {
+        abstract: true,
+        reloadOnSearch : false,
+        url: '/author/{username:[0-9a-zA-Z\\.-_]+}',
+        controller: 'AuthorCtrl',
+        templateUrl: RUNTIME.static + 'templates/author.html',
+        resolve: {
+          profile: function(ProfileFactory, $stateParams){
+            return ProfileFactory.get({
+              username: $stateParams.username
+            }).$promise;
+          }
+        }
+      })
+      .state('author.publications', {
+        url: '',
+        reloadOnSearch : false,
+        controller: function($scope, profile){
+          $scope.urls = RUNTIME.stories.writing;
+        },
+        resolve:{ // latest stories
+          stories: function(profile){
+            return {'value': profile};
+          }
+        },
+        templateUrl: RUNTIME.static + 'templates/author.publications.html',
+      });
+
+      
+
+    $stateProvider
+     .state('blog', {
         url: '/blog',
         reloadOnSearch : false,
         abstract:true,
@@ -269,6 +367,7 @@ angular
             }
           });
       });
+      
       
 
 

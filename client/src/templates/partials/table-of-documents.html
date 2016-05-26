@@ -41,7 +41,18 @@
         
       </div>
 
-      <div ng-if='document.metadata.title'>
+      <div ng-if='document.type=="bibtex"'>
+        <div class='caption'>
+          <span ng-if='document.metadata.author'>{{document.metadata.author|bibtex}}',</span>
+          <span ng-if='document.metadata.editor'>{{document.metadata.editor|bibtex}}'></span>(edited by)</span> 
+          
+          <em>{{document.metadata.title|bibtex}}</em>
+          <span>{{document.metadata.publisher|bibtex}}</span>
+          <span ng-if='document.metadata.year'>, <span>{{document.metadata.year|bibtex}}</span> 
+        </div>
+      </div>
+
+      <div ng-if='document.type!="bibtex" && document.metadata.title'>
         <div class='caption' markdown='document.metadata.title'></div>
         <div ng-if='document.metadata.reference' class='caption reference' markdown='document.metadata.reference'></div>
         <div ng-if='document.metadata.copyright' class='copyright' markdown='document.metadata.copyright'></div>

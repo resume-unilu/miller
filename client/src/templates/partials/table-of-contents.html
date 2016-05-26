@@ -1,6 +1,14 @@
 
-<div id='inner-table-of-contents-toggler' bs-tooltip='{"title":"show / hide Table of Contents"}'>
+<div id='inner-table-of-contents-toggler' >
   <button class='btn-transparent' ng-click='toggleTableOfContents()'><span class='icon-action-undo'></span></button>
+  <div class='save' ng-if='state == "writing" || state == "draft"' ng-click='save()'>
+    <button class='btn-transparent btn-line'><span  class='icon-disc'></span></button>
+    <div class='sans-serif' style='text-transform: uppercase; font-size:10px; text-align:center; line-height:20px' translate='save'></div>
+  </div>
+  <!-- <div class='edit' ng-if='state == "post"' ng-click='save()'>
+    <button class='btn-transparent btn-line'><span  class='icon-disc'></span></button>
+    <div class='sans-serif' style='text-transform: uppercase; font-size:10px; text-align:center; line-height:20px' translate='save'></div>
+  </div> -->
 </div>
 
 <h2>table of contents</h2>

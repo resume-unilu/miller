@@ -4,6 +4,7 @@
   "button.agree": "agree",
   "button.back": "back",
 
+
   "headline.project": "projet",
   "headline.people": "qui ?",
   "headline.publications": "publications",
@@ -11,5 +12,7 @@
   "headline.events": "évenements",
 
 
-  "tags.paper": "articles"
+  "tags.paper": "articles",
+
+  "me.publications": "mes publications"
 }

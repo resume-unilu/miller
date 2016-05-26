@@ -132,7 +132,9 @@ angular.module('miller')
       $translate.use(key);
     };
 
-
+    $scope.isWithoutAuthors = function(story) {
+      return story.authors.length !== 0;
+    }
     /*
       When requested, fullsize for documents.
       Cfr also locationChangeSuccess listener 

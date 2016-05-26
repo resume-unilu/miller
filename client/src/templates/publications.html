@@ -1,9 +1,10 @@
 <h2 translate="publications"></h2>
 <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
+  <ul class='nav nav-tabs'>
     <li ng-repeat='link in urls' role="presentation" ui-sref-active="active">
       <a href ui-sref='publications.{{link.name}}' aria-controls="home" role="tab" data-toggle="tab" translate="{{link.name}}"></a>
     </li>
   </ul>
+  
 
 <div ui-view></div>

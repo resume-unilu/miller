@@ -3,10 +3,21 @@
   "button.annotate": "tag",
   "button.agree": "agree",
   "button.back": "back",
+  "enrich.fromUrl": "add url",
+  "enrich.glossary": "add glossary term",
+  "enrich.resources": "add document/reference",
+  "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
 
   "headline.project": "project",
   "headline.people": "people",
   "headline.publications": "publications",
   "headline.blogs": "blogs",
-  "headline.events": "events"
+  "headline.events": "events",
+  "headline.write": "write",
+  "headline.you": "(you)",
+
+  "me.publications": "your writings",
+
+  "drafts": "(drafts)"
+
 }

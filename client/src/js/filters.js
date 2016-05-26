@@ -4,6 +4,11 @@ angular.module('miller')
       return RUNTIME.static + input;
     };
   })
+  .filter('bibtex', function(){
+    return function (text) {
+      return text? text.replace(/[\{\}]/g,''): ''
+    }
+  })
   /*
     Translit non ascii chars and uniform punctuations signs
   */

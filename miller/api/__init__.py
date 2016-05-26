@@ -3,6 +3,7 @@ from story import StoryViewSet
 from tag import TagViewSet
 from caption import CaptionViewSet
 from document import DocumentViewSet
+from profile import ProfileViewSet
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 

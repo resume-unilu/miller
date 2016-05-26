@@ -178,6 +178,18 @@ blockquote{
   top: 85px;
   left: 40px;
   transition: opacity .3s ease-in-out;
+
+}
+
+#inner-table-of-contents-toggler .save{
+  position: absolute;
+  top: 0;
+  left: 40px;
+ 
+}
+
+#inner-table-of-contents-toggler .save .btn-transparent {
+   background-color: rgba(255,255,255,.5);
 }
 
 #inner-table-of-contents-toggler .btn-transparent {
@@ -354,6 +366,14 @@ p{
   margin-top:20px;
 }
 
+.autocomplete{
+  z-index: 1050;
+}
+
+.preview.rich{
+  min-height: 300px;
+}
+
 .coverstory blockquote{
   font-size: 12px;
   margin: 10px 0;
@@ -428,6 +448,7 @@ textarea.elastic-textarea{
   border-bottom: 2px solid #E6E5E5;
   transition: border-color .25s ease-in-out, border-color .25s ease-in-out;
   border-bottom-width: 2px;
+  /*text-align: justify;*/
 }
 
 
@@ -478,7 +499,7 @@ textarea.elastic-textarea{
 }
 
 .mde .mde-modified{
-  background: #e0e0e0;
+  /*background: #e0e0e0;*/
 
 }
 
@@ -504,10 +525,10 @@ textarea.elastic-textarea{
   top: -30px;
   font-size: 18px;
   height: 30px;
-  background: #fff;/*rgba(79, 74, 74, 0.9);*/
+  background: rgb(79, 74, 74);
   transition:  background-color .27s ease-in-out;
   -webkit-transition: background-color .27s ease-in-out;
- border-bottom: 2px solid #f0f0f0;
+ /*border-bottom: 2px solid #f0f0f0;*/
   z-index: 1000;
 }
 
@@ -755,6 +776,8 @@ font-size: 0.9em;
   color: #d5d5d5;
 
 }
+
+
 /*
   ng-tags-input
 */

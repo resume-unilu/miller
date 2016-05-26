@@ -12,13 +12,13 @@
         
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
         <ul class="nav nav-tabs" style='padding-left:15px' role="tablist">
-          <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab">your resources</a></li>
-          <li role="presentation" ng-class='{"active": tab == "glossary"}'><a ng-click='setTab("glossary")' aria-controls="home" role="tab" data-toggle="tab">glossary</a></li>
+          <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.resources'></a></li>
+          <li role="presentation" ng-class='{"active": tab == "glossary"}'><a ng-click='setTab("glossary")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.glossary'></a></li>
           <li role="presentation" ng-class="tab == 'CVCE'? 'active':''"><a ng-click='setTab("CVCE")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
           
-          <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab">from url</a></li>
+          <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab" translate='enrich.fromUrl'></a></li>
 
-          <li role="presentation" ng-class="tab == 'bibtex'? 'active':''"><a ng-click='setTab("bibtex")' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li>
+          <!-- <li role="presentation" ng-class="tab == 'bibtex'? 'active':''"><a ng-click='setTab("bibtex")' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li> -->
           
         </ul>
 
@@ -62,16 +62,26 @@
           </div>
 
           <div ng-show="tab == 'url'" class="tab-content">
-            <label translate='url'></label>zz
+            <label translate='url'></label>
             <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
             <div class='elastic-textarea-wrapper'>
               <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='url' ng-change='previewUrl(url)' type='text' placeholder='http://'></textarea>
             </div>
-            <p>
-            <label translate='preview'></label>
-              <div ng-if='embed.provider_name=="CVCE"' ng-include='"templates/partials/embeds/cvce.html"|prefixTemplate'></div>
-              <div ng-if='embed.provider_name=="YouTube"' ng-include='"templates/partials/embeds/YouTube.html"|prefixTemplate'></div>
-            </p>
+            
+              <div class='preview' ng-class='embed.type'>
+                <div ng-if='embed.provider_name=="CVCE"' ng-include='"templates/partials/embeds/cvce.html"|prefixTemplate'></div>
+                <div ng-if='embed.provider_name=="YouTube"' ng-include='"templates/partials/embeds/YouTube.html"|prefixTemplate'></div>
+                <div ng-if='embed.type == "link"'>
+                  <a href='embed.url'>{{embed.title}}</a>
+                  <div markdown='embed.description'></div>
+                </div>
+                <div ng-if='embed.type == "rich"'>
+                  <a ng-href='embed.url' target='_blank'>url</a>
+                  <div ng-if='embed.html' markdown='embed.html'></div>
+                  <div ng-if='!embed.title' translate='enrich.type.notsupported'></div>
+                </div>
+              </div>
+        
           </div>
 
           <div ng-show="tab == 'bibtex'" class="tab-content">

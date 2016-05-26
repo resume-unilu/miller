@@ -63,8 +63,9 @@
       }
 
       .navbar-default .navbar-nav > li{
-        padding: 22px 0 20px 10px;
+        padding: 22px 0 20px 5px;
       }
+
 
       .navbar-default .navbar-nav > li > a{
         text-transform: uppercase;
@@ -164,6 +165,7 @@
         top: 70px;
         bottom: 0;
         transition: transform .27s ease-in-out;
+
         /*transform: translateX(210px);
         -webkit-transform: translateX(210px);
         -moz-transform: translateX(210px);
@@ -317,6 +319,11 @@
       #messenger.active{
         display: block;
       }
+
+      .icon{
+        font-size: 15px;
+        line-height: 20px;
+      }
     </style>
   </head>
   {% block body %}
@@ -345,23 +352,31 @@
               <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" >news</a></li>
 
               <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
+              
+              <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b translate="write"></b></a></li>
+              
+
             </ul>
             
             
 
             <ul class="nav navbar-nav navbar-right">
               {% if user.is_authenticated %}
+              <li>
+                <a><span class='username'>{{user.username}}</span>
+                  <b translate='headline.you'></b>
+                </a>
+              </li>
               <li class="dropdown">
                 
                 <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false">
                 
-                  <span class='username'> {{user.first_name}}</span>
-                  <b>(you)</b>
+                  <span class='icon icon-menu'></span>
                 </a>
 
                 <ul class="dropdown-menu" role="menu">
-                  <li ui-sref-active="active"><a ui-sref="draft">write</a></li>
-                  <li ui-sref-active="active"><a ui-sref="draft">your writings</a></li>
+                  <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
+                  <li ui-sref-active="active"><a ui-sref="me.publications.all">your writings</a></li>
                   <li><a href='{% url "logout_view" %}'>log out</a></li> 
                   {% if user.is_staff %}
                   <li><a href='{% url "admin:index" %}'>admin</a></li>
@@ -374,8 +389,8 @@
                 <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}'>log in</a>
               </li>
               {% endif %}
-              <li ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
-              <li ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
+              <li class='compact' ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
+              <li class='compact' ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
               {% verbatim %}
 
               <!-- <li class="dropdown">
@@ -488,7 +503,7 @@
     <script src='{% static "js/controllers/index.js" %}'></script>
     <script src='{% static "js/controllers/items.js" %}'></script>
     <script src='{% static "js/controllers/login.js" %}'></script>
-    <script src='{% static "js/controllers/me.js" %}'></script>
+    <script src='{% static "js/controllers/author.js" %}'></script>
     <script src='{% static "js/controllers/post.js" %}'></script>
     <script src='{% static "js/controllers/blog.js" %}'></script>
     <script src='{% static "js/controllers/page.js" %}'></script>

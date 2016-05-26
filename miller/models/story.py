@@ -54,6 +54,7 @@ class Story(models.Model):
 
   # set the plural name and fix the default sorting order
   class Meta:
+    ordering = ('-date_last_modified',)
     verbose_name_plural = 'stories'
 
   # get story path based on random generated shorten url

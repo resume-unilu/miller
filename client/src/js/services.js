@@ -33,6 +33,16 @@ angular.module('miller')
       }
     });
   })
+  .factory('ProfileFactory', function ($resource) {
+    return $resource('/api/profile/:username/', {},{
+      update: {
+        method:'PUT'
+      },
+      patch: {
+        method:'PATCH'
+      }
+    });
+  })
   /*
     get a list of ralreeady saved document accessible by the user
   */
