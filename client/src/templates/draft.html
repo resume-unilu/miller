@@ -20,7 +20,7 @@
 
 <div class='section' ng-if='user.is_staff'>
   <!-- <label translate="displayed-as"></label> -->
-  <tags-input class='tags-input' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
+  <tags-input class='tags-input' placeholder='{{"staff.drafts.tags.placeholder"| translate}}' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
     <auto-complete source="suggestTags($query, {category__in:['blog','writing']})" ></auto-complete>
 
   </tags-input>
@@ -28,7 +28,7 @@
 
 <div class='section' ng-if='!isDraft && user.is_staff'>
   <!-- <label translate="keywords"></label> -->
-  <tags-input class='tags-input' key-property='id' display-property='name' ng-model="tags">
+  <tags-input class='tags-input' placeholder='{{"drafts.keywords.placeholder"| translate}}' key-property='id' display-property='name' ng-model="tags">
     <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
 
   </tags-input>

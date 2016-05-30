@@ -18,6 +18,8 @@
 
   "me.publications": "your writings",
 
-  "drafts": "(drafts)"
+  "drafts": "(drafts)",
+  "drafts.keywords.placeholder": "add keywords ...",
+  "staff.drafts.tags.placeholder": "website placement (staff only)"
 
 }

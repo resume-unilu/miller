@@ -19,6 +19,10 @@ angular.module('miller')
         // active tab
         scope.activeStates = [];
 
+        // secretize bookmarks. Automatically clean the code sent to initialvalue
+        // will set SetBookmarks 
+
+
         var simplemde,
             timer,
             timer_recompile,
@@ -36,8 +40,8 @@ angular.module('miller')
             
         function init(){
           textarea.show();
-          // wand.show();
-          // toolbox.show();
+          wand.show();
+          toolbox.show();
 
           simplemde = new SimpleMDE({
             element: textarea[0],
@@ -48,6 +52,36 @@ angular.module('miller')
             initialValue: scope.mde
           });
 
+          // assign overlay
+          // simplemde.codemirror.addOverlay({
+          //     name: 'invisibles',
+          //     token:  function nextToken(stream) {
+          //         var ret,
+          //             spaces  = 0,
+          //             peek    = stream.peek() === ' ';
+
+          //         if (peek) {
+          //             while (peek && spaces < Maximum) {
+          //                 ++spaces;
+
+          //                 stream.next();
+          //                 peek = stream.peek() === ' ';
+          //             }
+
+          //             ret = 'whitespace whitespace-' + spaces;
+          //         } else {
+          //             while (!stream.eol() && !peek) {
+          //                 stream.next();
+
+          //                 peek = stream.peek() === ' ';
+          //             }
+
+          //             ret = 'cm-eol';
+          //         }
+
+          //         return ret;
+          //     }
+          // });
 
           
           var cursor,
@@ -174,8 +208,8 @@ angular.module('miller')
           simplemde.codemirror.on('cursorActivity', move);
           simplemde.codemirror.on('beforeSelectionChange', beforeSelectionChange);
           simplemde.codemirror.on('change', onChange);
-          simplemde.codemirror.on('focus', onFocus);
-          simplemde.codemirror.on('blur', onBlur);
+          // simplemde.codemirror.on('focus', onFocus);
+          // simplemde.codemirror.on('blur', onBlur);
           
           // if a settoc, ask for recompiling
           if(scope.settoc)

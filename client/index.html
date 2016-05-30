@@ -347,13 +347,13 @@
               <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
               <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
               <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
-              <li ng-class="{active: state.includes('publications')}"><a href ui-sref='publications.all'>publications</a></li>
+              <li ng-class="{active: state.includes('publications') && !state.includes('me')}"><a href ui-sref='publications.all'>publications</a></li>
               
               <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" >news</a></li>
 
               <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
               
-              <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b translate="write"></b></a></li>
+              <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b style='color:#151515' translate="write"></b></a></li>
               
 
             </ul>
@@ -362,8 +362,8 @@
 
             <ul class="nav navbar-nav navbar-right">
               {% if user.is_authenticated %}
-              <li>
-                <a><span class='username'>{{user.username}}</span>
+              <li ng-class="{active: state.includes('me')}">
+                <a ui-sref="me.publications.all"><span class='username'>{{user.username}}</span>
                   <b translate='headline.you'></b>
                 </a>
               </li>

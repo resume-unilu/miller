@@ -3,16 +3,23 @@
   "button.annotate": "tag",
   "button.agree": "agree",
   "button.back": "back",
-
+  "enrich.fromUrl": "add url",
+  "enrich.glossary": "add glossary term",
+  "enrich.resources": "add document/reference",
+  "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
 
   "headline.project": "projet",
-  "headline.people": "qui ?",
+  "headline.people": "équipe",
   "headline.publications": "publications",
   "headline.blogs": "blogs",
-  "headline.events": "évenements",
+  "headline.events": "events",
+  "headline.write": "write",
+  "headline.you": "(moi)",
 
+  "me.publications": "your writings",
 
-  "tags.paper": "articles",
+  "drafts": "(drafts)",
+  "drafts.keywords.placeholder": "keywords ...",
+  "staff.drafts.tags.placeholder": "website placement (staff only)"
 
-  "me.publications": "mes publications"
 }

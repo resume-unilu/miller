@@ -529,7 +529,7 @@ textarea.elastic-textarea{
   transition:  background-color .27s ease-in-out;
   -webkit-transition: background-color .27s ease-in-out;
  /*border-bottom: 2px solid #f0f0f0;*/
-  z-index: 1000;
+  z-index: 100;
 }
 
 .mde .toolbox.active, .mde .toolbox:hover{
