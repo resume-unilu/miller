@@ -54,7 +54,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
   
   class Meta:
     model = Story
-    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'documents', 'contents', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
+    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'documents', 'contents', 'date', 'date_created', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
 
 # Serializer to use in list of story items
@@ -65,7 +65,7 @@ class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
 
   class Meta:
     model = Story
-    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'date', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
+    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
 
 class CreateStorySerializer(serializers.ModelSerializer):

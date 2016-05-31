@@ -104,8 +104,7 @@ angular
           writings: function(StoryFactory){
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category: 'writing'
-                
+                tags__slug: 'highlights'
               })
             }).$promise;
           },
@@ -181,7 +180,6 @@ angular
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category: 'writing',
                 status: 'draft',
                 owner__username: RUNTIME.user.username,
                 // authors__username__in: [RUNTIME.user.username]
@@ -294,26 +292,17 @@ angular
           }
         }
       })
-      
-      .state('events', {
+      .state('blog.events', {
         url: '/events',
-        abstract:true,
         reloadOnSearch : false,
-        // controller: function(){},
-        templateUrl: RUNTIME.static + 'templates/events.html',
-        
-      })
-
-      .state('events.everything', {
-        url: '',
         controller: 'ItemsCtrl',
-        reloadOnSearch : false,
         templateUrl: RUNTIME.static + 'templates/blog.news.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category: 'event'
+                tags__category: 'blog',
+                tags__slug: 'event'
               })
             }).$promise;
           },
@@ -325,6 +314,37 @@ angular
           }
         }
       })
+      
+      // .state('events', {
+      //   url: '/events',
+      //   abstract:true,
+      //   reloadOnSearch : false,
+      //   // controller: function(){},
+      //   templateUrl: RUNTIME.static + 'templates/events.html',
+        
+      // })
+
+      // .state('events.everything', {
+      //   url: '',
+      //   controller: 'ItemsCtrl',
+      //   reloadOnSearch : false,
+      //   templateUrl: RUNTIME.static + 'templates/blog.news.html',
+      //   resolve: {
+      //     items: function(StoryFactory, $stateParams) {
+      //       return StoryFactory.get({
+      //         filters: JSON.stringify({
+      //           tags__category: 'event'
+      //         })
+      //       }).$promise;
+      //     },
+      //     model: function() {
+      //       return 'story';
+      //     },
+      //     factory: function(StoryFactory) {
+      //       return StoryFactory;
+      //     }
+      //   }
+      // })
 
       /*
         Kind of story:writings publications

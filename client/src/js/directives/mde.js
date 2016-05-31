@@ -19,6 +19,9 @@ angular.module('miller')
         // active tab
         scope.activeStates = [];
 
+        // preview enabled or disabled
+        scope.isPreviewEnabled = false;
+
         // secretize bookmarks. Automatically clean the code sent to initialvalue
         // will set SetBookmarks 
 
@@ -213,7 +216,7 @@ angular.module('miller')
           
           // if a settoc, ask for recompiling
           if(scope.settoc)
-            timer_recompile = setTimeout(recompile, 5);
+            timer_recompile = setTimeout(recompile, 20);
         
         }
 
@@ -356,9 +359,9 @@ angular.module('miller')
           }
 
           if(type=='glossary'){
-            debugger
             referenceModal.hide();
             SimpleMDE.drawLink(simplemde,{
+              // text: scope.selectedDocument.title,
               url: 'voc/' + scope.selectedDocument.slug
             });
             return;
@@ -435,6 +438,15 @@ angular.module('miller')
             });
             return;
           }
+
+          // document type
+          if(scope.selectedDocument.type == 'bibtex'){
+            
+            SimpleMDE.drawLink(simplemde,{
+              // text: '('+ scope.selectedDocument.metadata.author + ' '+ scope.selectedDocument.metadata.year +')',
+              url: 'doc/' + scope.selectedDocument.slug
+            });
+          }
           // the document has been selected.
           $log.debug('::mde -> addDocument() doc:', scope.selectedDocument);
           // lock ui
@@ -462,6 +474,9 @@ angular.module('miller')
         };
 
         scope.action = function(action) {
+          if(action == 'togglePreview'){
+            scope.isPreviewEnabled = !scope.isPreviewEnabled;
+          }
           SimpleMDE[action](simplemde);
         };
         

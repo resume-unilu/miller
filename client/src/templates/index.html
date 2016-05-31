@@ -25,10 +25,17 @@
     <div class="row">
     <!-- REMAINING STORIES -->
       <div ng-repeat='story in otherstories' class="col-sm-6">
-        <div class="coverstory">
+        <div class="coverstory other">
           <div class="divider"></div>
+          <div class="tags" ng-if="story.tags.length">
+            <span  class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+          </div>
           <h4><a href ui-sref="post({postId: story.id})">{{story.title}}</a></h4>
+          
           <blockquote class="reduced">{{story.excerpt}} <span class='icon-arrow-right-circle'></span></blockquote>
+          <div class='authors' ng-if="coverstory.authors.length">
+            by <span ng-repeat='author in coverstory.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+          </div>
         </div>
       </div>
     </div>
@@ -36,12 +43,16 @@
   </div>
   <div class="col-sm-4">
     <div ng-repeat='story in news'>
-        <div class="coverstory">
+        <div class="coverstory news">
           <div ng-if='!$first' class="divider"></div>
-          <div class="date">{{story.date|date:'mediumDate'}}</div>
+          <div class="date">{{story.date_created|date:'mediumDate'}}</div>
           <h4><a href ui-sref="post({postId: story.id})">{{story.title}}</a></h4>
 
+          <div class='authors' ng-if="coverstory.authors.length">
+        by <span ng-repeat='author in coverstory.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+      </div>
           <blockquote class="reduced">{{story.excerpt}} <span class='icon-arrow-right-circle'></span></blockquote>
+          
         </div>
       </div>
     </div>

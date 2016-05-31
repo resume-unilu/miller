@@ -4,11 +4,11 @@
 
   </div>
   <div class='overlay'>
-    <div class="tags" ng-if="post.tags.length">
-      <span class='tag' ng-repeat='tag in post.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
-      <span class='btn-line-group'>
-        <a class='btn-line active' nref ui-sref='writing({storyId:post.id})'>edit</a>
-      </span>
+    <div class="tags" >
+      <span ng-if="post.tags.length" class='tag' ng-repeat='tag in post.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+      <div class='btn-line-group'>
+        <button class='btn-line active' nref ui-sref='writing({storyId:post.id})'>edit</button>
+      </div>
     </div>
     <h2>{{post.title}}</h2>  
     <blockquote>

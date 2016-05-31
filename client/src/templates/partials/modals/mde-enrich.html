@@ -22,51 +22,58 @@
           
         </ul>
 
-        <div class='section'>
+        
           <div ng-show="tab == 'favourite'" class="tab-content">
-            <p>
+            <div class='section' ng-class='{"last": !lookups.length}'>
               <label>
                 <span translate='search'></span>
                 <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
               </label>
               <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
-            </p>
-            <ul ><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
-            </ul>
+            </div>
+            <div class='section last'>
+              <ul ><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
+              </ul>
+            </div>
           </div>
 
           <div ng-show="tab == 'glossary'" class="tab-content">
-            <p>
+            <div class='section' ng-class='{"last": !glossary.length}'>
               <label>
                 <span translate='search'></span>
                 <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
               </label>
               <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
-            </p>
-            <ul ><li ng-repeat='term in glossary' ng-include='"templates/partials/term.html"|prefixTemplate'></li>
-            </ul>
+            </div>
+            <div class='section last'>
+              <ul ><li ng-repeat='term in glossary' ng-include='"templates/partials/term.html"|prefixTemplate'></li>
+              </ul>
+            </div>
           </div>
 
           <div ng-show="tab == 'CVCE'" class="tab-content">
-            <p>
+            <div class='section' ng-class='{"last": !suggestResults.length}'>
               <label>
                 <span translate='search'></span>
                 <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
               </label>
               <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
-            </p>
-            <ul >
-              <li ng-repeat='document in suggestResults' ng-include='"templates/partials/oembed-search-results.html"|prefixTemplate'>
-              </li>
-            </ul>
+            </div>
+            <div class='section last'>
+              <ul >
+                <li ng-repeat='document in suggestResults' ng-include='"templates/partials/oembed-search-results.html"|prefixTemplate'>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div ng-show="tab == 'url'" class="tab-content">
-            <label translate='url'></label>
-            <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
-            <div class='elastic-textarea-wrapper'>
-              <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='url' ng-change='previewUrl(url)' type='text' placeholder='http://'></textarea>
-            </div>
+            <div class='section'>
+              <label translate='url'></label>
+              <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
+              <div class='elastic-textarea-wrapper'>
+                <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='url' ng-change='previewUrl(url)' type='text' placeholder='http://'></textarea>
+              </div>
             
               <div class='preview' ng-class='embed.type'>
                 <div ng-if='embed.provider_name=="CVCE"' ng-include='"templates/partials/embeds/cvce.html"|prefixTemplate'></div>
@@ -79,20 +86,32 @@
                   <a ng-href='embed.url' target='_blank'>url</a>
                   <div ng-if='embed.html' markdown='embed.html'></div>
                   <div ng-if='!embed.title' translate='enrich.type.notsupported'></div>
+                  <div>
+                    <label translate='title'></label>
+                    <input class='form-control' ng-model='embed.title'></input>
+                  </div>
                 </div>
               </div>
-        
+            </div>
+            <div class='section last'>
+              <label translate='bibtex reference'></label>
+              <div class='elastic-textarea-wrapper'>
+                <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='reference' type='text' placeholder='@{}'></textarea>
+              </div>
+              <div class='sans-serif description'>You can use <a href='http://truben.no/latex/bibtex/'>this web app</a> to easily build a bibtex reference</div>
+              
+            </div>
           </div>
 
           <div ng-show="tab == 'bibtex'" class="tab-content">
             Add a reference (bibtex) Cfr <a href='https://www.zotero.org/support/creating_bibliographies'>quick copy from Zotero</a>
             <label translate='bibtex'></label>
             <div class='elastic-textarea-wrapper'>
-              <textarea class="elastic-textarea" style="font-family: monospace;" rows="8" msd-elastic ng-model='reference' type='text' placeholder='@book{}'></textarea>
+              <textarea class="elastic-textarea" style="font-family: monospace;" rows="8" msd-elastic ng-model='reference' type='text' placeholder='@BOOK {}'></textarea>
             </div>
           </div>
           <div style='clear:both'></div>
-        </div>
+
 
       </div>
       <div class="modal-footer">

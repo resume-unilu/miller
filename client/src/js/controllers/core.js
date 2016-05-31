@@ -14,11 +14,19 @@ angular.module('miller')
     $scope.hasToC = false;
     $scope.ToCEnabled = false;
 
+    $scope.stopStateChangeStart = false; // cfr toggleStopStateChangeStart below
+
     $scope.toggleTableOfContents = function() {
       $scope.hasToC = !$scope.hasToC;
     };
 
     $scope.locationPath = '';
+
+    // toggle stopStateChangeStart variable thus affecting the StateChangeStart event
+    $scope.toggleStopStateChangeStart = function(value) {
+      $log.debug('CoreCtrl > toggleStopStateChangeStart value:', value, '- current:',$scope.stopStateChangeStart)
+      $scope.stopStateChangeStart = typeof value == 'boolean'? value: !$scope.stopStateChangeStart;
+    };
 
     $scope.setToC = function(ToC) {
       $log.log('CoreCtrl > setToC data:', ToC);
@@ -81,20 +89,24 @@ angular.module('miller')
         return response.results;
       });
     };
+
+    /*
+
+    */
     /*
       Set breaking news above the header.
       Cfr indexCtrl
     */
     $scope.breakingNews = [];
     $scope.setBreakingNews = function(breakingNews) {
-      $scope.breakingNews = breakingNews;
+      $scope.breakingNews = breakingNews.slice(0,3);
     };
 
     $rootScope.$on('$stateChangeStart', function (e, state) {
       $log.log('CoreCtrl @stateChangeStart new:', state.name, '- previous:', $scope.state);
       // for specific state only.
 
-      if($scope.state && ['draft', 'writing'].indexOf($scope.state) !== -1){
+      if($scope.stopStateChangeStart === true){
         // check the user has wirtten sometihing..
         var answer = confirm("Are you sure you want to leave this page?")
         if (!answer) {
@@ -116,7 +128,8 @@ angular.module('miller')
       $scope.state = state.name;
       $timeout($anchorScroll, 0); // wait for the next digest cycle (cfr marked directive)
 
-
+      // toggle stopChanceStart if the state is among the blocking ones
+      $scope.toggleStopStateChangeStart(false);
 
 
     });

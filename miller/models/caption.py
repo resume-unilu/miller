@@ -10,7 +10,7 @@ class Caption(models.Model):
   story         = models.ForeignKey(Story, on_delete=models.CASCADE)
   date_created  = models.DateField(auto_now=True)
   
-  contents      = models.TextField()
+  contents      = models.TextField(blank=True, default='')
 
   class Meta:
     ordering = ["-date_created"]

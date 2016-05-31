@@ -15,8 +15,10 @@ angular.module('miller')
     $scope.title = story.title;
     $scope.abstract = story.abstract;
     $scope.contents = story.contents;
+    $scope.date     = story.date;
     $scope.keywords = _.filter(story.tags, {category: 'keyword'});
 
+    
     $scope.displayedTags = _.filter(story.tags, function(d){
       return d.category != 'keyword';
     });
@@ -154,19 +156,29 @@ angular.module('miller')
       StoryFactory.update({id: story.id}, angular.extend({
         title: $scope.title,
         abstract: $scope.abstract,
-        contents: $scope.contents
+        contents: $scope.contents,
+        date: $scope.date
       }, $scope.metadata), function(res) {
         $log.debug('WritingCtrl @SAVE: success');
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.unlock();
         $scope.isSaving =false;
+        // disable stopping change status, cfr core controller
+        $scope.toggleStopStateChangeStart(false);
       });
     };
 
+    // listener for save event.
     $scope.$on(EVENTS.SAVE, $scope.save);
 
-    // $scope.$watch('contents', function(v){
-    //   console.log('changed contents');
-    // });
+    // listener for contents
+    $scope.$watch('contents', function(v, p){
+      if(!v || v == p)
+        return;
+      $scope.toggleStopStateChangeStart(true);
+    });
+
+    // enable stateChengestart by default
+    // $scope.toggleStopStateChangeStart(false);
   });
   

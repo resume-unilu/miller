@@ -23,6 +23,7 @@ class Document(models.Model):
   AUDIO   = 'audio'
   TEXT    = 'text'
   PDF     = 'pdf'
+  RICH    = 'rich'
 
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
@@ -31,7 +32,8 @@ class Document(models.Model):
     (TEXT, 'text'),
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
-    ("image", 'picture')
+    ("image", 'picture'),
+    (RICH, 'rich')
   )
 
   type       = models.CharField(max_length=24, choices=TYPE_CHOICES)

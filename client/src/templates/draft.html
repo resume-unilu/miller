@@ -8,7 +8,7 @@
   <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 </blockquote>
 
-<div style='position:absolute; top:220px' ng-if='!isDraft'>
+<div style='position:absolute; top:-60px' ng-if='!isDraft'>
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
   <div class='btn-line-group'>
     <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
@@ -21,7 +21,7 @@
 <div class='section' ng-if='user.is_staff'>
   <!-- <label translate="displayed-as"></label> -->
   <tags-input class='tags-input' placeholder='{{"staff.drafts.tags.placeholder"| translate}}' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
-    <auto-complete source="suggestTags($query, {category__in:['blog','writing']})" ></auto-complete>
+    <auto-complete source="suggestTags($query, {category__in:['blog','writing', 'highlights']})" ></auto-complete>
 
   </tags-input>
 </div>
@@ -45,6 +45,15 @@ by <a href>{{metadata.owner.username}}</a>
     by <a href>anonymous</a>
   </div>
 </div>
+
+<!-- <div ng-if='!isDraft'>
+  <form class="form-inline">
+    <div class="form-group">
+      <label translate='date'></label>
+      <input type="text" class="form-control" ng-model="date" name="date" data-max-date="today" timezone='UTC' bs-datepicker data-autoclose="1">{{date}}
+    </div>
+  </form>
+</div> -->
 
 <div id="draft-contents">
 
