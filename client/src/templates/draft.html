@@ -14,6 +14,8 @@
     <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
     <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
   </div>
+  <a ng-if='id' ui-sref="post({postId: id})">view</a>
+  </div>
   <!-- </div> -->
   
 </div>

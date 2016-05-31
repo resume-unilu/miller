@@ -12,6 +12,7 @@ angular.module('miller')
     $scope.isDraft = false;
     $scope.isSaving = false;
 
+    $scope.id = story.id;
     $scope.title = story.title;
     $scope.abstract = story.abstract;
     $scope.contents = story.contents;
