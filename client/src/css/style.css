@@ -371,7 +371,7 @@ p{
   z-index: 1050;
 }
 
-.preview.rich{
+.preview.rich iframe{
   min-height: 300px;
 }
 

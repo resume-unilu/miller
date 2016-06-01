@@ -24,6 +24,7 @@ class Document(models.Model):
   TEXT    = 'text'
   PDF     = 'pdf'
   RICH    = 'rich'
+  LINK    = 'link'
 
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
@@ -33,7 +34,8 @@ class Document(models.Model):
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
     ("image", 'picture'),
-    (RICH, 'rich')
+    (RICH, 'rich'),
+    (LINK, 'link')
   )
 
   type       = models.CharField(max_length=24, choices=TYPE_CHOICES)

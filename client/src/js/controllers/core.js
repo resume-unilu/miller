@@ -237,7 +237,7 @@ angular.module('miller')
     // load "huighlights"
     StoryFactory.get({
       filters: JSON.stringify({
-        tags__category: 'highlights'
+        tags__slug: 'top'
       })
     }, function(data){
       $log.info('CoreCtrl breaking news loaded', data);
