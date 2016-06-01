@@ -206,10 +206,15 @@ angular.module('miller')
             toolbox.hide();
             wand.hide();
           };
+          // listener
+          function beforeChange(){
+            debugger
+          }
 
           simplemde.codemirror.on('update', onUpdate);
           simplemde.codemirror.on('cursorActivity', move);
           simplemde.codemirror.on('beforeSelectionChange', beforeSelectionChange);
+          simplemde.codemirror.on('beforeChange', beforeChange);
           simplemde.codemirror.on('change', onChange);
           // simplemde.codemirror.on('focus', onFocus);
           // simplemde.codemirror.on('blur', onBlur);
