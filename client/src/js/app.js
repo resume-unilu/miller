@@ -19,6 +19,7 @@ angular
     'LocalStorageModule',
     'pascalprecht.translate',
     // 'angular-embedly',
+    'ngDisqus',
     'angular-embed',
     'angular-embed.handlers'
   ])
@@ -34,9 +35,24 @@ angular
     'BAD_REQUEST':'bad_request'
   })
   /*
+    disqus configuration
+  */
+  .config(function($disqusProvider, RUNTIME) {
+    if(RUNTIME.settings.disqus){
+      $disqusProvider.setShortname(RUNTIME.settings.disqus);
+    }
+
+  })
+  /*
+    prefix
+  */
+  .config(function($locationProvider) {
+    $locationProvider.hashPrefix('!');
+  })
+  /*
     multiple input tags configuration
   */
-  .config(function(tagsInputConfigProvider, RUNTIME){
+  .config(function(tagsInputConfigProvider, RUNTIME) {
     tagsInputConfigProvider
     .setDefaults('tagsInput', {
       replaceSpacesWithDashes:false,

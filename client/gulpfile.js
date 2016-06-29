@@ -44,6 +44,8 @@ gulp.task('libs', function() {
     './src/js/lib/angular-resource.min.js', 
     './src/js/lib/angular-cookies.min.js', 
     './src/js/lib/angular-sanitize.min.js', 
+
+    './src/js/lib/angular-disqus.min.js',
     // './src/js/lib/angular-animate.min.js',
     './src/js/lib/angular-ui-router.min.js', 
     './src/js/lib/angular-strap.min.js',

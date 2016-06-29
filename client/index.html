@@ -484,7 +484,7 @@
     <script src='{% static "js/lib/angular-cookies.min.js" %}'></script> 
     <script src='{% static "js/lib/angular-sanitize.min.js" %}'></script> 
     <script src='{% static "js/lib/angular-ui-router.min.js" %}'></script>
-    <script src='{% static "js/lib/angular-animate.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-disqus.min.js" %}'></script> 
     <script src='{% static "js/lib/angular-strap.min.js" %}'></script>
     <script src='{% static "js/lib/angular-strap.tpl.min.js" %}'></script>
     <script src='{% static "js/lib/angular-elastic.js" %}'></script>
@@ -534,6 +534,7 @@
       };
 
       var oembeds = {{oembeds}};
+      var settings = {{settings}};
 
       var _windox  = $(window),
           _offsetables = {
@@ -626,8 +627,10 @@
         //Apply user and other settings to resume app
         .constant("RUNTIME", {
           static: '{% static ""%}',
+
           user: user,
           oembeds: oembeds,
+          settings: settings,
           stories: {
             writing: [
               {
