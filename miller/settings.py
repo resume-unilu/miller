@@ -212,6 +212,8 @@ WS4REDIS_PREFIX = 'miller'
 # MILLER APP
 #
 #............
+
+
 MILLER_DEBUG = True
 
 MILLER_TITLE = 'miller'
@@ -220,6 +222,11 @@ MILLER_OEMBEDS = {
   'vimeo':  {
     'endpoint': 'https://vimeo.com/api/oembed.json'
   }
+}
+
+MILLER_SETTINGS = {
+  'debug': MILLER_DEBUG,
+  'disqus': ''   
 }
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
