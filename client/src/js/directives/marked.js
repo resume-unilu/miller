@@ -34,6 +34,54 @@ angular.module('miller')
       }
     };
   })
+  .directive('markdownit', function ($compile, $log, $location, markdownItService) {
+    return {
+      restrict : 'A',
+      scope:{
+        markdownit: '=',
+        settoc: '&',
+        setdocs: '&',
+        language: '='
+      },
+      link : function(scope, element, attrs) {
+        var entities = [],
+            annotable = false,
+            
+            ToC = [],
+            docs = [],
+            footnotes = {};
+
+        scope.hash = function(what) {
+          $location.hash(what);
+        };
+        
+
+        function parse() {
+          if(!scope.markdownit || !scope.markdownit.length){
+            $log.warn(':: markdownit parse() without any markdown text! Check the value for `markdownit`');
+            return;
+          }
+          var results  = markdownItService(scope.markdownit, scope.language);
+
+          element.html(results.html);
+          $compile(element.contents())(scope);
+          if(scope.settoc)
+            scope.settoc({ToC:results.ToC});
+          if(scope.setdocs)
+            scope.setdocs({items:results.docs});
+        };
+
+        // watch language and reparse everything when needed.
+        if(scope.language)
+          scope.$watch('language', function(language){
+            if(language)
+              parse();
+          });
+        else
+          parse();
+      }
+    }
+  })
   .directive('marked', function ($compile, $log, $location, markedService) {
    return {
       restrict : 'A',
