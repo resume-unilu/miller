@@ -133,6 +133,29 @@ angular
           } 
         }
       })
+      .state('authors', {
+        url: '/authors',
+        reloadOnSearch : false,
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/authors.html',
+        resolve: {
+          items: function(ProfileFactory, $stateParams) {
+            return ProfileFactory.get({
+              // filters: JSON.stringify({
+              //   status: 'draft',
+              //   owner__username: RUNTIME.user.username,
+              //   // authors__username__in: [RUNTIME.user.username]
+              // })
+            }).$promise;
+          },
+          model: function() {
+            return 'profile';
+          },
+          factory: function(ProfileFactory) {
+            return ProfileFactory;
+          }
+        }
+      })
       .state('login', {
         url: '/login',
         reloadOnSearch : false,

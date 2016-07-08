@@ -348,8 +348,8 @@
               <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
               <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
               <li ng-class="{active: state.includes('publications') && !state.includes('me')}"><a href ui-sref='publications.all'>publications</a></li>
-              
-              <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" >news / events</a></li>
+              <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li>
+              <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" translate="headline.events"></a></li>
 
              <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
               --> 
@@ -470,7 +470,7 @@
     <!-- lodash build with lodash-cli:
          lodash include=map,filter,each,compact,uniq,value,keyBy,first,chunk,fromPairs,mapValues,isEmpty -->
     <script src='{% static "js/lib/lodash.custom.min.js" %}'></script>
-    <script src='{% static "js/lib/marked.min.js" %}'></script>
+    <!-- <script src='{% static "js/lib/marked.min.js" %}'></script> -->
     <script src='{% static "js/lib/markdown-it.min.js" %}'></script>
     <script src='{% static "js/lib/markdown-it-footnote.min.js" %}'></script>
 

@@ -1,0 +1,15 @@
+
+<h2 translate="headline.authors"></h2>
+<ul class="nav nav-tabs ng-scope">
+</ul>
+<div ui-view>
+  <div class='post' ng-repeat='profile in items'>
+    <div class='wrapper'>
+      <div ng-if="!$first" class="divider ng-scope"></div>
+      <div class='tags'><span class='tag'>author</span></div>
+      <h3><a ui-sref="author.publications({username: profile.user.username})">{{profile.user.first_name}} {{profile.user.last_name}}</a></h3>
+      <div class='type'>{{profile.user.username}}</div>
+      <div markdown='profile.bio|| "..."'></div>
+    </div>
+  </div>
+</div>

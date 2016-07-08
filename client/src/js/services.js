@@ -156,13 +156,21 @@ angular.module('miller')
 
       }
 
+      // md.renderer.rules.footnote_open = function(tokens, idx){
+
+      //   console.log('markdownItService footnote', md.renderer.rules, tokens[idx])
+      //   return '<div >'
+      // }
       // change rules
-      md.renderer.rules.footnote_ref = function render_footnote_ref(tokens, idx, options, env, slf) {
+      md.renderer.rules.footnote_ref = function (tokens, idx, options, env, slf) {
+        console.log(' md.renderer.rules.footnote_ref')
         var id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
         var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
-
-        return '<span class="footnote-ref"><a href="#fn' + id + '" id="fnref' + id + '">' + caption + '</a></span>';
+        return '<span footnote="'+ id + '" class="footnote-ref" caption="'+caption+'"></span>';
       };
+
+      
+
 
       // split sections (main content and footnotes)
       sections = _(value.split(/\s*[-_]{3,}\s*/)).value();
