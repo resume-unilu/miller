@@ -5,7 +5,9 @@
   <li ng-repeat="document in documents">
     <div class='doc doc-{{document.type}}'>
       <div class='divider'>&nbsp;</div>
+      <!-- <div class="citation caption" ng-if='document.citation'>{{document.citation}}</div> -->
       <!-- this element has fixed height. -->
+
       <div ng-if='document.type=="video-cover"'>
         
         
@@ -26,12 +28,21 @@
         <div ng-if="!document.metadata.thumbnail_url && document.metadata.urls.Preview" lazy-image src='document.metadata.urls.Preview'></div>
       </div>
 
+      <div ng-if='document.type=="link"' class="caption">
+        <a ng-href='{{document.metadata.url}}' target='_blank'>cfr. {{document.metadata.url}}</a>
+        <!-- {{document.metadata}} -->
+        <!-- <div lazy-image src='document.metadata.thumbnail_url'></div> -->
+      </div>
+
       <div ng-if='document.type=="text"'>
         <div lazy-image ng-click='fullsize(document)' src='document.metadata.urls.Preview'></div>
       </div>
 
       <div ng-if='document.type=="pdf"'>
         <div lazy-image src='{{document.snapshot}}'></div>
+      </div>
+
+      <div ng-if='document.type=="rich"' marked="document.metadata.html">
       </div>
 
       <div ng-if='!document.metadata.title'>

@@ -33,7 +33,7 @@ gulp.task('libs', function() {
     './src/js/lib/jquery-2.2.1.min.js',
     './src/js/lib/md5.js',
     './src/js/lib/lodash.custom.min.js',
-    // './src/js/lib/marked.min.js',
+    './src/js/lib/marked.min.js',
     './src/js/lib/markdown-it.min.js',
     './src/js/lib/markdown-it-footnote.min.js',
     './src/js/lib/simplemde.min.js',
@@ -93,6 +93,7 @@ gulp.task('jshint', function() {
       './src/js/controllers/*.js',
       './src/js/directives/*.js',
     ])
+    .pipe($.uglify())
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
 });

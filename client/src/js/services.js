@@ -156,8 +156,11 @@ angular.module('miller')
 
       }
 
-      // md.renderer.rules.footnote_open = function(tokens, idx){
-
+      md.renderer.rules.footnote_anchor = function(tokens, idx, options, env, slf){
+        var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
+        console.log( md.renderer.rules, "zzeaelajelkajrel")
+        return '<span style="float:left; margin-right: 10px">'+caption+'</span>';
+      }
       //   console.log('markdownItService footnote', md.renderer.rules, tokens[idx])
       //   return '<div >'
       // }
