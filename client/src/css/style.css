@@ -110,6 +110,9 @@ right border is due to the font used
   margin-right: 0px;
   margin-top: 100px;
 }
+.view.authors{
+  margin: 90px 50px 100px 0;
+}
 
 .container.with-ToC .view{
   transform: translateX(200px);
@@ -361,6 +364,19 @@ p{
   font-family: inherit;
   color: #959595;
   padding-bottom: 10px;
+}
+
+.contents .footnote-contents{
+  background: #f0f0f0;
+  margin: 10px 0;
+  padding: 10px 10px 1px 10px;
+  font-size: 0.8em;
+  color: #B7B2B2;
+  line-height: 20px;
+}
+
+.contents .footnotes{
+  display: none;
 }
 
 .section{

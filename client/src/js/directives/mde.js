@@ -164,7 +164,7 @@ angular.module('miller')
               $log.log('::mde -> recompile() items docs:', _docsHash);
               scope.setdocs({documents: marked.docs});
             }
-            scope.$apply();
+            // scope.$apply();
             // apply toc hash not to reload twice
             _ToCHash = ToCHash;
             _docsHash = docsHash;
@@ -181,7 +181,10 @@ angular.module('miller')
             move();
             if(timer_recompile)
               clearTimeout(timer_recompile);
-            timer_recompile = setTimeout(recompile, 500);  
+            timer_recompile = setTimeout(function(){
+              recompile();
+              scope.$apply()
+            }, 500);  
           }
 
           // listener codemirror@changeEnd
@@ -208,7 +211,7 @@ angular.module('miller')
           };
           // listener
           function beforeChange(){
-            debugger
+            // debugger
           }
 
           simplemde.codemirror.on('update', onUpdate);

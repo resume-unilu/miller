@@ -19,6 +19,7 @@ angular
     'LocalStorageModule',
     'pascalprecht.translate',
     // 'angular-embedly',
+    'ngDisqus',
     'angular-embed',
     'angular-embed.handlers'
   ])
@@ -34,9 +35,24 @@ angular
     'BAD_REQUEST':'bad_request'
   })
   /*
+    disqus configuration
+  */
+  .config(function($disqusProvider, RUNTIME) {
+    if(RUNTIME.settings.disqus){
+      $disqusProvider.setShortname(RUNTIME.settings.disqus);
+    }
+
+  })
+  /*
+    prefix
+  */
+  .config(function($locationProvider) {
+    $locationProvider.hashPrefix('!');
+  })
+  /*
     multiple input tags configuration
   */
-  .config(function(tagsInputConfigProvider, RUNTIME){
+  .config(function(tagsInputConfigProvider, RUNTIME) {
     tagsInputConfigProvider
     .setDefaults('tagsInput', {
       replaceSpacesWithDashes:false,
@@ -115,6 +131,29 @@ angular
               })
             }).$promise;
           } 
+        }
+      })
+      .state('authors', {
+        url: '/authors',
+        reloadOnSearch : false,
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/authors.html',
+        resolve: {
+          items: function(ProfileFactory, $stateParams) {
+            return ProfileFactory.get({
+              // filters: JSON.stringify({
+              //   status: 'draft',
+              //   owner__username: RUNTIME.user.username,
+              //   // authors__username__in: [RUNTIME.user.username]
+              // })
+            }).$promise;
+          },
+          model: function() {
+            return 'profile';
+          },
+          factory: function(ProfileFactory) {
+            return ProfileFactory;
+          }
         }
       })
       .state('login', {

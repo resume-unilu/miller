@@ -16,6 +16,7 @@ def _share(request, extra={}):
   d = {
     'title': settings.MILLER_TITLE,
     'debug': settings.MILLER_DEBUG,
+    'settings': json.dumps(settings.MILLER_SETTINGS),
     'oembeds': json.dumps(settings.MILLER_OEMBEDS)
   }
 
