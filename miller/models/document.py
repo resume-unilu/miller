@@ -25,7 +25,7 @@ class Document(models.Model):
   PDF     = 'pdf'
   RICH    = 'rich'
   LINK    = 'link'
-
+  AV      = 'audiovisual'
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
     (VIDEO_COVER, 'video interview'),
@@ -35,7 +35,8 @@ class Document(models.Model):
     (PDF, 'pdf'),
     ("image", 'picture'),
     (RICH, 'rich'),
-    (LINK, 'link')
+    (LINK, 'link'),
+    (AV, 'audiovisual')
   )
 
   type       = models.CharField(max_length=24, choices=TYPE_CHOICES)
