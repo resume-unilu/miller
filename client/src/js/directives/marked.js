@@ -48,7 +48,7 @@ angular.module('miller')
 
         $(contents).html($(footnoteSl).clone())
         
-        scope.isOpened = true;
+        scope.isOpened = false;
 
         scope.toggleFootnote = function(){
           scope.isOpened = !scope.isOpened;

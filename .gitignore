@@ -1,10 +1,10 @@
+__*.*
 *.sqlite3
 *.pyc
 contents/
 dist/
 local_settings.py
 *.log
-*.md
 !README.md
 # uwsgi related files
 *.uwsgi.ini

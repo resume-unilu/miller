@@ -8,13 +8,14 @@
   <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 </blockquote>
 
-<div style='position:absolute; top:-60px' ng-if='!isDraft'>
+<div class='actions' style='top:-60px' ng-if='!isDraft'>
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
   <div class='btn-line-group'>
     <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
     <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
   </div>
-  <a ng-if='id' ui-sref="post({postId: id})">view</a>
+  <div class='btn-line-group'>
+    <button ng-if='id' class='btn-line' ui-sref="story({postId: id})" translate="button.viewmode"></button>
   </div>
   <!-- </div> -->
   

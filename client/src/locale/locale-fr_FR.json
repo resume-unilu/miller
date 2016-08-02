@@ -3,6 +3,8 @@
   "button.annotate": "tag",
   "button.agree": "agree",
   "button.back": "back",
+  "button.viewmode": "mode lecture",
+  
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",
   "enrich.resources": "add document/reference",

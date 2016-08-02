@@ -148,6 +148,17 @@ angular.module('miller')
     $scope.isWithoutAuthors = function(story) {
       return story.authors.length !== 0;
     }
+
+    /*
+      Check that the user is allowed to write contents for the given story
+      (enforced on server side of course)
+    */
+    $scope.hasWritingPermission = function(user, story) {
+      return  !!user.username && 
+              user.username.length > 0 && 
+              (user.isStaff || story.owner.username == user.username);
+    };
+
     /*
       When requested, fullsize for documents.
       Cfr also locationChangeSuccess listener 

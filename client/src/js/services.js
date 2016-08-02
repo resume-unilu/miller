@@ -115,7 +115,7 @@ angular.module('miller')
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){
         var url = tokens[idx].attrGet('href');
-        console.log(url)
+        console.log(url, tokens[idx])
         if(url.trim().indexOf('doc/') === 0){
           var documents = url.trim().replace('doc/','').split(',');
           for(var i in documents){
@@ -139,6 +139,8 @@ angular.module('miller')
           }
           tokens[idx].attrSet('class', 'glossary');
           return '<a class="glossary" name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'voc\')"><span class="anchor-wrapper"></span>';
+        } else {
+          return '<a href="'+url+'" target="_blank">';
         }  
       };
 
@@ -146,14 +148,25 @@ angular.module('miller')
         var text = tokens[idx+1].content,
             h = {
               text: text,
-              level: tokens[idx].level + 1,
+              level: tokens[idx].tag.replace(/[^\d]/g, ''),
               slug: $filter('slugify')(text)
             };
 
         results.ToC.push(h);
-
-        return '<h' + h.level + '><div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div><a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>';
-
+        
+        return '<' + tokens[idx].tag + '>'+
+          // '<div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div>'+
+          '<a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>';
+      }
+      
+      md.renderer.rules.image = function(tokens, idx){
+        return '';
+      //   renderer.image = function(src, title, alt){
+      //   if((alt||'').indexOf('profile/') === 0){
+      //     return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
+      //   }
+      //   return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
+      // };
       }
 
       md.renderer.rules.footnote_anchor = function(tokens, idx, options, env, slf){
@@ -176,9 +189,9 @@ angular.module('miller')
 
 
       // split sections (main content and footnotes)
-      sections = _(value.split(/\s*[-_]{3,}\s*/)).value();
+      sections = _(value.split(/\s*[-_]{3,}\s*\n/)).value();
 
-      console.log('markdownItService', sections.length)
+      // console.log('markdownItService', sections.length)
       // get the last section (bibliographic footnotes will be there)
       if(sections.length > 1){
         results.footnotes = sections.pop();
@@ -267,10 +280,12 @@ angular.module('miller')
           level: level,
           slug: $filter('slugify')(text)
         };
-
+        console.log("hey", h)
         ToC.push(h);
 
-        return '<h' + level + '><div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div><a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>' + 
+        return '<h' + level + '>'+
+          // '<div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div>' +
+          '<a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>' + 
           text + '</h' + level + '>';
       };
 

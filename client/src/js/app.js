@@ -214,7 +214,7 @@ angular
         url: '/drafts',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
-        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
@@ -240,7 +240,7 @@ angular
           .state('me.publications.' + d.name, {
             url: d.url,
             controller: 'ItemsCtrl',
-            templateUrl: RUNTIME.static + 'templates/blog.news.html',
+            templateUrl: RUNTIME.static + 'templates/items.html',
               resolve: {
               items: function(StoryFactory, $stateParams) {
                 return StoryFactory.get({
@@ -314,7 +314,7 @@ angular
         url: '',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
-        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
@@ -335,7 +335,7 @@ angular
         url: '/events',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
-        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
@@ -367,7 +367,7 @@ angular
       //   url: '',
       //   controller: 'ItemsCtrl',
       //   reloadOnSearch : false,
-      //   templateUrl: RUNTIME.static + 'templates/blog.news.html',
+      //   templateUrl: RUNTIME.static + 'templates/items.html',
       //   resolve: {
       //     items: function(StoryFactory, $stateParams) {
       //       return StoryFactory.get({
@@ -404,7 +404,7 @@ angular
           .state('publications.' + d.name, {
             url: d.url,
             controller: 'ItemsCtrl',
-            templateUrl: RUNTIME.static + 'templates/blog.news.html',
+            templateUrl: RUNTIME.static + 'templates/items.html',
               resolve: {
               items: function(StoryFactory, $stateParams) {
                 return StoryFactory.get({
@@ -431,13 +431,13 @@ angular
 
 
     $stateProvider
-      .state('post', {
+      .state('story', {
         url: '/story/:postId',
-        controller: 'PostCtrl',
+        controller: 'StoryCtrl',
         reloadOnSearch : false,
-        templateUrl: RUNTIME.static + 'templates/post.html',
+        templateUrl: RUNTIME.static + 'templates/story.html',
         resolve: {
-          post: function(StoryFactory, $stateParams) {
+          story: function(StoryFactory, $stateParams) {
             return StoryFactory.get({id: $stateParams.postId}).$promise;
           },
         }
