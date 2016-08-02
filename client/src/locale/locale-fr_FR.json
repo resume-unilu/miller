@@ -10,6 +10,9 @@
   "enrich.resources": "add document/reference",
   "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
 
+  "field.label.title": "titre",
+  "field.label.abstract": "abstract",
+
   "headline.project": "projet",
   "headline.people": "équipe",
   "headline.publications": "publications",
@@ -23,6 +26,8 @@
 
   "drafts": "(drafts)",
   "drafts.keywords.placeholder": "keywords ...",
-  "staff.drafts.tags.placeholder": "website placement (staff only)"
+  "staff.drafts.tags.placeholder": "website placement (staff only)",
 
+  "story.status.draft": "draft",
+  "story.status.public": "public"
 }

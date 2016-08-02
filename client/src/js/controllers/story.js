@@ -6,12 +6,36 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('StoryCtrl', function ($scope, $log, story) {
-    $log.log('StoryCtrl ready', story, $scope.user);
+  .controller('StoryCtrl', function ($scope, $log, story, StoryFactory, EVENTS) {
+    $log.log('StoryCtrl readyrrr', story, $scope.user);
     $scope.story = story;
 
     // is the story editable by the current user?
     $scope.story.isWritable = $scope.hasWritingPermission($scope.user, $scope.story);
+
+
+    // set status DRAFT or PUBLIC to the document.
+    $scope.setStatus = function(status){
+      $log.debug('StoryCtrl -> setStatus - status:', status);
+      
+      if(!$scope.user.is_staff)
+        return;
+        
+      $scope.$emit(EVENTS.MESSAGE, 'saving');
+
+      StoryFactory.update({
+        id: $scope.story.id
+      }, {
+        title: $scope.story.title,
+        status: status
+      }, function(res) {
+        $scope.story.status = res.status;
+        $scope.$emit(EVENTS.MESSAGE, 'saved');
+        $scope.unlock();
+      });
+    }
+
+
 
     $log.log('StoryCtrl ready, title:', story.title, 'isWritable:', $scope.story.isWritable);
     // $scope.cover = _(story.documents).filter({type: 'video-cover'}).first();
