@@ -1,11 +1,24 @@
-<h2 translate="publications"></h2>
+<h1 translate="headline.publications.title"></h1>
+
+<blockquote translate="headline.publications.abstract"></blockquote>
+
 
 <!-- Nav tabs -->
-  <ul class='nav nav-tabs'>
-    <li ng-repeat='link in urls' role="presentation" ui-sref-active="active">
-      <a href ui-sref='publications.{{link.name}}' aria-controls="home" role="tab" data-toggle="tab" translate="{{link.name}}"></a>
-    </li>
-  </ul>
-  
+<ul class='nav nav-tabs'>
+  <li ng-repeat='link in urls' role="presentation" ui-sref-active="active">
+    <a href ui-sref='publications.{{link.name}}' aria-controls="home" role="tab" data-toggle="tab" translate="state.publications.{{link.name}}.label"></a>
+  </li>
+</ul>
 
-<div ui-view></div>
+
+
+<div class='row'>
+  
+  <div class='col-md-4'>
+    <h2 class='no-margin-top' translate='state.{{state}}.title'></h2>
+    <p class="small" translate='state.{{state}}.abstract'></p>
+  </div>
+  <div class='col-md-8'>
+    <div ui-view></div>
+  </div>
+</div>

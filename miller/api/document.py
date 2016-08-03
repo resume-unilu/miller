@@ -1,5 +1,9 @@
 import json
+
+from django.shortcuts import get_object_or_404
+
 from rest_framework import serializers,viewsets
+from rest_framework.response import Response
 
 from miller.models import Document
 
@@ -44,6 +48,19 @@ class DocumentSerializer(serializers.ModelSerializer):
 class DocumentViewSet(viewsets.ModelViewSet):
   queryset = Document.objects.all()
   serializer_class = CreateDocumentSerializer
+
+  # retrieve by PK or slug
+  def retrieve(self, request, *args, **kwargs):
+    if 'pk' in kwargs and not kwargs['pk'].isdigit():
+      doc = get_object_or_404(Document, slug=kwargs['pk'])  
+      # save, then return tagged items according to tagform
+      serializer = DocumentSerializer(doc,
+          context={'request': request},
+      )
+      return Response(serializer.data)
+    
+    return super(DocumentViewSet, self).retrieve(request, *args, **kwargs)
+    
 
   def list(self, request):
     filters = self.request.query_params.get('filters', None)

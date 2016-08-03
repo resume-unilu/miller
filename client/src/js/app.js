@@ -32,7 +32,9 @@ angular
   .constant('EVENTS', {
     'SAVE': 'save',
     'MESSAGE': 'message',
-    'BAD_REQUEST':'bad_request'
+    'BAD_REQUEST':'bad_request',
+    // namespace for markdownit directive
+    'MARKDOWNIT_FULLSIZE': 'markdownit_fullsize'
   })
   /*
     disqus configuration
@@ -397,7 +399,7 @@ angular
         },
         templateUrl: RUNTIME.static + 'templates/publications.html',
         
-      });
+      })
 
       _.each(RUNTIME.stories.writing, function(d){
         $stateProvider
@@ -426,6 +428,7 @@ angular
             }
           });
       });
+      
       
       
 

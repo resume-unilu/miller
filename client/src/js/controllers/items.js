@@ -15,7 +15,7 @@ angular.module('miller')
     */
     function tokenize(text, words){
       var sentences = text.split(/[\.!\?]/);
-      console.log(text, sentences);
+      // console.log(text, sentences);
       return sentences;
     }
 

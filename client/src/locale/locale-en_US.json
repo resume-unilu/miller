@@ -16,6 +16,8 @@
   "headline.project": "project",
   "headline.people": "people",
   "headline.publications": "publications",
+  "headline.publications.title": "Publications",
+  "headline.publications.abstract": "The project involves research and teaching activities leading to the production of several products. Among them: e-publication, oral history interviews, e-teaching modules, a training course; all served by this collaborative platform.",
   "headline.authors": "authors",
   "headline.blogs": "blogs",
   "headline.events": "events",
@@ -26,7 +28,24 @@
 
   "drafts": "(drafts)",
   "drafts.keywords.placeholder": "add keywords ...",
+
   "staff.drafts.tags.placeholder": "website placement (staff only)",
+
+  "state.publications.all.title": "browse all the publications",
+  "state.publications.all.label": "recent",
+  "state.publications.all.abstract": "...",
+
+  "state.publications.interviews.title": "E-interviews",
+  "state.publications.interviews.label": "E-interviews",
+  "state.publications.interviews.abstract": "E-interviews ...",
+
+  "state.publications.papers.title": "E-papers",
+  "state.publications.papers.label": "E-papers",
+  "state.publications.papers.abstract": "La collection d’ePapers rassemble une série d’analyses détaillées sur les différents thèmes couverts par le projet RESuME : valeurs socio-économiques européennes, compétitivité internationale européenne, solidarité, libéralisme, gouvernance économique, modèle social européen, etc. Les ePapers sont des publications scientifiques soumises à un processus d’évaluation par les pairs. <br/>Les ePapers sont sélectionnés sur la base d’un appel à candidature. (lien vers appel) ",
+
+  "state.publications.glossary.title": "glossary",
+  "state.publications.glossary.label": "glossary",
+  "state.publications.glossary.abstract": "glossary ...",
 
   "story.status.draft": "draft",
   "story.status.public": "public"

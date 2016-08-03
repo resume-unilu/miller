@@ -60,14 +60,16 @@ angular.module('miller')
       }
     }
   })
-  .directive('markdownit', function ($compile, $log, $location, markdownItService) {
+  // main markdown directive, almost always used
+  .directive('markdownit', function ($compile, $log, $location, markdownItService, EVENTS) {
     return {
       restrict : 'A',
       scope:{
         markdownit: '=',
         settoc: '&',
         setdocs: '&',
-        language: '='
+        language: '=',
+        listener: '&'
       },
       link : function(scope, element, attrs) {
         var entities = [],
@@ -81,6 +83,17 @@ angular.module('miller')
           $location.hash(what);
         };
         
+        scope.fullsize = function(slug, type){
+          if(scope.listener){
+            scope.listener({
+              event: EVENTS.MARKDOWNIT_FULLSIZE, 
+              data: {
+                slug: slug.replace(/^.*\//, ''),
+                type: type
+              }
+            });
+          }
+        }
         
         function parse() {
           if(!scope.markdownit || !scope.markdownit.length){
@@ -148,8 +161,6 @@ angular.module('miller')
           if(scope.setdocs)
             scope.setdocs({items:rendered.docs});
         }
-
-        
 
         if(scope.language)
           scope.$watch('language', function(language){

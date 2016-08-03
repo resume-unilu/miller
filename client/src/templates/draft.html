@@ -8,10 +8,10 @@
   <textarea id='draft-abstract' class='elastic-textarea' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 
 
-<div class='actions' style='top:-60px' ng-if='!isDraft'>
+<div class='actions' ng-if='!isDraft'>
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
   <div class='btn-line-group'>
-    <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
+    <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active warning":""'>draft</button>
     <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
   </div>
   <div class='btn-line-group'>

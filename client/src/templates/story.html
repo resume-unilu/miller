@@ -6,7 +6,7 @@
   <div class='overlay'>
     <div class="actions" ng-if='story.isWritable'>
       <div ng-if='user.is_staff' class='btn-line-group'>
-        <button class='btn-line' ng-click='setStatus("draft")' ng-class='{"active": story.status=="draft"}' translate="story.status.draft"></button>
+        <button class='btn-line' ng-click='setStatus("draft")' ng-class='{"active warning": story.status=="draft"}' translate="story.status.draft"></button>
         <button class='btn-line' ng-click='setStatus("public")' ng-class='{"active": story.status=="public"}' translate="story.status.public"></button>
       </div>
 
@@ -30,7 +30,7 @@
   
     
     <div class="contents">
-     <div markdownit='story.contents' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
+     <div markdownit='story.contents' listener='listener(event, data)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
     </div>
 
     <div style='margin-top: 50px' disqus="story.slug"></div>

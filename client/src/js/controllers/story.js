@@ -7,7 +7,6 @@
  */
 angular.module('miller')
   .controller('StoryCtrl', function ($scope, $log, story, StoryFactory, EVENTS) {
-    $log.log('StoryCtrl readyrrr', story, $scope.user);
     $scope.story = story;
 
     // is the story editable by the current user?
@@ -35,6 +34,15 @@ angular.module('miller')
       });
     }
 
+    $scope.listener = function(event, data) {
+      $log.log('StoryCtrl > listener, event:', event);
+      
+      switch(event){
+        case EVENTS.MARKDOWNIT_FULLSIZE:
+          $scope.fullsize(data.slug, data.type);
+          break;
+      }
+    }
 
 
     $log.log('StoryCtrl ready, title:', story.title, 'isWritable:', $scope.story.isWritable);
