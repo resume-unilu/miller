@@ -12,6 +12,8 @@ angular.module('miller')
     // is the story editable by the current user?
     $scope.story.isWritable = $scope.hasWritingPermission($scope.user, $scope.story);
 
+    // is the layout table or other?
+    $scope.layout = 'inline';
 
     // set status DRAFT or PUBLIC to the document.
     $scope.setStatus = function(status){

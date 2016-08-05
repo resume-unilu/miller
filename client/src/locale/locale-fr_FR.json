@@ -24,6 +24,7 @@
   "headline.write": "write",
   "headline.you": "(moi)",
 
+  "link.to.original": "link to the original source",
   "me.publications": "your writings",
 
   "drafts": "(drafts)",
@@ -39,8 +40,8 @@
   "state.publications.interviews.label": "E-interviews",
   "state.publications.interviews.abstract": "E-interviews ...",
 
-  "state.publications.papers.title": "E-papers",
-  "state.publications.papers.label": "E-papers",
+  "state.publications.papers.title": "EPapers",
+  "state.publications.papers.label": "EPapers",
   "state.publications.papers.abstract": "E-interviews ...",
 
   "state.publications.glossary.title": "glossary",

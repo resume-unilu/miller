@@ -1,38 +1,43 @@
 <div class="story">
-  <div class="cover" ng-if='hasCoverVideo'>
-    <iframe width="100%" height="320" src="https://www.youtube.com/embed/Ca93bp-jpn8" frameborder="0" allowfullscreen></iframe>
+  <div class="actions" ng-if='story.isWritable'>
+          <div ng-if='user.is_staff' class='btn-line-group'>
+            <button class='btn-line' ng-click='setStatus("draft")' ng-class='{"active warning": story.status=="draft"}' translate="story.status.draft"></button>
+            <button class='btn-line' ng-click='setStatus("public")' ng-class='{"active": story.status=="public"}' translate="story.status.public"></button>
+          </div>
 
-  </div>
-  <div class='overlay'>
-    <div class="actions" ng-if='story.isWritable'>
-      <div ng-if='user.is_staff' class='btn-line-group'>
-        <button class='btn-line' ng-click='setStatus("draft")' ng-class='{"active warning": story.status=="draft"}' translate="story.status.draft"></button>
-        <button class='btn-line' ng-click='setStatus("public")' ng-class='{"active": story.status=="public"}' translate="story.status.public"></button>
+          <div class='btn-line-group'>
+            <button  class='btn-line' nref ui-sref='writing({storyId:story.id})'>edit</button>
+          </div>
+        </div>
+  <div class='row'>
+    <div class='col-md-8'>
+      <div class="cover" ng-if='hasCoverVideo'>
+        <iframe width="100%" height="320" src="https://www.youtube.com/embed/Ca93bp-jpn8" frameborder="0" allowfullscreen></iframe>
+
       </div>
+      <div class='overlay'>
+        
 
-      <div class='btn-line-group'>
-        <button  class='btn-line' nref ui-sref='writing({storyId:story.id})'>edit</button>
-      </div>
-    </div>
-
-    <div class="tags" >
-      <span ng-if="story.tags.length" class='tag sans-serif' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+        <div class="tags" >
+          <span ng-if="story.tags.length" class='tag sans-serif' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+          
+        </div>
+        <div class='authors' ng-if="story.authors.length">
+          by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+        </div>
+        <h1>{{story.title}}</h1>  
+        <blockquote>
+          {{story.abstract}}
+        </blockquote>
+        
       
-    </div>
-    <div class='authors' ng-if="story.authors.length">
-      by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-    </div>
-    <h1>{{story.title}}</h1>  
-    <blockquote>
-      {{story.abstract}}
-    </blockquote>
-    
-  
-    
-    <div class="contents">
-     <div markdownit='story.contents' listener='listener(event, data)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
-    </div>
+        
+        <div class="contents">
+         <div markdownit='story.contents' listener='listener(event, data)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
+        </div>
 
-    <div style='margin-top: 50px' disqus="story.slug"></div>
+        <div style='margin-top: 50px' disqus="story.slug"></div>
+      </div>
+    </div>
   </div>
 </div>

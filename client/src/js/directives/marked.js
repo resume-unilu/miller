@@ -6,34 +6,34 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('markdown', function($compile, $log, $location){
-    return {
-      restrict : 'A',
-      scope:{
-        markdown: '=',
-      },
-      link : function(scope, element, attrs) {
-        if(scope.markdown && scope.markdown.length) {
-          element.html(marked(scope.markdown));
-          $compile(element.contents())(scope);
-        }
-      }
-    };
-  })
-  .directive('markedLanguage', function($compile, $log, $location){
-    return {
-      restrict : 'A',
-      scope:{
-        markedLanguage: '=',
-      },
-      link : function(scope, element, attrs) {
-        if(scope.markdown && scope.markdown.length) {
-          element.html(marked(scope.markdown));
-          $compile(element.contents())(scope);
-        }
-      }
-    };
-  })
+  // .directive('markdown', function($compile, $log, $location){
+  //   return {
+  //     restrict : 'A',
+  //     scope:{
+  //       markdown: '=',
+  //     },
+  //     link : function(scope, element, attrs) {
+  //       if(scope.markdown && scope.markdown.length) {
+  //         element.html(marked(scope.markdown));
+  //         $compile(element.contents())(scope);
+  //       }
+  //     }
+  //   };
+  // })
+  // .directive('markedLanguage', function($compile, $log, $location){
+  //   return {
+  //     restrict : 'A',
+  //     scope:{
+  //       markedLanguage: '=',
+  //     },
+  //     link : function(scope, element, attrs) {
+  //       if(scope.markdown && scope.markdown.length) {
+  //         element.html(marked(scope.markdown));
+  //         $compile(element.contents())(scope);
+  //       }
+  //     }
+  //   };
+  // })
   .directive('footnote', function(){
     return {
       restrict : 'A',
@@ -56,6 +56,21 @@ angular.module('miller')
             
           //   scope.isFilled = true;
           // }
+        }
+      }
+    }
+  })
+  .directive('embedit', function($sce){
+    return {
+      restrict : 'A',
+      scope:{
+        embedit: '=',
+        stretch: '='
+      },
+      link: function(scope, element, attrs){
+        element.html(scope.embedit);
+        if(scope.stretch){
+          element.find('iframe').width('100%').height('100%');
         }
       }
     }

@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, TagFactory, RUNTIME, EVENTS) {    
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, DocumentFactory, TagFactory, RUNTIME, EVENTS) {    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;
@@ -175,10 +175,15 @@ angular.module('miller')
         $location.search('view', null);
     });
 
-    $scope.fullsize = function(doc) {
-      $log.log('CoreCtrl -> fullsize', doc);
-      $scope.fullsized = doc;
-      $location.search('view', doc.short_url);
+    // 
+    $scope.fullsize = function(slug, type) {
+      $log.log('CoreCtrl -> fullsize, doc slug:', slug, type);
+
+      if(type=="doc"){
+        $location.search('view', slug);
+      }
+      // $scope.fullsized = doc;
+      // $location.search('view', doc.short_url);
     };
 
 
@@ -208,6 +213,13 @@ angular.module('miller')
       $scope.locationPath = path;
       $scope.path = $location.path();
 
+      // load fullsize
+      if($scope.qs.view){
+        DocumentFactory.get({id: $scope.qs.view}, function(res){
+          $scope.fullsized = res;
+          fullsizeModal.$promise.then(fullsizeModal.show);
+        });
+      }
       if($scope.qs.view && $scope.fullsized && $scope.fullsized.short_url == $scope.qs.view){
         // normal behaviour, after fullsize has been called the view param is present in location
         fullsizeModal.$promise.then(fullsizeModal.show);

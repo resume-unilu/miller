@@ -49,6 +49,7 @@ p, span{
   margin-top:0;
 }
 
+
 blockquote, blockquote p{
   font-size: 20px;
   line-height: 35px;
@@ -250,17 +251,17 @@ label{
   position: relative;
   text-align: justify;
   margin-top: 240px;
-  padding: 0 40px;
+  /*padding: 0 40px;*/
   transition: transform .27s ease-in-out;
 }
 
 .container.with-ToC .view{
   transform: translateX(200px);
-  padding-right: 200px;
+  /*padding-right: 200px;*/
 }
 
 .container.with-ToC .view .actions{
-  right: 200px;
+  /*transform: translateX(200px);*/
 }
 
 .anchor{
@@ -270,7 +271,7 @@ label{
 
 .actions{
   position: absolute;
-  right: 40px;
+  right: 0px;
   top: 0px;
 }
 
@@ -634,3 +635,102 @@ h4.modal-title{
   -webkit-box-shadow:0 0 8px #a7a7a7;
   box-shadow: 0 0 8px #a7a7a7;
 }
+
+/*
+  Table of documents
+*/
+/*#table-of-documents{
+  transform: translateX(300px);
+  -webkit-transform: translateX(300px);
+  -moz-transform: translateX(300px);
+  -ms-transform: translateX(300px);
+  width: 300px;
+}
+
+#table-of-documents ul{
+  padding: 0;
+  margin:0 ;
+  list-style-type: none;
+}
+
+#table-of-documents ul li{
+  list-style-type: none;
+  
+}*/
+
+/*
+  Modal:oversize;
+*/
+.modal.fullsize.link{
+  width: 400px;
+  left: 50%;
+  margin-left: -200px;
+  height: 300px;
+  margin-top: -100px;
+  top: 50%;
+}
+
+.modal.fullsize .close{
+  position: absolute;
+  right: 70px;
+  top: 55px;
+  opacity: 1;
+  z-index: 3;
+  text-shadow: none;
+  text-align: right;
+}
+
+.modal.fullsize .close span{
+  color: white;
+  font-size: 25px;
+  line-height: 50px;
+}
+
+.modal.fullsize .oversize{
+  position: absolute;
+  background: #454545;
+  top:50px;
+  left:50px;
+  right: 50px;
+  bottom: 50px;
+  overflow:auto;
+  color: #f0f0f0;
+  z-index:1;
+}
+
+.modal.fullsize .oversize .heading{
+  position: absolute;
+  height: 100px;
+  top:0;
+  left:0;
+  overflow: hidden;
+  z-index:2;
+}
+
+.modal.fullsize .oversize .embedded{
+  position: absolute;
+  top: 100px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+}
+
+.modal.fullsize .oversize .heading h2{
+  margin-top: 0;
+  padding: 20px 50px 10px 20px;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 30px;
+  margin-bottom: 0;
+}
+
+.modal.fullsize .oversize .heading .contents{
+  font-size: 13px;
+  padding: 0 20px;
+  color: #E6E5E5;
+}
+.modal.fullsize .oversize .heading .contents span{
+  font-size: inherit;
+    color: #E6E5E5;
+}
+
