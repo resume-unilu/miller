@@ -99,7 +99,15 @@ angular.module('miller')
     */
     $scope.breakingNews = [];
     $scope.setBreakingNews = function(breakingNews) {
-      $scope.breakingNews = breakingNews.slice(0,3);
+      $scope.breakingNews = breakingNews.slice(0,3).map(function(d){
+        if(d.covers.length){
+          var cover = d.covers[0];
+
+          d.cover_url = _.get(cover, 'metadata.urls.Preview') || cover.url;
+          
+        }
+        return d;
+      });
     };
 
     $rootScope.$on('$stateChangeStart', function (e, state) {

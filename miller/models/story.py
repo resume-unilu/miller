@@ -43,6 +43,9 @@ class Story(models.Model):
   authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
   documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
+  
+  # the leading document(s), e.g. an interview
+  covers = models.ManyToManyField(Document, related_name='covers', blank=True)
 
   tags      = models.ManyToManyField(Tag, blank=True) # tags
 

@@ -10,7 +10,7 @@ from rest_framework.decorators import  api_view, permission_classes, detail_rout
 
 from miller.models import Story, Tag, Document, Caption
 from miller.api.fields import OptionalFileField, JsonField
-
+from miller.api.serializers import LiteDocumentSerializer
 
 
 
@@ -62,10 +62,11 @@ class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
+  covers = LiteDocumentSerializer(many=True)
 
   class Meta:
     model = Story
-    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
+    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'covers', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
 
 class CreateStorySerializer(serializers.ModelSerializer):
