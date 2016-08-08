@@ -36,12 +36,15 @@ angular.module('miller')
       });
     }
 
-    $scope.listener = function(event, data) {
+    $scope.listener = function(event, data, callback) {
       $log.log('StoryCtrl > listener, event:', event);
       
       switch(event){
         case EVENTS.MARKDOWNIT_FULLSIZE:
           $scope.fullsize(data.slug, data.type);
+          break;
+        case EVENTS.MARKDOWNIT_RESOLVE:
+          $scope.resolve(data.slug, data.type, callback);
           break;
       }
     }

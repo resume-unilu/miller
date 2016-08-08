@@ -36,4 +36,31 @@ angular.module('miller')
 
       }
     };
+  })
+  /*
+    lazy placeholder for document, filled when needed only.
+  */
+  .directive('lazyPlaceholder', function($log, RUNTIME) {
+    return {
+      transclude: true,
+      templateUrl: RUNTIME.static + 'templates/partials/document.placeholder.html',
+      link : function(scope, element, attrs) {
+        var slug = element.attr('lazy-placeholder');
+        $log.log(':::lazy-placeholder on ',slug);
+        
+        if(scope.resolve)
+          scope.resolve(slug, 'doc', function(doc){
+            // add to this local scope
+
+            if(doc)
+              scope.resolved = doc;
+            else 
+              $log.error('cannot find', slug );
+
+            $log.log(':::lazy-placeholder on ',scope.resolved);
+
+          })
+        
+      }
+    }
   });

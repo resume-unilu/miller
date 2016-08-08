@@ -59,6 +59,8 @@ gulp.task('libs', function() {
     './src/js/lib/angular-translate.min.js',
     './src/js/lib/angular-translate-loader-static-files.min.js',
     './src/js/lib/ng-tags-input.min.js',
+
+    './src/js/lib/angular-lazy-img.min.js'
   ])
     .pipe($.concat('scripts.lib.min.js'))
     // .pipe($.uglify())

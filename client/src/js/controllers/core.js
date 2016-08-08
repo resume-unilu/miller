@@ -54,6 +54,20 @@ angular.module('miller')
       };
     };
 
+    // look for document by slug (internal, cached docs or ask for new one)
+    $scope.resolve = function(slug, type, callback){
+      var matching = $scope.documents.filter(function(d){
+        return d.slug == slug
+      });
+      $log.log('CoreCtrl > $scope.resolve slug:', slug)
+      if(matching.length){
+
+        callback(matching[0]);
+      } else {
+        DocumentFactory.get({id: slug}, callback);
+      }
+    }
+
     $scope.save = function(){
       $log.log('CoreCtrl > @SAVE ...'); 
       $scope.$broadcast(EVENTS.SAVE);
@@ -100,7 +114,7 @@ angular.module('miller')
     $scope.breakingNews = [];
     $scope.setBreakingNews = function(breakingNews) {
       $scope.breakingNews = breakingNews.slice(0,3).map(function(d){
-        if(d.covers.length){
+        if(d.covers && d.covers.length){
           var cover = d.covers[0];
 
           d.cover_url = _.get(cover, 'metadata.urls.Preview') || cover.url;
@@ -164,7 +178,7 @@ angular.module('miller')
     $scope.hasWritingPermission = function(user, story) {
       return  !!user.username && 
               user.username.length > 0 && 
-              (user.isStaff || story.owner.username == user.username);
+              (user.is_staff || story.owner.username == user.username);
     };
 
     /*

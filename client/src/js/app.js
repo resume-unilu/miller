@@ -21,7 +21,9 @@ angular
     // 'angular-embedly',
     'ngDisqus',
     'angular-embed',
-    'angular-embed.handlers'
+    'angular-embed.handlers',
+
+    'angularLazyImg'
   ])
   .constant('LOCALES', {
     'locales': {
@@ -34,7 +36,8 @@ angular
     'MESSAGE': 'message',
     'BAD_REQUEST':'bad_request',
     // namespace for markdownit directive
-    'MARKDOWNIT_FULLSIZE': 'markdownit_fullsize'
+    'MARKDOWNIT_FULLSIZE': 'markdownit_fullsize',
+    'MARKDOWNIT_RESOLVE': 'markdownit_resolve'
   })
   /*
     disqus configuration

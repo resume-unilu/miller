@@ -115,7 +115,7 @@ angular.module('miller')
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){
         var url = tokens[idx].attrGet('href');
-        console.log(url, tokens[idx])
+        // console.log(url, tokens[idx])
         if(url.trim().indexOf('doc/') === 0){
           var documents = url.trim().replace('doc/','').split(',');
           for(var i in documents){
@@ -124,6 +124,9 @@ angular.module('miller')
               citation: tokens[idx + 1].content,
               slug: documents[i]
             });
+          }
+          if(!tokens[idx + 1].content.length){
+            return '<a name='+ documents[0] +'><div lazy-placeholder="'+ documents[0] + '"></div>';
           }
           return '<a name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span class="anchor-wrapper"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';

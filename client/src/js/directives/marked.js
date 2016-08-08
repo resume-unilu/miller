@@ -65,13 +65,20 @@ angular.module('miller')
       restrict : 'A',
       scope:{
         embedit: '=',
-        stretch: '='
+        stretch: '=',
+        language: '='
       },
       link: function(scope, element, attrs){
-        element.html(scope.embedit);
+        if(scope.language && typeof scope.embedit == 'object'){
+          debugger
+          element.html(scope.embedit[scope.language]|| '');
+        } else {
+          element.html(scope.embedit);
+        }
         if(scope.stretch){
           element.find('iframe').width('100%').height('100%');
         }
+
       }
     }
   })
@@ -109,6 +116,19 @@ angular.module('miller')
             });
           }
         }
+
+        scope.resolve = function(slug, type, notify){
+          if(scope.listener){
+            scope.listener({
+              event: EVENTS.MARKDOWNIT_RESOLVE, 
+              data: {
+                slug: slug,
+                type: type
+              },
+              callback: notify
+            });
+          }
+        }
         
         function parse() {
           if(!scope.markdownit || !scope.markdownit.length){
@@ -136,6 +156,7 @@ angular.module('miller')
       }
     }
   })
+
   .directive('marked', function ($compile, $log, $location, markedService) {
    return {
       restrict : 'A',

@@ -11,7 +11,7 @@
 
         
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
-        <ul class="nav nav-tabs" style='padding-left:15px' role="tablist">
+        <ul class="nav nav-tabs" style='padding-left:15px; margin-bottom:0' role="tablist">
           <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.resources'></a></li>
           <li role="presentation" ng-class='{"active": tab == "glossary"}'><a ng-click='setTab("glossary")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.glossary'></a></li>
           <li role="presentation" ng-class="tab == 'CVCE'? 'active':''"><a ng-click='setTab("CVCE")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
@@ -52,7 +52,7 @@
           </div>
 
           <div ng-show="tab == 'CVCE'" class="tab-content">
-            <div class='section' ng-class='{"last": !suggestResults.length}'>
+            <div class='section padded' ng-class='{"last": !suggestResults.length}'>
               <label>
                 <span translate='search'></span>
                 <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
@@ -60,7 +60,7 @@
               <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
             </div>
             <div class='section last'>
-              <ul >
+              <ul class='list-of-documents'>
                 <li ng-repeat='document in suggestResults' ng-include='"templates/partials/oembed-search-results.html"|prefixTemplate'>
                 </li>
               </ul>

@@ -51,10 +51,11 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
-  
+  covers = LiteDocumentSerializer(many=True)
+
   class Meta:
     model = Story
-    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'documents', 'contents', 'date', 'date_created', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
+    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'documents', 'covers', 'contents', 'date', 'date_created', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
 
 
 # Serializer to use in list of story items
