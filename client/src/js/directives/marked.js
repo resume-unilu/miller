@@ -34,12 +34,12 @@ angular.module('miller')
   //     }
   //   };
   // })
-  .directive('footnote', function(){
+  .directive('footnote', function($compile){
     return {
       restrict : 'A',
       scope:{
         caption: '=',
-        footnote: '=',
+        footnote: '='
       },
       template: '<span class="footnote"><a ng-click="toggleFootnote()">{{caption}}</a><div class="footnote-contents" ng-show="isOpened"></div></span>',
       link: function(scope, element, attrs) {
@@ -47,6 +47,7 @@ angular.module('miller')
             contents = element.find('.footnote-contents');
 
         $(contents).html($(footnoteSl).clone())
+        $compile(element.contents())(scope);
         
         scope.isOpened = false;
 
@@ -57,6 +58,11 @@ angular.module('miller')
           //   scope.isFilled = true;
           // }
         }
+
+        scope.fullsize = function(){
+          debugger
+        }
+
       }
     }
   })

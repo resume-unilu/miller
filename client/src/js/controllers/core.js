@@ -113,7 +113,7 @@ angular.module('miller')
     */
     $scope.breakingNews = [];
     $scope.setBreakingNews = function(breakingNews) {
-      $scope.breakingNews = breakingNews.slice(0,3).map(function(d){
+      $scope.breakingNews = breakingNews.slice(0,2).map(function(d){
         if(d.covers && d.covers.length){
           var cover = d.covers[0];
 

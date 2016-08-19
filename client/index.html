@@ -22,6 +22,9 @@
         background-color:#fff;
         font-family: 'Merriweather', serif;
         color: #252525;
+        font-size: 15px;
+        line-height: 25px;
+        color: #454545;
       }
       
       #logo{
@@ -220,22 +223,28 @@
         text-transform: uppercase;
         background-color: white;
         border: 2px solid transparent;
-        color: #151515;
+        color: #B7B2B2;
         font-size: 10px;
         font-weight: bold;
         padding: 0px 15px;
-        line-height: 18px;
+        line-height: 20px;
+      }
+
+      .btn-line.warning{
+        background-color: #FF6B6B;
+        color: white;
       }
 
       .btn-line:hover{
-        background-color: #B7B2B2;
+        background-color: #151515;
+        color: white;
       }
       .btn-line:focus{
         outline: none;
 
       }
       .btn-line.active{
-        background: #151515;
+        background: #B7B2B2;
         color: white;
       }
       .btn-line.active.warning{
@@ -244,8 +253,21 @@
 
       .btn-line-group{
         border: 2px solid #B7B2B2;
-        padding: 2px;
+        padding: 0 2px;
         display: inline-block;
+        height: 32px;
+      }
+
+      .btn-line-group.primary{
+        border: 2px solid #151515;
+      }
+
+      .btn-line-group.primary .btn-line{
+        color: #151515;
+      }
+
+      .btn-line-group.primary .btn-line:hover{
+        color: white;
       }
 
       #showreel{
@@ -260,7 +282,7 @@
 
       .breakingNews{
         float:left;
-        width:33%;
+        width:33.3%;
         color: white;
         height: 100%;
         background: #111;
@@ -275,7 +297,7 @@
       .breakingNews .overlay{
         position: absolute;
         bottom: 0px;
-        background-color: rgba(16,16,16,.3);
+        background-color: rgba(16,16,16,.5);
         
         left: 0;
     right: 0;
@@ -288,13 +310,15 @@
         line-height: 25px;
         border-bottom: 2px solid #FF6B6B;
         margin: 0 0 15px 0;
-        padding: 10px 0;
+        padding: 0px 0 10px 0;
         max-height: 65px;
         overflow: hidden;
       }
-      .breakingNews .tags {
+      .breakingNews .type, .breakingNews span.tag {
         font-family: 'Lato', sans-serif;
         font-size: 10px;
+        color: #fafafa;
+        text-transform: uppercase
       }
       .breakingNews a{
         color: #f0f0f0;
@@ -350,6 +374,25 @@
           width: 1100px;
         }
       }
+      #unilu-logo-wrapper{
+        position: relative;
+        height: 140px;
+        width: 100%;
+        overflow: hidden;
+      }
+      #unilu-logo{
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 380px;
+        height: 140px;
+        background-color: #ffffff;
+        background-image: url(/static/images/DEIS_uni.lu.png);
+        z-index: 1;
+        /* border-top-left-radius: 5px; */
+        /* border-top-right-radius: 5px; */
+        background-position: left bottom;
+      }
     </style>
   </head>
   {% block body %}
@@ -359,6 +402,11 @@
       <div class='container'>
         <div style='height: 140px'>
       {% verbatim %}
+      <div class="breakingNews">
+        <div id='unilu-logo-wrapper'>
+          <div id='unilu-logo'></div>
+        </div>
+      </div>
       <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
       {% endverbatim %}
         </div>
