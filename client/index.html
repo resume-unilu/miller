@@ -521,7 +521,7 @@
       </div>
     </div>
 
-    <aside id='table-of-contents' ng-class='hasToC? "active":""'>
+    <aside id='table-of-contents'  ng-class='{"active":hasToC && ToC.length>0}'>
       <div id="inner-table-of-contents"><div ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'></div></div>
     </aside>
 
@@ -529,7 +529,7 @@
       <div id="inner-table-of-documents"><div ng-include='"templates/partials/table-of-documents.html"|prefixTemplate'></div></div>
     </aside>
 
-    <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' >
+    <div id='table-of-contents-toggler'  ng-class='{"active": ToC.length > 0}' >
       <div >
         <button class='btn-transparent' ng-click='toggleTableOfContents()'><span  class='icon-book-open'></span></button>
       </div>
