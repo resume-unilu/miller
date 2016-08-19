@@ -6,12 +6,11 @@ from rest_framework.permissions import IsAdminUser
 
 from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import  api_view, permission_classes, detail_route # cfr StoryViewSet
+from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
 from miller.models import Story, Tag, Document, Caption
 from miller.api.fields import OptionalFileField, JsonField
-from miller.api.serializers import LiteDocumentSerializer
-
+from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer
 
 
 class CaptionSerializer(serializers.HyperlinkedModelSerializer):
@@ -30,19 +29,6 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
     model = Caption
     fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
 
-
-# tag represnetation in many to many
-class TagSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Tag
-    fields = ('id', 'category', 'name', 'status')
-
-
-# serializer the authors.
-class AuthorSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ('id', 'username', 'first_name', 'last_name', 'is_staff', 'url')
 
 
 # Serializers define the API representation.
@@ -115,6 +101,41 @@ class StoryViewSet(viewsets.ModelViewSet):
   @permission_classes((IsAdminUser, ))
   def partial_update(self, request, *args, **kwargs):
     return super(StoryViewSet, self).partial_update(request, *args, **kwargs)
+
+
+  @list_route(methods=['get'])
+  def search(self, request):
+    from miller.forms import SearchQueryForm
+    from miller.helpers import search_whoosh_index
+    form = SearchQueryForm(request.query_params)
+    if not form.is_valid():
+      return Response(form.errors, status=status.HTTP_201_CREATED)
+    # get the results
+    results = search_whoosh_index(form.cleaned_data['q'])
+    
+    filters = {
+      'id__in': [hit['id'] for hit in results]
+    }
+    # check if the user is allowed this content
+    if request.user.is_authenticated():
+      stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
+    else:
+      stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
+
+    def mapper(d):
+      d.matches = []
+      for hit in results:
+        if int(d.id) == int(hit['id']):
+          d.matches = hit
+          break
+      return d
+    # enrich stories items (max 10 items)
+    stories = map(mapper, stories)
+
+    serializer = MatchingStorySerializer(stories, many=True,
+      context={'request': request}
+    )
+    return Response(serializer.data)
 
 
   @detail_route(methods=['put'])

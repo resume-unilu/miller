@@ -1,5 +1,5 @@
 <!-- lang:fr_FR -->
-## Équipe projet
+# Équipe projet
 
 ### Frédéric Allemand
 > Coordinateur scientifique et gestionnaire de projets
@@ -15,19 +15,10 @@ Alessia Virone a rejoint le CVCE en 2015. Elle est collaboratrice scientifique a
 Diplômée en sciences politiques avec une spécialisation sur les pays émergents (ULB), elle est également titulaire d’un master complémentaire en études européennes (UCL-St Louis). 
 Elle a collaboré antérieurement avec des ONG et institutions européennes en tant que chercheuse et responsable de la communication. Elle a également enseigné l’économie européenne (EPHEC, Bruxelles).
 
-
-### Sergio De la Parra
-> Collaborateur scientifique
-
-![profile/Sergio De la Parra](/static/images/people/sergio-delaparra.jpg "Sergio De la Parra")Sergio De la Parra a rejoint le CVCE en septembre 2014. Il a principalement participé à l'enrichissement et la mise à jour du corpus de recherche «L'Union économique et monétaire: origine, fonctionnement et futur».
-Diplômé en droit européen (King's College London), sciences politiques (Università di Bologna) et philologie romane (Université Libre de Bruxelles), il est spécialisé dans le droit de l'Union économique et monétaire et est l'auteur de plusieurs articles sur la nouvelle gouvernance économique européenne. 
-Avant de rejoindre le CVCE, Sergio a travaillé à l'Observatoire Social Européen (OSE), à l'Institut Syndical Européen (ETUI) et au Sénat de Belgique.
-
-
 ### Daniele Guido
 > Collaborateur scientifique
 
-Daniele is a designer and full-stack developer specialising in data visualisation and digital methods with a hybrid background in Fine Art (Fine Art Brera Academy, Milan, 2006) and Design (MSc in Communication Design, Politecnico di Milano, 2009). 
+[@danieleguido](https://twitter.com/danieleguido) &mdash; Daniele is a designer and full-stack developer specialising in data visualisation and digital methods with a hybrid background in Fine Art (Fine Art Brera Academy, Milan, 2006) and Design (MSc in Communication Design, Politecnico di Milano, 2009). 
 He joined the CVCE Digital Humanities Lab in March 2015 after several years at the medialab Sciences Po in Paris, where he helped to develop experimental web applications and tools for data visualisation applied to enhanced scholarly publications and research in social sciences. During his years in France he developed the front-end interface of the EU-funded project AIME (the AIME platform) and was involved in the EU-funded project FORCCAST. He also worked as a designer and developer at the Politecnico di Milano's Density Design Lab, both during his studies and in the context of a joint partnership with the medialab SciencesPo.
 At the CVCE he has developed Histograph, an open source platform for the graph-based exploration and crowd-based indexation of multimedia collections.
 
@@ -108,8 +99,26 @@ She is a specialist in the pre-industrial economic system, with a particular foc
 ![profile/raimondo-manca](/static/images/people/raimondo-manca.jpg "Raimondo Manca")Professor Raimondo Manca took his master degree in Economics at University of Naples “Federico II”. He wrote 156 papers, 70 of which are published in peer reviewed journals and 18 are chapters of referred books. Furthermore, he wrote 10 scientific books, two of them for Springer, and six for ISTE-Wiley, 8 books are in English. The other two books are written in French and are published by Hermes Lavoisier. He teaches courses on Risk Theory, Financial Mathematics and an introductory course on programming in C++ and in Mathematical Languages. In the MEMOTEF department, he is the responsible of a server with 72 processors and 400 giga of RAM. He is expert in the construction of algorithms and related computer programs. 
 Prof. R. Manca managed as local coordinator researches of the Italian Ministry of University and Research (MIUR) in 1998, 2000, 2002, 2004 and 2006 and grants from “La Sapienza” from 2000 to 2015. Furthermore, he participated to the Tempus project Educational Measurement Adapted to EU Standards.
 
+### Maria Felice Arezzo
+> Assistant Professor of Statistics
+
+[uniroma1](http://www.memotef.uniroma1.it/users/arezzo-maria-felice ) - Maria Felice Arezzo graduated in economics from Sapienza University of Rome before becoming a visiting scholar at the University of Texas and Duke University (North Carolina). She obtained her PhD in Applied Statistics at Roma Tre University.
+She worked at the Italian Parliament from 1994 to 1996 and then as a researcher for several private and public clients. She was a research fellow from 2002 to 2005 and since 2006 she has been Assistant Professor of Statistics at Sapienza University.
+
+
+
+## Former members
+
+### Sergio De la Parra
+> Collaborateur scientifique
+
+![profile/Sergio De la Parra](/static/images/people/sergio-delaparra.jpg "Sergio De la Parra")Sergio De la Parra a rejoint le CVCE en septembre 2014. Il a principalement participé à l'enrichissement et la mise à jour du corpus de recherche «L'Union économique et monétaire: origine, fonctionnement et futur».
+Diplômé en droit européen (King's College London), sciences politiques (Università di Bologna) et philologie romane (Université Libre de Bruxelles), il est spécialisé dans le droit de l'Union économique et monétaire et est l'auteur de plusieurs articles sur la nouvelle gouvernance économique européenne. 
+Avant de rejoindre le CVCE, Sergio a travaillé à l'Observatoire Social Européen (OSE), à l'Institut Syndical Européen (ETUI) et au Sénat de Belgique.
+
+
 <!-- lang:en_US -->
-## Project team
+# Project team
 
 
 ### Frédéric Allemand
@@ -126,14 +135,6 @@ He previously worked in the ECB’s legal department, in the French Secretariat-
 Alessia Virone joined the CVCE in 2015. She is a Scientific Collaborator in the European Integration Studies Department. She mainly works on the RESuME project, which focuses on the European socio-economic model.
 Alessia is a political science graduate from the Université libre de Bruxelles (ULB) with a specialisation in emerging countries. She also holds a Master’s in European Studies from the Université catholique de Louvain (UCL) and Saint-Louis University, Brussels. 
 Prior to joining the CVCE, she worked for various NGOs and European institutions as a researcher and communications manager. She has also lectured in European economics at EPHEC, Brussels.
-
-
-### Sergio De la Parra
-> Scientific Collaborator
-
-Sergio De la Parra joined the CVCE in September 2014. He has mainly been involved in the work to enhance and update the research corpus ‘Economic and Monetary Union: origins, workings and future prospects’.
-Sergio has degrees in European law (King’s College London), political science (University of Bologna) and the philology of Romance languages (Université libre de Bruxelles). He specialises in the law of Economic and Monetary Union and has written several articles on the new European economic governance. 
-Before joining the CVCE, he worked at the European Social Observatory (OSE), the European Trade Union Institute (ETUI) and the Belgian Senate.
 
 
 ### Daniele Guido
@@ -246,3 +247,13 @@ Maria Felice Arezzo graduated in economics from Sapienza University of Rome befo
 She worked at the Italian Parliament from 1994 to 1996 and then as a researcher for several private and public clients. She was a research fellow from 2002 to 2005 and since 2006 she has been Assistant Professor of Statistics at Sapienza University.
 
 http://www.memotef.uniroma1.it/users/arezzo-maria-felice 
+
+## Former members
+
+### Sergio De la Parra
+> Scientific Collaborator
+
+Sergio De la Parra joined the CVCE in September 2014. He has mainly been involved in the work to enhance and update the research corpus ‘Economic and Monetary Union: origins, workings and future prospects’.
+Sergio has degrees in European law (King’s College London), political science (University of Bologna) and the philology of Romance languages (Université libre de Bruxelles). He specialises in the law of Economic and Monetary Union and has written several articles on the new European economic governance. 
+Before joining the CVCE, he worked at the European Social Observatory (OSE), the European Trade Union Institute (ETUI) and the Belgian Senate.
+

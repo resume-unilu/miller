@@ -67,8 +67,24 @@ class Story(models.Model):
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)
 
+  # store into the whoosh index
+  def store(self, ix=None):
+    if ix is None:
+      ix = helpers.get_whoosh_index()
+    writer = ix.writer()
+    writer.update_document(
+      title = self.title,
+      path = u"%s"%self.id,
+      content = u"\n".join(filter(None,[self.slug, self.short_url, self.abstract, self.contents])),
+      tags = u",".join([u'%s'%t.name for t in self.tags.all()]),
+      classname = u"story")
+    writer.commit()
+
   def save(self, *args, **kwargs):
     self.slug = slugify(self.title)
+    # store this version
+    self.store()
+
     super(Story, self).save(*args, **kwargs)
 
 
