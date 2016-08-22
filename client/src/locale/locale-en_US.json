@@ -24,6 +24,7 @@
   "headline.write": "write",
   "headline.you": "(you)",
 
+  "items.empty": "Sorry, no items matched your search",
   "link.to.original": "link to the original source",
   "me.publications": "your writings",
 
@@ -40,13 +41,21 @@
   "state.publications.interviews.label": "E-interviews",
   "state.publications.interviews.abstract": "E-interviews ...",
 
-  "state.publications.papers.title": "E-papers",
-  "state.publications.papers.label": "E-papers",
-  "state.publications.papers.abstract": "La collection d’ePapers rassemble une série d’analyses détaillées sur les différents thèmes couverts par le projet RESuME : valeurs socio-économiques européennes, compétitivité internationale européenne, solidarité, libéralisme, gouvernance économique, modèle social européen, etc. Les ePapers sont des publications scientifiques soumises à un processus d’évaluation par les pairs. <br/>Les ePapers sont sélectionnés sur la base d’un appel à candidature. (lien vers appel) ",
+  "state.publications.papers.title": "EPapers",
+  "state.publications.papers.label": "EPapers",
+  "state.publications.papers.abstract": "E-interviews ...",
 
   "state.publications.glossary.title": "glossary",
   "state.publications.glossary.label": "glossary",
   "state.publications.glossary.abstract": "glossary ...",
+
+  "state.publications.biography.title": "biography",
+  "state.publications.biography.label": "biography",
+  "state.publications.biography.abstract": "biography ...",
+
+  "state.publications.how-tos.title": "instructions aux auteurs",
+  "state.publications.how-tos.label": "how-tos",
+  "state.publications.how-tos.abstract": "how-tos ...",
 
   "story.status.draft": "draft",
   "story.status.public": "public"

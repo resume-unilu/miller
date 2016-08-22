@@ -24,6 +24,7 @@
   "headline.write": "write",
   "headline.you": "(moi)",
 
+  "items.empty": " Sorry, no items matched your search",
   "link.to.original": "link to the original source",
   "me.publications": "your writings",
 
@@ -47,6 +48,14 @@
   "state.publications.glossary.title": "glossary",
   "state.publications.glossary.label": "glossary",
   "state.publications.glossary.abstract": "glossary ...",
+
+  "state.publications.biography.title": "biography",
+  "state.publications.biography.label": "biography",
+  "state.publications.biography.abstract": "biography ...",
+
+  "state.publications.how-tos.title": "instructions aux auteurs",
+  "state.publications.how-tos.label": "how-tos",
+  "state.publications.how-tos.abstract": "how-tos ...",
 
   "story.status.draft": "draft",
   "story.status.public": "public"

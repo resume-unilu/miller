@@ -438,7 +438,7 @@
             <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
             <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
             <li ng-class="{active: (state.includes('publications') || state.includes('story')) && !state.includes('me')}"><a href ui-sref='publications.all'>publications</a></li>
-            <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li>
+            <!-- <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li> -->
             <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" translate="headline.events"></a></li>
 
            <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
@@ -508,7 +508,7 @@
     
     <!-- CONTENTS -->
     <div id='wrapper' ng-class='state'>
-      <div class='container'  ng-class='hasToC? "with-ToC":""' >
+      <div class='container'  ng-class='{"with-ToC": hasToC && ToC.length>0}' >
         {% block content %}
         <div class='view' ng-class='state' ui-view=''>
         </div>
@@ -753,7 +753,17 @@
                 name: 'glossary',
                 slug: 'glossary',
                 url: '/glossary'
-              }
+              },
+              {
+                name: 'biography',
+                slug: 'biography',
+                url: '/biographies'
+              },
+              {
+                name: 'how-tos',
+                slug: 'how-tos',
+                url: '/how-tos'
+              },
             ]
           }
         });
