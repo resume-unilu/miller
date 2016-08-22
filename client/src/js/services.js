@@ -133,7 +133,7 @@ angular.module('miller')
         } else if(url.trim().indexOf('voc/') === 0){
           var terms = url.trim().replace('voc/','').split(',');
           for(var i in terms){
-            docs.push({
+            results.docs.push({
               _index: 'link-' + (linkIndex++), // internal id
               citation: tokens[idx + 1].content,
               slug: terms[i],
@@ -174,7 +174,6 @@ angular.module('miller')
 
       md.renderer.rules.footnote_anchor = function(tokens, idx, options, env, slf){
         var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
-        console.log( md.renderer.rules, "zzeaelajelkajrel")
         return '<span style="float:left; margin-right: 10px">'+caption+'</span>';
       }
       //   console.log('markdownItService footnote', md.renderer.rules, tokens[idx])
@@ -198,7 +197,6 @@ angular.module('miller')
       // get the last section (bibliographic footnotes will be there)
       if(sections.length > 1){
         results.footnotes = sections.pop();
-        console.log('markedService footnotes: ', results.footnotes)
         // override value with the reduced content
         value = sections.join('');
         // console.log('markedService footnotes: ', value)

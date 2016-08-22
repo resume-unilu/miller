@@ -431,10 +431,22 @@ angular
             }
           });
       });
-      
-      
-      
 
+    $stateProvider
+      .state('search', {
+        url: '/search/:query',
+        controller: function($scope, items){
+          console.log(items)
+          $scope.items = items.results;
+        },
+        reloadOnSearch : false,
+        templateUrl: RUNTIME.static + 'templates/search.html',
+        resolve: {
+          items: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({id: 'search', q:$stateParams.query}).$promise;
+          },
+        }
+      })
 
     $stateProvider
       .state('story', {

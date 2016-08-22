@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, DocumentFactory, TagFactory, RUNTIME, EVENTS) {    
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $state, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, DocumentFactory, TagFactory, RUNTIME, EVENTS) {    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;
@@ -37,6 +37,14 @@ angular.module('miller')
     $scope.disableToC = function(){
       $scope.ToCDisabled = true;
     };
+
+    // search
+    $scope.search = function(searchquery){
+      $log.log('CoreCtrl > search() searchquery:', searchquery);
+      $state.go('search', {
+        query: searchquery
+      })
+    } 
 
     // add document items to the table-of)documents
     $scope.setDocuments = function(documents) {

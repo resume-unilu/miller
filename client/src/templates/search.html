@@ -1,0 +1,31 @@
+<div class='row'>
+  <div class='col-md-8'>
+
+  search: {{query}}
+  </div>
+</div>
+<!-- Nav tabs -->
+<ul class='nav nav-tabs'>
+</ul>
+<div>
+  <div ng-repeat="story in items">
+    <div class="story lite">
+      <div class="coverstory other">
+        <div class="divider"></div>
+        <div class="tags" ng-if="story.tags.length">
+          <span  class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+        </div>
+        <h4><a href ui-sref="story({postId: story.id})">{{story.title}}</a></h4>
+        
+        <blockquote class="reduced">
+            {{story.matches.highlights}}
+            <span class='icon-arrow-right-circle'></span>
+        </blockquote>
+        <div class='authors' ng-if="coverstory.authors.length">
+          by <span ng-repeat='author in coverstory.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

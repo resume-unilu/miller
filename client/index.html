@@ -4,6 +4,7 @@
   <head>
     <title>{{title}}</title>
     <meta name='pinterest' content='nopin' description="contents subject to copyright"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="//releases.flowplayer.org/6.0.5/skin/minimalist.css">
   
     <link href='{% static "css/bootstrap.css" %}' rel='stylesheet'></link>
@@ -436,6 +437,13 @@
            <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
             --> 
             <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b style='color:#151515' translate="write"></b></a></li>
+            <li style='padding-top: 18px' ng-if='user.username' ui-sref-active="active">
+              <form role="form" ng-submit="search(searchquery)">
+                <div class="form-group">
+                  <input class="form-control" ng-model="searchquery" type="text" placeholder="search"/>
+                </div>
+              </form>
+            </li>
             
 
           </ul>
@@ -457,6 +465,7 @@
               </a>
 
               <ul class="dropdown-menu" role="menu">
+                
                 <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
                 <li ui-sref-active="active"><a ui-sref="me.publications.all">your writings</a></li>
                 <li><a href='{% url "logout_view" %}'>log out</a></li> 

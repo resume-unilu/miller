@@ -41,17 +41,22 @@ angular.module('miller')
         caption: '=',
         footnote: '='
       },
-      template: '<span class="footnote"><a ng-click="toggleFootnote()">{{caption}}</a><div class="footnote-contents" ng-show="isOpened"></div></span>',
+      require: "^?markdownit",
+      template: '<span class="footnote"><a ng-click="toggleFootnote()" style="cursor:pointer">{{caption}}</a><div class="footnote-contents" ng-show="isOpened"></div></span>',
       link: function(scope, element, attrs) {
         var footnoteSl = '#fn'+scope.caption + ' p', // footnote jquery selector
-            contents = element.find('.footnote-contents');
+            contents = $(footnoteSl).clone(),
+            wrapper = element.find('.footnote-contents');
+        
+        
 
-        $(contents).html($(footnoteSl).clone())
-        $compile(element.contents())(scope);
+        wrapper.html(contents);
+        $compile(wrapper.contents())(scope);
         
         scope.isOpened = false;
 
         scope.toggleFootnote = function(){
+          console.log('::footnote > toggleFootnote')
           scope.isOpened = !scope.isOpened;
           // if(scope.isOpened && !scope.isFilled){
             
@@ -59,8 +64,8 @@ angular.module('miller')
           // }
         }
 
-        scope.fullsize = function(){
-          debugger
+        scope.fullsize = function(slug, type){
+          scope.$parent.fullsize(slug, type);
         }
 
       }

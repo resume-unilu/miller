@@ -131,11 +131,12 @@ class StoryViewSet(viewsets.ModelViewSet):
       return d
     # enrich stories items (max 10 items)
     stories = map(mapper, stories)
+    page    = self.paginate_queryset(stories)
 
     serializer = MatchingStorySerializer(stories, many=True,
       context={'request': request}
     )
-    return Response(serializer.data)
+    return self.get_paginated_response(serializer.data)
 
 
   @detail_route(methods=['put'])
