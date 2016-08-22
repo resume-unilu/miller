@@ -4,15 +4,17 @@
 ::: profile
 ![profile/](/static/images/people/frederic-allemand.jpg "Frédéric Allemand")
 ### Frédéric Allemand
-> Coordinateur scientifique et gestionnaire de projets
+> Coordinateur scientifique
 :::
+> Coordinateur scientifique et gestionnaire de projets
+
 Diplômé de Sciences Po et titulaire d'un DEA de droit communautaire, Frédéric Allemand est coordinateur du département European Integration Studies au CVCE. Spécialisé en droit communautaire institutionnel et en droit de la gouvernance économique, il est le responsable scientifique du projet Resources on the European socio-economic model (RESuME).
 Il est également chercheur associé du Centre de géostratégie de l'École normale supérieure d'Ulm et il enseigne les questions européennes en master à Sciences Po, l'ENA et à HEC. Il est l'auteur de nombreuses contributions scientifiques sur l'Union économique et monétaire.
 Il a exercé antérieurement au service juridique de la BCE, au Secrétariat général des Affaires européennes (rattaché aux services du Premier ministre français), au Sénat français et dans plusieurs think tanks.
 
 
 ::: profile
-![profile/](https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAAk1AAAAJDI2OTNkYWNjLWYzYWYtNDVjYi1hMWNhLWQ2NjJkODhmMGU5Zg.jpg "Alessia Virone")
+![profile/](/static/images/people/alessia-virone.jpg "Alessia Virone")
 ### Alessia Virone
 > Collaboratrice scientifique
 :::
@@ -21,7 +23,7 @@ Diplômée en sciences politiques avec une spécialisation sur les pays émergen
 Elle a collaboré antérieurement avec des ONG et institutions européennes en tant que chercheuse et responsable de la communication. Elle a également enseigné l’économie européenne (EPHEC, Bruxelles).
 
 ::: profile
-![profile/](https://lh3.googleusercontent.com/-blnHQCWuvxE/AAAAAAAAAAI/AAAAAAAAAJU/xISh5tjfI1U/s120-c/photo.jpg "Daniele Guido")
+![profile/](/static/images/people/daniele-guido.jpg "Daniele Guido")
 ### Daniele Guido
 > Collaborateur scientifique
 :::
@@ -150,6 +152,7 @@ Prof. R. Manca managed as local coordinator researches of the Italian Ministry o
 
 
 ::: profile-others
+![profile/](/static/images/people/maria-felice-arezzo.jpg "Maria Felice Arezzo")
 ### Maria Felice Arezzo
 > Assistant Professor
 :::
@@ -341,7 +344,7 @@ She worked at the Italian Parliament from 1994 to 1996 and then as a researcher 
 ## Former members
 
 ::: profile-others
-![profile/](/static/images/people/sergio-de-la-parra.jpg "Sergio De la Parra")
+![profile/](/static/images/people/sergio-delaparra.jpg "Sergio De la Parra")
 ### Sergio De la Parra
 > Scientific Collaborator
 :::

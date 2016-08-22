@@ -253,6 +253,7 @@ label{
   position: relative;
   text-align: justify;
   margin-top: 240px;
+  margin-bottom: 50px;
   /*padding: 0 40px;*/
   transition: transform .27s ease-in-out;
 }
@@ -850,4 +851,37 @@ div.profile-committee .profile-thumb{
 
 div.profile-others .profile-thumb{
   border-color: #a7a7a7;
+}
+
+
+#search-wrapper{
+  width: 150px;
+  padding-top: 16px;
+  font-family: 'Lato', sans-serif;
+}
+
+#search-wrapper .input-group {
+  border-bottom: 2px solid #f0f0f0;
+  transition: border-color 0.3s ease-in-out;
+}
+
+#search-wrapper .input-group:hover{
+  border-color: #4ECDC4;
+}
+
+#search-wrapper input{
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding-right: 5px;
+}
+
+#search-wrapper button{
+  color:  #aaa;
+  background-color: transparent;
+  padding-left: 0;
+}
+
+#search-wrapper .input-group:hover button{
+  color: #4ECDC4;
 }
