@@ -822,3 +822,32 @@ ul.list-of-documents li .doc .lazy-box{
   box-shadow: 0 1px 2px rgba(0,0,0,0.17);
 }
 
+/*
+  Page profile
+*/
+div.profile, div.profile-others, div.profile-committee{
+  min-height: 100px;
+}
+
+div.profile blockquote, div.profile-others blockquote, div.profile-committee blockquote{
+  margin-left: 70px;
+}
+
+div.profile .profile-thumb,  div.profile-committee .profile-thumb, div.profile-others .profile-thumb{
+  float: left;
+  height: 100px;
+  width: 100px;
+  margin-right: 20px;
+  border: 2px solid #FF6B6B;
+  border-radius: 100px;
+  background-size: cover;
+  background-color: #ccc;
+}
+
+div.profile-committee .profile-thumb{
+  border-color: #4ECDC4;
+}
+
+div.profile-others .profile-thumb{
+  border-color: #a7a7a7;
+}

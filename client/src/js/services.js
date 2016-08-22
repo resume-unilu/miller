@@ -110,7 +110,13 @@ angular.module('miller')
       };
       // load footnotes plugin
       md
-        .use(window.markdownitFootnote);
+        .use(window.markdownitFootnote)
+        .use(window.markdownitContainer, 'profile')
+        .use(window.markdownitContainer, 'profile-committee')
+        .use(window.markdownitContainer, 'profile-others')
+
+      // console.log('RULES' , md.renderer.rules)
+
 
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){
@@ -162,8 +168,21 @@ angular.module('miller')
           '<a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>';
       }
       
+      console.log('rules', md.renderer.rules);
+
+      
+
       md.renderer.rules.image = function(tokens, idx){
-        return '';
+        var src   = tokens[idx].attrGet('src'),
+            title = tokens[idx].attrGet('title'),
+            alt   = tokens[idx].content;
+
+        console.log('IMAGE', src, 'title:', title, 'alt:', alt, tokens[idx])
+        
+        if(alt.indexOf('profile/') === 0){
+          return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
+        }
+        return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
       //   renderer.image = function(src, title, alt){
       //   if((alt||'').indexOf('profile/') === 0){
       //     return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
