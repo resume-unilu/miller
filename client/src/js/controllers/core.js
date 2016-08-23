@@ -49,7 +49,7 @@ angular.module('miller')
     // add document items to the table-of)documents
     $scope.setDocuments = function(documents) {
       $log.log('CoreCtrl > setDocuments items n.:', documents.length, documents);
-      $scope.documents = documents;
+      $scope.documents = _.uniq(documents, 'id');
       if($scope.qs.view) {
         // check if it's somewhere in the scope, otherwise callit
         for(var i=0,j=$scope.documents.length;i<j;i++){
