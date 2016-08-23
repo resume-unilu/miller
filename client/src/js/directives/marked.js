@@ -81,7 +81,6 @@ angular.module('miller')
       },
       link: function(scope, element, attrs){
         if(scope.language && typeof scope.embedit == 'object'){
-          debugger
           element.html(scope.embedit[scope.language]|| '');
         } else {
           element.html(scope.embedit);
