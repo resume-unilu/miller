@@ -36,6 +36,7 @@ gulp.task('libs', function() {
     './src/js/lib/marked.min.js',
     './src/js/lib/markdown-it.min.js',
     './src/js/lib/markdown-it-footnote.min.js',
+    './src/js/lib/markdown-it-container.min.js',
     './src/js/lib/simplemde.min.js',
     './src/js/lib/bibtexParse.js',
     
