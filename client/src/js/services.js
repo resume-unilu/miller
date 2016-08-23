@@ -121,7 +121,7 @@ angular.module('miller')
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){
         var url = tokens[idx].attrGet('href');
-        // console.log(url, tokens[idx])
+        // console.log('LINK_OPEN', url, tokens[idx])
         if(url.trim().indexOf('doc/') === 0){
           var documents = url.trim().replace('doc/','').split(',');
           for(var i in documents){
@@ -132,7 +132,7 @@ angular.module('miller')
             });
           }
           if(!tokens[idx + 1].content.length){
-            return '<a name='+ documents[0] +'><div lazy-placeholder="'+ documents[0] + '"></div>';
+            return '<div lazy-placeholder="'+ documents[0] + '">';
           }
           return '<a name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span class="anchor-wrapper"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
@@ -152,6 +152,15 @@ angular.module('miller')
           return '<a href="'+url+'" target="_blank">';
         }  
       };
+
+
+      md.renderer.rules.link_close = function(tokens, idx){
+        if(tokens[idx-1].attrGet('href')){ // emtpy content, previous tocken was just href
+          return '</div>';
+        }
+        return '</a>';
+      }
+
       
       md.renderer.rules.heading_open = function(tokens, idx){
         var text = tokens[idx+1].content,

@@ -136,7 +136,7 @@ label{
     border-radius: 20px;
 }
 
-.iframe-wrapper > a.toggle-preview:hover{
+.iframe-wrapper > a.toggle-preview:hover, .iframe-wrapper > a.toggle-preview:focus{
   text-decoration: none;
 }
 
