@@ -80,14 +80,12 @@ class DocumentViewSet(viewsets.ModelViewSet):
       docs = Document.objects.filter(**filters)
     else:
       docs = Document.objects.filter(**filters)
-    # if request.user.is_authenticated():
-    #   docs = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
-    # else:
-    #   docs = self.queryset.filter(story__status=Story.PUBLIC).filter(**filters).distinct()
     
     page    = self.paginate_queryset(docs)
+    if page is not None:
+      serializer = DocumentSerializer(page, many=True, context={'request': request})
+      return self.get_paginated_response(serializer.data)
 
-    serializer = DocumentSerializer(docs, many=True,
-        context={'request': request}
-    )
-    return self.get_paginated_response(serializer.data)
+    serializer = DocumentSerializer(queryset, many=True, context={'request': request})
+    return Response(serializer.data)
+

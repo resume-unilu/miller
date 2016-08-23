@@ -92,10 +92,13 @@ class StoryViewSet(viewsets.ModelViewSet):
     # print stories.query
     page    = self.paginate_queryset(stories)
 
-    serializer = LiteStorySerializer(stories, many=True,
-        context={'request': request}
-    )
-    return self.get_paginated_response(serializer.data)
+    if page is not None:
+      serializer = LiteStorySerializer(page, many=True, context={'request': request})
+      return self.get_paginated_response(serializer.data)
+
+    serializer = LiteStorySerializer(queryset, many=True, context={'request': request})
+    return Response(serializer.data)
+
 
   # for some tags require the request user to be staff user
   @permission_classes((IsAdminUser, ))
