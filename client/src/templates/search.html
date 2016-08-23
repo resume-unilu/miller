@@ -18,7 +18,7 @@
         <h4><a href ui-sref="story({postId: story.id})">{{story.title}}</a></h4>
         
         <blockquote class="reduced">
-            {{story.matches.highlights}}
+            <div embedit='story.matches.highlights'></div>
             <span class='icon-arrow-right-circle'></span>
         </blockquote>
         <div class='authors' ng-if="coverstory.authors.length">

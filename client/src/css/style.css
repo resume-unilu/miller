@@ -110,6 +110,40 @@ label{
   /*text-align: justify;*/
 }
 
+.iframe-wrapper {
+  position: relative;
+}
+
+.iframe-wrapper .iframe-viewport{
+  overflow: hidden;
+  transition: height .37s ease-in-out;
+  height: 0
+}
+
+.iframe-wrapper .iframe-viewport.active{
+  height: 400px;
+}
+
+.iframe-wrapper > a.toggle-preview {
+    background-color: #f0efef;
+    padding: 10px;
+    position: absolute;
+    left: -50px;
+    top: 100%;
+    width: 40px;
+    height: 40px;
+    line-height: 20px;
+    border-radius: 20px;
+}
+
+.iframe-wrapper > a.toggle-preview:hover{
+  text-decoration: none;
+}
+
+.iframe-wrapper > a.toggle-preview .icon{
+  font-size: 20px;
+  color: #151515;
+}
 
 .image-wrapper img{
   width: 100%;
@@ -755,7 +789,7 @@ h4.modal-title{
 }
 
 .metadata{
-  background-color: #E6E5E5;
+  background-color: #f0efef;
   padding: 10px;
   font-size: 12px;
   line-height: 20px;

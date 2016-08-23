@@ -1,0 +1,6 @@
+<div class='iframe-wrapper'>
+  <a class='toggle-preview' href ng-click='__isIntoViewport = !__isIntoViewport'><span class='icon icon-eye'></span></a>
+  <div class='iframe-viewport' ng-class='{"active":__isIntoViewport}'>
+    <div ng-if='__isIntoViewport' style='height: 100%' stretch='true' embedit='document.metadata.html' language='language'></div>
+  </div>
+</div>

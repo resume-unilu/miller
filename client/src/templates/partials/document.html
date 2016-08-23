@@ -1,8 +1,11 @@
 
 <div class='doc doc-{{document.type}} {{document.isSelected?"active":""}}' ng-click='selectDocument(document)'>
   <div class='divider'>&nbsp;</div>
-
+  
   <div ng-if='document.type=="image"' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
+
+
+  <div ng-if='document.type=="rich"' ng-include='"templates/partials/document.rich.html"|prefixTemplate'></div>
 
   <div ng-if='document.metadata' ng-include='"templates/partials/document.metadata.html"|prefixTemplate'></div>
 
