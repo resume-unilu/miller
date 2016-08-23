@@ -45,13 +45,13 @@ def search_whoosh_index(query):
     # restrict_q = Or([Term("path", u'%s' % d.id) for d in qs])
 
     with ix.searcher() as searcher:
-      results = searcher.search(q, limit=10)
+      results = searcher.search(q, limit=10, terms=True)
       
       for hit in results:
         res.append({
           'title': hit['title'],
           'id': hit['path'],
-          'highlights': hit.highlights("content")
+          'highlights': hit.highlights("content", top=5)
         })
       
 
