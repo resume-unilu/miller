@@ -24,7 +24,7 @@
 
         
           <div ng-show="tab == 'favourite'" class="tab-content">
-            <div class='section' ng-class='{"last": !lookups.length}'>
+            <div class='section padded' ng-class='{"last": !lookups.length}'>
               <label>
                 <span translate='search'></span>
                 <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
@@ -32,13 +32,13 @@
               <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
             </div>
             <div class='section last'>
-              <ul ><li ng-repeat='document in lookups' ng-include='"templates/partials/document.html"|prefixTemplate'></li>
+              <ul class='list-of-documents'><li ng-repeat='document in lookups' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'></li>
               </ul>
             </div>
           </div>
 
           <div ng-show="tab == 'glossary'" class="tab-content">
-            <div class='section' ng-class='{"last": !glossary.length}'>
+            <div class='section padded' ng-class='{"last": !glossary.length}'>
               <label>
                 <span translate='search'></span>
                 <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
@@ -46,7 +46,7 @@
               <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
             </div>
             <div class='section last'>
-              <ul ><li ng-repeat='term in glossary' ng-include='"templates/partials/term.html"|prefixTemplate'></li>
+              <ul class='list-of-documents'><li ng-repeat='term in glossary' ng-include='"templates/partials/term.html"|prefixTemplate'></li>
               </ul>
             </div>
           </div>
@@ -78,6 +78,7 @@
               <div class='preview' ng-class='embed.type'>
                 <div ng-if='embed.provider_name=="CVCE"' ng-include='"templates/partials/embeds/cvce.html"|prefixTemplate'></div>
                 <div ng-if='embed.provider_name=="YouTube"' ng-include='"templates/partials/embeds/YouTube.html"|prefixTemplate'></div>
+                <div ng-if='embed.provider_name=="Flickr"' ng-include='"templates/partials/embeds/Flickr.html"|prefixTemplate'></div>
                 <div ng-if='embed.type == "link"'>
                   <a href='embed.url'>{{embed.title}}</a>
                   <div markdown='embed.description'></div>
