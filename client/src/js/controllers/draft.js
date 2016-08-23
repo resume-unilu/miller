@@ -13,8 +13,7 @@ angular.module('miller')
 
     $scope.tags = [];
 
-    $scope.$on(EVENTS.SAVE, function() {
-      $scope.$emit(EVENTS.MESSAGE, 'saving');
+    $scope.save = function(){
       StoryFactory.save({}, {
         title: $scope.title,
         abstract: $scope.abstract,
@@ -30,6 +29,10 @@ angular.module('miller')
         })
         // debugger
       });
+    }
+    $scope.$on(EVENTS.SAVE, function() {
+      $scope.$emit(EVENTS.MESSAGE, 'saving');
+      $scope.save();
     });
 
     // handle attach tag

@@ -152,7 +152,7 @@ angular.module('miller')
           return '<a href="'+url+'" target="_blank">';
         }  
       };
-
+      
       md.renderer.rules.heading_open = function(tokens, idx){
         var text = tokens[idx+1].content,
             h = {

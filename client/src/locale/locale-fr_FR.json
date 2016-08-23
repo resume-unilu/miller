@@ -4,7 +4,8 @@
   "button.agree": "agree",
   "button.back": "back",
   "button.viewmode": "mode lecture",
-  
+  "button.save": "save",
+
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",
   "enrich.resources": "add document/reference",

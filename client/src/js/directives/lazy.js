@@ -42,14 +42,17 @@ angular.module('miller')
   */
   .directive('lazyPlaceholder', function($log, RUNTIME) {
     return {
-      transclude: true,
+      //transclude: true,
+      scope:{
+
+      },
       templateUrl: RUNTIME.static + 'templates/partials/document.placeholder.html',
       link : function(scope, element, attrs) {
         var slug = element.attr('lazy-placeholder');
-        $log.log(':::lazy-placeholder on ',slug);
+        $log.log(':::lazy-placeholder on ',typeof slug, '--->',slug);
         
-        if(scope.resolve)
-          scope.resolve(slug, 'doc', function(doc){
+        if(scope.$parent.resolve && typeof slug=='string'){
+          scope.$parent.resolve(slug, 'doc', function(doc){
             // add to this local scope
 
             if(doc)
@@ -57,9 +60,10 @@ angular.module('miller')
             else 
               $log.error('cannot find', slug );
 
-            $log.log(':::lazy-placeholder on ',scope.resolved);
+            $log.log(':::lazy-placeholder resolved: ',scope.resolved);
 
           })
+        }
         
       }
     }

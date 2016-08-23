@@ -11,8 +11,11 @@
 <div class='actions' ng-if='!isDraft'>
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
   
-  <div class='btn-line-group primary'>
+  <div class='btn-line-group'>
     <button ng-if='id' class='btn-line' ui-sref="story({postId: id})" translate="button.viewmode"></button>
+  </div>
+  <div class='btn-line-group primary'>
+    <button ng-click='save()' class='btn-line'  translate="button.save"></button>
   </div>
   <!-- </div> -->
   
