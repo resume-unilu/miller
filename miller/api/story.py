@@ -70,6 +70,23 @@ class StoryViewSet(viewsets.ModelViewSet):
   queryset = Story.objects.all()
   serializer_class = CreateStorySerializer
 
+  # retrieve by PK or slug
+  def retrieve(self, request, *args, **kwargs):
+    if request.user.is_authenticated():
+      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).distinct()
+    else:
+      queryset = self.queryset.filter(status=Story.PUBLIC).distinct()
+
+    if 'pk' in kwargs and not kwargs['pk'].isdigit():
+      story = get_object_or_404(queryset, slug=kwargs['pk'])
+    else:
+      story = get_object_or_404(queryset, pk=kwargs['pk'])
+    
+    serializer = StorySerializer(story,
+        context={'request': request},
+    )
+    return Response(serializer.data)
+  
 
   def list(self, request):
     filters = self.request.query_params.get('filters', None)
@@ -156,17 +173,4 @@ class StoryViewSet(viewsets.ModelViewSet):
     return Response(serializer.data)
   
 
-  def retrieve(self, request, pk=None):
-    if request.user.is_authenticated():
-      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).distinct()
-    else:
-      queryset = self.queryset.filter(status=Story.PUBLIC).distinct()
-
-    story = get_object_or_404(queryset, pk=pk)
-
-    # // serialize with text conten
-
-    serializer = StorySerializer(story,
-        context={'request': request},
-    )
-    return Response(serializer.data)
+  
