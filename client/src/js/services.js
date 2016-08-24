@@ -86,8 +86,17 @@ angular.module('miller')
   })
 
   /*
-    Apply MLA or other citation style
+    Given a querystring return a proper js object
   */
+  .service('QueryParamsService', function($filter){
+    return function(queryparams){
+      var params={};
+      queryparams.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str,key,value) {
+        params[key] = decodeURIComponent(value);
+      });
+      return params;
+    }
+  })
   .service('bibtexService', function($filter) {
     return function(json){
 

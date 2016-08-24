@@ -108,7 +108,7 @@ class StoryViewSet(viewsets.ModelViewSet):
       stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
     # print stories.query
     page    = self.paginate_queryset(stories)
-
+    print page
     if page is not None:
       serializer = LiteStorySerializer(page, many=True, context={'request': request})
       return self.get_paginated_response(serializer.data)

@@ -5,6 +5,11 @@
   "button.back": "back",
   "button.viewmode": "mode lecture",
   "button.save": "save",
+  "button.more": "load more",
+  "button.loading": "loading ...",
+
+  "missing": "({{count}} more)",
+
 
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",

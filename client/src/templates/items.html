@@ -1,2 +1,15 @@
-<div ng-if='items.length === 0' translate='items.empty'></div>
+<div ng-if='count == 0' translate='items.empty'></div>
 <div ng-repeat='story in items' ng-include='"templates/partials/story.html"|prefixTemplate'></div>
+
+<div style='text-align: center'>
+  <div ng-if='items.length > 0 && items.length < count' class="btn-line-group primary">
+    <button class='btn-line' ng-click='more()'>
+      <span ng-if='!isLoadingNextItems'>
+        <span translate='button.more'></span>
+        <span translate='missing' translate-values="{count: missing}"></span>
+      </span>
+      <span ng-if='isLoadingNextItems' translate='button.loading'></span>
+    </button>
+  </div>
+  <!-- when count equals item length, we are at the end -->
+</div>

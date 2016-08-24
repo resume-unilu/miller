@@ -5,7 +5,12 @@
   "button.back": "back",
   "button.viewmode": "back to reading mode",
   "button.save": "save",
+  "button.more": "load more",
+  "button.loading": "loading ...",
   
+  "missing": "({{count}} more)",
+
+
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",
   "enrich.resources": "add document/reference",
