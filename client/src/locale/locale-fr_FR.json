@@ -9,7 +9,7 @@
   "button.loading": "loading ...",
 
   "missing": "({{count}} more)",
-
+  "results.amount": "({{count}} more)",
 
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",

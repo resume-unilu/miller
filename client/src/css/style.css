@@ -100,13 +100,13 @@ label{
   /*#draft-title, #draft-abstract,  .elastic-textarea{*/
   border: 0px solid transparent;
   display: block;
-  font-size: 20px;
+  font-size: 15px;
   width: 100%;
   border-bottom: 2px solid #E6E5E5;
   transition: border-color .25s ease-in-out, border-color .25s ease-in-out;
   border-bottom-width: 2px;
   background: #f0f0f0;
-  padding: 10px;
+  padding: 0px;
   /*text-align: justify;*/
 }
 
@@ -408,9 +408,10 @@ label{
 /*
   draft
 */
-#draft-abstract{
+#draft-abstract, #draft-title{
   font-size: 15px;
   line-height: 25px;
+  padding: 10px;
 }
 /*
   bootstrap tabs
@@ -869,6 +870,9 @@ h4.modal-title{
   line-height: 20px;
 }
 
+.doc.oembedded .tile{
+  background-color: rgba(236, 236, 236, 1);
+}
 .doc.oembedded .title{
   font-weight:bold;
 }
@@ -912,6 +916,15 @@ ul.list-of-documents li .doc {
 ul.list-of-documents li .doc .lazy-box{
   height: 160px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+}
+
+/*
+  More button
+*/
+.more-wrapper{
+  text-align: center;
+  display: block;
+  clear: both;
 }
 
 /*

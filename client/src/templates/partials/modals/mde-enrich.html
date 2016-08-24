@@ -12,63 +12,87 @@
         
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
         <ul class="nav nav-tabs" style='padding-left:15px; margin-bottom:0' role="tablist">
-          <li role="presentation" ng-class="tab == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.resources'></a></li>
-          <li role="presentation" ng-class='{"active": tab == "glossary"}'><a ng-click='setTab("glossary")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.glossary'></a></li>
-          <li role="presentation" ng-class="tab == 'CVCE'? 'active':''"><a ng-click='setTab("CVCE")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
+          <li role="presentation" ng-class="tab.name == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.resources'></a></li>
+          <li role="presentation" ng-class='{"active": tab.name == "glossary"}'><a ng-click='setTab("glossary")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.glossary'></a></li>
+          <li role="presentation" ng-class="tab.name == 'CVCE'? 'active':''"><a ng-click='setTab("CVCE")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
           
-          <li role="presentation" ng-class="tab == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab" translate='enrich.fromUrl'></a></li>
+          <li role="presentation" ng-class="tab.name == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab" translate='enrich.fromUrl'></a></li>
 
-          <!-- <li role="presentation" ng-class="tab == 'bibtex'? 'active':''"><a ng-click='setTab("bibtex")' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li> -->
+          <!-- <li role="presentation" ng-class="tab.name == 'bibtex'? 'active':''"><a ng-click='setTab("bibtex")' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li> -->
           
         </ul>
 
         
-          <div ng-show="tab == 'favourite'" class="tab-content">
+          <div ng-show="tab.name == 'favourite'" class="tab-content">
             <div class='section padded' ng-class='{"last": !lookups.length}'>
               <label>
                 <span translate='search'></span>
-                <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
+                <span style='color: #b7b7b7' translate='results.amount' translate-values='{count: tab.count}'></span>
               </label>
-              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
+              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 450 }" ng-change='suggest(query)'>
             </div>
             <div class='section last'>
-              <ul class='list-of-documents'><li ng-repeat='document in lookups' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'></li>
+              <ul class='list-of-documents'><li ng-repeat='document in tab.items' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'></li>
               </ul>
+              <div class='more-wrapper'>
+                <div ng-if='tab.items.length > 0 && tab.items.length < tab.count' class="btn-line-group primary">
+                  <button class='btn-line' ng-click='more()'>
+                    <span ng-if='!tab.isLoadingNextItems'>
+                      <span translate='button.more'></span>
+                      <span translate='missing' translate-values="{count: tab.missing}"></span>
+                    </span>
+                    <span ng-if='tab.isLoadingNextItems' translate='button.loading'></span>
+                  </button>
+                </div>
+                <!-- when count equals item length, we are at the end -->
+              </div>
             </div>
           </div>
 
-          <div ng-show="tab == 'glossary'" class="tab-content">
+          <div ng-show="tab.name == 'glossary'" class="tab-content">
             <div class='section padded' ng-class='{"last": !glossary.length}'>
               <label>
                 <span translate='search'></span>
-                <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
+                <span style='color: #b7b7b7' translate='results.amount' translate-values='{count: tab.count}'></span>
               </label>
-              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
+              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query)'>
             </div>
             <div class='section last'>
-              <ul class='list-of-documents'><li ng-repeat='term in glossary' ng-include='"templates/partials/term.html"|prefixTemplate'></li>
+              <ul class='list-of-documents'><li ng-repeat='term in tab.items' ng-include='"templates/partials/term.html"|prefixTemplate'></li>
               </ul>
+              <div class='more-wrapper'>
+                <div ng-if='tab.items.length > 0 && tab.items.length < tab.count' class="btn-line-group primary">
+                  <button class='btn-line' ng-click='more()'>
+                    <span ng-if='!tab.isLoadingNextItems'>
+                      <span translate='button.more'></span>
+                      <span translate='missing' translate-values="{count: tab.missing}"></span>
+                    </span>
+                    <span ng-if='tab.isLoadingNextItems' translate='button.loading'></span>
+                  </button>
+                </div>
+                <!-- when count equals item length, we are at the end -->
+              </div>
             </div>
           </div>
 
-          <div ng-show="tab == 'CVCE'" class="tab-content">
+          <div ng-show="tab.name == 'CVCE'" class="tab-content">
             <div class='section padded' ng-class='{"last": !suggestResults.length}'>
               <label>
                 <span translate='search'></span>
-                <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
+                <span style='color: #b7b7b7' translate='results.amount' translate-values='{count: tab.count}'></span>
               </label>
-              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query, tab)'>
+              <input placeholder='...' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 250 }" ng-change='suggest(query)'>
             </div>
             <div class='section last'>
               <ul class='list-of-documents'>
-                <li ng-repeat='document in suggestResults' ng-include='"templates/partials/oembed-search-results.html"|prefixTemplate'>
+                <li ng-repeat='document in tab.items' ng-include='"templates/partials/oembed-search-results.html"|prefixTemplate'>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div ng-show="tab == 'url'" class="tab-content">
-            <div class='section'>
+          <div ng-show="tab.name == 'url'" class="tab-content">
+            <div class='section padded'>
               <label translate='url'></label>
               <span style='color: #b7b7b7' translate='{{suggestMessage}}'></span>
               <div class='elastic-textarea-wrapper'>
@@ -94,7 +118,7 @@
                 </div>
               </div>
             </div>
-            <div class='section last'>
+            <div class='section padded last'>
               <label translate='bibtex reference'></label>
               <div class='elastic-textarea-wrapper'>
                 <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='reference' type='text' placeholder='@{}'></textarea>
@@ -104,7 +128,7 @@
             </div>
           </div>
 
-          <div ng-show="tab == 'bibtex'" class="tab-content">
+          <div ng-show="tab.name == 'bibtex'" class="tab-content">
             Add a reference (bibtex) Cfr <a href='https://www.zotero.org/support/creating_bibliographies'>quick copy from Zotero</a>
             <label translate='bibtex'></label>
             <div class='elastic-textarea-wrapper'>
@@ -116,7 +140,7 @@
 
       </div>
       <div class="modal-footer">
-        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument(tab, contents, reference, url, embed)" translate='button.add'></button>
+        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument(tab.name, contents, reference, url, embed)" translate='button.add'></button>
         </span>
         <span class='btn-line-group'>
         <button type="button" class="btn-line" ng-click="$hide()">Close</button>

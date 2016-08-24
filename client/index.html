@@ -611,6 +611,9 @@
     <script src='{% static "js/controllers/page.js" %}'></script>
     <script src='{% static "js/controllers/writing.js" %}'></script>
 
+    <script src='{% static "js/controllers/modals/enrich.js" %}'></script>
+
+
     <script src='{% static "js/directives/marked.js" %}'></script>
     <script src='{% static "js/directives/mde.js" %}'></script>
     <script src='{% static "js/directives/lazy.js" %}'></script>  
@@ -777,11 +780,14 @@
               .filter('search')
               .keyBy('name')
               .mapValues(function(o, k) {
-                return function(query) {
+                /*
+                  params = {
+                    q: <your query>
+                  }
+                */
+                return function(params) {
                   return $http.get(o.search, {
-                    params: {
-                      q: query
-                    }
+                    params: params
                   })
                 }
               })
