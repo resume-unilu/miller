@@ -132,7 +132,7 @@ angular.module('miller')
             });
           }
           if(!tokens[idx + 1].content.length){
-            return '<div lazy-placeholder="'+ documents[0] + '">';
+            return '<span type="doc" lazy-placeholder="'+ documents[0] + '">';
           }
           return '<a name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span class="anchor-wrapper"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
@@ -146,8 +146,11 @@ angular.module('miller')
               type: 'glossary'
             });
           }
+          if(!tokens[idx + 1].content.length){
+            return '<span type="voc" lazy-placeholder="'+ terms[0] + '">' + terms[0];
+          }
           tokens[idx].attrSet('class', 'glossary');
-          return '<a class="glossary" name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'voc\')"><span class="anchor-wrapper"></span>';
+          return '<a class="glossary" name="'+ terms[0] +'" ng-click="fullsize(\'' +url+'\', \'voc\')"><span class="anchor-wrapper"></span>';
         } else {
           return '<a href="'+url+'" target="_blank">';
         }  
@@ -156,7 +159,7 @@ angular.module('miller')
 
       md.renderer.rules.link_close = function(tokens, idx){
         if(tokens[idx-1].attrGet('href')){ // emtpy content, previous tocken was just href
-          return '</div>';
+          return '</span>';
         }
         return '</a>';
       }

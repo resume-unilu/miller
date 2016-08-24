@@ -145,8 +145,15 @@ label{
   color: #151515;
 }
 
+.image-wrapper {
+  height: 400px;
+  text-align: center;
+  background-color: #f0efef;
+  padding-top: 20px;
+}
+
 .image-wrapper img{
-  width: 100%;
+  height: 100%;
 }
 
 .elastic-textarea:focus{

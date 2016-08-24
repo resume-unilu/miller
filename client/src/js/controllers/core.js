@@ -64,15 +64,20 @@ angular.module('miller')
 
     // look for document by slug (internal, cached docs or ask for new one)
     $scope.resolve = function(slug, type, callback){
-      var matching = $scope.documents.filter(function(d){
-        return d.slug == slug
-      });
-      $log.log('CoreCtrl > $scope.resolve slug:', slug)
-      if(matching.length){
-
-        callback(matching[0]);
+      if(type == 'voc'){
+        $log.log('CoreCtrl > $scope.resolve [requesting] voc slug:', slug)
+        StoryFactory.get({id: slug}, callback);
       } else {
-        DocumentFactory.get({id: slug}, callback);
+        var matching = $scope.documents.filter(function(d){
+          return d.slug == slug
+        });
+        if(matching.length){
+          $log.log('CoreCtrl > $scope.resolve [cached] doc slug:', slug)
+          callback(matching[0]);
+        } else {
+          $log.log('CoreCtrl > $scope.resolve [requesting] doc slug:', slug)
+          DocumentFactory.get({id: slug}, callback);
+        }
       }
     }
 

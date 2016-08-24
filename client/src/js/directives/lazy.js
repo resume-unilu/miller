@@ -38,30 +38,34 @@ angular.module('miller')
     };
   })
   /*
-    lazy placeholder for document, filled when needed only.
+    lazy placeholder for document or for stories, filled when needed only.
   */
   .directive('lazyPlaceholder', function($log, RUNTIME) {
     return {
       //transclude: true,
       scope:{
-
+        
       },
-      templateUrl: RUNTIME.static + 'templates/partials/document.placeholder.html',
+      templateUrl: RUNTIME.static + 'templates/partials/placeholder.html',
       link : function(scope, element, attrs) {
-        var slug = element.attr('lazy-placeholder');
-        $log.log(':::lazy-placeholder on ',typeof slug, '--->',slug);
+        var slug = element.attr('lazy-placeholder'),
+            type = element.attr('type');
+
+        scope.type = type;
+        
+        $log.log('⏣ lazy-placeholder on type:', type, '- slug:',slug);
         
         if(scope.$parent.resolve && typeof slug=='string'){
-          scope.$parent.resolve(slug, 'doc', function(doc){
+          scope.$parent.resolve(slug, type, function(res){
             // add to this local scope
+            if(res){
+              scope.resolved = res;
+              $log.log('⏣ lazy-placeholder resolved for type:', type, '- slug:',slug, res);
+            } else {
+              $log.error('⏣ lazy-placeholder cannot find', slug );
+            }
 
-            if(doc)
-              scope.resolved = doc;
-            else 
-              $log.error('cannot find', slug );
-
-            $log.log(':::lazy-placeholder resolved: ',scope.resolved);
-
+            
           })
         }
         
