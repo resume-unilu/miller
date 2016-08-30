@@ -87,10 +87,13 @@ class Story(models.Model):
   def save(self, *args, **kwargs):
     self.slug = slugify(self.title)
     # store this version
-    self.store()
-
+    
     super(Story, self).save(*args, **kwargs)
 
+# store in whoosh
+@receiver(post_save, sender=Story)
+def store_working_md(sender, instance, created, **kwargs):
+  instance.store()
 
 # create story file if it is not exists; if the story eists already, cfr the followinf post_save
 @receiver(post_save, sender=Story)
