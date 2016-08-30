@@ -63,7 +63,7 @@ angular.module('miller')
     };
 
     // look for document by slug (internal, cached docs or ask for new one)
-    $scope.resolve = function(slug, type, callback){
+    $rootScope.resolve = function(slug, type, callback){
       if(type == 'voc'){
         $log.log('CoreCtrl > $scope.resolve [requesting] voc slug:', slug)
         StoryFactory.get({id: slug}, callback);
@@ -211,7 +211,7 @@ angular.module('miller')
     });
 
     // 
-    $scope.fullsize = function(slug, type) {
+    $rootScope.fullsize = function(slug, type) {
       $log.log('CoreCtrl -> fullsize, doc slug:', slug, type);
 
       if(type=="doc"){
@@ -255,9 +255,12 @@ angular.module('miller')
           fullsizeModal.$promise.then(fullsizeModal.show);
         });
       }
+
       if($scope.qs.view && $scope.fullsized && $scope.fullsized.short_url == $scope.qs.view){
         // normal behaviour, after fullsize has been called the view param is present in location
         fullsizeModal.$promise.then(fullsizeModal.show);
+      } else if(!$scope.qs.view && $scope.fullsized){
+         fullsizeModal.hide()
       }
     });
 

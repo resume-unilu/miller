@@ -11,10 +11,12 @@
   "missing": "({{count}} more)",
   "results.amount": "({{count}} more)",
 
+
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",
   "enrich.resources": "add document/reference",
   "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
+  "enrich.type.notitle": "Original title not found for this remote resource.",
 
   "field.label.title": "titre",
   "field.label.abstract": "abstract",

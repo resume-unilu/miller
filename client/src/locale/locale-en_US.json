@@ -16,6 +16,8 @@
   "enrich.glossary": "add glossary term",
   "enrich.resources": "add document/reference",
   "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
+  "enrich.type.notitle": "We didn't find any original title attached to this remote resource.",
+
 
   "field.label.title": "title",
   "field.label.abstract": "abstract",

@@ -108,9 +108,9 @@
                   <div markdown='embed.description'></div>
                 </div>
                 <div ng-if='embed.type == "rich"'>
-                  <a ng-href='embed.url' target='_blank'>url</a>
-                  <div ng-if='embed.html' markdown='embed.html'></div>
-                  <div ng-if='!embed.title' translate='enrich.type.notsupported'></div>
+                  <a ng-href='{{embed.url}}' target='_blank'>url</a>
+                  <div ng-if='embed.html' style='height: 200px; width: 100%' embedit='embed.html' stretch="true"></div>
+                  <div ng-if='!embed.title' translate='enrich.type.notitle'></div>
                   <div>
                     <label translate='title'></label>
                     <input class='form-control' ng-model='embed.title'></input>
