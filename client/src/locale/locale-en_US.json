@@ -11,6 +11,7 @@
   "missing": "({{count}} more)",
   "results.amount": "({{count}} results)",
 
+  "document.preview": "(preview)",
 
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",
