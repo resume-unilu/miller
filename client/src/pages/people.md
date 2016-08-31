@@ -80,9 +80,10 @@ Blanche Sousi a enseigné le droit bancaire européen à Lyon, Bruxelles, Luxemb
 ::: profile-committee
 ![profile/kenneth-dyson](/static/images/people/kenneth-dyson.jpg "Kenneth Dyson")
 ### Kenneth Dyson
-> Professor
+> Professor de science politique, Université de Cardiff
+
+page personnelle: [cardiff.ac.uk](http://www.cardiff.ac.uk/politics-international-relations/profile/kenneth-dyson/)
 :::
-> Distinguished Research Professor of European Politics, Université de Cardiff
 
 Kenneth Dyson a travaillé en tant que professeur d'études européennes à l'Université de Bradford (UK) de 1982 à 2003; et en tant que visiting professor au sein de la Freie Universität Berlin, de l'Université de Constance, de l'Ecole Normale Supérieure, de l'Université McMasters (Canada) et de l'Università di Siena. Ses domaines d'expertise sont les politiques économiques et monétaire dans l'UE, l'Allemagne, l'Etat européen et la politique publique comparée. Il est l'auteur de nombreuses publications dont States, Debt and Power, OUP 2015 (UACES Best Book Prize 2015); The Road to Maastricht, OUP 1999 (Choice academic book of the year); The State Tradition in Western Europe (republished in the ECPR Classics series 2010); European States and the Euro, OUP 2002; The Politics of the Euro Zone OUP 2001.
 
@@ -91,9 +92,10 @@ Kenneth Dyson a travaillé en tant que professeur d'études européennes à l'Un
 ::: profile-committee
 ![profile/susanna-cafaro](/static/images/people/susanna-cafaro.jpg "Susanna Cafaro")
 ### Susanna Cafaro
-> Professeur associée
-:::
 > Professeur associée en Droit de l'Union européenne, Université du Salento
+
+page personnelle: [unisalento.it](https://www.giurisprudenza.unisalento.it/scheda_docente/-/people/susanna.cafaro)
+:::
 
 Susanna Cafaro a obtenu un doctorat en Droit des communautés européennes à l'Università di Bologna (1998). Elle a travaillé en tant que chercheur dans cette université, puis en tant que professeur associé en Droit de l'UE à l'Università del Salento (Lecce, Italie), où elle est nommée professeur associé en 2005. Elle est membre fondateur du think tank Group of Lecce for fair global governance. Ses domaines d'expertise sont le Droit de l'Union européenne, l'Union économique et monétaire, les relations extérieures de l'UE et les institutions financières internationales.
 
@@ -208,6 +210,8 @@ Prior to joining the CVCE, she worked for various NGOs and European institutions
 ![profile/](/static/images/people/daniele-guido.jpg "Daniele Guido")
 ### Daniele Guido
 > Scientific Collaborator
+
+[@danieleguido](https://twitter.com/danieleguido)
 :::
 Daniele is a designer and full-stack developer specialising in data visualisation and digital methods with a hybrid background in Fine Art (Fine Art Brera Academy, Milan, 2006) and Design (MSc in Communication Design, Politecnico di Milano, 2009). 
 He joined the CVCE Digital Humanities Lab in March 2015 after several years at the medialab Sciences Po in Paris, where he helped to develop experimental web applications and tools for data visualisation applied to enhanced scholarly publications and research in social sciences. During his years in France he developed the front-end interface of the EU-funded project AIME (the AIME platform) and was involved in the EU-funded project FORCCAST. He also worked as a designer and developer at the Politecnico di Milano’s Density Design Lab, both during his studies and in the context of a joint partnership with the medialab SciencesPo.

@@ -40,7 +40,7 @@ angular.module('miller')
   /*
     lazy placeholder for document or for stories, filled when needed only.
   */
-  .directive('lazyPlaceholder', function($log, $rootScope, RUNTIME) {
+  .directive('lazyPlaceholder', function($log, $rootScope, $compile, RUNTIME) {
     return {
       //transclude: true,
       scope:{
@@ -55,17 +55,20 @@ angular.module('miller')
         
         $log.log('⏣ lazy-placeholder on type:', type, '- slug:',slug);
         
+        scope.complete = function(res){
+          // add to this local scope
+          if(res){
+            scope.resolved = res;
+            $log.log('⏣ lazy-placeholder resolved for type:', type, '- slug:',slug, res);
+            // force recompilation
+            $compile(element.contents())(scope);
+          } else {
+            $log.error('⏣ lazy-placeholder cannot find', slug );
+          }
+        }
+
         if($rootScope.resolve && typeof slug=='string'){
-          $rootScope.resolve(slug, type, function(res){
-            // add to this local scope
-            if(res){
-              scope.resolved = res;
-              $log.log('⏣ lazy-placeholder resolved for type:', type, '- slug:',slug, res);
-              
-            } else {
-              $log.error('⏣ lazy-placeholder cannot find', slug );
-            }
-          })
+          $rootScope.resolve(slug, type, scope.complete);
         }
 
         scope.fullsize = function(slug, type){

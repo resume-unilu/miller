@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('StoryCtrl', function ($scope, $log, story, StoryFactory, EVENTS) {
+  .controller('StoryCtrl', function ($rootScope, $scope, $log, story, StoryFactory, EVENTS) {
     $scope.story = story;
 
     // is the story editable by the current user?
@@ -41,10 +41,10 @@ angular.module('miller')
       
       switch(event){
         case EVENTS.MARKDOWNIT_FULLSIZE:
-          $scope.fullsize(data.slug, data.type);
+          $rootScope.fullsize(data.slug, data.type);
           break;
         case EVENTS.MARKDOWNIT_RESOLVE:
-          $scope.resolve(data.slug, data.type, callback);
+          $rootScope.resolve(data.slug, data.type, callback);
           break;
       }
     }

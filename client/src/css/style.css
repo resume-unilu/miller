@@ -112,6 +112,7 @@ label{
 
 .iframe-wrapper {
   position: relative;
+  background: #e0e0e0;
 }
 
 .iframe-wrapper .iframe-viewport{
@@ -946,11 +947,17 @@ ul.list-of-documents li .doc .lazy-box{
   Page profile
 */
 div.profile, div.profile-others, div.profile-committee{
-  min-height: 100px;
+  min-height: 120px;
+  margin-bottom: 15px;
 }
 
 div.profile blockquote, div.profile-others blockquote, div.profile-committee blockquote{
   margin-left: 70px;
+  margin-bottom: 0px;
+}
+
+div.profile > p, div.profile-others > p, div.profile-committee > p{
+  margin-left: 120px;
 }
 
 div.profile .profile-thumb,  div.profile-committee .profile-thumb, div.profile-others .profile-thumb{
@@ -958,7 +965,7 @@ div.profile .profile-thumb,  div.profile-committee .profile-thumb, div.profile-o
   height: 100px;
   width: 100px;
   margin-right: 20px;
-  border: 2px solid #FF6B6B;
+  /*border: 2px solid #FF6B6B;*/
   border-radius: 100px;
   background-size: cover;
   background-color: #ccc;
