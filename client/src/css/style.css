@@ -38,6 +38,10 @@ p, span{
 
 }
 
+a{
+  cursor: pointer;
+}
+
 .small{
   font-size: 12px;
   line-height: 20px;
@@ -948,12 +952,22 @@ ul.list-of-documents li .doc .lazy-box{
 */
 div.profile, div.profile-others, div.profile-committee{
   min-height: 120px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  margin-top: 50px;
 }
 
 div.profile blockquote, div.profile-others blockquote, div.profile-committee blockquote{
   margin-left: 70px;
   margin-bottom: 0px;
+}
+
+div.profile blockquote p, div.profile-others blockquote p, div.profile-committee blockquote p{
+  font-size: 18px;
+  line-height: 30px;
+}
+
+div.profile h3, div.profile-others h3, div.profile-committee h3{
+  margin-bottom: 0;
 }
 
 div.profile > p, div.profile-others > p, div.profile-committee > p{
@@ -962,23 +976,23 @@ div.profile > p, div.profile-others > p, div.profile-committee > p{
 
 div.profile .profile-thumb,  div.profile-committee .profile-thumb, div.profile-others .profile-thumb{
   float: left;
-  height: 100px;
-  width: 100px;
+  height: 120px;
+  width: 120px;
   margin-right: 20px;
-  /*border: 2px solid #FF6B6B;*/
+  /*border: 2px solid #d0d0d0;*/
   border-radius: 100px;
   background-size: cover;
   background-color: #ccc;
 }
 
-div.profile-committee .profile-thumb{
+/*div.profile-committee .profile-thumb{
   border-color: #4ECDC4;
 }
 
 div.profile-others .profile-thumb{
   border-color: #a7a7a7;
 }
-
+*/
 
 #search-wrapper{
   width: 150px;

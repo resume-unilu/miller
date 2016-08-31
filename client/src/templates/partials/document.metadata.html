@@ -1,6 +1,10 @@
 <div class='metadata'>
   <div ng-if='document.metadata.reference' embedit='document.metadata.reference' language='language'></div>
-  <a ng-if='!document.metadata.reference && document.metadata.title' ng-click='fullsize(document.slug, "doc")' embedit='document.metadata.title' language='language'></a>
+  <div>
+    <span embedit='document.metadata.title' language='language'></span>
+    <a ng-if='!document.metadata.reference && document.metadata.title' ng-click='fullsize(document.slug, "doc")' translate='document.preview'></a>
+  </div>
+  
   <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language'></div>
 
   <div>
