@@ -42,7 +42,7 @@ angular.module('miller')
     $scope.setDocuments = function(documents) {
       // check what to save vs what to discard.
       var saveable = documents.filter(function(d){
-        return documentSlugs.indexOf(d.slug) == -1;
+        return d.type != 'glossary' && documentSlugs.indexOf(d.slug) == -1;
       });
 
       var deletable = documents.filter(function(d){

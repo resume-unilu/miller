@@ -1,8 +1,8 @@
-<div class="wrapper" style='    background-size: cover; background-image: url({{news.cover}})'>
+<div class="wrapper" style='    background-size: cover; background-image: url({{news.cover_url}})'>
   <div class='overlay'>
     <div class="type">
-      <span ng-repeat='tag in news.tags' ng-if='tag.category == "writing"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+      <span ng-repeat='tag in news.tags | filter:{ category: "writing" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
     </div>
-    <h3><a ui-sref="post({postId: news.id})">{{news.title}}</a></h3>  
+    <h3><a ui-sref="story({postId: news.id})">{{news.title}}</a></h3>  
   </div>
 </div>

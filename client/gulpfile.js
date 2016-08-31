@@ -33,9 +33,10 @@ gulp.task('libs', function() {
     './src/js/lib/jquery-2.2.1.min.js',
     './src/js/lib/md5.js',
     './src/js/lib/lodash.custom.min.js',
-    // './src/js/lib/marked.min.js',
+    './src/js/lib/marked.min.js',
     './src/js/lib/markdown-it.min.js',
     './src/js/lib/markdown-it-footnote.min.js',
+    './src/js/lib/markdown-it-container.min.js',
     './src/js/lib/simplemde.min.js',
     './src/js/lib/bibtexParse.js',
     
@@ -59,6 +60,8 @@ gulp.task('libs', function() {
     './src/js/lib/angular-translate.min.js',
     './src/js/lib/angular-translate-loader-static-files.min.js',
     './src/js/lib/ng-tags-input.min.js',
+
+    './src/js/lib/angular-lazy-img.min.js'
   ])
     .pipe($.concat('scripts.lib.min.js'))
     // .pipe($.uglify())
@@ -73,7 +76,7 @@ gulp.task('scripts', function() {
       './src/js/filters.js',
       './src/js/services.js',
       './src/js/templates.js',
-      './src/js/controllers/*.js',
+      './src/js/controllers/**/*.js',
       './src/js/directives/*.js',
     ])
     .pipe($.concat('scripts.min.js'))
@@ -93,6 +96,7 @@ gulp.task('jshint', function() {
       './src/js/controllers/*.js',
       './src/js/directives/*.js',
     ])
+    .pipe($.uglify())
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
 });

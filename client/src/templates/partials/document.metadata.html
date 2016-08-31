@@ -1,0 +1,20 @@
+<div class='metadata'>
+  <div ng-if='document.metadata.reference' embedit='document.metadata.reference' language='language'></div>
+  <div>
+    <span embedit='document.metadata.title' language='language'></span>
+    <a ng-if='!document.metadata.reference && document.metadata.title' ng-click='fullsize(document.slug, "doc")' translate='document.preview'></a>
+  </div>
+  
+  <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language'></div>
+
+  <div>
+    <span ng-if='document.metadata.author_name'>
+      <span translate='author'></span>
+      <a ng-href='{{document.metadata.author_url}}' target='_blank'>{{document.metadata.author_name}}</a>
+    </span>
+    <span ng-if='document.metadata.provider_name'>
+      <span translate='source'></span>:
+      <a ng-href='{{document.metadata.provider_url}}' target='_blank'>{{document.metadata.provider_name}}</a>
+    </span>
+  </div>
+</div>

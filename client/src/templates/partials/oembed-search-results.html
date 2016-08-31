@@ -1,10 +1,13 @@
-<div class='doc doc-{{document.type}} {{document.isSelected?"active":""}}' ng-click='selectDocument(document)'>
+<div class='oembedded doc doc-{{document.type}}' ng-class='{"active": document.url == selectedDocument.url}' ng-click='selectDocument(document)'>
 
-  <div class='divider'>&nbsp;</div>
+  <!-- <div class='divider'>&nbsp;</div> -->
   
-  
-  <div ng-if='document.urls.Preview' lazy-image src='document.urls.Preview'></div>
-  
-  <div class='caption title' markdown='document.title'></div>
-  <div class='caption reference' markdown='document.reference'></div>
+  <div class='wrapper'>
+    <div ng-if='document.urls.Preview' lazy-image src='document.urls.Preview'></div>
+    <div class='tile'>
+      <div class='title' embedit='document.title'></div>
+      <div class='copyright' embedit='document.copyright'></div>
+    </div>
+  </div>
+  <div class='excerpt' embedit='document.title'></div>
 </div>

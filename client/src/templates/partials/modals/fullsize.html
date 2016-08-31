@@ -1,32 +1,53 @@
-<div class="modal fullsize" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1050; display: block;">
+<div ng-class='fullsized.type' class="modal fullsize"  tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1050; display: block;">
   <div ng-click='$hide()' class='close'>
   <span class='icon-close'></span>
   </div>
-  <div class='oversize' style=''>
-    <div class='wrapper' ng-if='fullsized.type == "image"'>
-
-      <div lazy-image size='contain' src='fullsized.metadata.urls.Publishable'></div>
-
+  <div ng-class='fullsized.type' class='oversize' style=''>
+    <div class='table'>
       <div class='heading'>
-        <h2 marked='fullsized.metadata.title'></h2>
-        <div marked='fullsized.metadata.reference'></div>
+        <h2 embedit='fullsized.metadata.title'></h2>
+        <div class='contents'>
+          <span embedit='fullsized.metadata.reference'></span>
+          <span ng-if='fullsized.metadata.author_name'>by {{fullsized.metadata.author_name}}</span>
+          <a ng-if='fullsized.url' target='_blank' ng-href='{{fullsized.url}}' translate='link.to.original'></a>
+        </div>
+      </div>
+
+      <div class='wrapper' ng-if='fullsized.type == "link"'>
         
       </div>
-      <div class='inner'>
-        <div class='text caption' marked='fullsized.metadata.caption'></div>
-        <div class='text copyright' marked='fullsized.metadata.copyright'></div>
-      </div>
-    </div>
-
-    <div class='wrapper' ng-if='fullsized.type == "video"'>
-      <!-- <div class='heading'>
-        <h2 marked='fullsized.metadata.title'></h2>
-        <div ng-if='fullsized.metadata.reference' marked='fullsized.metadata.reference'></div>
+      <div class='wrapper' ng-if='fullsized.type == "rich"'>
+      
         
-      </div> -->
 
-   
-      <div style='height: 100%' ng-if='fullsized.metadata.html' marked='fullsized.metadata.html'></div>
+         <div class='embedded' ng-if='fullsized.metadata.html' stretch='true' embedit='fullsized.metadata.html'></div>
+      </div>
+
+      <div class='wrapper' ng-if='fullsized.type == "image"'>
+
+        <div lazy-image size='contain' src='fullsized.metadata.urls.Publishable'></div>
+
+        <div class='heading'>
+          <h2 marked='fullsized.metadata.title'></h2>
+          <div marked='fullsized.metadata.reference'></div>
+          
+        </div>
+        <div class='inner'>
+          <div class='text caption' marked='fullsized.metadata.caption'></div>
+          <div class='text copyright' marked='fullsized.metadata.copyright'></div>
+        </div>
+      </div>
+
+      <div class='wrapper' ng-if='fullsized.type == "video"'>
+        <!-- <div class='heading'>
+          <h2 marked='fullsized.metadata.title'></h2>
+          <div ng-if='fullsized.metadata.reference' marked='fullsized.metadata.reference'></div>
+          
+        </div> -->
+
+     
+        <div class='embedded' stretch='true' ng-if='fullsized.metadata.html' embedit='fullsized.metadata.html'></div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,6 +1,9 @@
 import json
 from rest_framework import serializers
 
+class HitField(serializers.Field):
+  def to_representation(self, obj):
+    return obj
 
 class OptionalFileField(serializers.Field):
   def to_representation(self, obj):

@@ -21,7 +21,9 @@ angular
     // 'angular-embedly',
     'ngDisqus',
     'angular-embed',
-    'angular-embed.handlers'
+    'angular-embed.handlers',
+
+    'angularLazyImg'
   ])
   .constant('LOCALES', {
     'locales': {
@@ -32,7 +34,10 @@ angular
   .constant('EVENTS', {
     'SAVE': 'save',
     'MESSAGE': 'message',
-    'BAD_REQUEST':'bad_request'
+    'BAD_REQUEST':'bad_request',
+    // namespace for markdownit directive
+    'MARKDOWNIT_FULLSIZE': 'markdownit_fullsize',
+    'MARKDOWNIT_RESOLVE': 'markdownit_resolve'
   })
   /*
     disqus configuration
@@ -214,7 +219,7 @@ angular
         url: '/drafts',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
-        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
@@ -240,7 +245,7 @@ angular
           .state('me.publications.' + d.name, {
             url: d.url,
             controller: 'ItemsCtrl',
-            templateUrl: RUNTIME.static + 'templates/blog.news.html',
+            templateUrl: RUNTIME.static + 'templates/items.html',
               resolve: {
               items: function(StoryFactory, $stateParams) {
                 return StoryFactory.get({
@@ -314,7 +319,7 @@ angular
         url: '',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
-        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
@@ -335,7 +340,7 @@ angular
         url: '/events',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
-        templateUrl: RUNTIME.static + 'templates/blog.news.html',
+        templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
@@ -367,7 +372,7 @@ angular
       //   url: '',
       //   controller: 'ItemsCtrl',
       //   reloadOnSearch : false,
-      //   templateUrl: RUNTIME.static + 'templates/blog.news.html',
+      //   templateUrl: RUNTIME.static + 'templates/items.html',
       //   resolve: {
       //     items: function(StoryFactory, $stateParams) {
       //       return StoryFactory.get({
@@ -397,14 +402,14 @@ angular
         },
         templateUrl: RUNTIME.static + 'templates/publications.html',
         
-      });
+      })
 
       _.each(RUNTIME.stories.writing, function(d){
         $stateProvider
           .state('publications.' + d.name, {
             url: d.url,
             controller: 'ItemsCtrl',
-            templateUrl: RUNTIME.static + 'templates/blog.news.html',
+            templateUrl: RUNTIME.static + 'templates/items.html',
               resolve: {
               items: function(StoryFactory, $stateParams) {
                 return StoryFactory.get({
@@ -426,18 +431,31 @@ angular
             }
           });
       });
-      
-      
-
 
     $stateProvider
-      .state('post', {
-        url: '/story/:postId',
-        controller: 'PostCtrl',
+      .state('search', {
+        url: '/search/:query',
+        controller: function($scope, items){
+          console.log(items)
+          $scope.items = items.results;
+        },
         reloadOnSearch : false,
-        templateUrl: RUNTIME.static + 'templates/post.html',
+        templateUrl: RUNTIME.static + 'templates/search.html',
         resolve: {
-          post: function(StoryFactory, $stateParams) {
+          items: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({id: 'search', q:$stateParams.query}).$promise;
+          },
+        }
+      })
+
+    $stateProvider
+      .state('story', {
+        url: '/story/:postId',
+        controller: 'StoryCtrl',
+        reloadOnSearch : false,
+        templateUrl: RUNTIME.static + 'templates/story.html',
+        resolve: {
+          story: function(StoryFactory, $stateParams) {
             return StoryFactory.get({id: $stateParams.postId}).$promise;
           },
         }

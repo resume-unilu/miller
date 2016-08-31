@@ -34,6 +34,7 @@ class Document(models.Model):
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
     ("image", 'picture'),
+    ("photo", 'picture'),
     (RICH, 'rich'),
     (LINK, 'link'),
     (AV, 'audiovisual')

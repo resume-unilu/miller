@@ -1,9 +1,18 @@
-<div ng-class='{"active": term.isSelected}' class='doc term' ng-click='selectDocument(term)'>
-  <div class='divider'>&nbsp;</div>
+<div ng-class='{"active": selectedDocument.id == term.id}' class='doc term oembedded' ng-click='selectDocument(term)'>
   <!-- this element has fixed height. -->
-  
-  <div class='caption title' markdown='term.title'></div>
-  <div class='caption reference' markdown='term.abstract'></div>
-  <div class='copyright' markdown='document.copyright'></div>
-
+  <!-- {{term}} -->
+  <div class='wrapper'>
+    <div class='lazy-box'>
+      <div class='title' embedit='term.title'></div>
+      <div class='copyright' embedit='term.abstract'></div>
+    </div>
+    <div class='tile'>
+      <div class='title' embedit='term.title'></div>
+      <div class='authors' ng-if="term.authors.length">
+        by <span ng-repeat='author in term.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+      </div>
+      
+    </div>
+  </div>
+  <div class='excerpt' embedit='term.title'></div>
 </div>

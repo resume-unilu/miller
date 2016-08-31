@@ -6,66 +6,102 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('markdown', function($compile, $log, $location){
-    return {
-      restrict : 'A',
-      scope:{
-        markdown: '=',
-      },
-      link : function(scope, element, attrs) {
-        if(scope.markdown && scope.markdown.length) {
-          element.html(marked(scope.markdown));
-          $compile(element.contents())(scope);
-        }
-      }
-    };
-  })
-  .directive('markedLanguage', function($compile, $log, $location){
-    return {
-      restrict : 'A',
-      scope:{
-        markedLanguage: '=',
-      },
-      link : function(scope, element, attrs) {
-        if(scope.markdown && scope.markdown.length) {
-          element.html(marked(scope.markdown));
-          $compile(element.contents())(scope);
-        }
-      }
-    };
-  })
-  .directive('footnote', function(){
+  // .directive('markdown', function($compile, $log, $location){
+  //   return {
+  //     restrict : 'A',
+  //     scope:{
+  //       markdown: '=',
+  //     },
+  //     link : function(scope, element, attrs) {
+  //       if(scope.markdown && scope.markdown.length) {
+  //         element.html(marked(scope.markdown));
+  //         $compile(element.contents())(scope);
+  //       }
+  //     }
+  //   };
+  // })
+  // .directive('markedLanguage', function($compile, $log, $location){
+  //   return {
+  //     restrict : 'A',
+  //     scope:{
+  //       markedLanguage: '=',
+  //     },
+  //     link : function(scope, element, attrs) {
+  //       if(scope.markdown && scope.markdown.length) {
+  //         element.html(marked(scope.markdown));
+  //         $compile(element.contents())(scope);
+  //       }
+  //     }
+  //   };
+  // })
+  .directive('footnote', function($compile){
     return {
       restrict : 'A',
       scope:{
         caption: '=',
-        footnote: '=',
+        footnote: '='
       },
-      template: '<span class="footnote"><a ng-click="toggleFootnote()">{{caption}}</a><div class="footnote-contents" ng-show="isOpened">rr</div></span>',
+      require: "^?markdownit",
+      template: '<span class="footnote"><a ng-click="toggleFootnote()" style="cursor:pointer">{{caption}}</a><div class="footnote-contents" ng-show="isOpened"></div></span>',
       link: function(scope, element, attrs) {
         var footnoteSl = '#fn'+scope.caption + ' p', // footnote jquery selector
-            contents = element.find('.footnote-contents');
+            contents = $(footnoteSl).clone(),
+            wrapper = element.find('.footnote-contents');
+        
+        
 
+        wrapper.html(contents);
+        $compile(wrapper.contents())(scope);
+        
         scope.isOpened = false;
 
         scope.toggleFootnote = function(){
+          console.log('::footnote > toggleFootnote')
           scope.isOpened = !scope.isOpened;
-          if(scope.isOpened && !scope.isFilled){
-            $(contents).html($(footnoteSl).clone())
-            scope.isFilled = true;
-          }
+          // if(scope.isOpened && !scope.isFilled){
+            
+          //   scope.isFilled = true;
+          // }
         }
+
+        scope.fullsize = function(slug, type){
+          scope.$parent.fullsize(slug, type);
+        }
+
       }
     }
   })
-  .directive('markdownit', function ($compile, $log, $location, markdownItService) {
+  .directive('embedit', function($sce){
+    return {
+      restrict : 'A',
+      scope:{
+        embedit: '=',
+        stretch: '=',
+        language: '='
+      },
+      link: function(scope, element, attrs){
+        if(scope.language && typeof scope.embedit == 'object'){
+          element.html(scope.embedit[scope.language]|| '');
+        } else {
+          element.html(scope.embedit);
+        }
+        if(scope.stretch){
+          element.find('iframe').width('100%').height('100%');
+        }
+
+      }
+    }
+  })
+  // main markdown directive, almost always used
+  .directive('markdownit', function ($compile, $log, $location, markdownItService, EVENTS) {
     return {
       restrict : 'A',
       scope:{
         markdownit: '=',
         settoc: '&',
         setdocs: '&',
-        language: '='
+        language: '=',
+        listener: '&'
       },
       link : function(scope, element, attrs) {
         var entities = [],
@@ -79,6 +115,30 @@ angular.module('miller')
           $location.hash(what);
         };
         
+        scope.fullsize = function(slug, type){
+          if(scope.listener){
+            scope.listener({
+              event: EVENTS.MARKDOWNIT_FULLSIZE, 
+              data: {
+                slug: slug.replace(/^.*\//, ''),
+                type: type
+              }
+            });
+          }
+        }
+
+        scope.resolve = function(slug, type, notify){
+          if(scope.listener){
+            scope.listener({
+              event: EVENTS.MARKDOWNIT_RESOLVE, 
+              data: {
+                slug: slug,
+                type: type
+              },
+              callback: notify
+            });
+          }
+        }
         
         function parse() {
           if(!scope.markdownit || !scope.markdownit.length){
@@ -106,6 +166,7 @@ angular.module('miller')
       }
     }
   })
+
   .directive('marked', function ($compile, $log, $location, markedService) {
    return {
       restrict : 'A',
@@ -146,8 +207,6 @@ angular.module('miller')
           if(scope.setdocs)
             scope.setdocs({items:rendered.docs});
         }
-
-        
 
         if(scope.language)
           scope.$watch('language', function(language){

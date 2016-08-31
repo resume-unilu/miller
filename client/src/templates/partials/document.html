@@ -1,6 +1,15 @@
-<div class='doc doc-{{document.type}} {{document.isSelected?"active":""}}' ng-click='selectDocument(document)'>
 
-      <div class='divider'>&nbsp;</div>
+<div class='doc doc-{{document.type}} {{document.isSelected?"active":""}}' ng-click='selectDocument(document)'>
+  <div class='divider'>&nbsp;</div>
+  
+  <div ng-if='document.type=="image"' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
+
+  <div ng-if='document.type=="photo"' ng-include='"templates/partials/document.photo.html"|prefixTemplate'></div>
+
+  <div ng-if='document.type=="rich"' ng-include='"templates/partials/document.rich.html"|prefixTemplate'></div>
+
+  <div ng-if='document.metadata' ng-include='"templates/partials/document.metadata.html"|prefixTemplate'></div>
+
       <!-- this element has fixed height. -->
       <div ng-if='document.type=="video-cover"'>
         
@@ -10,8 +19,6 @@
       </div>
 
       <div ng-if='document.type=="picture"' lazy-image src='document.src'></div>
-      
-      <div ng-if='document.type=="image" && document.metadata.urls' lazy-image src='document.metadata.urls.Preview'></div>
 
       <div ng-if='document.type=="pdf"' lazy-image src='document.snapshot'></div>
       

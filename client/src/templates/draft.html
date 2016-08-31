@@ -1,35 +1,36 @@
 
 
 <!-- <span class='btn-line-group'><button class='btn-line active' ng-click='save()'>{{isSaving? "saving...":"save"}}</button></span> -->
+<label translate="field.label.title">title</label>
+<textarea id='draft-title' class='elastic-textarea' rows="1" msd-elastic ng-model='title' type='text' placeholder='Untitled'></textarea>
+<label translate="field.label.abstract"></label>
 
-<textarea id='draft-title' rows="1" msd-elastic ng-model='title' type='text' placeholder='Untitled'></textarea>
+  <textarea id='draft-abstract' class='elastic-textarea' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
 
-<blockquote>
-  <textarea id='draft-abstract' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
-</blockquote>
 
-<div style='position:absolute; top:-60px' ng-if='!isDraft'>
+<div class='actions'>
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
-  <div class='btn-line-group'>
-    <button class='btn-line' ng-click='setStatus("draft")' ng-class='metadata.status=="draft"?"active":""'>draft</button>
-    <button class='btn-line' ng-click='setStatus("public")' ng-class='metadata.status=="public"?"active":""'>public</button>
+  
+  <div class='btn-line-group' ng-if='!isDraft && id'>
+    <button  class='btn-line' ui-sref="story({postId: id})" translate="button.viewmode"></button>
   </div>
-  <a ng-if='id' ui-sref="post({postId: id})">view</a>
+  <div class='btn-line-group primary'>
+    <button ng-click='save()' class='btn-line'  translate="button.save"></button>
   </div>
   <!-- </div> -->
   
 </div>
 
 <div class='section' ng-if='user.is_staff'>
-  <!-- <label translate="displayed-as"></label> -->
+  <label translate="staff.drafts.tags.placeholder"></label>
   <tags-input class='tags-input' placeholder='{{"staff.drafts.tags.placeholder"| translate}}' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
     <auto-complete source="suggestTags($query, {category__in:['blog','writing', 'highlights']})" ></auto-complete>
 
   </tags-input>
 </div>
 
-<div class='section' ng-if='!isDraft && user.is_staff'>
-  <!-- <label translate="keywords"></label> -->
+<div class='section' style='margin-bottom:20px' ng-if='!isDraft && user.is_staff'>
+  <label translate="drafts.keywords.placeholder"></label>
   <tags-input class='tags-input' placeholder='{{"drafts.keywords.placeholder"| translate}}' key-property='id' display-property='name' ng-model="tags">
     <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
 

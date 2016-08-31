@@ -140,12 +140,12 @@ USE_TZ = True
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
-    'PAGE_SIZE': 10
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 4
 }
-
 
 SIMPLEMDE_OPTIONS = {
     'autosave': {
@@ -193,6 +193,14 @@ AUTHENTICATION_BACKENDS = (
 
 #............
 #
+# WHOOSH
+#
+#............
+WHOOSH_ROOT = os.path.join(BASE_DIR, 'whoosh')
+
+
+#............
+#
 # REDIS
 #
 #............
@@ -206,6 +214,52 @@ WS4REDIS_PREFIX = 'miller'
 #     'db': 17,
 #     'password': 'verysecret', # override these settings in your local_settings.py file
 # }
+
+#............
+#
+# LOGGING
+#
+#............
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log')
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'miller.commands': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'miller': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 #............
 #

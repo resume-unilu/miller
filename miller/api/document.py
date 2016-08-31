@@ -1,5 +1,9 @@
 import json
+
+from django.shortcuts import get_object_or_404
+
 from rest_framework import serializers,viewsets
+from rest_framework.response import Response
 
 from miller.models import Document
 
@@ -45,6 +49,19 @@ class DocumentViewSet(viewsets.ModelViewSet):
   queryset = Document.objects.all()
   serializer_class = CreateDocumentSerializer
 
+  # retrieve by PK or slug
+  def retrieve(self, request, *args, **kwargs):
+    if 'pk' in kwargs and not kwargs['pk'].isdigit():
+      doc = get_object_or_404(Document, slug=kwargs['pk'])  
+      # save, then return tagged items according to tagform
+      serializer = DocumentSerializer(doc,
+          context={'request': request},
+      )
+      return Response(serializer.data)
+    
+    return super(DocumentViewSet, self).retrieve(request, *args, **kwargs)
+    
+
   def list(self, request):
     filters = self.request.query_params.get('filters', None)
     
@@ -63,14 +80,12 @@ class DocumentViewSet(viewsets.ModelViewSet):
       docs = Document.objects.filter(**filters)
     else:
       docs = Document.objects.filter(**filters)
-    # if request.user.is_authenticated():
-    #   docs = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
-    # else:
-    #   docs = self.queryset.filter(story__status=Story.PUBLIC).filter(**filters).distinct()
     
     page    = self.paginate_queryset(docs)
+    if page is not None:
+      serializer = DocumentSerializer(page, many=True, context={'request': request})
+      return self.get_paginated_response(serializer.data)
 
-    serializer = DocumentSerializer(docs, many=True,
-        context={'request': request}
-    )
-    return self.get_paginated_response(serializer.data)
+    serializer = DocumentSerializer(queryset, many=True, context={'request': request})
+    return Response(serializer.data)
+

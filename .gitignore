@@ -1,10 +1,11 @@
+__*.*
 *.sqlite3
 *.pyc
+
 contents/
 dist/
 local_settings.py
 *.log
-*.md
 !README.md
 # uwsgi related files
 *.uwsgi.ini
@@ -12,6 +13,9 @@ uwsgi.ini
 uwsgi_params
 media/*
 !media/.gitkeep
+logs/*
+!logs/.gitkeep
+whoosh/
 
 client/src/images/*
 !client/src/images/.gitkeep

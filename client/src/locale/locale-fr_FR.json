@@ -3,24 +3,69 @@
   "button.annotate": "tag",
   "button.agree": "agree",
   "button.back": "back",
+  "button.viewmode": "mode lecture",
+  "button.save": "save",
+  "button.more": "load more",
+  "button.loading": "loading ...",
+
+  "missing": "({{count}} more)",
+  "results.amount": "({{count}} more)",
+
+  "document.preview": "(preview)",
+
   "enrich.fromUrl": "add url",
   "enrich.glossary": "add glossary term",
   "enrich.resources": "add document/reference",
   "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
+  "enrich.type.notitle": "Original title not found for this remote resource.",
+
+  "field.label.title": "titre",
+  "field.label.abstract": "abstract",
 
   "headline.project": "projet",
   "headline.people": "équipe",
   "headline.publications": "publications",
+  "headline.publications.title": "Publications",
+  "headline.publications.abstract": "The project involves research and teaching activities leading to the production of several products and the organisation of events. The main outputs include a h ui-srefthematic e-publication, oral history interviews, a book, workshops, residencies by visiting scholars, digital tools, e-teaching modules, a training course and a collaborative platform.",
   "headline.authors": "auteurs",
   "headline.blogs": "blogs",
   "headline.events": "events",
   "headline.write": "write",
   "headline.you": "(moi)",
 
+  "items.empty": " Sorry, no items matched your search",
+  "link.to.original": "link to the original source",
   "me.publications": "your writings",
 
   "drafts": "(drafts)",
-  "drafts.keywords.placeholder": "keywords ...",
-  "staff.drafts.tags.placeholder": "website placement (staff only)"
+  "drafts.keywords.placeholder": "add keywords ...",
 
+  "staff.drafts.tags.placeholder": "website placement (staff only)",
+
+  "state.publications.all.title": "browse all the publications",
+  "state.publications.all.label": "recent",
+  "state.publications.all.abstract": "...",
+
+  "state.publications.interviews.title": "E-interviews",
+  "state.publications.interviews.label": "E-interviews",
+  "state.publications.interviews.abstract": "E-interviews ...",
+
+  "state.publications.papers.title": "EPapers",
+  "state.publications.papers.label": "EPapers",
+  "state.publications.papers.abstract": "E-interviews ...",
+
+  "state.publications.glossary.title": "glossary",
+  "state.publications.glossary.label": "glossary",
+  "state.publications.glossary.abstract": "glossary ...",
+
+  "state.publications.biography.title": "biography",
+  "state.publications.biography.label": "biography",
+  "state.publications.biography.abstract": "biography ...",
+
+  "state.publications.how-tos.title": "instructions aux auteurs",
+  "state.publications.how-tos.label": "how-tos",
+  "state.publications.how-tos.abstract": "how-tos ...",
+
+  "story.status.draft": "draft",
+  "story.status.public": "public"
 }

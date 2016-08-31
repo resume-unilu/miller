@@ -24,7 +24,7 @@ angular.module('miller')
 
         // secretize bookmarks. Automatically clean the code sent to initialvalue
         // will set SetBookmarks 
-
+        
 
         var simplemde,
             timer,
@@ -37,6 +37,7 @@ angular.module('miller')
             referenceModal = $modal({
               scope: scope,
               title: 'h',
+              controller: 'EnrichModalCtrl',
               template: RUNTIME.static + 'templates/partials/modals/mde-enrich.html',
               show: false
             });
@@ -229,24 +230,24 @@ angular.module('miller')
         }
 
         // listen window event, instance specific
-        var _isToolbarVisible;
-        $(window).on('scroll.mde', function(){
-          var toolbarOffset = el.offset().top - st,
-              isToolbarVisible =  toolbarOffset > 100;
+        // var _isToolbarVisible;
+        // $(window).on('scroll.mde', function(){
+        //   var toolbarOffset = el.offset().top - st,
+        //       isToolbarVisible =  toolbarOffset > 100;
 
-          if(!isToolbarVisible)
-            toolbox.css('transform', 'translate(0px,'+(100 - toolbarOffset)+'px)');
-          else if(isToolbarVisible!==_isToolbarVisible)
-            toolbox.css('transform', 'translate(0px,0px)');
+        //   if(!isToolbarVisible)
+        //     toolbox.css('transform', 'translate(0px,'+(100 - toolbarOffset)+'px)');
+        //   else if(isToolbarVisible!==_isToolbarVisible)
+        //     toolbox.css('transform', 'translate(0px,0px)');
           
 
-          _isToolbarVisible = isToolbarVisible;
-        });
+        //   _isToolbarVisible = isToolbarVisible;
+        // });
 
-        // on destry, destroy scroll event
-        scope.$on("$destroy", function(){
-          $(window).off('scroll.mde');
-        });
+        // // on destry, destroy scroll event
+        // scope.$on("$destroy", function(){
+        //   $(window).off('scroll.mde');
+        // });
 
         /*
           Modal tabs
@@ -281,10 +282,23 @@ angular.module('miller')
         };
 
         // suggest from different archives, w timeout
+        var previous ;
         scope.suggestResults = [];
         scope.suggestMessage = '';
         scope.suggest = function(query, service){
           $log.log('::mde -> suggest()', scope.query, query, OembedSearchFactory);
+          
+          if(query.length < 3) {
+            scope.suggestMessage = '(write something more)';
+            scope.suggestResults = [];
+            return;
+          }
+
+          // reset counters and lookups
+          scope.lookups = [];
+          scope.count = 0;
+          scope.next = undefined;
+
           scope.suggestMessage = '(loading...)';
           // internal search
           if(service == 'favourite'){
@@ -297,9 +311,7 @@ angular.module('miller')
               scope.suggestMessage = '(<b>' + res.count + '</b> results)';
             });
             return;
-          }
-
-          if(service == 'glossary') {
+          } else if(service == 'glossary') {
             var params = {
               tags__slug: 'glossary'
             }
@@ -317,11 +329,7 @@ angular.module('miller')
             return;
           } 
 
-          if(query.length < 3) {
-            scope.suggestMessage = '(write something more)';
-            scope.suggestResults = [];
-            return;
-          }
+          
 
             // external search
           
@@ -345,11 +353,11 @@ angular.module('miller')
             referenceModal.show();
           });
           
-          DocumentFactory.get(function(res){
-            $log.log('::mde -> showReferenceModal documents loaded', res.results.length);
+          // DocumentFactory.get(function(res){
+          //   $log.log('::mde -> showReferenceModal documents loaded', res.results.length);
 
-            scope.lookups = res.results;
-          });
+          //   scope.lookups = res.results;
+          // });
           // console.log(simplemde)
           // debugger
         };
@@ -466,14 +474,18 @@ angular.module('miller')
         };
 
         scope.selectDocument = function(doc){
-          $log.log('::mde -> selectDocument()', doc);
-          if(scope.selectedDocument)
-            scope.selectedDocument.isSelected = false;
-          if(scope.selectedDocument && (scope.selectedDocument.id == doc.id)){
+          $log.log('::mde -> selectDocument()', doc.url);
+
+          if(scope.selectedDocument && scope.selectedDocument.url == doc.url){
+            // $log.log('::mde -> selectDocument() unselecting previous', doc.url);
             scope.isSomethingSelected = false;
             scope.selectedDocument = false;
+          } else if(scope.selectedDocument){
+            // $log.log('::mde -> selectDocument() change selection from', scope.selectedDocument.title);
+            scope.isSomethingSelected = true;
+            scope.selectedDocument = doc;
           } else {
-            doc.isSelected = true;
+            // $log.log('::mde -> selectDocument() as new item');
             scope.isSomethingSelected = true;
             scope.selectedDocument = doc;
           }

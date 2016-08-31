@@ -2,12 +2,16 @@
 # -*- coding: utf-8 -*-
 import os,codecs
 
+from BeautifulSoup import BeautifulSoup
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+
+from markdown import markdown
 
 from miller import helpers
 from miller.models import Tag, Document
@@ -43,6 +47,9 @@ class Story(models.Model):
   authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
   documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
+  
+  # the leading document(s), e.g. an interview
+  covers = models.ManyToManyField(Document, related_name='covers', blank=True)
 
   tags      = models.ManyToManyField(Tag, blank=True) # tags
 
@@ -64,10 +71,29 @@ class Story(models.Model):
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)
 
+  # store into the whoosh index
+  def store(self, ix=None):
+    if ix is None:
+      ix = helpers.get_whoosh_index()
+    writer = ix.writer()
+    writer.update_document(
+      title = self.title,
+      path = u"%s"%self.id,
+      content =  u"\n".join(BeautifulSoup(markdown(u"\n".join(filter(None,[self.title, self.abstract, self.contents])), extensions=['footnotes'])).findAll(text=True)),
+      tags = u",".join([u'%s'%t.name for t in self.tags.all()]),
+      classname = u"story")
+    writer.commit()
+
   def save(self, *args, **kwargs):
     self.slug = slugify(self.title)
+    # store this version
+    
     super(Story, self).save(*args, **kwargs)
 
+# store in whoosh
+@receiver(post_save, sender=Story)
+def store_working_md(sender, instance, created, **kwargs):
+  instance.store()
 
 # create story file if it is not exists; if the story eists already, cfr the followinf post_save
 @receiver(post_save, sender=Story)

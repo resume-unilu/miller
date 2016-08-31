@@ -4,8 +4,9 @@
   <head>
     <title>{{title}}</title>
     <meta name='pinterest' content='nopin' description="contents subject to copyright"></meta>
-    <link rel="stylesheet" href="//releases.flowplayer.org/6.0.5/skin/minimalist.css">
-  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="//releases.flowplayer.org/6.0.5/skin/minimalist.css">
+   -->
     <link href='{% static "css/bootstrap.css" %}' rel='stylesheet'></link>
     <link href='{% static "css/simplemde.min.css" %}' rel='stylesheet'></link>
     <link href='{% static "css/style.css" %}' rel='stylesheet'></link>
@@ -21,13 +22,17 @@
       body{
         background-color:#fff;
         font-family: 'Merriweather', serif;
-        color: #000000;
+        color: #252525;
+        font-size: 15px;
+        line-height: 25px;
+        color: #454545;
       }
-      .CodeMirror{
-        padding: 0;
-        border: 0;
-        background: transparent;
-        /*text-align: justify;*/
+      
+      #logo{
+        position: absolute;
+        top: 15px;
+        width: 145px;
+        left: -140px;
       }
       .navbar-default{
         background: white;
@@ -38,10 +43,17 @@
         border-bottom-color: #E7E4E4;
       }
 
+      #navbar ul.navbar-nav{
+
+        position:relative;
+        margin-left: 120px;
+      }
+
       .navbar{
         font-family: 'Lato', sans-serif;
         height: 70px;
         padding: 0 50px 0 25px;
+
         transform: translateY(140px);
         -webkit-transform: translateY(140px);
         -moz-transform: translateY(140px);
@@ -52,10 +64,10 @@
         border-bottom: 2px solid #f0f0f0;
       }
 
-      .container{
+      /*.container{
         margin-left: 100px;
         margin-top: 120px;
-      }
+      }*/
 
       .navbar-default .navbar-brand{
         height: 70px;
@@ -88,9 +100,7 @@
         color: #4ECDC4;
       }
 
-      span.username{
-        color: #000;
-      }
+      
 
       .navbar-brand img {
         height: 30px;
@@ -209,29 +219,51 @@
         text-transform: uppercase;
         background-color: white;
         border: 2px solid transparent;
-        color: #151515;
+        color: #B7B2B2;
         font-size: 10px;
         font-weight: bold;
         padding: 0px 15px;
-        line-height: 18px;
+        line-height: 20px;
+      }
+
+      .btn-line.warning{
+        background-color: #FF6B6B;
+        color: white;
       }
 
       .btn-line:hover{
-        background-color: #B7B2B2;
+        background-color: #151515;
+        color: white;
       }
       .btn-line:focus{
         outline: none;
 
       }
       .btn-line.active{
-        background: #151515;
+        background: #B7B2B2;
         color: white;
+      }
+      .btn-line.active.warning{
+        background-color: #ff9305;
       }
 
       .btn-line-group{
         border: 2px solid #B7B2B2;
-        padding: 2px;
+        padding: 0 2px;
         display: inline-block;
+        height: 32px;
+      }
+
+      .btn-line-group.primary{
+        border: 2px solid #151515;
+      }
+
+      .btn-line-group.primary .btn-line{
+        color: #151515;
+      }
+
+      .btn-line-group.primary .btn-line:hover{
+        color: white;
       }
 
       #showreel{
@@ -246,7 +278,7 @@
 
       .breakingNews{
         float:left;
-        width:33%;
+        width:33.3%;
         color: white;
         height: 100%;
         background: #111;
@@ -261,7 +293,7 @@
       .breakingNews .overlay{
         position: absolute;
         bottom: 0px;
-        background-color: rgba(16,16,16,.3);
+        background-color: rgba(16,16,16,.5);
         
         left: 0;
     right: 0;
@@ -274,13 +306,15 @@
         line-height: 25px;
         border-bottom: 2px solid #FF6B6B;
         margin: 0 0 15px 0;
-        padding: 10px 0;
+        padding: 0px 0 10px 0;
         max-height: 65px;
         overflow: hidden;
       }
-      .breakingNews .tags {
+      .breakingNews .type, .breakingNews span.tag {
         font-family: 'Lato', sans-serif;
         font-size: 10px;
+        color: #fafafa;
+        text-transform: uppercase
       }
       .breakingNews a{
         color: #f0f0f0;
@@ -300,7 +334,12 @@
       }
 
       #footer{
-        /*background-color: #C7F464;*/
+        background-color: #d9d9d9;
+        padding-top: 25px;
+      }
+
+      #footer a {
+        color: #FF6B6B
       }
 
       #messenger{
@@ -324,96 +363,156 @@
         font-size: 15px;
         line-height: 20px;
       }
+
+      @media (min-width: 768px){
+        .navbar-nav .collapse-toggler {
+          display: none;
+        }
+      }
+      @media (min-width: 992px){
+        /* show menu*/
+
+        .container {
+          width: 910px;
+        }
+      }
+      @media (min-width: 1200px){
+        .container {
+          width: 1100px;
+        }
+      }
+      #unilu-logo-wrapper{
+        position: relative;
+        height: 140px;
+        width: 100%;
+        overflow: hidden;
+      }
+      #unilu-logo{
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 380px;
+        height: 140px;
+        background-color: #ffffff;
+        background-image: url(/static/images/DEIS_uni.lu.png);
+        z-index: 1;
+        /* border-top-left-radius: 5px; */
+        /* border-top-right-radius: 5px; */
+        background-position: left bottom;
+      }
     </style>
   </head>
   {% block body %}
   <body ng-app='miller' ng-controller='CoreCtrl' >
     <!-- where highlights are -->
     <div id='showreel'>
+      <div class='container'>
+        <div style='height: 140px'>
       {% verbatim %}
+      <div class="breakingNews">
+        <div id='unilu-logo-wrapper'>
+          <div id='unilu-logo'></div>
+        </div>
+      </div>
       <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
       {% endverbatim %}
-    </div>
-
-    <nav id="navbar" class='navbar navbar-default navbar-fixed-top'>
-        <div container-fluid>
-          <div class="navbar-header">
-            <a class='navbar-brand' ui-sref='index'>
-              <img src='{% static "images/logo.svg" %}'>
-            </a>
-          </div>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-              <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
-              <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
-              <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
-              <li ng-class="{active: state.includes('publications') && !state.includes('me')}"><a href ui-sref='publications.all'>publications</a></li>
-              <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li>
-              <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" translate="headline.events"></a></li>
-
-             <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
-              --> 
-              <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b style='color:#151515' translate="write"></b></a></li>
-              
-
-            </ul>
-            
-            
-
-            <ul class="nav navbar-nav navbar-right">
-              {% if user.is_authenticated %}
-              <li ng-class="{active: state.includes('me')}">
-                <a ui-sref="me.publications.all"><span class='username'>{{user.username}}</span>
-                  <b translate='headline.you'></b>
-                </a>
-              </li>
-              <li class="dropdown">
-                
-                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false">
-                
-                  <span class='icon icon-menu'></span>
-                </a>
-
-                <ul class="dropdown-menu" role="menu">
-                  <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
-                  <li ui-sref-active="active"><a ui-sref="me.publications.all">your writings</a></li>
-                  <li><a href='{% url "logout_view" %}'>log out</a></li> 
-                  {% if user.is_staff %}
-                  <li><a href='{% url "admin:index" %}'>admin</a></li>
-                  {% endif %}
-                </ul>
-                
-              </li>
-              {% else %}
-              <li>
-                <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}'>log in</a>
-              </li>
-              {% endif %}
-              <li class='compact' ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
-              <li class='compact' ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
-              {% verbatim %}
-
-              <!-- <li class="dropdown">
-
-                <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> more</a>
-                <ul class="dropdown-menu" role="menu">
-                  
-                  <li ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})'>terms of use</a></li>
-                  
-                </ul>
-              </li> -->
-              {% endverbatim %}
-            </ul>
-           
-          </div>
-
         </div>
-      </nav>
+      </div>
+    </div>
     
+    
+    <nav id="navbar" class='navbar navbar-default navbar-fixed-top'>
+      
+      <div class='container'> 
+        
 
+        <div class="collapse navbar-collapse">
+          
+          <ul class="nav navbar-nav">
+
+            <div id="logo">
+              <a ui-sref='index'>
+                <img src='{% static "images/logo.svg" %}'>
+              </a>
+            </div>
+            <li class='collapse-toggler'>
+              <a href title='toggle menu'><div class='icon icon-menu'></div></a>
+            </li>
+            <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
+            <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
+            <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
+            <li ng-class="{active: (state.includes('publications') || state.includes('story')) && !state.includes('me')}"><a href ui-sref='publications.all'>publications</a></li>
+            <!-- <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li> -->
+            <li ng-class="{active: state.includes('blog')}"><a ui-sref="blog.everything" translate="headline.events"></a></li>
+
+           <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
+            --> 
+            <!-- <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b style='color:#151515' translate="write"></b></a></li> -->
+            <li id='search-wrapper' ng-if='user.username'>
+              <form role="form" ng-submit="search(searchquery)">
+                <div class="input-group">
+                  <input type="text" class="form-control" ng-model="searchquery" placeholder="Search for...">
+                  <span class="input-group-btn">
+                    <button ng-click="search(searchquery)" class="btn btn-secondary" type="button"><div class='icon icon-magnifier'></div></button>
+                  </span>
+                </div>
+
+              </form>
+            </li>
+            
+
+          </ul>
+          
+          
+
+          <ul style='margin-left: 10px' class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            
+            <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}">
+              
+              <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>
+                <span class='username'>{{user.username}}<span style='position:absolute; right:5px; top:0' class='icon icon-plus'></span></span>
+              </a>
+
+              <ul class="dropdown-menu" role="menu">
+                
+                <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
+                <li ui-sref-active="active"><a ui-sref="me.publications.all">your writings</a></li>
+                <li><a href='{% url "logout_view" %}'>log out</a></li> 
+                {% if user.is_staff %}
+                <li><a href='{% url "admin:index" %}'>admin</a></li>
+                {% endif %}
+              </ul>
+              
+            </li>
+            {% else %}
+            <li>
+              <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}'>log in</a>
+            </li>
+            {% endif %}
+            <li class='compact' ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
+            <li class='compact' ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
+            {% verbatim %}
+
+            <!-- <li class="dropdown">
+
+              <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> more</a>
+              <ul class="dropdown-menu" role="menu">
+                
+                <li ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})'>terms of use</a></li>
+                
+              </ul>
+            </li> -->
+            {% endverbatim %}
+          </ul>
+         
+        </div>
+      </div>
+    </nav>
+    
     <!-- CONTENTS -->
     <div id='wrapper' ng-class='state'>
-      <div class='container'  ng-class='hasToC? "with-ToC":""' >
+      <div class='container'  ng-class='{"with-ToC": hasToC && ToC.length>0}' >
         {% block content %}
         <div class='view' ng-class='state' ui-view=''>
         </div>
@@ -427,21 +526,23 @@
     <div id="footer" ng-class='state'>
       <div class='container'>
         <div class='row'>
-          <div class='col-sm-4'>
+          <div class='col-sm-6'>
+            <div>
+            Copyright &copy; <a href="http://www.uni.lu" target="_blank">Université du Luxembourg</a> {{ now }}. All rights reserved.     
+            </div> 
+
+          </div>
+          <div class='col-sm-6'>
             <p>
               <img style='height:50px' src='http://eacea.ec.europa.eu/img/logos/erasmus_plus/eu_flag_co_funded_pos_%5Brgb%5D_right.jpg'>
             </p>
-          </div>
-          <div class='col-sm-4'>
-            <p>CVCE (c) 2016</p>
-            <div href ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})'>terms of use</a></div>
           </div>
           
         </div>
       </div>
     </div>
 
-    <aside id='table-of-contents' ng-class='hasToC? "active":""'>
+    <aside id='table-of-contents'  ng-class='{"active":hasToC && ToC.length>0}'>
       <div id="inner-table-of-contents"><div ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'></div></div>
     </aside>
 
@@ -449,7 +550,7 @@
       <div id="inner-table-of-documents"><div ng-include='"templates/partials/table-of-documents.html"|prefixTemplate'></div></div>
     </aside>
 
-    <div id='table-of-contents-toggler' ng-class='!hasToC? "active":""' >
+    <div id='table-of-contents-toggler'  ng-class='{"active": ToC.length > 0}' >
       <div >
         <button class='btn-transparent' ng-click='toggleTableOfContents()'><span  class='icon-book-open'></span></button>
       </div>
@@ -470,9 +571,11 @@
     <!-- lodash build with lodash-cli:
          lodash include=map,filter,each,compact,uniq,value,keyBy,first,chunk,fromPairs,mapValues,isEmpty -->
     <script src='{% static "js/lib/lodash.custom.min.js" %}'></script>
-    <!-- <script src='{% static "js/lib/marked.min.js" %}'></script> -->
+    <script src='{% static "js/lib/marked.min.js" %}'></script>
     <script src='{% static "js/lib/markdown-it.min.js" %}'></script>
     <script src='{% static "js/lib/markdown-it-footnote.min.js" %}'></script>
+    <script src='{% static "js/lib/markdown-it-container.min.js" %}'></script>
+    
 
     <script src='{% static "js/lib/simplemde.min.js" %}'></script>
     <script src='{% static "js/lib/bibtexParse.js" %}'></script>
@@ -497,6 +600,7 @@
     <script src='{% static "js/lib/angular-translate.min.js" %}'></script>
     <script src='{% static "js/lib/angular-translate-loader-static-files.min.js" %}'></script>
     <script src='{% static "js/lib/ng-tags-input.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-lazy-img.min.js" %}'></script>
     
    
     <script src='{% static "js/app.js" %}'></script>
@@ -506,10 +610,13 @@
     <script src='{% static "js/controllers/items.js" %}'></script>
     <script src='{% static "js/controllers/login.js" %}'></script>
     <script src='{% static "js/controllers/author.js" %}'></script>
-    <script src='{% static "js/controllers/post.js" %}'></script>
+    <script src='{% static "js/controllers/story.js" %}'></script>
     <script src='{% static "js/controllers/blog.js" %}'></script>
     <script src='{% static "js/controllers/page.js" %}'></script>
     <script src='{% static "js/controllers/writing.js" %}'></script>
+
+    <script src='{% static "js/controllers/modals/enrich.js" %}'></script>
+
 
     <script src='{% static "js/directives/marked.js" %}'></script>
     <script src='{% static "js/directives/mde.js" %}'></script>
@@ -543,8 +650,8 @@
             navbar: $('#navbar'),
             'table-of-contents-toggler': $('#table-of-contents-toggler'),
             'inner-table-of-contents': $('#inner-table-of-contents'),
-            'inner-table-of-documents': $('#inner-table-of-documents'),
-            'writing-tools': $('#writing-tools')
+            // 'inner-table-of-documents': $('#inner-table-of-documents'),
+            // 'writing-tools': $('#writing-tools')
           },
 
           _navbar_offset = 140,
@@ -645,10 +752,25 @@
                 url: '/interviews'
               },
               {
+                name: 'papers',
+                slug: 'paper',
+                url: '/papers'
+              },
+              {
                 name: 'glossary',
                 slug: 'glossary',
                 url: '/glossary'
-              }
+              },
+              {
+                name: 'biography',
+                slug: 'biography',
+                url: '/biographies'
+              },
+              {
+                name: 'how-tos',
+                slug: 'how-tos',
+                url: '/how-tos'
+              },
             ]
           }
         });
@@ -662,11 +784,14 @@
               .filter('search')
               .keyBy('name')
               .mapValues(function(o, k) {
-                return function(query) {
+                /*
+                  params = {
+                    q: <your query>
+                  }
+                */
+                return function(params) {
                   return $http.get(o.search, {
-                    params: {
-                      q: query
-                    }
+                    params: params
                   })
                 }
               })

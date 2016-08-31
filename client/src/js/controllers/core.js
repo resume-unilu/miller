@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, TagFactory, RUNTIME, EVENTS) {    
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $state, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, DocumentFactory, TagFactory, RUNTIME, EVENTS) {    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = RUNTIME.user;
@@ -38,10 +38,18 @@ angular.module('miller')
       $scope.ToCDisabled = true;
     };
 
+    // search
+    $scope.search = function(searchquery){
+      $log.log('CoreCtrl > search() searchquery:', searchquery);
+      $state.go('search', {
+        query: searchquery
+      })
+    } 
+
     // add document items to the table-of)documents
     $scope.setDocuments = function(documents) {
       $log.log('CoreCtrl > setDocuments items n.:', documents.length, documents);
-      $scope.documents = documents;
+      $scope.documents = _.uniq(documents, 'id');
       if($scope.qs.view) {
         // check if it's somewhere in the scope, otherwise callit
         for(var i=0,j=$scope.documents.length;i<j;i++){
@@ -53,6 +61,25 @@ angular.module('miller')
         }
       };
     };
+
+    // look for document by slug (internal, cached docs or ask for new one)
+    $rootScope.resolve = function(slug, type, callback){
+      if(type == 'voc'){
+        $log.log('CoreCtrl > $scope.resolve [requesting] voc slug:', slug)
+        StoryFactory.get({id: slug}, callback);
+      } else {
+        var matching = $scope.documents.filter(function(d){
+          return d.slug == slug
+        });
+        if(matching.length){
+          $log.log('CoreCtrl > $scope.resolve [cached] doc slug:', slug)
+          callback(matching[0]);
+        } else {
+          $log.log('CoreCtrl > $scope.resolve [requesting] doc slug:', slug)
+          DocumentFactory.get({id: slug}, callback);
+        }
+      }
+    }
 
     $scope.save = function(){
       $log.log('CoreCtrl > @SAVE ...'); 
@@ -99,7 +126,15 @@ angular.module('miller')
     */
     $scope.breakingNews = [];
     $scope.setBreakingNews = function(breakingNews) {
-      $scope.breakingNews = breakingNews.slice(0,3);
+      $scope.breakingNews = breakingNews.slice(0,2).map(function(d){
+        if(d.covers && d.covers.length){
+          var cover = d.covers[0];
+
+          d.cover_url = _.get(cover, 'metadata.urls.Preview') || cover.url;
+          
+        }
+        return d;
+      });
     };
 
     $rootScope.$on('$stateChangeStart', function (e, state) {
@@ -148,6 +183,17 @@ angular.module('miller')
     $scope.isWithoutAuthors = function(story) {
       return story.authors.length !== 0;
     }
+
+    /*
+      Check that the user is allowed to write contents for the given story
+      (enforced on server side of course)
+    */
+    $scope.hasWritingPermission = function(user, story) {
+      return  !!user.username && 
+              user.username.length > 0 && 
+              (user.is_staff || story.owner.username == user.username);
+    };
+
     /*
       When requested, fullsize for documents.
       Cfr also locationChangeSuccess listener 
@@ -164,10 +210,15 @@ angular.module('miller')
         $location.search('view', null);
     });
 
-    $scope.fullsize = function(doc) {
-      $log.log('CoreCtrl -> fullsize', doc);
-      $scope.fullsized = doc;
-      $location.search('view', doc.short_url);
+    // 
+    $rootScope.fullsize = function(slug, type) {
+      $log.log('CoreCtrl -> fullsize, doc slug:', slug, type);
+
+      if(type=="doc"){
+        $location.search('view', slug);
+      }
+      // $scope.fullsized = doc;
+      // $location.search('view', doc.short_url);
     };
 
 
@@ -197,9 +248,19 @@ angular.module('miller')
       $scope.locationPath = path;
       $scope.path = $location.path();
 
+      // load fullsize
+      if($scope.qs.view){
+        DocumentFactory.get({id: $scope.qs.view}, function(res){
+          $scope.fullsized = res;
+          fullsizeModal.$promise.then(fullsizeModal.show);
+        });
+      }
+
       if($scope.qs.view && $scope.fullsized && $scope.fullsized.short_url == $scope.qs.view){
         // normal behaviour, after fullsize has been called the view param is present in location
         fullsizeModal.$promise.then(fullsizeModal.show);
+      } else if(!$scope.qs.view && $scope.fullsized){
+         fullsizeModal.hide()
       }
     });
 

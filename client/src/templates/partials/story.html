@@ -1,0 +1,29 @@
+<div class="story lite">
+  <!-- <div ng-if='!$first' class="divider"></div> -->
+  <div class="tags" ng-if="story.tags.length">
+      <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+  </div>
+  <div class="date">{{story.date_created|date:'mediumDate'}}</div>
+
+  <div  class="divider"></div>
+
+  <h3 class="title"><a ui-sref="story({postId: story.id})">{{story.title}} {{story.status != 'public'? '(DRAFT)': ''}}</a></h3>  
+  
+  <blockquote class="reduced">{{story.excerpt}}.
+    <a href ui-sref="story({postId: story.id})">
+      <span class='icon-arrow-right-circle'></span>
+    </a>
+    <p>
+      <em ng-if="story.difference">{{story.difference}}</em>
+    </p>
+  </blockquote>
+  <p>
+    
+    <span class='creator' ng-if="!story.authors.length">
+      created by <span ng-init='author=story.owner;$last=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+    </span>
+    <span class='authors' ng-if="story.authors.length">
+      written by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+    </span>
+  </p>
+</div>
