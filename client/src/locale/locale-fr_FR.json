@@ -29,12 +29,12 @@
   "headline.publications.abstract": "The project involves research and teaching activities leading to the production of several products and the organisation of events. The main outputs include a h ui-srefthematic e-publication, oral history interviews, a book, workshops, residencies by visiting scholars, digital tools, e-teaching modules, a training course and a collaborative platform.",
   "headline.authors": "auteurs",
   "headline.blogs": "blogs",
-  "headline.events": "events",
-  "headline.write": "write",
+  "headline.events": "Evénements",
+  "headline.write": "écrire",
   "headline.you": "(moi)",
 
   "items.empty": " Sorry, no items matched your search",
-  "link.to.original": "link to the original source",
+  "link.to.original": "lien source",
   "me.publications": "your writings",
 
   "drafts": "(drafts)",

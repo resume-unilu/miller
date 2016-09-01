@@ -6,7 +6,7 @@
  */
 angular.module('miller')
   .controller('IndexCtrl', function ($scope, $log, writings, news) {
-    $log.debug('IndexCtrl welcome', writings);
+    $log.debug('IndexCtrl welcome', writings, news);
 
     /*
       Get the firs n sentence until the number of words are covered.
@@ -30,7 +30,7 @@ angular.module('miller')
       d.excerpt = tokenize(d.abstract, 10)[0];
       return d;
     });
-
+    $log.debug('IndexCtrl welcome',$scope.news);
 
 
   });
