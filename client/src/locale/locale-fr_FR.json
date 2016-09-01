@@ -30,6 +30,11 @@
   "headline.authors": "auteurs",
   "headline.blogs": "blogs",
   "headline.events": "Evénements",
+
+  "headline.blog": "blog",
+  "headline.blog.title": "Èvenements",
+  "headline.blog.abstract": "",
+
   "headline.write": "écrire",
   "headline.you": "(moi)",
 

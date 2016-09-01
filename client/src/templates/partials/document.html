@@ -8,6 +8,8 @@
 
   <div ng-if='document.type=="rich"' ng-include='"templates/partials/document.rich.html"|prefixTemplate'></div>
 
+    <div ng-if='document.type=="link" && document.metadata.thumbnail_url' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
+
   <div ng-if='document.metadata' ng-include='"templates/partials/document.metadata.html"|prefixTemplate'></div>
 
       <!-- this element has fixed height. -->

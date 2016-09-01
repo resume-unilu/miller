@@ -6,7 +6,7 @@
     <div ng-if='document.metadata'>
       <div ng-if='document.metadata.thumbnail_url' lazy-image src='document.metadata.thumbnail_url'></div>
 
-      <div ng-if='document.metadata.urls.Preview' lazy-image src='document.metadata.urls.Preview'></div>
+      <div ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-image src='document.metadata.urls.Preview'></div>
 
       <div ng-if='!document.metadata.thumbnail_url && !document.metadata.urls.Preview' class='lazy-box'></div>
 

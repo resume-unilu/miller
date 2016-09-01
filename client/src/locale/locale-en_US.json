@@ -19,7 +19,6 @@
   "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
   "enrich.type.notitle": "We didn't find any original title attached to this remote resource.",
 
-
   "field.label.title": "title",
   "field.label.abstract": "abstract",
 
@@ -31,6 +30,11 @@
   "headline.authors": "authors",
   "headline.blogs": "blogs",
   "headline.events": "events",
+
+  "headline.blog": "blog",
+  "headline.blog.title": "Events",
+  "headline.blog.abstract": "",
+  
   "headline.write": "write",
   "headline.you": "(you)",
 

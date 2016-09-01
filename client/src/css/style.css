@@ -122,11 +122,23 @@ label{
 .iframe-wrapper .iframe-viewport{
   overflow: hidden;
   transition: height .37s ease-in-out;
-  height: 0
+  height: 0;
+  text-align: center;
 }
+
+
 
 .iframe-wrapper .iframe-viewport.active{
   height: 400px;
+}
+
+.iframe-wrapper.with-thumbnail .iframe-viewport, .iframe-wrapper.with-thumbnail .iframe-viewport.active{
+  height: 400px;
+}
+
+.iframe-wrapper.with-thumbnail .iframe-viewport > img{
+  height: 400px;
+  margin: 0 auto;
 }
 
 .iframe-wrapper > a.toggle-preview {
@@ -154,7 +166,8 @@ label{
   height: 400px;
   text-align: center;
   background-color: #f0efef;
-  padding-top: 20px;
+  padding-top: 10px;
+  overflow:hidden;
 }
 
 .image-wrapper img{
@@ -203,8 +216,8 @@ label{
   line-height: 25px;
   border-bottom: 2px solid #FF6B6B;
   margin: 0 0 15px 0;
-  padding: 10px 0;
-  max-height: 65px;
+  padding: 0px 0 10px 0;
+  max-height: 58px;
   overflow: hidden;
 }
 #breaking-news .item .tags {
@@ -511,6 +524,7 @@ label{
   line-height: 25px;
   color: #f0f0f0;
   text-transform: uppercase;
+  border: 2px solid #B7B2B2;
 }
 
 .tags-input .tags .tag-item:hover .remove-button{
