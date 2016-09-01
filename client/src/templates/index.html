@@ -54,7 +54,7 @@
             by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
           </div>
           <div class='authors' ng-if="story.authors.length == 0">
-            edited by <span onload='author = story.owner' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+            edited by <span onload='author = story.owner' ng-init='$single=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
           </div>
           <blockquote class="reduced">{{story.excerpt}} <span class='icon-arrow-right-circle'></span></blockquote>
           
