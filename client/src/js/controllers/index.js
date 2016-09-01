@@ -26,6 +26,12 @@ angular.module('miller')
     $scope.coverstory = writings.results.shift();
     $scope.otherstories = writings.results;
 
+    // check cover of coverstory
+    if($scope.coverstory.covers.length){
+      $scope.coverstory.cover = _.get(_.first($scope.coverstory.covers), 'metadata.thumbnail_url');
+    }
+
+
     $scope.news = news.results.map(function(d) {
       d.excerpt = tokenize(d.abstract, 10)[0];
       return d;

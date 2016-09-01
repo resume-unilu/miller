@@ -5,7 +5,7 @@
     <!-- CONVER STORY -->
     <div class="coverstory story lite">
       <div class="tags" ng-if="coverstory.tags.length">
-        <span class="tag" ng-repeat='tag in coverstory.tags' ng-if='tag.category == "writing"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+        <span class="tag" ng-repeat='tag in coverstory.tags|filter:{ category: "writing" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
       </div>
 
       <h3><a href ui-sref="story({postId: coverstory.id})">{{coverstory.title}}</a></h3>
@@ -14,9 +14,9 @@
         by <span ng-repeat='author in coverstory.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
       </div>
       <div class='authors' ng-if="coverstory.authors.length == 0">
-        by <span onload='author = coverstory.owner' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+        edited by <span onload='author = coverstory.owner' ng-init='$single=true'ng-include='"templates/partials/author.html"|prefixTemplate'></span>
       </div>
-      <div ng-if='coverstory.cover'>
+      <div ng-if='coverstory.cover' class='cover-wrapper'>
         <div class='cover' style='background-size: cover; height:300px; background-image:url({{coverstory.cover}})'></div>
       </div>
 
