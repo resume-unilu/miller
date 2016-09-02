@@ -522,9 +522,16 @@ label{
   font: 10px "Lato",sans-serif;
   height: 25px;
   line-height: 25px;
-  color: #f0f0f0;
+  color: #585858;
   text-transform: uppercase;
   border: 2px solid #B7B2B2;
+  font-weight: bold;
+}
+
+.tags-input .tags .tag-item > ti-tag-item{
+    display: block;
+    padding: 0;
+    line-height: 22px;
 }
 
 .tags-input .tags .tag-item:hover .remove-button{

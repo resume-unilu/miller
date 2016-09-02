@@ -8,13 +8,13 @@
         <span class="tag" ng-repeat='tag in coverstory.tags|filter:{ category: "writing" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
       </div>
 
-      <h3><a href ui-sref="story({postId: coverstory.id})">{{coverstory.title}}</a></h3>
+      <h3><a href ui-sref="story({postId: coverstory.id})" embedit='coverstory.metadata.title' language='language'></a></h3>
       <blockquote>{{coverstory.excerpt}} <a href ui-sref="story({postId: coverstory.id})"><span class='icon-arrow-right-circle'></span></a></blockquote>
       <div class='authors' ng-if="coverstory.authors.length">
         by <span ng-repeat='author in coverstory.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
       </div>
       <div class='authors' ng-if="coverstory.authors.length == 0">
-        edited by <span onload='author = coverstory.owner' ng-init='$single=true'ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+        edited by <span onload='author = coverstory.owner' ng-init='$single=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
       </div>
       <div ng-if='coverstory.cover' class='cover-wrapper'>
         <div class='cover' style='background-size: cover; height:300px; background-image:url({{coverstory.cover}})'></div>
@@ -32,7 +32,7 @@
           <div class="tags" ng-if="story.tags.length">
             <span  class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
           </div>
-          <h4><a href ui-sref="story({postId: story.id})">{{story.title}}</a></h4>
+          <h4><a href ui-sref="story({postId: story.id})" embedit='story.metadata.title' language='language'></a></h4>
           
           <blockquote class="reduced">{{story.excerpt}} <span class='icon-arrow-right-circle'></span></blockquote>
           <div class='authors' ng-if="story.authors.length">
@@ -48,7 +48,7 @@
         <div class="coverstory news">
           <div ng-if='!$first' class="divider"></div>
           <div class="date">{{story.date_created|date:'mediumDate'}}</div>
-          <h4><a href ui-sref="story({postId: story.id})">{{story.title}}</a></h4>
+          <h4><a href ui-sref="story({postId: story.id})" embedit='story.metadata.title' language='language'></a></h4>
 
           <div class='authors' ng-if="story.authors.length">
             by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>

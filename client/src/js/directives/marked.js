@@ -82,6 +82,7 @@ angular.module('miller')
       link: function(scope, element, attrs){
         if(scope.language && typeof scope.embedit == 'object'){
           element.html(scope.embedit[scope.language]|| '');
+
         } else {
           element.html(scope.embedit);
         }
@@ -89,6 +90,13 @@ angular.module('miller')
           element.find('iframe').width('100%').height('100%');
         }
 
+        if(scope.language && typeof scope.embedit == 'object'){
+          scope.$watch('language', function(language){
+            if(typeof scope.embedit == 'object'){
+              element.html(scope.embedit[scope.language]|| '');
+            }
+          })
+        }
       }
     }
   })

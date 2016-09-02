@@ -122,9 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 LANGUAGES = [
-    ('fr', _('French')),
-    ('de', _('German')),
-    ('en', _('English')),
+    ('fr-fr', _('French'), 'fr_FR'),
+    ('de-de', _('German'), 'de_DE'),
+    ('en-us', _('English'), 'en_US'),
 ]
 
 

@@ -19,7 +19,7 @@ angular.module('miller')
     }
 
     writings.results = writings.results.map(function(d) {
-      d.excerpt = d.abstract? tokenize(d.abstract, 10)[0]: '';
+      d.excerpt = d.metadata.abstract[$scope.language]? tokenize(d.metadata.abstract[$scope.language], 10)[0]: '';
       return d;
     });
 
@@ -33,7 +33,7 @@ angular.module('miller')
 
 
     $scope.news = news.results.map(function(d) {
-      d.excerpt = tokenize(d.abstract, 10)[0];
+      d.excerpt = d.metadata.abstract[$scope.language]? tokenize(d.metadata.abstract[$scope.language], 10)[0]: '';
       return d;
     });
     $log.debug('IndexCtrl welcome',$scope.news);

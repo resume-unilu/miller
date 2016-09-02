@@ -22,12 +22,10 @@
         <div class='authors' ng-if="story.authors.length">
           by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
         </div>
-        <h1>{{story.title}}</h1>
+        <h1 embedit='story.metadata.title' language='language'></h1>
 
 
-        <blockquote>
-          {{story.abstract}}
-        </blockquote>
+        <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
         
         <div ng-if='story.covers.length' class="cover">
           <div ng-repeat='document in story.covers'>

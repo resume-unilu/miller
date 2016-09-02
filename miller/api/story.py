@@ -10,60 +10,8 @@ from rest_framework.decorators import  api_view, permission_classes, detail_rout
 
 from miller.models import Story, Tag, Document, Caption
 from miller.api.fields import OptionalFileField, JsonField
-from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer
+from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer
 
-
-class CaptionSerializer(serializers.HyperlinkedModelSerializer):
-  document_id    = serializers.ReadOnlyField(source='document.id')
-  type  = serializers.ReadOnlyField(source='document.type')
-  title = serializers.ReadOnlyField(source='document.title')
-  slug  = serializers.ReadOnlyField(source='document.slug')
-  src   = OptionalFileField(source='document.attachment')
-  short_url = serializers.ReadOnlyField(source='document.short_url')
-  copyrights = serializers.ReadOnlyField(source='document.copyrights')
-  caption = serializers.ReadOnlyField(source='contents')
-  metadata = JsonField(source='document.contents')
-  snapshot = serializers.ReadOnlyField(source='document.snapshot')
-
-  class Meta:
-    model = Caption
-    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
-
-
-
-# Serializers define the API representation.
-class StorySerializer(serializers.HyperlinkedModelSerializer):
-  authors = AuthorSerializer(many=True)
-  owner = AuthorSerializer()
-  tags = TagSerializer(many=True)
-  documents = CaptionSerializer(source='caption_set', many=True)
-  covers = LiteDocumentSerializer(many=True)
-
-  class Meta:
-    model = Story
-    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'documents', 'covers', 'contents', 'date', 'date_created', 'status', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
-
-
-# Serializer to use in list of story items
-class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
-  authors = AuthorSerializer(many=True)
-  owner = AuthorSerializer()
-  tags = TagSerializer(many=True)
-  covers = LiteDocumentSerializer(many=True)
-
-  class Meta:
-    model = Story
-    fields = ('id','url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'covers', 'cover', 'cover_copyright', 'authors', 'tags', 'owner')
-
-
-class CreateStorySerializer(serializers.ModelSerializer):
-  owner = serializers.HiddenField(
-    default=serializers.CurrentUserDefault()
-  )
-
-  class Meta:
-    model = Story
-    
 
 # ViewSets define the view behavior. Filter by status
 class StoryViewSet(viewsets.ModelViewSet):

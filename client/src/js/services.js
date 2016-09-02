@@ -262,6 +262,16 @@ angular.module('miller')
       return results
     }
   })
+  .factory('metadataFactory', function($log) {
+    return {
+      parse: function(story){
+        $log.info('[service] metadata.parse');
+      },
+      create: function(story){
+
+      }
+    }
+  })
   /*
     Apply marked service for custom markdown ;) Handle with care
     Example on footnotes handling, based on pandoc definition:

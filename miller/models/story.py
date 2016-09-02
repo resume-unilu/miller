@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs
+import os,codecs, json, logging
 
 from BeautifulSoup import BeautifulSoup
 
@@ -11,6 +11,8 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 
+from jsonfield import JSONField
+
 from markdown import markdown
 
 from miller import helpers
@@ -18,6 +20,8 @@ from miller.models import Tag, Document
 
 from simplemde.fields import SimpleMDEField
 
+
+logger = logging.getLogger('miller')
 
 class Story(models.Model):
   DRAFT   = 'draft' # visible just for you
@@ -36,6 +40,8 @@ class Story(models.Model):
   slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
   abstract  = models.CharField(max_length=500, blank=True, null=True)
   contents  = SimpleMDEField(verbose_name=u'mardown content',default='') # It will store the last markdown contents.
+  metadata  = JSONField(default=json.dumps({'title':{'en':'', 'fr':''}, 'abstract':{'en':'', 'fr':''}})) # it will contain, JSON fashion
+
 
   date               = models.DateTimeField(blank=True, null=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
@@ -86,14 +92,37 @@ class Story(models.Model):
 
   def save(self, *args, **kwargs):
     self.slug = slugify(self.title)
-    # store this version
     
+    try:
+      metadata = json.loads(self.metadata)
+      
+      if 'title' not in metadata:
+        metadata['title'] = {}
+      if 'abstract' not in metadata:
+        metadata['abstract'] = {}
+
+      for default_language_code, label, language_code in settings.LANGUAGES:
+        logger.debug('  lang:%s' % language_code)
+        if language_code not in metadata['title']:
+          metadata['title'][language_code] = self.title
+
+        if language_code not in metadata['abstract']:
+          metadata['abstract'][language_code] = self.abstract
+
+      logger.debug('metadata %s' % metadata)
+      self.metadata = json.dumps(metadata)
+    except Exception as e:
+      logger.exception(e)
+
+    # reconcile metadata with the current languages
+
     super(Story, self).save(*args, **kwargs)
 
 # store in whoosh
 @receiver(post_save, sender=Story)
 def store_working_md(sender, instance, created, **kwargs):
   instance.store()
+
 
 # create story file if it is not exists; if the story eists already, cfr the followinf post_save
 @receiver(post_save, sender=Story)

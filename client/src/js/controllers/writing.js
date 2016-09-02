@@ -6,15 +6,33 @@
  * handle saved story writing ;)
  */
 angular.module('miller')
-  .controller('WritingCtrl', function ($scope, $log, $q, $modal, story, localStorageService, StoryFactory, StoryTagsFactory, StoryDocumentsFactory, CaptionFactory, DocumentFactory, EVENTS, RUNTIME) {
-    $log.debug('WritingCtrl welcome', story);
+  .controller('WritingCtrl', function ($scope, $log, $q, $modal, $filter, story, localStorageService, StoryFactory, StoryTagsFactory, StoryDocumentsFactory, CaptionFactory, DocumentFactory, EVENTS, RUNTIME) {
+    $log.debug('WritingCtrl writing title:', story.title, '-id:', story.id, '- current language:',$scope.language);
 
     $scope.isDraft = false;
     $scope.isSaving = false;
 
+    $scope.story = story;
+    
+    // just to be sure
+    if(typeof $scope.story.metadata !== 'object'){
+      $scope.story.metadata = {
+        title: {},
+        abstract: {}
+      }
+    }
+
+    // adapt automatically the field to the language
+    ['title', 'abstract'].forEach(function(d){
+      if($scope.language && !$scope.story.metadata[d][$scope.language]){
+        $scope.story.metadata[d][$scope.language] = story[d]
+      }
+    });
+    
+
     $scope.id = story.id;
-    $scope.title = story.title;
-    $scope.abstract = story.abstract;
+    $scope.title = $scope.story.metadata.title[$scope.language];
+    $scope.abstract = $scope.story.metadata.abstract[$scope.language];
     $scope.contents = story.contents;
     $scope.date     = story.date;
     $scope.keywords = _.filter(story.tags, {category: 'keyword'});
@@ -158,6 +176,7 @@ angular.module('miller')
         title: $scope.title,
         abstract: $scope.abstract,
         contents: $scope.contents,
+        metadata: JSON.stringify($scope.story.metadata),
         date: $scope.date
       }, $scope.metadata), function(res) {
         $log.debug('WritingCtrl @SAVE: success');
@@ -177,6 +196,28 @@ angular.module('miller')
       if(!v || v == p)
         return;
       $scope.toggleStopStateChangeStart(true);
+    });
+
+    // listener for language specific metadata
+    $scope.$watch('language', function(v, p){
+      if(!v || v == p)
+        return;
+      ['title', 'abstract'].forEach(function(d){
+        $scope[d] = $scope.story.metadata[d][v] || $scope[d];
+      });
+      
+      $log.log('WritingCtrl @language');
+
+    });
+
+    $scope.$watch('title', function(v){
+      if($scope.language)
+        $scope.story.metadata.title[$scope.language] = v;
+    });
+
+    $scope.$watch('abstract', function(v){
+      if($scope.language)
+        $scope.story.metadata.abstract[$scope.language] = v;
     });
 
     // enable stateChengestart by default
