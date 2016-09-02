@@ -22,9 +22,10 @@ angular.module('miller')
     function normalizeItems(items) {
       return items
         .map(function(d){
-          if(!d.abstract)
+          if(!d.metadata.abstract[$scope.language])
             return d;
-          var sentences = tokenize(d.abstract, 10);
+
+          var sentences = tokenize(d.metadata.abstract[$scope.language], 10);
 
           d.excerpt = sentences.shift();
 
@@ -60,5 +61,10 @@ angular.module('miller')
 
     $scope.sync(items);
     
+    $scope.$watch('language', function(v){
+      if(v){
+        $scope.items =normalizeItems($scope.items);
+      }
+    })
   });
   

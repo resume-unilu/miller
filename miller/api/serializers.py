@@ -93,13 +93,14 @@ class MatchingStorySerializer(serializers.HyperlinkedModelSerializer):
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
   matches = HitField()
+  metadata = JsonField()
 
   def is_named_bar(self, foo):
       return foo.name == "bar" 
 
   class Meta:
     model = Story
-    fields = ('id', 'url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'covers', 'authors', 'tags', 'owner', 'matches')
+    fields = ('id', 'url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'covers', 'metadata', 'authors', 'tags', 'owner', 'matches')
 
 
 # Story Serializer to use in lists

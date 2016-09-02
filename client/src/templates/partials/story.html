@@ -7,7 +7,7 @@
 
   <div  class="divider"></div>
 
-  <h3 class="title"><a ui-sref="story({postId: story.id})">{{story.title}} {{story.status != 'public'? '(DRAFT)': ''}}</a></h3>  
+  <h3 class="title"><a ui-sref="story({postId: story.id})"><span embedit='story.metadata.title' language='language'></span> {{story.status != 'public'? '(DRAFT)': ''}}</a></h3>  
   
   <blockquote class="reduced">{{story.excerpt}}.
     <a href ui-sref="story({postId: story.id})">
