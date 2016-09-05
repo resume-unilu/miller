@@ -34,6 +34,13 @@ Alessia est une politiste diplômée en sciences politiques avec une spécialisa
 Daniele est un designer et un développeur spécialisé en visualisation des données et en méthodes numériques qui a étudié les Beaux-Arts (Académie des Beaux-Arts de Brera, Milan, 2006) et le design (Master en Design de la communication, Politecnico di Milano, 2009). 
 Il a rejoint le Digital Humanities Lab du CVCE en mars 2015 et a intégré l’Université du Luxembourg en juillet 2016, après avoir passé plusieurs années au [medialab de Sciences Po](http://www.medialab.sciences-po.fr/) à Paris, où il a participé au développement d’applications Web expérimentales et d’outils pour la visualisation des données, appliquées aux publications savantes améliorées et à la recherche en sciences sociales. Pendant ses années passées en France, il a développé l’interface frontale du projet AIME (la plate-forme AIME) financé par l’Union européenne (UE) et il a participé au projet FORCAST financé par l’UE. Il a également travaillé pendant ses études comme designer et développeur au Density Design Lab du Politecnico di Milano, dans le contexte d’un partenariat conjoint avec le medialab de Sciences Po. Au CVCE, il a développé histograph, une plate-forme open source pour une exploration basée sur des graphiques et une indexation basée sur le crowdsourcing de collections multimédias.
 
+::: profile
+![profile/](/static/images/people/paolo-chiocchetti.jpg "Daniele Guido")
+### Paolo Chiocchetti
+> DEIS Research Infrastructure, Rectorat, Université du Luxembourg
+:::
+Paolo est un politiste (PhD, King’s College London) spécialisé en partis politiques européens et politique comparée. Il a rejoint le DEIS en septembre 2016 en tant que collaborateur scientifique rattaché au projet RESuME.  
+
 
 ## Comité scientifique
 
