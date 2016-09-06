@@ -19,3 +19,12 @@ Install db
 
 	$ python manage.py migrate 
 	
+
+## addons: print pdf
+On RedHat 7.0:
+
+	sudo yum install -y xorg-x11-fonts-75dpi
+	sudo yum install -y xorg-x11-fonts-Type1
+
+Download rpm, e.g.
+	wget https://bitbucket.org/wkhtmltopdf/wkhtmltopdf/downloads/wkhtmltox-0.13.0-alpha-7b36694_linux-centos7-amd64.rpm
