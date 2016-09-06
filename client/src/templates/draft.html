@@ -31,7 +31,7 @@
 
 <div class='section' style='margin-bottom:20px' ng-if='!isDraft && user.is_staff'>
   <label translate="drafts.keywords.placeholder"></label>
-  <tags-input class='tags-input' placeholder='{{"drafts.keywords.placeholder"| translate}}' key-property='id' display-property='name' ng-model="tags">
+  <tags-input class='tags-input' placeholder='{{"drafts.keywords.placeholder"| translate}}' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="keywords" add-from-autocomplete-only="true">
     <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
 
   </tags-input>

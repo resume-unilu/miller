@@ -318,7 +318,7 @@ label{
 }
 
 .container.with-ToC .view{
-  transform: translateX(200px);
+  /*transform: translateX(200px);*/
   /*padding-right: 200px;*/
 }
 

@@ -518,7 +518,7 @@
     
     <!-- CONTENTS -->
     <div id='wrapper' ng-class='state'>
-      <div class='container'  ng-class='{"with-ToC": hasToC && ToC.length>0}' >
+      <div class='container'  ng-click='hasToC = false;' ng-class='{"with-ToC": hasToC && ToC.length>0}' >
         {% block content %}
         <div class='view' ng-class='state' ui-view=''>
         </div>

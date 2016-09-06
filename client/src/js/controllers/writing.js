@@ -126,7 +126,7 @@ angular.module('miller')
       $scope.isSaving = true;
       $scope.lock();
       return StoryFactory.patch({id: story.id}, {
-        tags: _.map($scope.displayedTags, 'id')
+        tags: _.compact(_.map($scope.displayedTags, 'id').concat(_.map($scope.keywords, 'id')))
       }).$promise.then(function(res) {
         $log.debug('WritingCtrl -> attachTag() tag success', res);
         $scope.unlock();
