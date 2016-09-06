@@ -250,6 +250,14 @@ He joined the CVCE Digital Humanities Lab in March 2015 after several years at t
 At the CVCE he has developed Histograph, an open source platform for the graph-based exploration and crowd-based indexation of multimedia collections.
 
 
+::: profile
+![profile/](/static/images/people/paolo-chiocchetti.jpg "Paolo Chiocchetti")
+### Paolo Chiocchetti
+> Scientific collaborator
+
+:::
+Paolo is a political scientist (PhD, King’s College London) specialised in party politics and comparative politics. He joined the DEIS in September 2016 as a scientific collaborator of the RESuME project. 
+
 
 ::: profile-others
 ![profile/](/static/images/people/sergio-delaparra.jpg "Sergio De la Parra")
