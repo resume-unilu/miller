@@ -777,39 +777,24 @@ h4.modal-title{
   z-index:1;
 }
 
-.modal.fullsize .oversize .table{
-  display: table;
-  height:100%;
-  width:100%;
-  margin-bottom: 0;
-}
 
-.modal.fullsize .oversize .table > .wrapper{
-  display: table-row;
-  height: auto
-}
-
-.modal.fullsize .oversize .table > .heading .contents{
-  margin-bottom: 20px;
-}
-
-.modal.fullsize .oversize .table > .heading{
-  display: table-row;
-  height: 0;
-}
-
-.modal.fullsize .oversize .embedded{
+.modal.fullsize .oversize .wrapper {
   height: 100%;
+  display: table;
   width: 100%;
-  padding: 0 10px 5px;
-  /*position: absolute;
-  top: 100px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;*/
+  text-align: center;
 }
 
-.modal.fullsize .oversize .heading h2{
+.modal.fullsize .oversize .wrapper .header {
+  display: table-row;
+  height: 1px;
+}
+
+.modal.fullsize .oversize .wrapper .header .inner{
+  padding: 0 50px 10px 0;
+}
+
+.modal.fullsize .oversize .wrapper .header .inner h2{
   margin-top: 0;
   padding: 20px 50px 10px 20px;
   color: #ffffff;
@@ -818,14 +803,50 @@ h4.modal-title{
   margin-bottom: 0;
 }
 
-.modal.fullsize .oversize .heading .contents{
+.modal.fullsize .oversize .wrapper .header .inner .contents{
   font-size: 13px;
   padding: 0 20px;
   color: #E6E5E5;
+  text-align: left;
 }
-.modal.fullsize .oversize .heading .contents span{
+.modal.fullsize .oversize .wrapper .header .inner .contents span{
   font-size: inherit;
-    color: #E6E5E5;
+  color: #E6E5E5;
+}
+
+.modal.fullsize .oversize .wrapper .main {
+  height: 100%;
+  display: table;
+  width: 100%;
+}
+
+.modal.fullsize .oversize .wrapper .box {
+  display: table-cell;
+  position: relative;
+}
+
+.modal.fullsize .oversize .wrapper .box .embedded{
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  overflow: auto;
+  background-color: #151515;
+}
+
+.modal.fullsize .oversize .wrapper .sidebar {
+  width: 10px;
+}
+
+.modal.fullsize .oversize .wrapper .footer {
+  display: table-row;
+  height:1px;
+}
+
+.modal.fullsize .oversize .wrapper .footer .inner{
+  text-align: left;
+  padding:10px 20px;
 }
 
 
@@ -984,6 +1005,7 @@ div.profile blockquote, div.profile-others blockquote, div.profile-committee blo
 div.profile blockquote p, div.profile-others blockquote p, div.profile-committee blockquote p{
   font-size: 18px;
   line-height: 30px;
+  text-align: left;
 }
 
 div.profile h3, div.profile-others h3, div.profile-committee h3{

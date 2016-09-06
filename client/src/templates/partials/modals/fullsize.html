@@ -3,18 +3,43 @@
   <span class='icon-close'></span>
   </div>
   <div ng-class='fullsized.type' class='oversize' style=''>
-    <div class='table'>
-      <div class='heading'>
+    <div class="wrapper">
+      <div class="header">
+        <div class="inner">
         <h2 embedit='fullsized.metadata.title'></h2>
         <div class='contents'>
           <span embedit='fullsized.metadata.reference'></span>
           <span ng-if='fullsized.metadata.author_name'>by {{fullsized.metadata.author_name}}</span>
           <a ng-if='fullsized.url' target='_blank' ng-href='{{fullsized.url}}' translate='link.to.original'></a>
         </div>
+        </div>
       </div>
+      <div class="main">
+        <div class="box sidebar"></div>
+        <div class="box content" ng-if='fullsized.type == "photo" || fullsized.type == "rich" || fullsized.type == "video"'>
+          <div class='embedded' ng-if='fullsized.metadata.html' stretch='true' embedit='fullsized.metadata.html'></div>
+        </div>
+        <div class="box content" ng-if='fullsized.type == "text"'>
+          <div class='embedded' stretch='true' embedit='fullsized.metadata.caption'></div>
+        </div>
+        <div class="box sidebar"></div>
+      </div>
+      <div class="footer">
+        <div class='inner'>
+          <div class='text copyright' marked='fullsized.metadata.copyright'></div>
+        </div>
+      </div>
+    </div>
+
+    <div class='table' style='display: none'>
+      
 
       <div class='wrapper' ng-if='fullsized.type == "link"'>
         
+      </div>
+      <!-- flickr -->
+      <div class='wrapper' ng-if='fullsized.type == "photo"'>
+        <div class='embedded' ng-if='fullsized.metadata.html' stretch='true' embedit='fullsized.metadata.html'></div>
       </div>
       <div class='wrapper' ng-if='fullsized.type == "rich"'>
       
@@ -38,16 +63,7 @@
         </div>
       </div>
 
-      <div class='wrapper' ng-if='fullsized.type == "video"'>
-        <!-- <div class='heading'>
-          <h2 marked='fullsized.metadata.title'></h2>
-          <div ng-if='fullsized.metadata.reference' marked='fullsized.metadata.reference'></div>
-          
-        </div> -->
-
-     
-        <div class='embedded' stretch='true' ng-if='fullsized.metadata.html' embedit='fullsized.metadata.html'></div>
-      </div>
+      
     </div>
   </div>
 </div>
