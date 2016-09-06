@@ -15,6 +15,9 @@
   <li ng-repeat='link in urls' role="presentation" ui-sref-active="active">
     <a href ui-sref='publications.{{link.name}}' aria-controls="home" role="tab" data-toggle="tab" translate="state.publications.{{link.name}}.label"></a>
   </li>
+  <li ng-if='slug' role="presentation" ui-sref-active="active" >
+    <a href ui-sref='publications.tags({slug: slug})' aria-controls="home" role="tab" data-toggle="tab">/filter: <b>{{slug}}</b>/</a>
+  </li>
 </ul>
 
 

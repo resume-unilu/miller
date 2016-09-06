@@ -397,12 +397,36 @@ angular
         url: '/publications',
         abstract: true,
         reloadOnSearch : false,
-        controller: function($scope){
+        controller: function($scope, $state){
           $scope.urls = RUNTIME.stories.writing;
+          
+          if($state.params.slug)
+            $scope.slug = $state.params.slug;
         },
         templateUrl: RUNTIME.static + 'templates/publications.html',
         
       })
+        .state('publications.tags', {
+          url: '/tags/:slug',
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/items.html',
+          resolve: {
+            items: function(StoryFactory, $stateParams) {
+              return StoryFactory.get({
+                filters: JSON.stringify({
+                  tags__slug: $stateParams.slug
+                })
+              }).$promise;
+            },
+
+            model: function() {
+              return 'story';
+            },
+            factory: function(StoryFactory) {
+              return StoryFactory;
+            }
+          }
+        })
 
       _.each(RUNTIME.stories.writing, function(d){
         $stateProvider

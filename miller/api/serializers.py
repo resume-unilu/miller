@@ -33,7 +33,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
   class Meta:
     model = Tag
-    fields = ('id', 'category', 'name', 'status')
+    fields = ('id', 'category', 'slug', 'name', 'status')
 
 
 

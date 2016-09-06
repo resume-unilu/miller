@@ -343,6 +343,12 @@ label{
   font-family: 'Lato', sans-serif;
 }
 
+.tag a{
+  color: #FF6B6B;
+}
+
+
+
 .date{
   color: #FF6B6B;
 }
