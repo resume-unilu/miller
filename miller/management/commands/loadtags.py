@@ -15,10 +15,11 @@ class Command(BaseCommand):
   help = 'Load a csv file of tags according to Tag model. Csv rows MUST have "slug" and "name" fields'
 
   def add_arguments(self, parser):
-    pass
+    parser.add_argument('csvfile', nargs='+', type=str)
+
 
   def handle(self, *args, **options):
-    with open('/Users/danieleguido/tools/resume/AEL.tsv') as file:
+    with open(options['csvfile'][0]) as file:
       r = unicodecsv.DictReader(file, delimiter='\t')
       with transaction.atomic():  
         for row in r:
