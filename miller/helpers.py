@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import shortuuid, os
+from django.conf import settings
+import shortuuid, os, json, logging
+
+logger = logging.getLogger('miller')
 
 """
 Helpers.
@@ -54,5 +57,22 @@ def search_whoosh_index(query):
           'highlights': hit.highlights("content", top=5)
         })
       
-
     return res 
+
+
+# fill a dictionary with metadata according to the languages specified in settings.py file
+def fill_with_metadata(instance, fields=(u'title',u'abstract')):
+  metadata = json.loads(instance.metadata)
+  print fields
+  for field in fields:
+    if field not in metadata:
+      metadata[field] = {}
+
+    for default_language_code, label, language_code in settings.LANGUAGES:
+      if language_code not in metadata[field]:
+        print "value", getattr(instance, field, u'')
+        metadata[field][language_code] = getattr(instance, field, u'')
+
+  metadata = json.dumps(metadata)
+  return metadata
+

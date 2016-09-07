@@ -1,6 +1,9 @@
 import json
 from rest_framework import serializers,viewsets
+
+from miller.api.fields import JsonField
 from miller.models import Tag, Story
+
 from rest_framework.decorators import api_view
 
 # story serializer for tags
@@ -11,9 +14,11 @@ class StorySerializer(serializers.ModelSerializer):
 
 # Serializers define the API representation.
 class TagSerializer(serializers.HyperlinkedModelSerializer):
+  metadata = JsonField()
+
   class Meta:
     model = Tag
-    fields = ('id', 'url','name', 'category')
+    fields = ('id', 'url','name', 'category', 'metadata')
     
 
 # ViewSets define the view behavior. Filter by status
