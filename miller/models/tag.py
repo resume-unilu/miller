@@ -31,8 +31,8 @@ class Tag(models.Model):
     (PUBLIC, 'published tag'),
   )
 
-  name       = models.CharField(max_length=32) # e.g. 'Mr. E. Smith'
-  slug       = models.SlugField(max_length=32, unique=True) # e.g. 'mr-e-smith'
+  name       = models.CharField(max_length=100) # e.g. 'Mr. E. Smith'
+  slug       = models.SlugField(max_length=100, unique=True) # e.g. 'mr-e-smith'
   category   = models.CharField(max_length=32, choices=CATEGORY_CHOICES, default=KEYWORD) # e.g. 'actor' or 'institution'
   status     = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PUBLIC)
 
