@@ -1,3 +1,7 @@
+# Installation
+Those below are the installation instruction for running Miller on ubuntu 16.04 server.
+
+## Check dependencies
 
 	sudo apt update
 	sudo apt upgrade
@@ -10,23 +14,29 @@ Check /etc/environments then set
 	LC_ALL=en_US.UTF-8
 	LANG=en_US.UTF-8
 
+Once `locale` is well set, we can install `virtualenv` and `virtualenvwrapper`
+
 	sudo apt install python-pip
 
 	pip install virtualenv --user
 	pip install virtualenvwrapper --user
 
-Add 
-source /home/your-user/.local/bin/virtualenvwrapper.sh
+Add optionally `virtualenvwrapper.sh` to your bash file, or simply:
 
-	
+	source /home/your-user/.local/bin/virtualenvwrapper.sh
+
+### mysql installation
+Feel free to skip this session if you decided to use another database or mysl has been set in your system.
+
 	sudo apt install mysql-server mysql-client
 	sudo mysql_secure_installation
 	
-VALIDATE PASSWORD PLUGIN 2=Strong then disable everything.
+Then set the correct config for your system.
+If there is no libmysql installed, we should
 	
 	sudo apt-get install libmysqlclient-dev
 	
-	
+## Clone and setup Miller!
 clone (current user home folder, so that our project home dir will be `~/miller`)
 	
 	cd
@@ -35,40 +45,43 @@ clone (current user home folder, so that our project home dir will be `~/miller`
 	mkvirtualenv miller
 	pip install -r requirements.txt
 	
+	# only if you decided so.
 	pip install MySQL-python
 
-For mysql, create an user and its own database with all privileges granted:
+For mysql, create an user and create a database where he/she has all privileges granted:
 
 	mysql -u root -p
 	
-	mysql> CREATE DATABASE 'miller'	
+	mysql> CREATE DATABASE miller;	
 	mysql> CREATE USER 'miller'@'localhost' IDENTIFIED BY 'password';
 	mysql> GRANT ALL PRIVILEGES ON resume . * TO 'resume'@'localhost';
 	FLUSH PRIVILEGES
 	
-Then back to project home folder and launch
+Back to project home folder, copy `miller/local_settings.py.example` file to `miller/local_settings.py` and fill the installation specific configuration params. The variables set in the `local_settings` file will override those present in `settings.py`. ! Remember to change  the `SECRET_KEY` (e.g. try a django-secret-key-generator service) and the info about the database to be used).
+
+Finally, launch some django commands:
 	
 	cd ~/miller
 	python manage.py migrate
 	python manage.py createsuperuser
 
-Initialize versioning and search engine:
+We should also initialize versioning and search engine - Miller makes use of WHOOSH:
 
 	python manage.py init_whoosh
 	python manage.py init_git
 
-Initialize with default tags
+Initialize with default tags:
 	
 	python manage.py loaddata miller.tag.json
 
-Test if everything is working properly
+Test if everything is working properly:
 	
 	python manage.py runserver 0.0.0.0:8000
 	
 	
-## Production environment (uWSGI + nginx)
+## Setup a production environment (uWSGI + nginx)
 This setup mostly follows [uwsgi documentation for Django and nginx](http://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html).
-Create and chown the dir where log files and static file will be stored. We're going to use /var/www for simplicity sake
+Create and chown the dir where log files and static files will be stored. We're going to use `/var/www` for simplicity sake
 	
 	mkdir /var/www/miller
 	sudo chown youruser:staff -R /var/www/miller 
@@ -86,7 +99,8 @@ Test that the server is running. Copy then rename the `miller.nginx.conf.example
 Edit according to your paths and system organisation, then symlink to /etc/nginx/sites-enabled so nginx can see it:
 
 	sudo ln -s ~/miller/miller.nginx.conf /etc/nginx/sites-enabled/
-
+	sudo /etc/init.d/nginx restart
+	
 Do almost the same for `miller.uwsgi.ini.example` to `miller.uwsgi.ini` and change vars according to your needs.
 
 Start uwsgi (with virtualenv activated) and check that everything works smoothly:
