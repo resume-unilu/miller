@@ -9,8 +9,7 @@ local_settings.py
 !README.md
 # uwsgi related files
 *.uwsgi.ini
-uwsgi.ini
-uwsgi_params
+*.conf
 media/*
 !media/.gitkeep
 logs/*
