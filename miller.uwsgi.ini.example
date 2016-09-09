@@ -1,0 +1,17 @@
+[uwsgi]
+uid = nginx
+gid = nginx
+
+chdir        = /home/youruser/miller
+module       = miller.wsgi
+home         = /home/youruser/.virtualenvs/miller
+master       = true
+processes    = 2
+socket       = /var/www/miller/miller.sock 
+chmod-socket = 777
+
+vacuum       = true
+daemonize    = /var/www/miller/uwsgi.log
+
+safe-pidfile = /var/www/miller/miller.pid
+harakiri = 20
