@@ -45,6 +45,9 @@
   "drafts": "(drafts)",
   "drafts.keywords.placeholder": "add keywords ...",
 
+  "remote.url": "url",
+  "remote.url.placeholder": "source",
+
   "staff.drafts.tags.placeholder": "website placement (staff only)",
 
   "state.publications.all.title": "browse all the publications",

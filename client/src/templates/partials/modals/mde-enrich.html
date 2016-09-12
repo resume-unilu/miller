@@ -106,17 +106,16 @@
                 <div ng-if='embed.provider_name=="Ina.fr"' ng-include='"templates/partials/embeds/Ina.fr.html"|prefixTemplate'></div>
 
                 <div ng-if='embed.type == "link"'>
-                  <a href='embed.url'>{{embed.title}}</a>
-                  <div markdown='embed.description'></div>
+                  <div embedit='embed.description'></div>
                 </div>
                 <div ng-if='embed.type == "rich"'>
-                  <a ng-href='{{embed.url}}' target='_blank'>url</a>
                   <div ng-if='embed.html' style='height: 200px; width: 100%' embedit='embed.html' stretch="true"></div>
                   <div ng-if='!embed.title' translate='enrich.type.notitle'></div>
                   <div>
                     
                   </div>
                 </div>
+                <div><span translate='remote.url'></span>: <a ng-href='{{embed.url}}' target='_blank' translate='remote.url.placeholder'></a></div>
                 <label translate='title'></label>
                 <input class='form-control' ng-model='embed.title'></input>
               </div>
@@ -129,6 +128,10 @@
               <div class='sans-serif description'>You can use <a href='http://truben.no/latex/bibtex/'>this web app</a> to easily build a bibtex reference</div>
               
             </div>
+          </div>
+
+          <div ng-show="tab.name == 'iframe'" class="tab-content">
+            <!-- @todo -->
           </div>
 
           <div ng-show="tab.name == 'bibtex'" class="tab-content">

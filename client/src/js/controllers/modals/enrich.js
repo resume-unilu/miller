@@ -122,6 +122,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
     var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&&#37;@!\-\/]))?/;
     if(!regexp.test(url)){
       $log.error('::mde -> previewUrl() url provided:', url, 'is not valid');
+      $scope.suggestMessage = '(url is not valid)';
       return false;
     }
     url = url.replace('#', '.hash.');

@@ -37,19 +37,24 @@ def get_whoosh_index():
   return index
 
 
-def search_whoosh_index(query):
+def search_whoosh_index(query, **kwargs):
     from whoosh.qparser import QueryParser
     from whoosh.query import Term, Or
     ix = get_whoosh_index()
     parser = QueryParser("content", ix.schema)
-
+    # user query
     q = parser.parse(query)
+
+    for key, value in kwargs.iteritems():
+      allow_q = query.Term(key, value)
+
+    # parse remaining args
     res = []
     # restrict_q = Or([Term("path", u'%s' % d.id) for d in qs])
 
     with ix.searcher() as searcher:
-      results = searcher.search(q, limit=10, terms=True)
-      
+      results = searcher.search(q, filter=allow_q, limit=10, terms=True)
+        
       for hit in results:
         res.append({
           'title': hit['title'],

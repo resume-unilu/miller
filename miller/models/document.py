@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs, mimetypes
+import os,codecs, mimetypes, json
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -60,6 +60,27 @@ class Document(models.Model):
   def __unicode__(self):
     return '%s (%s)' % (self.slug, self.type)
 
+# store into the whoosh index
+def store(self, ix=None):
+  if ix is None:
+    ix = helpers.get_whoosh_index()
+  writer = ix.writer()
+
+  try:
+    _metadata = json.loads(self.content)
+    metadata = u"\n".join([_metadata['author_name'], _metadata['title'], _metadata['description']])
+  except:
+    metadata = ''
+    pass
+
+  writer.update_document(
+    title = self.title,
+    path = u"%s"%self.id,
+    content =  u"\n".join([self.title, metadata, self.url]),
+    classname = u"document")
+  writer.commit()
+
+
 # dep. brew install ghostscript, brew install imagemagick
 @receiver(post_save, sender=Document)
 def create_snapshot(sender, instance, created, **kwargs):
@@ -85,6 +106,10 @@ def create_snapshot(sender, instance, created, **kwargs):
 def fill_contents(sender, instance, created, **kwargs):
   pass
 
+# store in whoosh
+@receiver(post_save, sender=Document)
+def store_working_md(sender, instance, created, **kwargs):
+  instance.store()
 
 
 
