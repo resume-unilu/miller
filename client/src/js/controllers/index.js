@@ -27,7 +27,7 @@ angular.module('miller')
     $scope.otherstories = writings.results;
 
     // check cover of coverstory
-    if($scope.coverstory.covers.length){
+    if($scope.coverstory && $scope.coverstory.covers.length){
       $scope.coverstory.cover = _.get(_.first($scope.coverstory.covers), 'metadata.thumbnail_url');
     }
 
