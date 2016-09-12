@@ -99,10 +99,12 @@
                 <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='url' ng-change='previewUrl(url)' type='text' placeholder='http://'></textarea>
               </div>
             
-              <div class='preview' ng-class='embed.type'>
+              <div class='preview' ng-show='embed.provider_name' ng-class='embed.type'>
                 <div ng-if='embed.provider_name=="CVCE"' ng-include='"templates/partials/embeds/cvce.html"|prefixTemplate'></div>
                 <div ng-if='embed.provider_name=="YouTube"' ng-include='"templates/partials/embeds/YouTube.html"|prefixTemplate'></div>
                 <div ng-if='embed.provider_name=="Flickr"' ng-include='"templates/partials/embeds/Flickr.html"|prefixTemplate'></div>
+                <div ng-if='embed.provider_name=="Ina.fr"' ng-include='"templates/partials/embeds/Ina.fr.html"|prefixTemplate'></div>
+
                 <div ng-if='embed.type == "link"'>
                   <a href='embed.url'>{{embed.title}}</a>
                   <div markdown='embed.description'></div>
@@ -112,10 +114,11 @@
                   <div ng-if='embed.html' style='height: 200px; width: 100%' embedit='embed.html' stretch="true"></div>
                   <div ng-if='!embed.title' translate='enrich.type.notitle'></div>
                   <div>
-                    <label translate='title'></label>
-                    <input class='form-control' ng-model='embed.title'></input>
+                    
                   </div>
                 </div>
+                <label translate='title'></label>
+                <input class='form-control' ng-model='embed.title'></input>
               </div>
             </div>
             <div class='section padded last'>
