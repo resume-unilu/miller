@@ -34,7 +34,7 @@ class Story(models.Model):
     (PUBLIC, 'public'),
   )
 
-  short_url = models.CharField(max_length=22, default=helpers.create_short_url, unique=True)
+  short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
   
   title     = models.CharField(max_length=500)
   slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
@@ -84,7 +84,7 @@ class Story(models.Model):
     writer = ix.writer()
     writer.update_document(
       title = self.title,
-      path = u"%s"%self.id,
+      path = u"%s"%self.short_url,
       content =  u"\n".join(BeautifulSoup(markdown(u"\n".join(filter(None,[self.title, self.abstract, self.contents])), extensions=['footnotes'])).findAll(text=True)),
       tags = u",".join([u'%s'%t.name for t in self.tags.all()]),
       classname = u"story")

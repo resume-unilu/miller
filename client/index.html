@@ -157,15 +157,23 @@
 
       #table-of-contents-toggler{
         position: fixed;
-        top: 155px;
-        left: 40px;
+        bottom: 20px;
+        left: 30px;
         transition: opacity .3s ease-in-out;
         opacity: 0;
-        z-index: 1;
+        z-index: 1101;
         transform: translateY(140px);
         -webkit-transform: translateY(140px);
         -moz-transform: translateY(140px);
         -ms-transform: translateY(140px);
+      }
+
+      #table-of-contents-toggler button{
+        padding: 0;
+      }
+
+      #table-of-contents-toggler button span{
+        line-height: 30px;
       }
 
       #table-of-contents-toggler.active{
@@ -370,9 +378,15 @@
         line-height: 20px;
       }
 
+
       @media (min-width: 768px){
         .navbar-nav .collapse-toggler {
           display: none;
+        }
+        #table-of-contents-toggler{
+          top: 155px;
+          left: 40px;
+          z-index: 1;
         }
       }
       @media (min-width: 992px){

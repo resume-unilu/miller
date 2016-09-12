@@ -21,30 +21,30 @@ class Command(BaseCommand):
     
     stories = Story.objects.all()
 
-    # The `iterator()` method ensures only a few rows are fetched from
-    # the database at a time, saving memory.
+    # # The `iterator()` method ensures only a few rows are fetched from
+    # # the database at a time, saving memory.
     for story in stories.iterator():
-      logger.debug('storing story id: %s' % story.id)
+      logger.debug('storing story id: %s' % story.short_url)
       try:
         story.store(ix=ix)
       except Exception as e:
         logger.exception(e)
         break
       else:
-        logger.debug('storing story id: %s success' % story.id)
+        logger.debug('storing story id: %s success' % story.short_url)
       
 
     docs = Document.objects.all()
 
     # The `iterator()` method ensures only a few rows are fetched from
     # the database at a time, saving memory.
-    for story in docs.iterator():
-      logger.debug('storing story id: %s' % story.id)
+    for doc in docs.iterator():
+      logger.debug('storing doc id: %s' % doc.short_url)
       try:
-        story.store(ix=ix)
+        doc.store(ix=ix)
       except Exception as e:
         logger.exception(e)
         break
       else:
-        logger.debug('storing story id: %s success' % story.id)
+        logger.debug('storing doc id: %s success' % doc.short_url)
       

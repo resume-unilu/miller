@@ -82,7 +82,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     results = search_whoosh_index(form.cleaned_data['q'])
     
     filters = {
-      'id__in': [hit['id'] for hit in results]
+      'short_url__in': [hit['id'] for hit in results]
     }
     # check if the user is allowed this content
     if request.user.is_authenticated():

@@ -41,7 +41,7 @@ class Document(models.Model):
   )
 
   type       = models.CharField(max_length=24, choices=TYPE_CHOICES)
-  short_url  = models.CharField(max_length=22, default=helpers.create_short_url, unique=True)
+  short_url  = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
   
   title      = models.CharField(max_length=500)
   slug       = models.CharField(max_length=150, unique=True)
@@ -60,25 +60,40 @@ class Document(models.Model):
   def __unicode__(self):
     return '%s (%s)' % (self.slug, self.type)
 
-# store into the whoosh index
-def store(self, ix=None):
-  if ix is None:
-    ix = helpers.get_whoosh_index()
-  writer = ix.writer()
+  # store into the whoosh index
+  def store(self, ix=None):
+    if ix is None:
+      ix = helpers.get_whoosh_index()
+    writer = ix.writer()
 
-  try:
-    _metadata = json.loads(self.content)
-    metadata = u"\n".join([_metadata['author_name'], _metadata['title'], _metadata['description']])
-  except:
-    metadata = ''
-    pass
+    try:
+      _metadata = json.loads(self.contents)
 
-  writer.update_document(
-    title = self.title,
-    path = u"%s"%self.id,
-    content =  u"\n".join([self.title, metadata, self.url]),
-    classname = u"document")
-  writer.commit()
+      metadata = u"\n".join(filter(None, [
+        _metadata.get('author_name'),
+        u"\n".join(filter(None, [
+          _metadata['details']['title'].get('en'), 
+          _metadata['details']['title'].get('fr')
+        ])) if 'details' in _metadata and 'title' in _metadata['details'] else _metadata.get('title'),
+        _metadata.get('description'),
+        u"\n".join(filter(None, [
+          _metadata['details']['caption'].get('en'),
+          _metadata['details']['caption'].get('fr')
+        ])) if 'details' in _metadata and 'caption' in _metadata['details'] else _metadata.get('caption')
+      ]))
+    except TypeError:
+      metadata = self.title
+    except ValueError:
+      metadata = self.title
+
+    content = u"\n".join(filter(None, [metadata, self.url]))
+    
+    writer.update_document(
+      title = self.title,
+      path = u"%s"% self.short_url,
+      content =  content,
+      classname = u"document")
+    writer.commit()
 
 
 # dep. brew install ghostscript, brew install imagemagick

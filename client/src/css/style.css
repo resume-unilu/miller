@@ -317,6 +317,11 @@ label{
   transition: transform .27s ease-in-out;
 }
 
+.container{
+  padding-right: 30px;
+  padding-right: 30px;
+}
+
 .container.with-ToC .view{
   /*transform: translateX(200px);*/
   /*padding-right: 200px;*/
