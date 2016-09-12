@@ -91,8 +91,21 @@ class Story(models.Model):
     writer.commit()
 
   def save(self, *args, **kwargs):
-    self.slug = slugify(self.title)
-    
+    if not self.id and not self.slug:
+      slug = slugify(self.title)
+      slug_exists = True
+      counter = 1
+      self.slug = slug
+      while slug_exists:
+        try:
+          slug_exits = Story.objects.get(slug=slug)
+          if slug_exits:
+              slug = self.slug + '-' + str(counter)
+              counter += 1
+        except Story.DoesNotExist:
+          self.slug = slug
+          break
+
     try:
       metadata = json.loads(self.metadata)
       

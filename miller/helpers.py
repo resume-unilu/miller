@@ -67,8 +67,7 @@ def search_whoosh_index(query, **kwargs):
 
 # fill a dictionary with metadata according to the languages specified in settings.py file
 def fill_with_metadata(instance, fields=(u'title',u'abstract')):
-  metadata = json.loads(instance.metadata)
-  print fields
+  metadata = instance.metadata if type(instance.metadata) is dict else json.loads(instance.metadata)
   for field in fields:
     if field not in metadata:
       metadata[field] = {}
