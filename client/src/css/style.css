@@ -1048,7 +1048,7 @@ div.profile-others .profile-thumb{
 */
 
 #search-wrapper{
-  width: 150px;
+  width: 110px;
   padding-top: 16px;
   font-family: 'Lato', sans-serif;
 }
@@ -1067,12 +1067,15 @@ div.profile-others .profile-thumb{
   box-shadow: none;
   border-radius: 0;
   padding-right: 5px;
+  padding-left: 5px;
+  font-size: 13px;
 }
 
 #search-wrapper button{
   color:  #aaa;
   background-color: transparent;
   padding-left: 0;
+  padding-right: 5px;
 }
 
 #search-wrapper .input-group:hover button{
