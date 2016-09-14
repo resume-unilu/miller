@@ -3,7 +3,8 @@
   <html>
   <head>
     <title>{{title}} - {{page}}</title>
-    <meta></meta>
+    <base href="/">
+    <meta name="fragment" content="!">
     <meta name="description" content="{{description}}">
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name='pinterest' content='nopin' description="contents subject to copyright"></meta>
@@ -338,15 +339,16 @@
         min-height: 100%;
         height: auto !important;
         height: 100%;
-        margin: 0 auto -100px;
+        margin: 0 auto -200px;
       }
       #footer, .push {
-        height: 100px;
+        height: 200px;
       }
 
       #footer{
-        background-color: #d9d9d9;
+        /*background-color: #d9d9d9;*/
         padding-top: 25px;
+        border-top: 2px solid #f0f0f0;
       }
 
       #footer a {
@@ -549,9 +551,9 @@
       <div class='container'>
         <div class='row'>
           <div class='col-sm-6'>
-            <div>
+            <div class='copyright'>
             Copyright &copy; <a href="http://www.uni.lu" target="_blank">Université du Luxembourg</a> {{ now }}. All rights reserved.     
-            </div> 
+            </div>
 
           </div>
           <div class='col-sm-6'>
