@@ -79,10 +79,10 @@ class StoryViewSet(viewsets.ModelViewSet):
     if not form.is_valid():
       return Response(form.errors, status=status.HTTP_201_CREATED)
     # get the results
-    results = search_whoosh_index(form.cleaned_data['q'])
+    results = search_whoosh_index(form.cleaned_data['q'], classname=u'story')
     
     filters = {
-      'short_url__in': [hit['id'] for hit in results]
+      'short_url__in': [hit['short_url'] for hit in results]
     }
     # check if the user is allowed this content
     if request.user.is_authenticated():
@@ -93,7 +93,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     def mapper(d):
       d.matches = []
       for hit in results:
-        if int(d.id) == int(hit['id']):
+        if d.short_url == hit['short_url']:
           d.matches = hit
           break
       return d

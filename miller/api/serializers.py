@@ -124,4 +124,42 @@ class CreateStorySerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Story
-    
+
+
+############
+# Document #
+############
+
+# Serializers define the API representation.
+class DocumentSerializer(serializers.ModelSerializer):
+  # authors = AuthorSerializer(many=True)
+  # owner = AuthorSerializer()
+  # tags = TagSerializer(many=True)
+  # captions = CaptionSerializer(source='caption_set', many=True)
+  metadata = JsonField(source='contents')
+  src   = OptionalFileField(source='attachment')
+  class Meta:
+    model = Document
+    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'metadata', 'snapshot', 'copyrights')
+
+
+class MatchingDocumentSerializer(serializers.ModelSerializer):
+  matches = HitField()
+  metadata = JsonField(source='contents')
+  src   = OptionalFileField(source='attachment')
+
+  class Meta:
+    model = Document
+    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'metadata', 'matches')
+
+
+# define the 
+class CreateDocumentSerializer(serializers.ModelSerializer):
+  owner = serializers.HiddenField(
+    default=serializers.CurrentUserDefault()
+  )
+
+  class Meta:
+    model = Document
+
+
