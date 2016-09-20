@@ -2,6 +2,8 @@ import json
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAdminUser
 
 from rest_framework import serializers,viewsets, status
@@ -40,7 +42,6 @@ class StoryViewSet(viewsets.ModelViewSet):
     filters = self.request.query_params.get('filters', None)
     
     if filters is not None:
-      print filters
       try:
         filters = json.loads(filters)
         # print "filters,",filters
@@ -56,7 +57,7 @@ class StoryViewSet(viewsets.ModelViewSet):
       stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
     # print stories.query
     page    = self.paginate_queryset(stories)
-    print page
+    
     if page is not None:
       serializer = LiteStorySerializer(page, many=True, context={'request': request})
       return self.get_paginated_response(serializer.data)
@@ -77,7 +78,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     from miller.helpers import search_whoosh_index
     form = SearchQueryForm(request.query_params)
     if not form.is_valid():
-      return Response(form.errors, status=status.HTTP_201_CREATED)
+      return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
     # get the results
     results = search_whoosh_index(form.cleaned_data['q'], classname=u'story')
     
@@ -119,6 +120,35 @@ class StoryViewSet(viewsets.ModelViewSet):
         context={'request': request},
     )
     return Response(serializer.data)
+
+
+  # @list_route(methods=['post', 'patch'], parser_classes=(FormParser, MultiPartParser,))
+  # def upload_docx(self, request, pk=None):
+  #   queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user))
+
+  #   print request.FILES
+  #   docx = request.FILES.get('docx')
+
+  #   if not docx:
+  #     return Response(status=404)
+
+  #   print 'uploaded', docx
+    
+
+  #   # save, then return tagged items according to tagform
+  #   serializer = CreateStorySerializer(
+  #     context={'request': request},
+  #     data=request.data
+  #   )
+
+  #   if not serializer.is_valid():
+  #     print serializer.errors
+  #     return Response(status=400)
+    
+  #   serializer.save(source=docx)
+
+
+  #   return Response(serializer.data)
   
 
   

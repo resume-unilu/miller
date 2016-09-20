@@ -192,21 +192,22 @@ angular
     
     */
     $stateProvider
-      .state('me', {
+      .state('author', {
         abstract: true,
         reloadOnSearch : false,
-        url: '/me',
+        url: '/author/{username:[0-9a-zA-Z\\.-_]+}',
         controller: 'AuthorCtrl',
         templateUrl: RUNTIME.static + 'templates/author.html',
         resolve: {
-          profile: function(ProfileFactory, RUNTIME){
+          profile: function(ProfileFactory, $stateParams){
+            debugger
             return ProfileFactory.get({
-              username: RUNTIME.user.username
+              username: $stateParams.username
             }).$promise;
           }
         }
       })
-      .state('me.publications', {
+      .state('author.publications', {
         url: '/publications',
         abstract:true,
         reloadOnSearch : false,
@@ -215,17 +216,17 @@ angular
         },
         templateUrl: RUNTIME.static + 'templates/author.publications.html',
       })
-      .state('me.publications.drafts', {
+      .state('author.publications.drafts', {
         url: '/drafts',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
-          items: function(StoryFactory, $stateParams) {
+          items: function(StoryFactory, profile) {
             return StoryFactory.get({
               filters: JSON.stringify({
                 status: 'draft',
-                owner__username: RUNTIME.user.username,
+                owner__username: profile.user.username,
                 // authors__username__in: [RUNTIME.user.username]
               })
             }).$promise;
@@ -242,20 +243,20 @@ angular
 
       _.each(RUNTIME.stories.writing, function(d){
         $stateProvider
-          .state('me.publications.' + d.name, {
+          .state('author.publications.' + d.name, {
             url: d.url,
             controller: 'ItemsCtrl',
             templateUrl: RUNTIME.static + 'templates/items.html',
               resolve: {
-              items: function(StoryFactory, $stateParams) {
+              items: function(StoryFactory, $stateParams, profile) {
                 return StoryFactory.get({
                   filters: d.slug? JSON.stringify({
                     tags__category: 'writing',
                     tags__slug: d.slug,
-                    owner__username: RUNTIME.user.username
+                    authors__username__in: [profile.user.username]
                   }): JSON.stringify({
                     tags__category: 'writing',
-                    owner__username: RUNTIME.user.username
+                    authors__username__in: [profile.user.username]
                   })
                 }).$promise;
               },
@@ -270,40 +271,7 @@ angular
           });
       });
 
-    /*
-      Other user stories
-      ---
-    */
-    $stateProvider
-      .state('author', {
-        abstract: true,
-        reloadOnSearch : false,
-        url: '/author/{username:[0-9a-zA-Z\\.-_]+}',
-        controller: 'AuthorCtrl',
-        templateUrl: RUNTIME.static + 'templates/author.html',
-        resolve: {
-          profile: function(ProfileFactory, $stateParams){
-            return ProfileFactory.get({
-              username: $stateParams.username
-            }).$promise;
-          }
-        }
-      })
-      .state('author.publications', {
-        url: '',
-        reloadOnSearch : false,
-        controller: function($scope, profile){
-          $scope.urls = RUNTIME.stories.writing;
-        },
-        resolve:{ // latest stories
-          stories: function(profile){
-            return {'value': profile};
-          }
-        },
-        templateUrl: RUNTIME.static + 'templates/author.publications.html',
-      });
-
-      
+  
 
     $stateProvider
      .state('blog', {

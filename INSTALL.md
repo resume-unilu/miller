@@ -126,5 +126,23 @@ If and only if there are no errors, daemonize the emperor:
 	sudo uwsgi --emperor /etc/uwsgi/vassals --daemonize /var/log/uwsgi-emperor.log
 	
 	
+## setup git to expose versioned content
+Follow the doc https://git-scm.com/book/en/v2/Git-on-the-Server-Setting-Up-the-Server
+
+	$ sudo adduser git
+	$ su git
+	$ cd
+	$ mkdir .ssh && chmod 700 .ssh
+	$ touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys
+	
+And create a bare repository as suggested, e.g inside `/opt/git/my-miller-contents.git`
+
+Go to 
+	
+	cd 
+Remember to add 
+	
+	eval "$(ssh-agent -s)"
+	ssh-add ~/.ssh/id_rsa_custom
 
 	

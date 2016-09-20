@@ -28,3 +28,8 @@ On RedHat 7.0:
 
 Download rpm, e.g.
 	wget https://bitbucket.org/wkhtmltopdf/wkhtmltopdf/downloads/wkhtmltox-0.13.0-alpha-7b36694_linux-centos7-amd64.rpm
+
+
+## enable docx import
+Import footnotes and table of contents with pandoc (pandoc should be installed)
+Import [Core properties](http://python-docx.readthedocs.io/en/latest/dev/analysis/features/coreprops.html)

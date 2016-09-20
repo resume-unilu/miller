@@ -10,12 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os
+import os, sys
 from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+management_command = sys.argv[1] if len(sys.argv) > 1 else ""
+TESTING = management_command.startswith("test")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -93,6 +95,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'TEST': {
+            'NAME':  os.path.join(BASE_DIR, 'test.db.sqlite3'),
+        }
     }
 }
 
@@ -227,7 +232,8 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log')
+            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
+            'formatter': 'lite'
         },
         'console': {
             'level': 'DEBUG',
@@ -239,6 +245,9 @@ LOGGING = {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
+        'lite':{
+            'format': '%(levelname)s - %(asctime)s - %(module)s:%(lineno)s - %(funcName)20s - %(message)s'
+        },
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
@@ -246,7 +255,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'ERROR',
             'propagate': True,
         },
         'miller.commands': {

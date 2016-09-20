@@ -53,6 +53,5 @@ def delete_working_folder(sender, instance, **kwargs):
   '''
   delete user working_folder. Are you sure?
   '''
-  #path = instance.get_path()
-  #shutil.rmtree(path)
-  pass
+  path = instance.get_path()
+  shutil.rmtree(path)

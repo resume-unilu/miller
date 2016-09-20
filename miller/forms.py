@@ -8,3 +8,7 @@ class LoginForm(forms.Form):
 
 class SearchQueryForm(forms.Form):
   q = forms.CharField(max_length=128, widget=forms.TextInput)
+
+
+class UploadDocxForm(forms.Form):
+  docx = forms.FileField()
