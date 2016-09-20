@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
+import os, logging
 
 from miller import helpers
 
@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 
 
 
+logger = logging.getLogger('miller')
 # Create a Profile object, connected with the user.
 # THe picture is given as a remote url.
 # Cfr. admin.py
@@ -42,16 +43,23 @@ def create_working_folder(sender, instance, created, **kwargs):
   if created:
     pro = Profile(user=instance)
     pro.save()
-    path = pro.get_path()
-    if not os.path.exists(path):
-      os.makedirs(path)
+    logger.debug('(user {pk:%s}) create_working_folder: done.' % instance.pk)
 
 
 
-@receiver(pre_delete, sender=User)
+@receiver(post_save, sender=Profile)
+def check_working_folder(sender, instance, created, **kwargs):
+  path = instance.get_path()
+  if not os.path.exists(path):
+    os.makedirs(path)
+  logger.debug('(profile {pk:%s}) check_working_folder: done.' % instance.pk)
+
+
+@receiver(pre_delete, sender=Profile)
 def delete_working_folder(sender, instance, **kwargs):
   '''
   delete user working_folder. Are you sure?
   '''
   path = instance.get_path()
   shutil.rmtree(path)
+  logger.debug('(profile {pk:%s}) delete_working_folder: done.' % instance.pk)
