@@ -200,7 +200,6 @@ angular
         templateUrl: RUNTIME.static + 'templates/author.html',
         resolve: {
           profile: function(ProfileFactory, $stateParams){
-            debugger
             return ProfileFactory.get({
               username: $stateParams.username
             }).$promise;

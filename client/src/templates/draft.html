@@ -21,7 +21,7 @@
   
 </div>
 
-<div class='section' ng-if='user.is_staff && !isDraft'>
+<div class='section' ng-if='!isDraft && user.is_staff'>
   <label translate="staff.drafts.tags.placeholder"></label>
   <tags-input class='tags-input' placeholder='{{"staff.drafts.tags.placeholder"| translate}}' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
     <auto-complete source="suggestTags($query, {category__in:['blog','writing', 'highlights']})" ></auto-complete>

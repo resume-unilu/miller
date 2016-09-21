@@ -3,11 +3,11 @@
 <!-- Nav tabs -->
   <ul class='nav nav-tabs'>
     <li ng-repeat='link in urls' role="presentation" ui-sref-active="active">
-      <a href ui-sref='me.publications.{{link.name}}' aria-controls="home" role="tab" data-toggle="tab" translate="{{link.name}}"></a>
+      <a href ui-sref='author.publications.{{link.name}}({username: profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="{{link.name}}"></a>
     </li>
     
     <li ng-if='isMe' ui-sref-active="active">
-      <a href ui-sref='me.publications.drafts' aria-controls="home" role="tab" data-toggle="tab" translate="drafts"></a>
+      <a href ui-sref='author.publications.drafts({username: profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="drafts"></a>
     </li>
   </ul>
   
