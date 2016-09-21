@@ -43,6 +43,7 @@ class StoryTest(APITestCase):
     # test get from slug
     url = reverse('story-detail', args=[response.data['slug']])
     response = self.client.get(url, format='json')
+    doc_id = response.data['id']
     self.assertEqual(response.data['contents'], u'## La comp\xe9titivit\xe9 europ\xe9enne\xa0:\\\ncomp\xe9tition, coop\xe9ration, solidarit\xe9\n\nVersion\xa0: 30 mai 2016\n\n### 1\xa0L\u2019exigence d\u2019un engagement total\n\nLa comp\xe9titivit\xe9 est une obsession[^1].\n\n[^1]: Krugman, Paul. Competitiveness\xa0: A Dangerous Obsession. *Foreign\n    Affairs*, mars-avril 1994, vol.\xa073, n\xb02, pp.\xa028-44\xa0; pour une\n    critique similaire du \xab\xa0diktat\xa0\xbb de la comp\xe9titivit\xe9\xa0: Rinehart,\n    James. The ideology of competitiveness. *Monthly Review*, 1995,\n    vol.\xa047 n\xb0\xa05, p.\xa014.\n')
 
     # now the story are at least 2  
@@ -50,4 +51,9 @@ class StoryTest(APITestCase):
     response = self.client.get(url, format='json')
     self.assertEqual(response.data['count'], 2)
 
+    # what if I change the contents of docx?
+    url = reverse('story-detail', args=[doc_id])
+    response = self.client.patch(url, {'contents': 'oh good'}, format='multipart')
+    self.assertEqual(response.data['contents'], 'oh good')
+    
     

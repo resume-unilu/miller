@@ -208,6 +208,9 @@ def store_working_md(sender, instance, created, **kwargs):
 # check if there is a source file of type docx attached and transform it to content.
 @receiver(story_ready, sender=Story)
 def transform_source(sender, instance, created, **kwargs):
+  # print 'story is created?', instance.pk, created
+  if not created:
+    return
   if bool(instance.source):
     logger.debug('(story {pk:%s}) @story_ready transform_source: converting...' % instance.pk)
     instance.convert()
