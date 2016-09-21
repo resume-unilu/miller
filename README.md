@@ -31,5 +31,18 @@ Download rpm, e.g.
 
 
 ## enable docx import
-Import footnotes and table of contents with pandoc (pandoc should be installed)
+Import footnotes and table of contents with pandoc (pandoc should be installed) using pypandoc
 Import [Core properties](http://python-docx.readthedocs.io/en/latest/dev/analysis/features/coreprops.html)
+
+## enable zotero import
+
+## test
+
+Run django test, using a test databse:
+
+		python manage.py test
+
+
+Without using a database backend, e.g. to test Zotero connection:
+
+		python manage.py test miller.test.zotero.ZoteroTest --testrunner=miller.test.NoDbTestRunner

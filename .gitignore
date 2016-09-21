@@ -20,3 +20,6 @@ client/src/images/*
 !client/src/images/.gitkeep
 
 node_modules
+
+# docx and other temp files
+~*.*

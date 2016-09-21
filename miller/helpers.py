@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from pyzotero import zotero
+
 import shortuuid, os, json, logging
 
 logger = logging.getLogger('miller')
@@ -21,7 +23,6 @@ def create_short_url():
 
 
 def get_whoosh_index():
-  from django.conf import settings
   from whoosh.index import create_in, exists_in, open_dir
   from whoosh.fields import Schema, TEXT, KEYWORD, ID, STORED
     
@@ -79,4 +80,33 @@ def fill_with_metadata(instance, fields=(u'title',u'abstract')):
 
   metadata = json.dumps(metadata)
   return metadata
+
+
+# for a given username, get or create the proper zotero collection.
+# Return created<bool>, collection<Collection>
+def get_or_create_zotero_collection(username):
+  if not hasattr(settings, 'ZOTERO_IDENTITY'):
+    logger.warn('no settings.ZOTERO_IDENTITY found')
+    return
+  try:
+    zot = zotero.Zotero(settings.ZOTERO_IDENTITY, 'user', settings.ZOTERO_API_KEY)
+    colls = zot.all_collections()
+  except:
+    logger.exception('unable to get zotero collections, zotero id: %s, zotero key: %s' % (settings.ZOTERO_IDENTITY, settings.ZOTERO_API_KEY))
+    return False, None
+
+  # get collection by username (let's trust django username :D)
+  for coll in colls:
+    if coll['data']['name'] == username:
+      return False, coll
+  
+  # create collection
+  collreq = zot.create_collection([{
+    'name': username
+  }])
+  if 'successful' in collreq:
+    return True, collreq['successful']['0']
+
+  logger.warn('unable to create collection, got %s' %collreq)
+  return False, None
 

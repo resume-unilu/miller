@@ -20,6 +20,9 @@ AUTHENTICATION_BACKENDS = (
 
 
 ZOTERO_API_KEY = 'XXX'
+ZOTERO_IDENTITY = '123123123' #'user id numeric', ''
+ZOTERO_BIB_FILE = 'zotero.bib'
+ZOTERO_IDENTITY_NAME = 'your.zotero.username'
 
 DATABASES = {
     'default': {
