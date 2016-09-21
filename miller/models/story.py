@@ -29,7 +29,6 @@ logger = logging.getLogger('miller')
 story_ready = django.dispatch.Signal(providing_args=["instance", "created"])
 
 def user_path(instance, filename):
-  "set path"
   root, ext = os.path.splitext(filename)
   src = os.path.join(settings.MEDIA_ROOT, instance.owner.profile.short_url, instance.short_url+ '.' + ext)
   return src
@@ -86,6 +85,9 @@ class Story(models.Model):
 
   # fileField
   source = models.FileField(upload_to=user_path, blank=True, null=True)
+
+  # fileField (usually a zotero-friendly importable file)
+  bibliography = models.FileField(upload_to=user_path, blank=True, null=True)
 
   # set the plural name and fix the default sorting order
   class Meta:

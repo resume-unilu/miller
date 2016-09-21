@@ -943,7 +943,7 @@ h4.modal-title{
 }
 
 .doc.oembedded .tile{
-  background-color: rgba(236, 236, 236, 1);
+  /*background-color: rgba(236, 236, 236, 1);*/
 }
 .doc.oembedded .title{
   font-weight:bold;

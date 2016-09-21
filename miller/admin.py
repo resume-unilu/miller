@@ -63,7 +63,8 @@ class CaptionInline(admin.TabularInline):
   extra = 2 # how many rows to show
 
 class StoryAdmin(admin.ModelAdmin):
-  inlines = (CaptionInline,)
+  # inlines = (CaptionInline,)
+  exclude=['cover', 'cover_copyright', 'watchers']
   search_fields = ['title']
   list_filter = (WritingTagsListFilter,)
 

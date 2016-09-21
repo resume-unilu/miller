@@ -3,6 +3,8 @@
 import os, json
 from miller import helpers
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 #
 #  test stopwords and pattern chunking.
 #  python manage.py test miller.test.test_zotero.ZoteroTest --testrunner=miller.test.NoDbTestRunner
@@ -14,12 +16,9 @@ class ZoteroTest(TestCase):
   def test_connection(self):
     print 'ok'
 
-    created, collection = helpers.get_or_create_zotero_collection(settings.ZOTERO_IDENTITY_NAME)
-    print 'done', created
-
+    created, collection, zotero = helpers.get_or_create_zotero_collection(settings.ZOTERO_IDENTITY_NAME)
     self.assertEqual(collection['data']['name'], settings.ZOTERO_IDENTITY_NAME)
-    print json.dumps(collection, sort_keys=True,indent=4)
-
+    helpers.fill_zotero_collection(filename=os.path.join(dir_path, 'test_zotero.rdf'), collection=collection, zotero=zotero)
     # 
     # zot.create_collection([{
     #   'name': 'username library'

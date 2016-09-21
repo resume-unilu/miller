@@ -299,7 +299,7 @@ angular.module('miller')
       // get the last section (bibliographic footnotes will be there)
       if(sections.length > 1){
         var footnotes = sections.pop();
-        console.log('markedService footnotes: ', footnotes)
+        // console.log('markedService footnotes: ', footnotes)
         value = sections.join('');
         // console.log('markedService footnotes: ', value)
 
@@ -331,7 +331,6 @@ angular.module('miller')
           level: level,
           slug: $filter('slugify')(text)
         };
-        console.log("hey", h)
         ToC.push(h);
 
         return '<h' + level + '>'+

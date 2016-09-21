@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, logging
+import os, logging, shutil
 
 from miller import helpers
 
@@ -54,6 +54,17 @@ def check_working_folder(sender, instance, created, **kwargs):
     os.makedirs(path)
   logger.debug('(profile {pk:%s}) check_working_folder: done.' % instance.pk)
 
+
+@receiver(post_save, sender=Profile)
+def create_zotero_collection(sender, instance, created, **kwargs):
+  if not hasattr(settings, 'ZOTERO_IDENTITY'):
+    logger.warn('(profile {pk:%s}) create_zotero_collection: ZOTERO_IDENTITY not set, skipping...' % instance.pk)
+    return
+  created, collection, zotero = helpers.get_or_create_zotero_collection(instance.user.username)
+  if collection is not None:
+    logger.debug('(profile {pk:%s}) create_zotero_collection: done.' % instance.pk)
+  else:
+    logger.warn('(profile {pk:%s}) create_zotero_collection: failed!' % instance.pk)
 
 @receiver(pre_delete, sender=Profile)
 def delete_working_folder(sender, instance, **kwargs):

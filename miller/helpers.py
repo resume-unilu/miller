@@ -82,8 +82,9 @@ def fill_with_metadata(instance, fields=(u'title',u'abstract')):
   return metadata
 
 
+# Our starting point for zotero related stuffs.
 # for a given username, get or create the proper zotero collection.
-# Return created<bool>, collection<Collection>
+# Return created<bool>, collection<Collection>, zotero<Zotero>
 def get_or_create_zotero_collection(username):
   if not hasattr(settings, 'ZOTERO_IDENTITY'):
     logger.warn('no settings.ZOTERO_IDENTITY found')
@@ -93,20 +94,29 @@ def get_or_create_zotero_collection(username):
     colls = zot.all_collections()
   except:
     logger.exception('unable to get zotero collections, zotero id: %s, zotero key: %s' % (settings.ZOTERO_IDENTITY, settings.ZOTERO_API_KEY))
-    return False, None
+    return False, None, None
 
   # get collection by username (let's trust django username :D)
   for coll in colls:
     if coll['data']['name'] == username:
-      return False, coll
+      return False, coll, zot
   
   # create collection
   collreq = zot.create_collection([{
     'name': username
   }])
-  if 'successful' in collreq:
-    return True, collreq['successful']['0']
+  coll = json.loads(collreq)
+  if 'successful' in coll:
+    # print coll['successful']
+    return True, coll['successful']['0'], zot
 
   logger.warn('unable to create collection, got %s' %collreq)
-  return False, None
+  return False, None, zot
 
+
+# filename should be a valid zotero RDF
+def fill_zotero_collection(filename, collection, zotero):
+  if not zotero:
+    logger.warn('no zotero instance found, cfr get_or_create_zotero_collection')
+    return
+  pass
