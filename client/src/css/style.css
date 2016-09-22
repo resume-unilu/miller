@@ -357,6 +357,7 @@ label{
   position: absolute;
   right: 0px;
   top: 0px;
+  z-index: 1;
 }
 
 .tags .tag{
@@ -453,11 +454,24 @@ label{
 /*
   draft
 */
+
 #draft-abstract, #draft-title{
   font-size: 15px;
   line-height: 25px;
-  padding: 10px 0;
+  padding: 10px 0px;
   background-color: transparent;
+}
+
+#draft-title{
+  font-size: 30px;  
+  line-height: 45px;
+   min-height: 90px;
+}
+
+#draft-abstract{
+  font-size: 18px;  
+  line-height: 30px;
+   min-height: 60px;
 }
 
 .CodeMirror{
@@ -508,9 +522,7 @@ label{
   margin-top: 3px;
 }
 
-#draft-abstract{
-  min-height: 100px;
-}
+
 /*
   bootstrap tabs
 */
