@@ -42,6 +42,9 @@
   "link.to.original": "lien source",
   "me.publications": "your writings",
 
+  "modal.covers.title": "image de couverture",
+  "modal.covers.description": "image de couverture",
+
   "drafts": "(drafts)",
   "drafts.keywords.placeholder": "add keywords ...",
 

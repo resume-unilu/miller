@@ -66,17 +66,17 @@ blockquote.reduced, blockquote.reduced p{
 }
 
 .alert{
-      display: block;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    margin-left: -100px;
-    margin-top: -100px;
-    background: #FF6B6B;
-    color: white;
-    width: 200px;
-    z-index: 100;
-    -webkit-animation-duration: .8s;
+  display: block;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -100px;
+  margin-top: -100px;
+  background: #FF6B6B;
+  color: white;
+  width: 200px;
+  z-index: 100;
+  -webkit-animation-duration: .8s;
   animation-duration: .8s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;

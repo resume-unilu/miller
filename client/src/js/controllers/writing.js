@@ -165,7 +165,21 @@ angular.module('miller')
           console.log('list');
         });
     };
+
+    var coversModal = $modal({
+      controller: 'CoversModalCtrl', 
+      templateUrl: RUNTIME.static + 'templates/partials/modals/covers.html',
+      show: true,
+      scope: $scope
+    });
+  
     
+    $scope.openCoversModal = function(){
+      coversModal.$promise.then(function(){
+        $log.log('WritingCtrl -> openCoversModal()');
+        coversModal.show();
+      });
+    }
 
     $scope.save = function() {
       $log.debug('WritingCtrl @SAVE');

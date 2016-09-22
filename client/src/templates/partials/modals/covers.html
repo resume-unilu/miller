@@ -1,0 +1,46 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1051; display: block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+      <span aria-hidden="true" class='icon-close'></span>
+      </button>
+      <h4 class="modal-title" translate="modal.covers.title"></h4></div>
+      
+      <div class="modal-body">
+        <div class='section padded' ng-class='{"last": !lookups.length}'>
+          <label>
+            <span translate='search'></span>
+            <span style='color: #b7b7b7' translate='results.amount' translate-values='{count: tab.count}'></span>
+          </label>
+          <input placeholder='....' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 200 }" ng-change='suggest(query)'>
+        </div>
+        <div>
+          <ul class='list-of-documents'><li ng-repeat='document in tab.items' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'></li>
+              </ul>
+          <div class='more-wrapper'>
+                <div ng-if='tab.items.length > 0 && tab.items.length < tab.count' class="btn-line-group primary">
+                  <button class='btn-line' ng-click='more()'>
+                    <span ng-if='!tab.isLoadingNextItems'>
+                      <span translate='button.more'></span>
+                      <span translate='missing' translate-values="{count: tab.missing}"></span>
+                    </span>
+                    <span ng-if='tab.isLoadingNextItems' translate='button.loading'></span>
+                  </button>
+                </div>
+                <!-- when count equals item length, we are at the end -->
+              </div>
+        </div>
+      </div>
+      <!-- eof body -->
+      <div class="modal-footer">
+        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument(tab.name, contents, reference, url, embed)" translate='button.add'></button>
+        </span>
+        <span class='btn-line-group'>
+        <button type="button" class="btn-line" ng-click="$hide()">Close</button>
+        </span>
+      </div>
+      <!-- eof footer -->
+    </div>
+  </div>
+</div>
