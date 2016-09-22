@@ -8,13 +8,20 @@
       <h4 class="modal-title" translate="modal.covers.title"></h4></div>
       
       <div class="modal-body">
-        <div class='section padded' ng-class='{"last": !lookups.length}'>
+        <div class='section padded' style='padding-bottom: 0'>
           <label>
             <span translate='search'></span>{{isSomethingSelected}}
             <span style='color: #b7b7b7' translate='results.amount' translate-values='{count: tab.count}'></span>
           </label>
           <input placeholder='....' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 200 }" ng-change='suggest(query)'>
         </div>
+
+        <ul class="nav nav-tabs" style='margin-bottom: 20px; padding-left:15px;' role="tablist">
+          <li role='presentation' ng-class='{"active": _tab.name == tab.name}' ng-repeat='_tab in tabs'>
+            <a ng-click='setTab(_tab.name)' translate='tab.{{_tab.name}}' aria-controls="home" role="tab" data-toggle="tab"></a>
+          </li>
+        </ul>
+
         <div>
           <ul class='list-of-documents'><li ng-repeat='document in tab.items' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'></li>
               </ul>

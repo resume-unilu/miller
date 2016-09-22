@@ -49,6 +49,41 @@ angular.module('miller')
           $log.debug('CoversModalCtrl - tab.favourite > init');
           this.suggest($scope.query || '');
         }
+      },
+      all: {
+        name: 'all',
+        items: [],
+        count: 0,
+        next: undefined,
+        isLoadingNextItems: false,
+        suggest: function(query, isNextPage){
+          var $s = this;
+          $log.debug('CoversModalCtrl - tab.all > suggest', $s);
+          $s.isLoadingNextItems = true;
+          if(!isNextPage){
+            $s.next = undefined;
+          }
+
+          DocumentFactory.get($s.next || {
+            filters: JSON.stringify(query.length > 2? {
+              contents__icontains: query
+            }: {
+            })
+          }, function(res){
+            $log.debug('CoversModalCtrl - tab.all > suggest loaded n.docs:', res.results.length, '- total:', res.count, '-filters:', QueryParamsService(res.next || ''));
+            
+            $s.items   = $s.next? ($s.items || []).concat(res.results): res.results;
+            $s.count   = res.count;
+            $s.missing = res.count - $s.items.length;
+            $s.next    = QueryParamsService(res.next || '');
+
+            $s.isLoadingNextItems = false;
+          });
+        },
+        init: function(){
+          $log.debug('CoversModalCtrl - tab.all > init');
+          this.suggest($scope.query || '');
+        }
       }
     }
 

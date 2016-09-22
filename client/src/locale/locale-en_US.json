@@ -82,5 +82,8 @@
   "state.publications.how-tos.abstract": "how-tos ...",
 
   "story.status.draft": "draft",
-  "story.status.public": "public"
+  "story.status.public": "public",
+
+  "tab.favourite": "your library",
+  "tab.all": "all resources"
 }
