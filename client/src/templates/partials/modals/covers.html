@@ -10,7 +10,7 @@
       <div class="modal-body">
         <div class='section padded' ng-class='{"last": !lookups.length}'>
           <label>
-            <span translate='search'></span>
+            <span translate='search'></span>{{isSomethingSelected}}
             <span style='color: #b7b7b7' translate='results.amount' translate-values='{count: tab.count}'></span>
           </label>
           <input placeholder='....' class='form-control' type='text' ng-model='query' ng-model-options="{ debounce: 200 }" ng-change='suggest(query)'>
@@ -34,7 +34,7 @@
       </div>
       <!-- eof body -->
       <div class="modal-footer">
-        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument(tab.name, contents, reference, url, embed)" translate='button.add'></button>
+        <span class='btn-line-group' ng-class="{'primary':isSomethingSelected}"><button type="button" class="btn-line " ng-class="{'active':isSomethingSelected}" ng-click="addDocument(tab.name, contents, reference, url, embed)" translate='button.add'></button>
         </span>
         <span class='btn-line-group'>
         <button type="button" class="btn-line" ng-click="$hide()">Close</button>

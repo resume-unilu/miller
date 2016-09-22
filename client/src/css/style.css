@@ -456,7 +456,60 @@ label{
 #draft-abstract, #draft-title{
   font-size: 15px;
   line-height: 25px;
-  padding: 10px;
+  padding: 10px 0;
+  background-color: transparent;
+}
+
+.CodeMirror{
+  border-top: 2px solid #E6E5E5;
+  border-bottom: 2px solid #E6E5E5;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+.cover-preview {
+  overflow: auto;
+  text-align:left;
+}
+.cover-preview .lazy-box{
+  height: 100px;
+  width: 100px;
+  float: left;
+  margin-right: 10px;
+}
+
+.cover-preview .title{
+  max-height: 57px;
+  line-height: 19px;
+  overflow: hidden;
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+.cover-preview-wrapper .btn-line-group{
+      margin-top: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.cover-preview-wrapper .btn-line-group .btn-line{
+  width: 100%
+}
+
+.cover-preview-wrapper {
+  margin-top: 50px;
+}
+
+.cover-preview .copyright{
+  max-height: 40px;
+  overflow: hidden;
+  font-size: 10px;
+  line-height: 20px;
+  margin-right: 0px;
+  margin-top: 3px;
+}
+
+#draft-abstract{
+  min-height: 100px;
 }
 /*
   bootstrap tabs
@@ -518,15 +571,15 @@ label{
   overflow:hidden;
   word-wrap:break-word;
   cursor:text;
-  background-color:#f0f0f0;
+  background-color: transparent;
   height:100%;
-  border-bottom: 2px solid #B7B2B2;
+  border-bottom: 2px solid #E6E5E5;
   margin: 0;
   transition: border-color .25s ease-in-out;
 }
 
 .tags-input .tags input{
-   background-color:#f0f0f0;
+   background-color: transparent; 
 }
 
 .tags-input .tags.focused{
@@ -674,7 +727,7 @@ label{
   top: -30px;
   font-size: 18px;
   height: 30px;
-  background: rgb(79, 74, 74);
+  background: #E6E5E5;
   transition:  background-color .27s ease-in-out;
   -webkit-transition: background-color .27s ease-in-out;
  /*border-bottom: 2px solid #f0f0f0;*/
@@ -683,6 +736,7 @@ label{
 
 .mde .toolbox.active, .mde .toolbox:hover{
   background: #151515;
+  color: #999999;
 }
 
 

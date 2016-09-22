@@ -42,9 +42,9 @@ class DocumentViewSet(viewsets.ModelViewSet):
       filters = {}
     
     if request.user.is_authenticated():
-      docs = Document.objects.filter(**filters)
+      docs = Document.objects.filter(**filters).distinct()
     else:
-      docs = Document.objects.filter(**filters)
+      docs = Document.objects.filter(**filters).distinct()
     
     page    = self.paginate_queryset(docs)
     if page is not None:

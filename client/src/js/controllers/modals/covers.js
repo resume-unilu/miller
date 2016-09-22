@@ -51,6 +51,32 @@ angular.module('miller')
         }
       }
     }
+
+    $scope.selectDocument = function(doc){
+      $log.debug('CoversModalCtrl -> selectDocument() id:', doc.id);
+
+      if($scope.selectedDocument && $scope.selectedDocument.id == doc.id){
+        // $log.log('::mde -> selectDocument() unselecting previous', doc.url);
+        $scope.isSomethingSelected = false;
+        $scope.selectedDocument = false;
+      } else {
+        $scope.isSomethingSelected = true;
+        $scope.selectedDocument = angular.copy(doc);
+      }
+    };
+
+    $scope.addDocument = function() {
+      if(!$scope.selectedDocument) {
+        $log.warn('CoversModalCtrl -> addDocument() no document has been selected');
+        return;
+      }
+      
+      $log.debug('CoversModalCtrl -> addDocument() id:', $scope.selectedDocument.id);
+
+      $scope.setCover($scope.selectedDocument);
+      // parent function add Cove
+    }
+
   // http://localhost:8000/api/document/?filters=%7B%22caption__story__owner__username%22%3A%22danieleguido%22%7D&limit=4&offset=4
     $scope.setTab = function(tabname){
       $log.debug('CoversModalCtrl -> setTab() tab.name:', tabname);

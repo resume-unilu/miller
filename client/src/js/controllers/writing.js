@@ -117,6 +117,20 @@ angular.module('miller')
       }
     };
 
+    $scope.setCover = function(doc) {
+      $log.debug('WritingCtrl -> setCover() doc:', doc.id);
+      $scope.isSaving = true;
+      $scope.lock();
+      StoryFactory.patch({id: story.id}, {
+        covers: [doc.id]
+      }).$promise.then(function(res) {
+        $log.debug('WritingCtrl -> setCover() doc success', res);
+        $scope.story.covers = [doc];
+        $scope.unlock();
+        $scope.isSaving =false;
+      });
+    }
+
     $scope.references = [];
     $scope.lookups = [];// ref and docs and urls...
 
@@ -169,7 +183,7 @@ angular.module('miller')
     var coversModal = $modal({
       controller: 'CoversModalCtrl', 
       templateUrl: RUNTIME.static + 'templates/partials/modals/covers.html',
-      show: true,
+      show: false,
       scope: $scope
     });
   

@@ -474,23 +474,16 @@ angular.module('miller')
         };
 
         scope.selectDocument = function(doc){
-          $log.log('::mde -> selectDocument()', doc.url);
+          $log.log('::mde -> selectDocument()', doc.id);
 
-          if(scope.selectedDocument && scope.selectedDocument.url == doc.url){
+          if(scope.selectedDocument && scope.selectedDocument.id == doc.id){
             // $log.log('::mde -> selectDocument() unselecting previous', doc.url);
             scope.isSomethingSelected = false;
             scope.selectedDocument = false;
-          } else if(scope.selectedDocument){
-            // $log.log('::mde -> selectDocument() change selection from', scope.selectedDocument.title);
-            scope.isSomethingSelected = true;
-            scope.selectedDocument = doc;
           } else {
-            // $log.log('::mde -> selectDocument() as new item');
-            scope.isSomethingSelected = true;
-            scope.selectedDocument = doc;
+          scope.isSomethingSelected = true;
+          scope.selectedDocument = angular.copy(doc);
           }
-          
-          
         };
 
         scope.action = function(action) {

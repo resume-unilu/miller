@@ -7,6 +7,7 @@
   "button.save": "save",
   "button.more": "load more",
   "button.loading": "loading ...",
+  "button.choosecover": "choose cover",
   
   "missing": "({{count}} more)",
   "results.amount": "({{count}} results)",
@@ -21,7 +22,8 @@
 
   "field.label.title": "title",
   "field.label.abstract": "abstract",
-
+  "field.label.cover": "cover image",
+  
   "headline.project": "project",
   "headline.people": "people",
   "headline.publications": "publications",
