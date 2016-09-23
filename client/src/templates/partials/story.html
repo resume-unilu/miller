@@ -7,9 +7,9 @@
 
   <div  class="divider"></div>
 
-  <h3 class="title"><a ui-sref="story({postId: story.id})"><span embedit='story.metadata.title' language='language'></span> {{story.status != 'public'? '(DRAFT)': ''}}</a></h3>  
+  <h3 class="title"><a ui-sref="story({postId: story.slug})"><span embedit='story.metadata.title' language='language'></span> {{story.status != 'public'? '(DRAFT)': ''}}</a></h3>  
   
-  <blockquote class="reduced">{{story.excerpt}}.
+  <blockquote ng-if='story.excerpt' class="reduced">{{story.excerpt}}.
     <a href ui-sref="story({postId: story.id})">
       <span class='icon-arrow-right-circle'></span>
     </a>
@@ -17,6 +17,10 @@
       <em ng-if="story.difference">{{story.difference}}</em>
     </p>
   </blockquote>
+  
+  <blockquote ng-if='!story.excerpt' embedit='story.metadata.abstract' language='language'></blockquote>
+
+
   <p>
     
     <span class='creator' ng-if="!story.authors.length">

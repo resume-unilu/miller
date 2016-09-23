@@ -8,6 +8,7 @@
   "button.more": "load more",
   "button.loading": "loading ...",
   "button.choosecover": "choose cover",
+  "button.upload.story": "télécharger sur la plateforme",
 
   "missing": "({{count}} more)",
   "results.amount": "({{count}} results)",
@@ -23,6 +24,10 @@
   "field.label.title": "titre",
   "field.label.abstract": "abstract",
   "field.label.cover": "image de couverture",
+
+  "field.label.upload.title": "Which is the title?",
+  "field.label.upload.abstract": "Your writing abstract",
+  "field.label.upload.docx": "... and your docx file",
 
   "headline.project": "projet",
   "headline.people": "équipe",
@@ -85,5 +90,12 @@
   "story.status.public": "public",
 
   "tab.favourite": "your library",
-  "tab.all": "all resources"
+  "tab.all": "all resources",
+
+  "upload.title": "Upload your writing",
+  "upload.description": "Four easy steps",
+  "upload.missing.steps": "Almost there! ... {{steps}} missing {{steps > 1? 'steps': 'one last step'}} before uploading",
+  "upload.success.title": "Your content has been submitted",
+  "upload.success.description": "You can find your submitted content here"
+  
 }

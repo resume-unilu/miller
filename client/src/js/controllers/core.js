@@ -150,6 +150,7 @@ angular.module('miller')
       }
     });
 
+
     $rootScope.$on('$stateChangeSuccess', function (e, state) {
       var h =  $location.hash();
 

@@ -23,7 +23,8 @@ angular
     'angular-embed',
     'angular-embed.handlers',
 
-    'angularLazyImg'
+    'angularLazyImg',
+    'ngFileUpload'
   ])
   .constant('LOCALES', {
     'locales': {
@@ -172,6 +173,23 @@ angular
         reloadOnSearch : false,
         controller: 'DraftCtrl',
         templateUrl: RUNTIME.static + 'templates/draft.html'
+      })
+      .state('upload', {
+        url: '/upload',
+        reloadOnSearch : false,
+        controller: 'UploadCtrl',
+        templateUrl: RUNTIME.static + 'templates/upload.html'
+      })
+      .state('uploaded', {
+        url: '/uploaded/:storyId',
+        reloadOnSearch : false,
+        controller: 'UploadedCtrl',
+        templateUrl: RUNTIME.static + 'templates/uploaded.html',
+        resolve: {
+          story: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({id: $stateParams.storyId}).$promise;
+          },
+        }
       })
       .state('writing', {
         url: '/writing/:storyId',

@@ -1250,3 +1250,73 @@ div.profile-others .profile-thumb{
   -webkit-animation-name: bounceIn;
   animation-name: bounceIn;
 }
+
+/*
+  drop-box upload
+*/
+.drop-box{
+  height: 100px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 100px;
+  background: #f0f0f0;
+  border: 2px dashed #999;
+  margin: 10px 0 20px 0;
+}
+
+.drop-box:hover{
+  background: white;
+  border: 2px solid #4ECDC4;
+  color:#4ECDC4;
+}
+
+.drop-box-form-wrapper .uploadable{
+  margin: 20px;
+}
+
+.drop-box-form-wrapper label, .drop-box-form-wrapper .button-wrapper{
+  position: relative;
+}
+
+.drop-box-form-wrapper label .number, .drop-box-form-wrapper .button-wrapper .number{
+    position: absolute;
+    top: -2px;
+    left: -45px;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    border: 2px solid #B7B2B2;
+    line-height: 25px;
+    text-align: center;
+    font-size: 15px;
+    padding: 0;
+    margin: 0;
+    color: #B7B2B2;
+    -webkit-animation-duration: .8s;
+    animation-duration: .8s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+
+}
+.drop-box-form-wrapper label .number.active, .drop-box-form-wrapper .button-wrapper .number.active{
+  color: #151515;
+  border-color: #151515;
+  
+}
+
+.drop-box-form-wrapper label .number.error, .drop-box-form-wrapper .button-wrapper .number.error{
+-webkit-animation-name: bounceIn;
+  animation-name: bounceIn;
+}
+
+.drop-box-form-wrapper{
+  margin-bottom: 100px;
+}
+.drop-box-form-wrapper .button-wrapper .number{
+  top: 0px;
+}
+
+.drop-box-form-wrapper .btn-line{
+  width: 100%
+}
+
