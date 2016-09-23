@@ -59,7 +59,10 @@
         width: 45px;
         height: 45px;
         border-radius: 45px;
-        margin-top: 12px;
+        float: none;
+        position: absolute;
+        right: 30px;
+        margin: 12px 0 0;
       }
 
       .navbar-default .navbar-toggle .icon-bar{
@@ -412,8 +415,14 @@
         line-height: 20px;
       }
 
+      .coverstory.other, .coverstory.news{
+        margin: 0 20px;
+      }
 
       @media (min-width: 768px){
+        .coverstory.other, .coverstory.news{
+          margin: 0
+        }
         .navbar-default{
           background: white;
           border-bottom: 2px solid transparent;
