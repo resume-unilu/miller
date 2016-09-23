@@ -18,6 +18,7 @@ whoosh/
 
 client/src/images/*
 !client/src/images/.gitkeep
+!client/src/images/logo-resume.svg
 
 node_modules
 
