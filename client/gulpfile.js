@@ -5,7 +5,8 @@ var gulp  = require('gulp'),
     // files = require('./src/files').development,
     $     = require('gulp-load-plugins')({
               rename: {
-                'gulp-angular-templatecache': 'templatecache'
+                'gulp-angular-templatecache': 'templatecache',
+                'gulp-clean-css': 'cleanCSS'
               }
             });
 // console.log(files)
@@ -60,6 +61,7 @@ gulp.task('libs', function() {
     './src/js/lib/angular-translate.min.js',
     './src/js/lib/angular-translate-loader-static-files.min.js',
     './src/js/lib/ng-tags-input.min.js',
+    './src/js/lib/ng-file-upload.min.js',
 
     './src/js/lib/angular-lazy-img.min.js'
   ])
@@ -89,6 +91,20 @@ gulp.task('scripts', function() {
     .pipe($.size({title: 'js'}))
 });
 
+gulp.task('styles', function() {
+  return gulp.src([
+      './src/css/bootstrap.css',
+      './src/css/simplemde.min.css',
+      './src/css/style.css'
+    ])
+    .pipe($.concat('styles.min.css'))
+    .pipe($.cssnano())
+    .pipe(gulp.dest('./src/css'))
+    .pipe($.size({title: 'css'}))
+
+})
+
+
 // Lint Javascript
 gulp.task('jshint', function() {
   return gulp.src([
@@ -99,7 +115,7 @@ gulp.task('jshint', function() {
       './src/js/controllers/*.js',
       './src/js/directives/*.js',
     ])
-    .pipe($.uglify({mangle: false}))
+    // .pipe($.uglify({mangle: false}))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
 });
@@ -140,7 +156,7 @@ gulp.task('jshint', function() {
 // });
 
 // Default
-gulp.task('default', ['templates', 'libs', 'scripts']);
+gulp.task('default', ['templates', 'libs', 'scripts', 'styles']);
 
 
 

@@ -6,8 +6,8 @@ angular.module('miller')
   })
   .filter('bibtex', function(){
     return function (text) {
-      return text? text.replace(/[\{\}]/g,''): ''
-    }
+      return text? text.replace(/[\{\}]/g,''): '';
+    };
   })
   /*
     Translit non ascii chars and uniform punctuations signs

@@ -411,7 +411,7 @@ angular
               return StoryFactory;
             }
           }
-        })
+        });
 
       _.each(RUNTIME.stories.writing, function(d){
         $stateProvider
@@ -445,7 +445,7 @@ angular
       .state('search', {
         url: '/search/:query',
         controller: function($scope, items){
-          console.log(items)
+          // console.log(items)
           $scope.items = items.results;
         },
         reloadOnSearch : false,
@@ -455,7 +455,7 @@ angular
             return StoryFactory.get({id: 'search', q:$stateParams.query}).$promise;
           },
         }
-      })
+      });
 
     $stateProvider
       .state('story', {

@@ -11,9 +11,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="stylesheet" href="//releases.flowplayer.org/6.0.5/skin/minimalist.css">
    -->
-    <link href='{% static "css/bootstrap.css" %}' rel='stylesheet'></link>
-    <link href='{% static "css/simplemde.min.css" %}' rel='stylesheet'></link>
-    <link href='{% static "css/style.css" %}' rel='stylesheet'></link>
+    {% if debug %}
+      <link href='{% static "css/bootstrap.css" %}' rel='stylesheet'></link>
+      <link href='{% static "css/simplemde.min.css" %}' rel='stylesheet'></link>
+      <link href='{% static "css/style.css" %}' rel='stylesheet'></link>
+    {% else %}
+      <link href='{% static "css/styles.min.css" %}' rel='stylesheet'></link>
+    {% endif %}
+
     <link href='https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.2.4/css/simple-line-icons.css' rel='stylesheet' type='text/css'></link>
     <link href='https://fonts.googleapis.com/css?family=Merriweather:400,400italic,700|Lato:400,700' rel='stylesheet' type='text/css'></link>
     <style>

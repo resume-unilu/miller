@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-lg-8">
+    <div>
+      <h1 translate="upload.title" class="ng-scope">Publications</h1>
+
+      <blockquote translate="upload.description" class="ng-scope"></blockquote>
+
+      </div>
+    </div>
+  </div>
+</div>
+ 
+
+<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+
+<div class='drop-box-form-wrapper'>
+  <form name="createForm" novalidate class="simple-form">
+    <label>
+      <span class="number" ng-class='{"active": createForm.utitle.$valid, "error": createForm.utitle.$dirty && !createForm.utitle.$valid}'>1</span>
+      <span translate="field.label.upload.title"></span>
+    </label>
+    <textarea id='draft-title' class='elastic-textarea' rows="1" msd-elastic ng-model='uploadable.title' name='utitle' required type='text' placeholder='Untitled'></textarea>
+    
+    <label>
+      <span class="number" ng-class='{"active": createForm.uabstract.$valid, "error": createForm.uabstract.$dirty && !createForm.uabstract.$valid}'>2</span>
+      <span translate="field.label.upload.abstract"></span>
+    </label>
+    <textarea id='draft-abstract' class='elastic-textarea' rows="1" msd-elastic ng-model='uploadable.abstract' name='uabstract' required type='text' placeholder='abstract'></textarea>
+
+    <label>
+      <span class="number" ng-class='{"active": uploadable.size}'>3</span>
+      <span translate="field.label.upload.docx"></span>
+    </label>
+    <div ng-show='!uploadable.size'>
+    <div ngf-drop ngf-select ng-model="docx" class="drop-box sans-serif" 
+    ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="true"
+    accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+    ngf-pattern="application/vnd.openxmlformats-officedocument.wordprocessingml.document">Drop docx or click to upload</div>
+    </div>
+    <div ng-if="uploadable.size" class="uploadable">
+      <span class='icon-doc'></span> 
+      <span class='sans-serif'>{{uploadable.name}}</span>
+      <span class="size">{{uploadable.size}}</span>
+    </div>
+
+    <div class='button-wrapper'>
+      <span class="number" ng-class='{"active": createForm.$valid && uploadable.size}'>4</span>
+      <div class='btn-line-group' ng-class='{"primary": createForm.$valid && uploadable.size}'>
+        <button class='btn-line' type="submit" ng-click="upload()">
+          <span ng-if='createForm.$valid && uploadable.size' translate='button.upload.story'></span>
+          <span ng-if='!createForm.$valid || !uploadable.size' translate-values='{ steps: (3 - +createForm.utitle.$valid - +createForm.uabstract.$valid - +!!uploadable.size)}' translate='upload.missing.steps'></span>
+        </button>
+      </div>
+    </div>
+    
+  </form>
+  
+</div>

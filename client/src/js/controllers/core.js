@@ -24,7 +24,7 @@ angular.module('miller')
 
     // toggle stopStateChangeStart variable thus affecting the StateChangeStart event
     $scope.toggleStopStateChangeStart = function(value) {
-      $log.debug('CoreCtrl > toggleStopStateChangeStart value:', value, '- current:',$scope.stopStateChangeStart)
+      $log.debug('CoreCtrl > toggleStopStateChangeStart value:', value, '- current:',$scope.stopStateChangeStart);
       $scope.stopStateChangeStart = typeof value == 'boolean'? value: !$scope.stopStateChangeStart;
     };
 
@@ -43,8 +43,8 @@ angular.module('miller')
       $log.log('CoreCtrl > search() searchquery:', searchquery);
       $state.go('search', {
         query: searchquery
-      })
-    } 
+      });
+    };
 
     // add document items to the table-of)documents
     $scope.setDocuments = function(documents) {
@@ -59,27 +59,27 @@ angular.module('miller')
             break;
           }
         }
-      };
+      }
     };
 
     // look for document by slug (internal, cached docs or ask for new one)
     $rootScope.resolve = function(slug, type, callback){
       if(type == 'voc'){
-        $log.log('CoreCtrl > $scope.resolve [requesting] voc slug:', slug)
+        $log.log('CoreCtrl > $scope.resolve [requesting] voc slug:', slug);
         StoryFactory.get({id: slug}, callback);
       } else {
         var matching = $scope.documents.filter(function(d){
-          return d.slug == slug
+          return d.slug == slug;
         });
         if(matching.length){
-          $log.log('CoreCtrl > $scope.resolve [cached] doc slug:', slug)
+          $log.log('CoreCtrl > $scope.resolve [cached] doc slug:', slug);
           callback(matching[0]);
         } else {
-          $log.log('CoreCtrl > $scope.resolve [requesting] doc slug:', slug)
+          $log.log('CoreCtrl > $scope.resolve [requesting] doc slug:', slug);
           DocumentFactory.get({id: slug}, callback);
         }
       }
-    }
+    };
 
     $scope.save = function(){
       $log.log('CoreCtrl > @SAVE ...'); 
@@ -143,7 +143,7 @@ angular.module('miller')
 
       if($scope.stopStateChangeStart === true){
         // check the user has wirtten sometihing..
-        var answer = confirm("Are you sure you want to leave this page?")
+        var answer = confirm("Are you sure you want to leave this page?");
         if (!answer) {
             e.preventDefault();
         }
@@ -183,7 +183,7 @@ angular.module('miller')
 
     $scope.isWithoutAuthors = function(story) {
       return story.authors.length !== 0;
-    }
+    };
 
     /*
       Check that the user is allowed to write contents for the given story
@@ -237,7 +237,7 @@ angular.module('miller')
         }
         return message;
       }
-    }
+    };
 
     /*
       On location change, collect the parameters.
@@ -261,7 +261,7 @@ angular.module('miller')
         // normal behaviour, after fullsize has been called the view param is present in location
         fullsizeModal.$promise.then(fullsizeModal.show);
       } else if(!$scope.qs.view && $scope.fullsized){
-         fullsizeModal.hide()
+         fullsizeModal.hide();
       }
     });
 

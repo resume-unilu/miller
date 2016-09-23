@@ -26,10 +26,11 @@ angular.module('miller')
         // handle redirection.
         $state.go('writing', {
           storyId: res.id
-        })
+        });
         // debugger
       });
-    }
+    };
+    
     $scope.$on(EVENTS.SAVE, function() {
       $scope.$emit(EVENTS.MESSAGE, 'saving');
       $scope.save();

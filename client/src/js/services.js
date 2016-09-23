@@ -95,12 +95,12 @@ angular.module('miller')
         params[key] = decodeURIComponent(value);
       });
       return params;
-    }
+    };
   })
   .service('bibtexService', function($filter) {
     return function(json){
 
-    }
+    };
   })
   .service('markdownItService', function($filter) {
     return function(value, language){
@@ -122,7 +122,7 @@ angular.module('miller')
         .use(window.markdownitFootnote)
         .use(window.markdownitContainer, 'profile')
         .use(window.markdownitContainer, 'profile-committee')
-        .use(window.markdownitContainer, 'profile-others')
+        .use(window.markdownitContainer, 'profile-others');
 
       // console.log('RULES' , md.renderer.rules)
 
@@ -147,11 +147,11 @@ angular.module('miller')
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
         } else if(url.trim().indexOf('voc/') === 0){
           var terms = url.trim().replace('voc/','').split(',');
-          for(var i in terms){
+          for(var ind in terms){
             results.docs.push({
               _index: 'link-' + (linkIndex++), // internal id
               citation: tokens[idx + 1].content,
-              slug: terms[i],
+              slug: terms[ind],
               type: 'glossary'
             });
           }
@@ -171,7 +171,7 @@ angular.module('miller')
           return '</span>';
         }
         return '</a>';
-      }
+      };
 
       
       md.renderer.rules.heading_open = function(tokens, idx){
@@ -187,7 +187,7 @@ angular.module('miller')
         return '<' + tokens[idx].tag + '>'+
           // '<div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div>'+
           '<a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>';
-      }
+      };
       
       console.log('rules', md.renderer.rules);
 
@@ -198,7 +198,7 @@ angular.module('miller')
             title = tokens[idx].attrGet('title'),
             alt   = tokens[idx].content;
 
-        console.log('IMAGE', src, 'title:', title, 'alt:', alt, tokens[idx])
+        // console.log('IMAGE', src, 'title:', title, 'alt:', alt, tokens[idx]);
         
         if(alt.indexOf('profile/') === 0){
           return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
@@ -210,18 +210,18 @@ angular.module('miller')
       //   }
       //   return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
       // };
-      }
+      };
 
       md.renderer.rules.footnote_anchor = function(tokens, idx, options, env, slf){
         var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
         return '<span style="float:left; margin-right: 10px">'+caption+'</span>';
-      }
+      };
       //   console.log('markdownItService footnote', md.renderer.rules, tokens[idx])
       //   return '<div >'
       // }
       // change rules
       md.renderer.rules.footnote_ref = function (tokens, idx, options, env, slf) {
-        console.log(' md.renderer.rules.footnote_ref')
+        // console.log(' md.renderer.rules.footnote_ref')
         var id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
         var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
         return '<span footnote="'+ id + '" class="footnote-ref" caption="'+caption+'"></span>';
@@ -259,8 +259,8 @@ angular.module('miller')
       // modify results
       results.html = md.render(value);
 
-      return results
-    }
+      return results;
+    };
   })
   .factory('metadataFactory', function($log) {
     return {
@@ -270,7 +270,7 @@ angular.module('miller')
       create: function(story){
 
       }
-    }
+    };
   })
   /*
     Apply marked service for custom markdown ;) Handle with care
@@ -295,10 +295,10 @@ angular.module('miller')
 
       // split the links section and the footnotes
       var sections = _(value.split(/\s*[-_]{3,}\s*/)).value();
-      console.log('markedService', sections.length)
+      // console.log('markedService', sections.length)
       // get the last section (bibliographic footnotes will be there)
       if(sections.length > 1){
-        var footnotes = sections.pop();
+        footnotes = sections.pop();
         // console.log('markedService footnotes: ', footnotes)
         value = sections.join('');
         // console.log('markedService footnotes: ', value)
@@ -354,11 +354,11 @@ angular.module('miller')
           return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
         } else if (url.trim().indexOf('voc/') === 0){
           var terms = url.trim().replace('voc/','').split(',');
-          for(var i in terms){
+          for(var j in terms){
             docs.push({
               _index: 'link-' + (linkIndex++), // internal id
               citation: text,
-              slug: terms[i],
+              slug: terms[j],
               type: 'glossary'
             });
           }
