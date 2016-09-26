@@ -69,8 +69,9 @@
         background-color: #151515;
       }
 
-      .navbar-collapse{
+      .container>.navbar-collapse{
         position: relative;
+            margin-left: 100px;
       }
 
       .navbar-default{
@@ -113,12 +114,19 @@
         line-height: 40px;
       }
 
-      .navbar-default .navbar-nav > li{
+      #footer ul.navbar-nav{
+        font-family: 'Lato', sans-serif;
+        border-top: 2px solid #4ECDC4;
+        width: 100%;
+        margin: 10px;
+      }
+
+      .navbar-default .navbar-nav > li, #footer ul.navbar-nav > li{
         padding: 22px 0 20px 5px;
       }
 
 
-      .navbar-default .navbar-nav > li > a{
+      .navbar-default .navbar-nav > li > a, #footer ul.navbar-nav > li > a{
         text-transform: uppercase;
         font-size: 10px;
         color: #aaa;
@@ -128,7 +136,7 @@
         transition: color .25s ease-in-out, border-color .25s ease-in-out;
       }
 
-      .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+      .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus, #footer ul.navbar-nav > li.active > a, #footer ul.navbar-nav > li.active > a:hover, #footer ul.navbar-nav > li.active > a:focus{
         color: #FF6B6B;
         border: 2px solid;
         background-color: transparent;
@@ -382,7 +390,7 @@
 
       #footer{
         /*background-color: #d9d9d9;*/
-        padding-top: 25px;
+        padding-top: 35px;
         border-top: 2px solid #f0f0f0;
       }
 
@@ -432,8 +440,11 @@
         }
         #table-of-contents-toggler{
           top: 155px;
-          left: 40px;
+          left: 20px;
           z-index: 1;
+        }
+        #footer ul.navbar-nav{
+          margin: 10px 0;
         }
       }
       @media (min-width: 992px){
@@ -455,20 +466,26 @@
         height: 140px;
         width: 100%;
         overflow: hidden;
+        border-left: 2px solid white;
       }
+
       #unilu-logo{
         position: absolute;
         bottom: 0px;
         left: 0px;
         width: 380px;
         height: 140px;
-        background-color: #ffffff;
+        background-color: #4ECDC4;
         background-image: url(/static/images/DEIS_uni.lu.png);
         z-index: 1;
         /* border-top-left-radius: 5px; */
         /* border-top-right-radius: 5px; */
         background-position: left bottom;
       }
+
+      /*.view{
+        margin-top: 210px;
+      }*/
     </style>
   </head>
   {% block body %}
@@ -615,7 +632,14 @@
               <img style='height:50px' src='http://eacea.ec.europa.eu/img/logos/erasmus_plus/eu_flag_co_funded_pos_%5Brgb%5D_right.jpg'>
             </p>
           </div>
-          
+          <div class='col-sm-12'>
+            <ul class="nav navbar-nav">
+              <li ui-sref-active="active"><a href ui-sref='index' translate='footer.home'></a>
+              </li>
+              <li ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})' translate='footer.termsofservice'></a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

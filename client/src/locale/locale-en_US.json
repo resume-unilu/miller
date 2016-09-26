@@ -29,6 +29,9 @@
   "field.label.upload.abstract": "Your writing abstract",
   "field.label.upload.docx": "... and your docx file",
 
+  "footer.home": "index",
+  "footer.termsofservice": "terms of service",
+
   "headline.project": "project",
   "headline.people": "people",
   "headline.publications": "publications",

@@ -386,7 +386,8 @@ label{
 
 .story.lite{
   background: #f0f0f0;
-  padding: 17px 20px;
+  /*padding: 17px 20px;*/
+  padding: 20px;
   margin-bottom: 20px;
 }
 
