@@ -21,7 +21,7 @@ from django.contrib.sitemaps.views import sitemap
 from rest_framework import routers
 
 from miller import views, api
-
+from miller.feeds import LatestEntriesFeed
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter(trailing_slash=True)
 
@@ -41,7 +41,9 @@ urlpatterns = [
   url(r'^api-auth/', include('rest_framework.urls')),
   url(r'^login/$', views.login_view, name='login_view'),
   url(r'^logout/$', views.logout_view, name='logout_view'),
-  url(r'^social/', include('social.apps.django_app.urls', namespace='social'))
+  url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
+  url(r'^latest/feed/$', LatestEntriesFeed()),
+
 ]
 
 
