@@ -203,6 +203,13 @@ AUTHENTICATION_BACKENDS = (
 #............
 WHOOSH_ROOT = os.path.join(BASE_DIR, 'whoosh')
 
+#............
+#
+# RSS
+#
+#............
+RSS_TITLE = 'Miller'
+RSS_DESCRIPTION = 'Miller description'
 
 #............
 #
