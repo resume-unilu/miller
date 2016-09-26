@@ -37,14 +37,14 @@ angular.module('miller')
     }
 
     $scope.listener = function(event, data, callback) {
-      $log.log('StoryCtrl > listener, event:', event);
+      $log.log('StoryCtrl > listener, event:', event, data);
       
       switch(event){
         case EVENTS.MARKDOWNIT_FULLSIZE:
-          $rootScope.fullsize(data.slug, data.type);
+          $rootScope.fullsize(data.slug.replace(/\//g,'-'), data.type);
           break;
         case EVENTS.MARKDOWNIT_RESOLVE:
-          $rootScope.resolve(data.slug, data.type, callback);
+          $rootScope.resolve(data.slug.replace(/\//g,'-'), data.type, callback);
           break;
       }
     }

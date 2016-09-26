@@ -129,10 +129,10 @@ angular.module('miller')
 
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){
-        var url = tokens[idx].attrGet('href');
+        var url = tokens[idx].attrGet('href').trim();
         // console.log('LINK_OPEN', url, tokens[idx])
-        if(url.trim().indexOf('doc/') === 0){
-          var documents = url.trim().replace('doc/','').split(',');
+        if(url.indexOf('doc/') === 0){
+          var documents = url.trim().replace('doc/','').replace(/\//g,'-').split(',');
           for(var i in documents){
             results.docs.push({
               _index: 'link-' + (linkIndex++), // internal id
@@ -143,7 +143,7 @@ angular.module('miller')
           if(!tokens[idx + 1].content.length){
             return '<span type="doc" lazy-placeholder="'+ documents[0] + '">';
           }
-          return '<a name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span class="anchor-wrapper"></span>';
+          return '<a class="special-link" name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span class="anchor-wrapper"></span><span class="icon icon-eye"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
         } else if(url.trim().indexOf('voc/') === 0){
           var terms = url.trim().replace('voc/','').split(',');
@@ -159,7 +159,7 @@ angular.module('miller')
             return '<span type="voc" lazy-placeholder="'+ terms[0] + '">' + terms[0];
           }
           tokens[idx].attrSet('class', 'glossary');
-          return '<a class="glossary" name="'+ terms[0] +'" ng-click="fullsize(\'' +url+'\', \'voc\')"><span class="anchor-wrapper"></span>';
+          return '<a class="special-link glossary" name="'+ terms[0] +'" ng-click="fullsize(\'' +url+'\', \'voc\')"><span class="anchor-wrapper"></span><span class="icon icon-arrow-right-circle"></span>';
         } else {
           return '<a href="'+url+'" target="_blank">';
         }  
@@ -167,6 +167,7 @@ angular.module('miller')
 
 
       md.renderer.rules.link_close = function(tokens, idx){
+        
         if(tokens[idx-1].attrGet('href')){ // emtpy content, previous tocken was just href
           return '</span>';
         }
@@ -214,7 +215,9 @@ angular.module('miller')
 
       md.renderer.rules.footnote_anchor = function(tokens, idx, options, env, slf){
         var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
-        return '<span style="float:left; margin-right: 10px">'+caption+'</span>';
+        // eliminate starting and ending
+
+        return '<span class="footnote-anchor">'+caption.replace(/[\[\]]/g, '')+'</span>';
       };
       //   console.log('markdownItService footnote', md.renderer.rules, tokens[idx])
       //   return '<div >'

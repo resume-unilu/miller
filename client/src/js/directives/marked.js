@@ -6,34 +6,6 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  // .directive('markdown', function($compile, $log, $location){
-  //   return {
-  //     restrict : 'A',
-  //     scope:{
-  //       markdown: '=',
-  //     },
-  //     link : function(scope, element, attrs) {
-  //       if(scope.markdown && scope.markdown.length) {
-  //         element.html(marked(scope.markdown));
-  //         $compile(element.contents())(scope);
-  //       }
-  //     }
-  //   };
-  // })
-  // .directive('markedLanguage', function($compile, $log, $location){
-  //   return {
-  //     restrict : 'A',
-  //     scope:{
-  //       markedLanguage: '=',
-  //     },
-  //     link : function(scope, element, attrs) {
-  //       if(scope.markdown && scope.markdown.length) {
-  //         element.html(marked(scope.markdown));
-  //         $compile(element.contents())(scope);
-  //       }
-  //     }
-  //   };
-  // })
   .directive('footnote', function($compile){
     return {
       restrict : 'A',
@@ -77,12 +49,19 @@ angular.module('miller')
       scope:{
         embedit: '=',
         stretch: '=',
-        language: '='
+        language: '=',
+        firstline: '='
       },
       link: function(scope, element, attrs){
+        // console.log('::embedit @link, language:', scope.language)
         if(scope.language && typeof scope.embedit == 'object'){
-          element.html(scope.embedit[scope.language]|| '');
-
+          var altlanguage = scope.language.replace(/_[A-Z][A-Z]$/, '');
+          
+          if(scope.firstline){
+            element.html((scope.embedit[scope.language]||scope.embedit[altlanguage]||'').split(/<br\/?>/).shift());
+          } else {
+            element.html(scope.embedit[scope.language]||scope.embedit[altlanguage]||'');
+          }
         } else {
           element.html(scope.embedit);
         }
@@ -90,6 +69,7 @@ angular.module('miller')
           element.find('iframe').width('100%').height('100%');
         }
 
+        // enable listeners
         if(scope.language && typeof scope.embedit == 'object'){
           scope.$watch('language', function(language){
             if(typeof scope.embedit == 'object'){
@@ -128,7 +108,7 @@ angular.module('miller')
             scope.listener({
               event: EVENTS.MARKDOWNIT_FULLSIZE, 
               data: {
-                slug: slug.replace(/^.*\//, ''),
+                slug: slug.replace(/^[^\/]*\//, ''),
                 type: type
               }
             });

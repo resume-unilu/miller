@@ -12,7 +12,8 @@ angular.module('miller')
       scope: {
         mde: '=',
         settoc: '&',
-        setdocs: '&'
+        setdocs: '&',
+        language: '='
       },
       templateUrl: RUNTIME.static + 'templates/partials/mde.html',
       link: function(scope, el, attributes){
@@ -24,7 +25,7 @@ angular.module('miller')
 
         // secretize bookmarks. Automatically clean the code sent to initialvalue
         // will set SetBookmarks 
-        
+        $log.log('::mde @link, language:', scope.language);
 
         var simplemde,
             timer,
@@ -425,8 +426,8 @@ angular.module('miller')
             return;
           }
 
-          if(type == 'CVCE'){
-            slug = 'cvce/'+scope.selectedDocument.details.doi;
+          if(type == 'CVCE'){ // prefix it
+            slug = 'cvce-'+scope.selectedDocument.details.doi;
             $log.debug('::mde -> addDocument() doc:', slug);
             DocumentFactory.save({
               title: scope.selectedDocument.title,

@@ -1,6 +1,6 @@
 angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scope, $log, QueryParamsService, DocumentFactory, StoryFactory, OembedSearchFactory, embedService) {
   
-  $log.info('EnrichModalCtrl ready with crazy scope');
+  $log.info('EnrichModalCtrl ready with crazy scope, language:', $scope.language);
 
   // initialize tabs here
   $scope.tabs = {

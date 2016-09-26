@@ -218,6 +218,11 @@ angular.module('miller')
       if(type=="doc"){
         $location.search('view', slug);
       }
+      if(type=='voc'){
+        $state.go('story', {
+          postId:slug
+        })
+      }
       // $scope.fullsized = doc;
       // $location.search('view', doc.short_url);
     };
