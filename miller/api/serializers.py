@@ -60,7 +60,7 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Document
-    fields = ('id', 'copyrights', 'metadata', 'url', 'attachment')
+    fields = ('id', 'copyrights', 'metadata', 'url', 'attachment', 'slug')
 
 
 # retrieve a Story, full
