@@ -17,11 +17,14 @@
     </div>
     <div ng-if='!document.metadata'>
       <div ng-if='document.urls.Preview' lazy-image src='document.urls.Preview'></div>
+      <div ng-if='document.src' lazy-image src='document.src'></div>
+      <!-- {{document}} -->
       <div class='tile'>
         <div class='title' embedit='document.title'></div>
         <div class='copyright' embedit='document.copyright'></div>
       </div>
     </div>
   </div>
-  <div class='excerpt' embedit='document.title'></div>
+
+  <div class='excerpt'><span class='type'>{{document.type}}</span> <span embedit='document.title'></span></div>
 </div>

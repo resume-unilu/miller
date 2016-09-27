@@ -33,8 +33,8 @@ class Document(models.Model):
     (TEXT, 'text'),
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
-    ("image", 'picture'),
-    ("photo", 'picture'),
+    ("image", 'image'),
+    ("photo", 'photo'),
     (RICH, 'rich'),
     (LINK, 'link'),
     (AV, 'audiovisual')
