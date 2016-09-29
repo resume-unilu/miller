@@ -13,7 +13,6 @@ class OptionalFileField(serializers.Field):
 
 class JsonField(serializers.Field):
   def to_representation(self, obj):
-    print obj
     if obj:
       try:
         return json.loads(obj)
