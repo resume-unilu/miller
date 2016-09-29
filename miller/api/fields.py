@@ -18,8 +18,12 @@ class JsonField(serializers.Field):
         return json.loads(obj)
       except ValueError as e:
 
-        return {
-          "error": u'%s' % e
-        }
+        # return u"error: '%s' % e
+        
+        return obj
+      except TypeError as e:
+        # return 
+        #   "error": u'%s' % e
+        # }
         return obj
     return obj

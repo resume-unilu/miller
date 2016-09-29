@@ -58,7 +58,7 @@ angular.module('miller')
     // guess if there's a document interview
     // cfr corectrl setDocuments function.
     $scope.setDocuments = function(items) {
-      $log.log('StoryCtrl > setDocuments items n.:', items.length);
+      $log.log('StoryCtrl > setDocuments items n.:', items.length, items);
       var documents = [],
           unlinkeddocument = [];
 
@@ -73,10 +73,13 @@ angular.module('miller')
           return null;
         }
         return angular.extend({
+          _index: item._index,
           citation: item.citation
         }, _docs[0]);
 
       })));
+
+      // $rootScope.emit(documents = documents;
 
       $scope.$parent.setDocuments(documents.concat(unlinkeddocument));
     };

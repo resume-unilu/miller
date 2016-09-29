@@ -135,7 +135,8 @@ angular.module('miller')
           var documents = url.trim().replace('doc/','').replace(/\//g,'-').split(',');
           for(var i in documents){
             results.docs.push({
-              _index: 'link-' + (linkIndex++), // internal id
+              _index: (linkIndex++), // internal id
+              _type: 'doc',
               citation: tokens[idx + 1].content,
               slug: documents[i]
             });
@@ -143,13 +144,14 @@ angular.module('miller')
           if(!tokens[idx + 1].content.length){
             return '<span type="doc" lazy-placeholder="'+ documents[0] + '">';
           }
-          return '<a class="special-link" name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span class="anchor-wrapper"></span><span class="icon icon-eye"></span>';
+          return '<a id="item-'+linkIndex+'" class="special-link" name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span hold slug="'+ documents[0] +'" type="doc"  class="anchor-wrapper"></span><span class="icon icon-eye"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
         } else if(url.trim().indexOf('voc/') === 0){
           var terms = url.trim().replace('voc/','').split(',');
           for(var ind in terms){
             results.docs.push({
-              _index: 'link-' + (linkIndex++), // internal id
+              _index: (linkIndex++), // internal id
+              _type: 'voc',
               citation: tokens[idx + 1].content,
               slug: terms[ind],
               type: 'glossary'
@@ -159,7 +161,7 @@ angular.module('miller')
             return '<span type="voc" lazy-placeholder="'+ terms[0] + '">' + terms[0];
           }
           tokens[idx].attrSet('class', 'glossary');
-          return '<a class="special-link glossary" name="'+ terms[0] +'" ng-click="fullsize(\'' +url+'\', \'voc\')"><span class="anchor-wrapper"></span><span class="icon icon-arrow-right-circle"></span>';
+          return '<a id="item-'+linkIndex+'" class="special-link glossary"  ng-click="fullsize(\'' +url+'\', \'voc\')"><span hold slug="'+ terms[0] +'" type="voc" class="anchor-wrapper"></span><span class="icon icon-arrow-right-circle"></span>';
         } else {
           return '<a href="'+url+'" target="_blank">';
         }  
@@ -287,107 +289,107 @@ angular.module('miller')
         Subsequent paragraphs are indented to show that they belong to the previous footnote.
     ```
   */
-  .service('markedService', function($filter) {
-    return function(value, language){
-      var renderer = new marked.Renderer(),
-          linkIndex = 0,
-          result = '',
-          ToC = [],
-          docs = [],
-          footnotes = [];
+  // .service('markedService', function($filter) {
+  //   return function(value, language){
+  //     var renderer = new marked.Renderer(),
+  //         linkIndex = 0,
+  //         result = '',
+  //         ToC = [],
+  //         docs = [],
+  //         footnotes = [];
 
-      // split the links section and the footnotes
-      var sections = _(value.split(/\s*[-_]{3,}\s*/)).value();
-      // console.log('markedService', sections.length)
-      // get the last section (bibliographic footnotes will be there)
-      if(sections.length > 1){
-        footnotes = sections.pop();
-        // console.log('markedService footnotes: ', footnotes)
-        value = sections.join('');
-        // console.log('markedService footnotes: ', value)
+  //     // split the links section and the footnotes
+  //     var sections = _(value.split(/\s*[-_]{3,}\s*/)).value();
+  //     // console.log('markedService', sections.length)
+  //     // get the last section (bibliographic footnotes will be there)
+  //     if(sections.length > 1){
+  //       footnotes = sections.pop();
+  //       // console.log('markedService footnotes: ', footnotes)
+  //       value = sections.join('');
+  //       // console.log('markedService footnotes: ', value)
 
 
-      }
+  //     }
 
-      // split value according to language(reduce pairs)
-      if(language){
-        var candidate = _(value.split(/<!--\s*(lang:[a-zA-Z_]{2,5})\s*-->/))
-          .compact()
-          .chunk(2)
-          .fromPairs()
-          .value();
-        // console.log(language, candidate)
-        if(candidate['lang:'+language]) {
-          value = candidate['lang:'+language];
-        }
-        //value = value.split();
-      }
+  //     // split value according to language(reduce pairs)
+  //     if(language){
+  //       var candidate = _(value.split(/<!--\s*(lang:[a-zA-Z_]{2,5})\s*-->/))
+  //         .compact()
+  //         .chunk(2)
+  //         .fromPairs()
+  //         .value();
+  //       // console.log(language, candidate)
+  //       if(candidate['lang:'+language]) {
+  //         value = candidate['lang:'+language];
+  //       }
+  //       //value = value.split();
+  //     }
 
       
 
-      // render the footnotes
+  //     // render the footnotes
 
-      // collect h1,h2, hn and get the table of contents ToC
-      renderer.heading = function(text, level){
-        var h = {
-          text: text,
-          level: level,
-          slug: $filter('slugify')(text)
-        };
-        ToC.push(h);
+  //     // collect h1,h2, hn and get the table of contents ToC
+  //     renderer.heading = function(text, level){
+  //       var h = {
+  //         text: text,
+  //         level: level,
+  //         slug: $filter('slugify')(text)
+  //       };
+  //       ToC.push(h);
 
-        return '<h' + level + '>'+
-          // '<div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div>' +
-          '<a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>' + 
-          text + '</h' + level + '>';
-      };
+  //       return '<h' + level + '>'+
+  //         // '<div class="anchor-sign" ng-click="hash(\''+ h.slug +'\')"><span class="icon-link"></span></div>' +
+  //         '<a name="' + h.slug +'" class="anchor" href="#' + h.slug +'"><span class="header-link"></span></a>' + 
+  //         text + '</h' + level + '>';
+  //     };
 
-      // collect miller document
-      renderer.link = function(url, boh, text) {
-        console.log('markedService link', url);
-        if(url.trim().indexOf('doc/') === 0){
-          var documents = url.trim().replace('doc/','').split(',');
-          for(var i in documents){
-            docs.push({
-              _index: 'link-' + (linkIndex++), // internal id
-              citation: text,
-              slug: documents[i]
-            });
-          }
-          return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
-        } else if (url.trim().indexOf('voc/') === 0){
-          var terms = url.trim().replace('voc/','').split(',');
-          for(var j in terms){
-            docs.push({
-              _index: 'link-' + (linkIndex++), // internal id
-              citation: text,
-              slug: terms[j],
-              type: 'glossary'
-            });
-          }
-          return '<a class="glossary" name="' + terms[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+' <span class="icon icon-arrow-right-circle"></span></a>';
+  //     // collect miller document
+  //     renderer.link = function(url, boh, text) {
+  //       console.log('markedService link', url);
+  //       if(url.trim().indexOf('doc/') === 0){
+  //         var documents = url.trim().replace('doc/','').split(',');
+  //         for(var i in documents){
+  //           docs.push({
+  //             _index: 'link-' + (linkIndex++), // internal id
+  //             citation: text,
+  //             slug: documents[i]
+  //           });
+  //         }
+  //         return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')">'+text+'</a>';
+  //       } else if (url.trim().indexOf('voc/') === 0){
+  //         var terms = url.trim().replace('voc/','').split(',');
+  //         for(var j in terms){
+  //           docs.push({
+  //             _index: 'link-' + (linkIndex++), // internal id
+  //             citation: text,
+  //             slug: terms[j],
+  //             type: 'glossary'
+  //           });
+  //         }
+  //         return '<a class="glossary" name="' + terms[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+' <span class="icon icon-arrow-right-circle"></span></a>';
         
-        }
-        return '<a href='+url+'>'+text+'</a>';
-      };
+  //       }
+  //       return '<a href='+url+'>'+text+'</a>';
+  //     };
 
-      renderer.image = function(src, title, alt){
-        if((alt||'').indexOf('profile/') === 0){
-          return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
-        }
-        return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
-      };
+  //     renderer.image = function(src, title, alt){
+  //       if((alt||'').indexOf('profile/') === 0){
+  //         return '<div class="profile-thumb" style="background-image:url('+src+')"></div>';
+  //       }
+  //       return '<img src="'+ src+ '" title="'+title+'" alt="'+alt+'"/>';
+  //     };
 
-      // get the new documents and save them in background if needed.
-      result = marked(value, {
-        renderer: renderer
-      });
+  //     // get the new documents and save them in background if needed.
+  //     result = marked(value, {
+  //       renderer: renderer
+  //     });
 
-      return {
-        html: result,
-        md: value,
-        ToC: ToC,
-        docs: docs
-      };
-    }; 
-  });
+  //     return {
+  //       html: result,
+  //       md: value,
+  //       ToC: ToC,
+  //       docs: docs
+  //     };
+  //   }; 
+  // });

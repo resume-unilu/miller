@@ -453,6 +453,21 @@ label{
   /*background: transparent;*/
 }
 
+.contents a.special-link .anchor-wrapper{
+  position: absolute;
+  right: -50%;
+  width: 50%;
+  
+  height: 25px;
+  display: block;
+  z-index: 2;
+  font-size: 12px;
+  line-height: 25px;
+
+  font-weight: normal;
+  font-style: normal;
+}
+
 .contents a.special-link.with-pointer{
   padding: 0 5px;
 }

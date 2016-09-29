@@ -80,6 +80,38 @@ angular.module('miller')
       }
     }
   })
+  .directive('hold', function($log, $rootScope, $compile, RUNTIME){
+    return {
+      restrict : 'A',
+      scope: {
+      },
+      templateUrl: RUNTIME.static + 'templates/partials/hold.html',
+      link : function(scope, element, attrs) {
+        $log.log(':: hold ready')
+
+        scope.language = ''+scope.$parent.language;
+        
+        var doc =  _.find(scope.$parent.resources, {
+          slug: attrs.slug,
+          _type: attrs.type
+        });
+
+        if(!doc){
+          $log.error(':: hold: cannot find the document or the glossary term specified by attrs:', attrs);
+          return;
+        }
+
+        $rootScope.resolve(doc.slug, attrs.type, function(res){
+          $log.log(':: hold received:', res)
+
+          scope.resource = res;
+          // scope.$apply()
+          $compile(element.contents())(scope);
+        })
+        
+      }
+    }
+  })
   // main markdown directive, almost always used
   .directive('markdownit', function ($compile, $log, $location, markdownItService, EVENTS) {
     return {
@@ -89,7 +121,9 @@ angular.module('miller')
         settoc: '&',
         setdocs: '&',
         language: '=',
-        listener: '&'
+        watchlanguage: '=',
+        listener: '&',
+
       },
       link : function(scope, element, attrs) {
         var entities = [],
@@ -102,7 +136,8 @@ angular.module('miller')
         scope.hash = function(what) {
           $location.hash(what);
         };
-        
+
+
         scope.fullsize = function(slug, type){
           if(scope.listener){
             scope.listener({
@@ -135,16 +170,20 @@ angular.module('miller')
           }
           var results  = markdownItService(scope.markdownit, scope.language);
 
+
+          scope.resources = results.docs
+
           element.html(results.html);
           $compile(element.contents())(scope);
           if(scope.settoc)
             scope.settoc({ToC:results.ToC});
           if(scope.setdocs)
             scope.setdocs({items:results.docs});
+          
         };
 
         // watch language and reparse everything when needed.
-        if(scope.language)
+        if(scope.watchlanguage && scope.language)
           scope.$watch('language', function(language){
             if(language)
               parse();
