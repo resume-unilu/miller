@@ -47,7 +47,16 @@ class Document(models.Model):
   title      = models.CharField(max_length=500)
   slug       = models.CharField(max_length=150, unique=True)
 
-  contents   = models.TextField(null=True, blank=True, default='') # OEMBED (JSON) metadata field, in different languages if available.
+  contents   = models.TextField(null=True, blank=True, default=json.dumps({
+    'provider_name': '',
+    'provider_url': '',
+    'type': 'rich',
+    'title': '',
+    'description': '',
+    'html': '',
+    'details':{}
+  })) # OEMBED (JSON) metadata field, in different languages if available.
+  
   copyrights = models.TextField(null=True, blank=True,  default='')
 
   url        = models.URLField(max_length=500, null=True, blank=True)
