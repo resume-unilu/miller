@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import json
+from codemirror import CodeMirrorTextarea
+
+from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
@@ -49,10 +53,31 @@ class ProfileInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
   inlines = (ProfileInline, )
 
+
+class DocumentAdminForm(forms.ModelForm):
+  def __init__(self, *args, **kwargs):
+    codemirror_widget = CodeMirrorTextarea(mode="python", theme="default", config={ 
+      'fixedGutter': True, 
+      'lineNumbers':True, 
+      'lineWrapping': True
+    })
+    super(DocumentAdminForm, self).__init__(*args, **kwargs)
+    self.fields['contents'].widget = codemirror_widget
+
+  def clean_contents(self):
+    try:
+      contents = json.loads(self.cleaned_data['contents'])
+    except ValueError as e:
+      raise forms.ValidationError(u'%s'%e)
+      # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
+    
+    return self.cleaned_data['contents']
+
 class DocumentAdmin(admin.ModelAdmin):
   search_fields = ['title', 'contents']
-  exclude=['snapshot']
+  exclude=['snapshot', 'copyright']
   list_filter = ('type',)
+  form = DocumentAdminForm
 
 class CaptionAdmin(admin.ModelAdmin):
   search_fields = ['contents']

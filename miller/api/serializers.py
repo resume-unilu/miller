@@ -154,7 +154,7 @@ class DocumentSerializer(serializers.ModelSerializer):
   src   = OptionalFileField(source='attachment')
   class Meta:
     model = Document
-    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'metadata', 'snapshot', 'copyrights')
+    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'snapshot', 'copyrights')
 
 
 class MatchingDocumentSerializer(serializers.ModelSerializer):
@@ -169,11 +169,12 @@ class MatchingDocumentSerializer(serializers.ModelSerializer):
 
 # define the 
 class CreateDocumentSerializer(serializers.ModelSerializer):
+  metadata = JsonField(source='contents')
   owner = serializers.HiddenField(
     default=serializers.CurrentUserDefault()
   )
 
   class Meta:
     model = Document
-
+    fields = ('id', 'owner', 'type','short_url', 'title', 'slug', 'metadata', 'copyrights', 'url', 'attachment', 'snapshot')
 

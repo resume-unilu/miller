@@ -279,6 +279,13 @@ LOGGING = {
 
 #............
 #
+# CODEMIRROR PLUGIN ADMIN
+#
+#............
+
+CODEMIRROR_PATH = r'js/codemirror'
+#............
+#
 # MILLER APP
 #
 #............
