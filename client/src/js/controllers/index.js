@@ -30,7 +30,7 @@ angular.module('miller')
     function excerpt(story) {
       story.excerpt = {}
       for(var i in story.metadata.abstract)
-        story.excerpt[i] = tokenize(story.metadata.abstract[i], 10)
+        story.excerpt[i] = tokenize(story.metadata.abstract[i], 25)
       return story
     }
 
