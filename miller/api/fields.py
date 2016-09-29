@@ -17,8 +17,9 @@ class JsonField(serializers.Field):
       try:
         return json.loads(obj)
       except ValueError as e:
+
         return {
-          "error": e
+          "error": u'%s' % e
         }
         return obj
     return obj

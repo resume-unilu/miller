@@ -12,16 +12,29 @@ angular.module('miller')
       Get the firs n sentence until the number of words are covered.
       return an array
     */
-    function tokenize(text, words){
-      var sentences = text.split(/[\.!\?]/);
+    function tokenize(text, maxwords) {
+      var words = text.split(/(?!=\.\s)\s/);
+
+      var sentence = _.take(words, maxwords).join(' ');
+      if(sentence.length < text.length){
+        if(!sentence.match(/\?\!\.$/)){
+          sentence += ' '
+        }
+        
+        sentence += '...'
+      }
       // console.log(text, sentences);
-      return sentences;
+      return sentence;
     }
 
-    writings.results = writings.results.map(function(d) {
-      d.excerpt = d.metadata.abstract[$scope.language]? tokenize(d.metadata.abstract[$scope.language], 10)[0]: '';
-      return d;
-    });
+    function excerpt(story) {
+      story.excerpt = {}
+      for(var i in story.metadata.abstract)
+        story.excerpt[i] = tokenize(story.metadata.abstract[i], 10)
+      return story
+    }
+
+    writings.results = writings.results.map(excerpt);
 
     $scope.coverstory = writings.results.shift();
     $scope.otherstories = writings.results;
@@ -32,10 +45,7 @@ angular.module('miller')
     }
 
 
-    $scope.news = news.results.map(function(d) {
-      d.excerpt = d.metadata.abstract[$scope.language]? tokenize(d.metadata.abstract[$scope.language], 10)[0]: '';
-      return d;
-    });
+    $scope.news = news.results.map(excerpt);
     $log.debug('IndexCtrl welcome',$scope.news);
 
 
