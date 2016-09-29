@@ -22,6 +22,7 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
     fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
 
 
+
 # serializer the authors.
 class AuthorSerializer(serializers.ModelSerializer):
   class Meta:
@@ -61,6 +62,19 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Document
     fields = ('id', 'copyrights', 'metadata', 'url', 'attachment', 'slug')
+
+
+# A story of stories
+class CollectionSerializer(serializers.ModelSerializer):
+  authors = AuthorSerializer(many=True)
+  owner = AuthorSerializer()
+  tags = TagSerializer(many=True)
+  documents = CaptionSerializer(source='caption_set', many=True)
+
+  class Meta:
+    model = Story
+    fields = ('id', 'authors', 'owner', 'tags', 'documents')
+
 
 
 # retrieve a Story, full

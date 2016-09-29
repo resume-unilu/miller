@@ -1,4 +1,5 @@
 import json
+from collection import CollectionViewSet
 from story import StoryViewSet
 from tag import TagViewSet
 from caption import CaptionViewSet

@@ -31,6 +31,7 @@ router.register(r'caption', api.CaptionViewSet)
 router.register(r'document', api.DocumentViewSet)
 router.register(r'profile', api.ProfileViewSet)
 router.register(r'tag', api.TagViewSet)
+router.register(r'collection', api.CollectionViewSet)
 
 
 urlpatterns = [

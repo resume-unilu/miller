@@ -15,12 +15,14 @@ class Tag(models.Model):
   BLOG   = 'blog' # items tagged as events are "news"
   HIGHLIGHTS   = 'highlights'
   WRITING      = 'writing'
+  COLLECTION   = 'collection'
 
   CATEGORY_CHOICES = (
     (KEYWORD, 'keyword'),
     (BLOG, 'blog'),
     (HIGHLIGHTS, 'highlights'),
-    (WRITING, 'writing')
+    (WRITING, 'writing'),
+    (COLLECTION, 'collection')
   )
 
   HIDDEN  = 'hidden'

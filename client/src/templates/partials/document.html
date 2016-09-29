@@ -6,9 +6,13 @@
 
   <div ng-if='document.type=="photo"' ng-include='"templates/partials/document.photo.html"|prefixTemplate'></div>
 
-  <div ng-if='document.type=="rich"' ng-include='"templates/partials/document.rich.html"|prefixTemplate'></div>
+  <div ng-if='document.type=="photo"' ng-include='"templates/partials/document.photo.html"|prefixTemplate'></div>
 
-    <div ng-if='document.type=="link" && document.metadata.thumbnail_url' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
+  <div ng-if='document.type=="rich" || document.type=="video"' ng-include='"templates/partials/document.rich.html"|prefixTemplate'></div>
+
+  <div ng-if='document.type=="link" && document.metadata.thumbnail_url' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
+
+  <div ng-if='document.type=="picture"' style='height: 400px; width:100%; background-position: center; background-color: #151515; background-size:contain; background-repeat: no-repeat;' lazy-img='{{document.src}}'></div>
 
   <div ng-if='document.metadata' ng-include='"templates/partials/document.metadata.html"|prefixTemplate'></div>
 
@@ -20,7 +24,7 @@
         
       </div>
 
-      <div ng-if='document.type=="picture"' lazy-image src='document.src'></div>
+      
 
       <div ng-if='document.type=="pdf"' lazy-image src='document.snapshot'></div>
       
