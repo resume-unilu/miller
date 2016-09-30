@@ -6,7 +6,7 @@
  * transform markdown data in miller enhanced datas
  */
 angular.module('miller')
-  .directive('mde', function ($log, $timeout, $modal,  $filter, DocumentFactory, StoryFactory, OembedSearchFactory, embedService, markedService, RUNTIME) {
+  .directive('mde', function ($log, $timeout, $modal,  $filter, DocumentFactory, StoryFactory, OembedSearchFactory, embedService, markdownItService, RUNTIME) {
     return {
       restrict: 'AE',
       scope: {
@@ -154,7 +154,7 @@ angular.module('miller')
 
           function recompile(){
             // $log.debug('::mde -> recompile() ...');
-            var marked   = markedService(simplemde.value()),
+            var marked   = markdownItService(simplemde.value()),
                 ToCHash = md5(JSON.stringify(marked.ToC)),
                 docsHash = md5(_.map(marked.docs,'slug').join('--'));
             
