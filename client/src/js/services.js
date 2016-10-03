@@ -43,6 +43,10 @@ angular.module('miller')
       }
     });
   })
+
+  .factory('CollectionFactory', function ($resource) {
+    return $resource('/api/collection/:id/', {}, {});
+  })
   /*
     get a list of ralreeady saved document accessible by the user
   */
@@ -115,6 +119,7 @@ angular.module('miller')
         html:'',
         ToC: [],
         docs: [],
+        paragraphs: 0,
         footnotes: {}
       };
       // load footnotes plugin
@@ -124,8 +129,18 @@ angular.module('miller')
         .use(window.markdownitContainer, 'profile-committee')
         .use(window.markdownitContainer, 'profile-others');
 
-      // console.log('RULES' , md.renderer.rules)
-
+      
+      md.renderer.rules.paragraph_open = function(tokens, idx) {
+        console.log('paragraph', results.paragraphs, tokens[idx-1])
+        if(idx > 0 && tokens[idx-1] && tokens[idx-1].type != 'footnote_open'){
+          // debugger
+          results.paragraphs++;
+          // return '<p><div class="paragraph-number">'+results.paragraphs+'</div>'
+          return '<p><span class="paragraph-number">'+results.paragraphs+'</span>'
+        } else {
+          return '<p>'
+        }
+      }
 
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){

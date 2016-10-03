@@ -434,6 +434,13 @@ label{
 /*
   contents (story)
 */
+.contents .paragraph-number{
+  position: absolute;
+  left: 0px;
+  text-align: right;
+  color: #ccc;
+}
+
 .contents a.special-link{
   color: #151515;
   background-color: #adebe7;

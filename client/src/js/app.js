@@ -470,6 +470,17 @@ angular
         }
       })
 
+      .state('collection', {
+        url: '/collection/:collectionId',
+        controller: 'CollectionCtrl',
+        reloadOnSearch : false,
+        templateUrl: RUNTIME.static + 'templates/collection.html',
+        resolve: {
+          story: function(StoryFactory, $stateParams) {
+            return CollectionFactory.get({id: $stateParams.collectionId}).$promise;
+          },
+        }
+      })
 
       /*
         All the rest are static pages and will download the md files directly
