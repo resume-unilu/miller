@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs, json, logging
+import pypandoc, re, os, codecs, json, logging
 import django.dispatch
 
 from BeautifulSoup import BeautifulSoup
@@ -125,13 +125,23 @@ class Story(models.Model):
   # convert the content of in a suitable markdown file. to be used before store() and before create_working_md() are called
   # if force is true, it overrides the contents field.
   def convert(self, force=False):
-    import pypandoc, re
-    # we force to use # headers by setting the threshold of 3
+    
+    # we force to use # headers by setting the threshold of 3 so that h1 "===" is transformed to h3 "###"
     contents = pypandoc.convert_file(self.source.path, 'markdown',  extra_args=['--base-header-level=3'])
-    # ... but we have to reduce them as well.
+    # ... but we have to transform them back, minus a level (e.g. transformed h1 becomes h2).
+    # We should check if we can use the pandoc options for that directly
     self.contents = re.sub(r'#(#+)', r'\1', contents) 
 
 
+  # convert the last saved content (markdown file) to a specific format (default: docx)
+  def download(self, outputFormat='docx', extension='docx'):
+    outputfile = '%s.%s' % (self.get_path(), extension)
+    # reverted = re.sub(r'#(#+)', r'\1', contents) 
+    pypandoc.convert_file(self.get_path(), outputFormat, outputfile=outputfile, extra_args=['--base-header-level=2'])
+    return outputfile
+
+
+  # save hook
   def save(self, *args, **kwargs):
     if not self.id and not self.slug:
       slug = slugify(self.title)

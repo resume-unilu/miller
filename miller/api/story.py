@@ -71,6 +71,26 @@ class StoryViewSet(viewsets.ModelViewSet):
   def partial_update(self, request, *args, **kwargs):
     return super(StoryViewSet, self).partial_update(request, *args, **kwargs)
 
+  @permission_classes((IsAdminUser, ))
+  @detail_route(methods=['get'])
+  def download(self, request, pk):
+    story = get_object_or_404(Story, status=Story.PUBLIC, pk=pk)
+    import os, mimetypes
+    from wsgiref.util import FileWrapper
+    from django.http import StreamingHttpResponse
+    from django.utils.text import slugify
+
+    attachment = story.download()
+    mimetype = mimetypes.guess_type(attachment)[0]
+    # print attachment,mimetype
+    
+    response = StreamingHttpResponse(FileWrapper( open(attachment), 8192), content_type=mimetype)
+    response['Content-Length'] = os.path.getsize(attachment)  
+    response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (slugify(story.title),mimetypes.guess_extension(mimetype))
+      
+    return response
+
+
 
   @list_route(methods=['get'])
   def search(self, request):
