@@ -131,7 +131,7 @@ angular.module('miller')
 
       
       md.renderer.rules.paragraph_open = function(tokens, idx) {
-        console.log('paragraph', results.paragraphs, tokens[idx-1])
+        // console.log('paragraph', results.paragraphs, tokens[idx-1])
         if(idx > 0 && tokens[idx-1] && tokens[idx-1].type != 'footnote_open'){
           // debugger
           results.paragraphs++;

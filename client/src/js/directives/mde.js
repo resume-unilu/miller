@@ -397,6 +397,7 @@ angular.module('miller')
             DocumentFactory.save({
               title: embed.title,
               contents: JSON.stringify(embed),
+              metadata: JSON.stringify(embed),
               type: (embed.type|| 'link').toLowerCase(),
               slug:  slug,
               url: url

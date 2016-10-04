@@ -473,6 +473,8 @@ label{
 
   font-weight: normal;
   font-style: normal;
+  display:none;
+  
 }
 
 .contents a.special-link.with-pointer{
@@ -1090,7 +1092,9 @@ h4.modal-title{
   background: #B7B2B2;
 }
 
-
+.story .cover{
+  background: #f0efef;
+}
 
 /*
   dribbble like documents
