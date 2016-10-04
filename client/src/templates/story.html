@@ -36,11 +36,12 @@
             <div ng-repeat='document in story.covers'>
               <div class='row'>
               <div class='col-md-8'>
-                <div ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
+                <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
+                <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}' />
               </div>
               
               <div class='col-md-4'>
-                <div ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
+                <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
               </div>
             </div>
           </div>
@@ -53,7 +54,7 @@
             </div>
           </div>
           <div class='col-md-4'>
-            MAIN CHOSEN CONTENT CAN GO HERE
+            
           </div>
         </div>
         <!-- <div style='margin-top: 50px' disqus="story.slug"></div> -->

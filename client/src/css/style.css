@@ -186,6 +186,12 @@ label{
   padding-top: 10px;
   overflow:hidden;
 }
+.image-wrapper.cover{
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 10px;
+  padding: 0;
+}
 
 .image-wrapper img{
   height: 100%;
@@ -1089,12 +1095,17 @@ h4.modal-title{
 }
 
 .doc .cover{
-  background: #B7B2B2;
+  background-color: #B7B2B2;
 }
 
 .story .cover{
-  background: #f0efef;
+  background-color: #f0efef;
 }
+
+.story .cover .metadata-wrapper{
+  margin: 0 10px;
+}
+
 
 /*
   dribbble like documents
