@@ -71,10 +71,16 @@ class StoryViewSet(viewsets.ModelViewSet):
   def partial_update(self, request, *args, **kwargs):
     return super(StoryViewSet, self).partial_update(request, *args, **kwargs)
 
-  @permission_classes((IsAdminUser, ))
+
   @detail_route(methods=['get'])
   def download(self, request, pk):
-    story = get_object_or_404(Story, status=Story.PUBLIC, pk=pk)
+    if request.user.is_authenticated():
+      stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC))
+    else:
+      stories = self.queryset.filter(status=Story.PUBLIC)
+    story = get_object_or_404(stories, pk=pk)
+
+
     import os, mimetypes
     from wsgiref.util import FileWrapper
     from django.http import StreamingHttpResponse

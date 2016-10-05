@@ -37,7 +37,7 @@ angular.module('miller')
     }
 
 
-    $scope.download = function() {debugger;
+    $scope.download = function() {
       StoryFactory.download({
         id: $scope.story.id
       }).$promise.then(function(result) {
