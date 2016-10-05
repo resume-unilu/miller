@@ -14,8 +14,6 @@ from django.conf import settings
 
 class ZoteroTest(TestCase):
   def test_connection(self):
-    print 'ok'
-
     created, collection, zotero = helpers.get_or_create_zotero_collection(settings.ZOTERO_IDENTITY_NAME)
     self.assertEqual(collection['data']['name'], settings.ZOTERO_IDENTITY_NAME)
     helpers.fill_zotero_collection(filename=os.path.join(dir_path, 'test_zotero.rdf'), collection=collection, zotero=zotero)

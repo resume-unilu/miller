@@ -14,17 +14,16 @@ class StoryTest(APITestCase):
     self.factory = APIRequestFactory(enforce_csrf_checks=True)
     self.user = User.objects.create_user(
     username='jacob', email='jacob@jacob', password='top_secret')
-
     self.client.login(username='jacob', password='top_secret')
     
 
-  def test_list(self):
+  def _empty_test_list(self):
     url = reverse('story-list')
     response = self.client.get(url, format='json')
     self.assertEqual(response.data, {"count":0,"next":None,"previous":None,"results":[]})
 
 
-  def test_create(self):
+  def _test_create(self):
     url = reverse('story-list')
     response = self.client.post(url, {'title':'This is a sad old story'}, format='multipart')
     self.assertEqual(response.status_code, 201)
@@ -56,4 +55,8 @@ class StoryTest(APITestCase):
     response = self.client.patch(url, {'contents': 'oh good'}, format='multipart')
     self.assertEqual(response.data['contents'], 'oh good')
     
+
+  def test_series(self):
+    self._empty_test_list()
+    self._test_create()
     

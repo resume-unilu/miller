@@ -122,6 +122,22 @@ class Story(models.Model):
       classname = u"story")
     writer.commit()
 
+
+  # unstore (usually when deleted)
+  def unstore(self, ix=None):
+    # if settings.TESTING:
+    #   logger.debug('mock storing data during test')
+    #   return
+    if ix is None:
+      ix = helpers.get_whoosh_index()
+    
+    writer = ix.writer()
+
+    writer.delete_by_term('path', u"%s"%self.short_url)
+    # Save the deletion to disk
+    writer.commit()
+
+
   # convert the content of in a suitable markdown file. to be used before store() and before create_working_md() are called
   # if force is true, it overrides the contents field.
   def convert(self, force=False):
@@ -218,6 +234,15 @@ def store_working_md(sender, instance, created, **kwargs):
   logger.debug('(story {pk:%s}) @story_ready store_working_md: done' % instance.pk)
 
 
+# clean store in whoosh when deleted
+@receiver(pre_delete, sender=Story)
+def unstore_working_md(sender, instance, **kwargs):
+  instance.unstore()
+  logger.debug('(story {pk:%s}) @pre_delete unstore_working_md: done' % instance.pk)
+
+
+
+
 # check if there is a source file of type docx attached and transform it to content.
 @receiver(story_ready, sender=Story)
 def transform_source(sender, instance, created, **kwargs):
@@ -242,13 +267,13 @@ def create_first_author(sender, instance, created, **kwargs):
   if created:
     instance.authors.add(instance.owner)
     instance.__dirty = True
-    logger.debug('(story {pk:%s}) @story_ready create_first_author: {username:%s}" done.' % (instance.pk, instance.owner.username))
+    logger.debug('(story {pk:%s}) @story_ready: {username:%s}" done.' % (instance.pk, instance.owner.username))
 
 
 # create story file if it is not exists; if the story eists already, cfr the followinf story_ready
 @receiver(story_ready, sender=Story)
 def create_working_md(sender, instance, created, **kwargs):
-  logger.debug('(story {pk:%s}) @story_ready create_working_md: git...' % instance.pk)
+  logger.debug('(story {pk:%s}) @story_ready: git...' % instance.pk)
   
   path = instance.get_path()
   
@@ -269,7 +294,36 @@ def create_working_md(sender, instance, created, **kwargs):
   #tree = Tree(repo=repo, path=instance.owner.profile.get_path())
   repo.index.add([instance.owner.profile.get_path()])
   repo.index.commit(message=u"saving %s" % instance.title, author=author, committer=committer)
-  logger.debug('(story {pk:%s}) @story_ready create_working_md: done.' % instance.pk)
+  logger.debug('(story {pk:%s}) @story_ready: done.' % instance.pk)
 
 
-    
+
+# clean makdown version and commit
+@receiver(pre_delete, sender=Story)
+def delete_working_md(sender, instance, **kwargs):
+  logger.debug('(story {pk:%s}) @pre_delete: %s' % (instance.pk, instance.get_path()))
+  
+  path = instance.get_path()
+  
+
+  from git import Repo, Commit, Actor, Tree
+
+  author = Actor(instance.owner.username, instance.owner.email)
+  committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
+
+  # /* delete file */
+  os.remove(path);
+
+  logger.debug('(story {pk:%s}) @story_ready: markdown removed.' % instance.pk)
+
+  # commit if there are any differences
+  repo = Repo.init(settings.GIT_ROOT)
+
+  # add and commit JUST THIS FILE
+  #tree = Tree(repo=repo, path=instance.owner.profile.get_path())
+  repo.git.add(update=True)
+  repo.index.commit(message=u"deleting %s" % instance.title, author=author, committer=committer)
+
+
+  logger.debug('(story {pk:%s}) @story_ready: done.' % instance.pk)
+
