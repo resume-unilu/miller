@@ -164,7 +164,7 @@ class Story(models.Model):
       ]))
 
     # reverted = re.sub(r'#(#+)', r'\1', contents) 
-    pypandoc.convert_file(tempoutputfile, outputFormat, outputfile=outputfile, extra_args=['--base-header-level=1'])
+    pypandoc.convert_file(tempoutputfile, outputFormat, outputfile=outputfile, extra_args=['--base-header-level=1', '--latex-engine=xelatex'])
     os.remove(tempoutputfile)
 
     return outputfile
