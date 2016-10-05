@@ -109,7 +109,7 @@ angular.module('miller')
       $log.debug('CoversModalCtrl -> addDocument() id:', $scope.selectedDocument.id);
 
       $scope.setCover($scope.selectedDocument);
-      // parent function add Cove
+      $scope.$hide();
     }
 
   // http://localhost:8000/api/document/?filters=%7B%22caption__story__owner__username%22%3A%22danieleguido%22%7D&limit=4&offset=4
