@@ -32,7 +32,7 @@ class Profile(models.Model):
     app_label="miller"
 
 
-  # get profile path based on random generated shorten url
+  # get profile path UNDER GIT based on random generated shorten url. This does not apply for user uploaded contents.
   def get_path(self):
     return os.path.join(settings.PROFILE_PATH_ROOT, self.short_url)
 
@@ -43,28 +43,34 @@ def create_working_folder(sender, instance, created, **kwargs):
   if created:
     pro = Profile(user=instance)
     pro.save()
-    logger.debug('(user {pk:%s}) create_working_folder: done.' % instance.pk)
+    logger.debug('(user {pk:%s}) @post_save: done.' % instance.pk)
 
 
 
 @receiver(post_save, sender=Profile)
 def check_working_folder(sender, instance, created, **kwargs):
+  user_path = os.path.join(settings.MEDIA_ROOT, instance.short_url)
   path = instance.get_path()
+
   if not os.path.exists(path):
     os.makedirs(path)
-  logger.debug('(profile {pk:%s}) check_working_folder: done.' % instance.pk)
+  if not os.path.exists(user_path):
+    os.makedirs(user_path)
+
+  logger.debug('(profile {pk:%s}) @post_save: done.' % instance.pk)
 
 
 @receiver(post_save, sender=Profile)
 def create_zotero_collection(sender, instance, created, **kwargs):
   if not hasattr(settings, 'ZOTERO_IDENTITY'):
-    logger.warn('(profile {pk:%s}) create_zotero_collection: ZOTERO_IDENTITY not set, skipping...' % instance.pk)
+    logger.warn('(profile {pk:%s}) @post_save: ZOTERO_IDENTITY not set, skipping...' % instance.pk)
     return
   created, collection, zotero = helpers.get_or_create_zotero_collection(instance.user.username)
   if collection is not None:
-    logger.debug('(profile {pk:%s}) create_zotero_collection: done.' % instance.pk)
+    logger.debug('(profile {pk:%s}) @post_save: done.' % instance.pk)
   else:
-    logger.warn('(profile {pk:%s}) create_zotero_collection: failed!' % instance.pk)
+    logger.warn('(profile {pk:%s}) @post_save: failed!' % instance.pk)
+
 
 @receiver(pre_delete, sender=Profile)
 def delete_working_folder(sender, instance, **kwargs):
@@ -73,4 +79,12 @@ def delete_working_folder(sender, instance, **kwargs):
   '''
   path = instance.get_path()
   shutil.rmtree(path)
-  logger.debug('(profile {pk:%s}) delete_working_folder: done.' % instance.pk)
+  logger.debug('(profile {pk:%s}) @pre_delete: done.' % instance.pk)
+
+
+# delete the user media folder, created once an user upload a file or download it
+@receiver(pre_delete, sender=Profile)
+def delete_user_media_folder(sender, instance, **kwargs):
+  path = os.path.join(settings.MEDIA_ROOT, instance.short_url)
+  shutil.rmtree(path)
+  logger.debug('(profile {pk:%s}) @pre_delete: done.' % instance.pk)

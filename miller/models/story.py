@@ -30,7 +30,7 @@ story_ready = django.dispatch.Signal(providing_args=["instance", "created"])
 
 def user_path(instance, filename):
   root, ext = os.path.splitext(filename)
-  src = os.path.join(settings.MEDIA_ROOT, instance.owner.profile.short_url, instance.short_url+ '.' + ext)
+  src = os.path.join(settings.MEDIA_ROOT, instance.owner.profile.short_url, instance.short_url + ext)
   return src
 
 
@@ -150,10 +150,23 @@ class Story(models.Model):
 
 
   # convert the last saved content (markdown file) to a specific format (default: docx)
-  def download(self, outputFormat='docx', extension='docx'):
-    outputfile = '%s.%s' % (self.get_path(), extension)
+  # the media will be in the user MEDIA folder...
+  def download(self, outputFormat='docx', language=None, extension=None):
+    outputfile = user_path(self, '%s.%s' % (self.short_url, extension if extension is not None else outputFormat))
+    tempoutputfile = user_path(self, '__%s.md' % self.short_url)
+
+    with codecs.open(tempoutputfile, "w", "utf-8") as temp:
+      temp.write(u'\n\n'.join([
+        u"#%s" % self.title,
+        u"> %s" % self.abstract if self.abstract else "",
+        # generate citation
+        self.contents
+      ]))
+
     # reverted = re.sub(r'#(#+)', r'\1', contents) 
-    pypandoc.convert_file(self.get_path(), outputFormat, outputfile=outputfile, extra_args=['--base-header-level=2'])
+    pypandoc.convert_file(tempoutputfile, outputFormat, outputfile=outputfile, extra_args=['--base-header-level=1'])
+    os.remove(tempoutputfile)
+
     return outputfile
 
 
@@ -313,6 +326,7 @@ def delete_working_md(sender, instance, **kwargs):
 
   # /* delete file */
   os.remove(path);
+  # keep exports in .gitignore
 
   logger.debug('(story {pk:%s}) @story_ready: markdown removed.' % instance.pk)
 

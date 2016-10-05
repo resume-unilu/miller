@@ -33,14 +33,29 @@ class StoryTest(TestCase):
     self.assertTrue(os.path.exists(self.story.get_path()))
 
 
+  def _test_download_docx(self):
+    path = self.story.download(outputFormat='docx')
+    self.assertTrue(os.path.exists(path))
+
+
+  def _test_download_pdf(self):
+    path = self.story.download(outputFormat='pdf')
+    self.assertTrue(os.path.exists(path))
+
   def _test_delete(self):
     path = self.story.get_path()
     self.story.delete()
     self.assertFalse(os.path.exists(path))
 
-
-    # check that the user has been deleted
+    
+  def _test_delete_user(self):
+    path = self.user.profile.get_path()
+    self.user.delete()
+    self.assertFalse(os.path.exists(path))
+   
     
   def test_suite(self):
     self._test_create()
+    self._test_download_pdf()
     self._test_delete()
+    # self._test_delete_user()

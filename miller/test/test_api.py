@@ -55,8 +55,13 @@ class StoryTest(APITestCase):
     response = self.client.patch(url, {'contents': 'oh good'}, format='multipart')
     self.assertEqual(response.data['contents'], 'oh good')
     
+  def _test_delete_user(self):
+    path = self.user.profile.get_path()
+    self.user.delete()
+    self.assertFalse(os.path.exists(path))
 
   def test_series(self):
     self._empty_test_list()
     self._test_create()
+    self._test_delete_user()
     
