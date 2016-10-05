@@ -13,6 +13,8 @@ angular.module('miller')
       return an array
     */
     function tokenize(text, maxwords) {
+      if(!text)
+        return "";
       var words = text.split(/(?!=\.\s)\s/);
 
       var sentence = _.take(words, maxwords).join(' ');
