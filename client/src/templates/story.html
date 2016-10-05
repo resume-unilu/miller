@@ -1,6 +1,9 @@
 <div class="story">
-  <div class="actions" ng-if='story.isWritable'>
+  <div class="actions" >
     <div class='btn-line-group primary'>
+      <button  class='btn-line' ng-click='download()'>PDF <span class='icon icon-cloud-download'></span></button>
+    </div>
+    <div ng-if='story.isWritable' class='btn-line-group primary'>
       <button  class='btn-line' nref ui-sref='writing({storyId:story.id})'>edit</button>
     </div>
 

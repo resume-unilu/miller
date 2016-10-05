@@ -80,7 +80,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     from django.http import StreamingHttpResponse
     from django.utils.text import slugify
 
-    attachment = story.download()
+    attachment = story.download(outputFormat='pdf')
     mimetype = mimetypes.guess_type(attachment)[0]
     # print attachment,mimetype
     

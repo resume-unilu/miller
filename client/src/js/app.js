@@ -34,6 +34,7 @@ angular
   })
   .constant('EVENTS', {
     'SAVE': 'save',
+    'DOWNLOAD': 'download',
     'MESSAGE': 'message',
     'BAD_REQUEST':'bad_request',
     // namespace for markdownit directive

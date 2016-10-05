@@ -86,6 +86,11 @@ angular.module('miller')
       $scope.$broadcast(EVENTS.SAVE);
     };
 
+    $scope.download = function(){
+      $log.log('CoreCtrl > @DOWNLOAD ...'); 
+      $scope.$broadcast(EVENTS.DOWNLOAD);
+    };
+
     $scope.update = function(key, value){
       $log.log('CoreCtrl > @UPDATE ',key,':',value,' ...'); 
       var _d = {};

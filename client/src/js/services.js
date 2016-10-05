@@ -6,16 +6,34 @@
  * Resource REST API service Factory.
  */
 angular.module('miller')
+  .service('parseHeaderFilename', function() {  
+    return function(headers) {
+      var header = headers('content-disposition');
+      var result = header.split(';')[1].trim().split('=')[1];
+      return result.replace(/"/g, '');
+    }
+  })
   /*
     Get a list of stories
   */
-  .factory('StoryFactory', function ($resource) {
-    return $resource('/api/story/:id/', {},{
+  .factory('StoryFactory', function ($resource, parseHeaderFilename) {
+    return $resource('/api/story/:id/:fn', {},{
       update: {
         method:'PUT'
       },
       patch: {
         method:'PATCH'
+      },
+      download: {
+        params:{fn:'download'},
+        method: 'GET',
+        responseType: 'arraybuffer',
+        transformResponse: function(data, headers) {
+          return {
+            data: data,
+            filename: parseHeaderFilename(headers)
+          }
+        }
       }
     });
   })

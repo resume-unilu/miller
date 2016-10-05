@@ -36,6 +36,23 @@ angular.module('miller')
       });
     }
 
+
+    $scope.download = function() {debugger;
+      StoryFactory.download({
+        id: $scope.story.id
+      }).$promise.then(function(result) {
+        var url = URL.createObjectURL(new Blob([result.data]));
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = result.filename;
+        a.target = '_blank';
+        a.click();
+      })
+      .catch(function(error) {
+        console.log(error); // in JSON
+      });
+    }
+
     $scope.listener = function(event, data, callback) {
       $log.log('StoryCtrl > listener, event:', event, data);
       
