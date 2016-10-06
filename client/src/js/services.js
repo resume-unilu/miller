@@ -266,19 +266,22 @@ angular.module('miller')
       };
 
       
+      // get the yaml metadata ;)
+      // var yamlmetadata = value.match(/---\n(.*)\.\.\.\n/)
+      // debugger
 
 
       // split sections (main content and footnotes)
-      sections = _(value.split(/\s*[-_]{3,}\s*\n/)).value();
+      // sections = _(value.split(/\s*[-_]{3,}\s*\n/)).value();
 
-      // console.log('markdownItService', sections.length)
-      // get the last section (bibliographic footnotes will be there)
-      if(sections.length > 1){
-        results.footnotes = sections.pop();
-        // override value with the reduced content
-        value = sections.join('');
-        // console.log('markedService footnotes: ', value)
-      }
+      // // console.log('markdownItService', sections.length)
+      // // get the last section (bibliographic footnotes will be there)
+      // if(sections.length > 1){
+      //   results.footnotes = sections.pop();
+      //   // override value with the reduced content
+      //   value = sections.join('');
+      //   // console.log('markedService footnotes: ', value)
+      // }
 
       // split value according to language if available (reduce pairs)
       if(language){

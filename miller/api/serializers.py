@@ -64,16 +64,6 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
     fields = ('id', 'metadata', 'url', 'attachment', 'slug')
 
 
-# A story of stories
-class CollectionSerializer(serializers.ModelSerializer):
-  authors = AuthorSerializer(many=True)
-  owner = AuthorSerializer()
-  tags = TagSerializer(many=True)
-  documents = CaptionSerializer(source='caption_set', many=True)
-
-  class Meta:
-    model = Story
-    fields = ('id', 'authors', 'owner', 'tags', 'documents')
 
 
 
@@ -138,6 +128,25 @@ class CreateStorySerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Story
+
+
+
+##############
+# Collection #
+##############
+
+# A story of stories
+class CollectionSerializer(serializers.ModelSerializer):
+  authors = AuthorSerializer(many=True)
+  stories = LiteStorySerializer(many=True)
+  owner = AuthorSerializer()
+  tags = TagSerializer(many=True)
+  documents = CaptionSerializer(source='caption_set', many=True)
+
+  class Meta:
+    model = Story
+    fields = ('id', 'authors', 'owner', 'tags', 'documents', 'stories')
+
 
 
 ############

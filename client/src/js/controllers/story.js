@@ -41,6 +41,7 @@ angular.module('miller')
       StoryFactory.download({
         id: $scope.story.id
       }).$promise.then(function(result) {
+        debugger
         var url = URL.createObjectURL(new Blob([result.data]));
         var a = document.createElement('a');
         a.href = url;

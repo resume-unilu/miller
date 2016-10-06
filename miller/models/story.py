@@ -34,6 +34,7 @@ def user_path(instance, filename):
   return src
 
 
+
 class Story(models.Model):
 
   
@@ -58,7 +59,7 @@ class Story(models.Model):
   slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
   abstract  = models.CharField(max_length=500, blank=True, null=True)
   contents  = SimpleMDEField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
-  metadata  = JSONField(default=json.dumps({'title':{'en':'', 'fr':''}, 'abstract':{'en':'', 'fr':''}})) # it will contain, JSON fashion
+  metadata  = JSONField(default=json.dumps({'title':{'en':'', 'fr':''}, 'abstract':{'en':'', 'fr':''}}),blank=True) # it will contain, JSON fashion
 
 
   date               = models.DateTimeField(blank=True, null=True) # date displayed (metadata)
@@ -71,7 +72,8 @@ class Story(models.Model):
   authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
   documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
-  
+  stories   = models.ManyToManyField("self", symmetrical=False, related_name='collection', blank=True)
+
   # the leading document(s), e.g. an interview
   covers = models.ManyToManyField(Document, related_name='covers', blank=True)
 
