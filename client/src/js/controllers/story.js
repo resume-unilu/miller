@@ -58,6 +58,12 @@ angular.module('miller')
       $log.log('StoryCtrl > listener, event:', event, data);
       
       switch(event){
+        case EVENTS.MARKDOWNIT_FOCUS:
+          // cfr. in service MarkdownitService idx is the item index 
+          // of every special link. Each link will then have a special id 'item-N'
+          // N revealing the ordering.
+          $scope.focusedIdx = data.idx
+          break;
         case EVENTS.MARKDOWNIT_FULLSIZE:
           $rootScope.fullsize(data.slug.replace(/\//g,'-'), data.type);
           break;
@@ -77,29 +83,34 @@ angular.module('miller')
     // cfr corectrl setDocuments function.
     $scope.setDocuments = function(items) {
       $log.log('StoryCtrl > setDocuments items n.:', items.length, items);
-      var documents = [],
-          unlinkeddocument = [];
+      var documents = [];
 
 
-      documents = _.compact([$scope.cover].concat(items.map(function(item){
-        var _docs = story.documents.filter(function(doc){
-          return doc.slug == item.slug;
-        });
+      documents = _(items)
+        .map(function(d){
+          // check if it is in the story.documents list
+          for(var i=0;i<story.documents.length;i++){
+            if(story.documents[i].slug == d.slug){
+              return angular.extend({
+                _type: d._type,
+                _index: d._index,
+                citation: d.citation
+              }, story.documents[i]);
+            }
+          }
 
-        if(!_docs.length){
-          $log.error("StoryCtrl > cant't find any document matching the link:",item.slug);
-          return null;
-        }
-        return angular.extend({
-          _index: item._index,
-          citation: item.citation
-        }, _docs[0]);
-
-      })));
+          // this is another story or a footnote or a missing document (weird)
+          // will be lazily filled with stuffs later
+          return angular.extend({
+            _type: d.type,
+            _index: d._index,
+            citation: d.citation
+          });
+        }).value();
 
       // $rootScope.emit(documents = documents;
 
-      $scope.$parent.setDocuments(documents.concat(unlinkeddocument));
+      $scope.$parent.setDocuments(documents);
     };
   });
   

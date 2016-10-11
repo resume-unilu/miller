@@ -69,6 +69,10 @@
   "state.publications.all.label": "recent",
   "state.publications.all.abstract": "...",
 
+  "state.publications.collection.title": "E-publications",
+  "state.publications.collection.label": "E-publication",
+  "state.publications.collection.abstract": "...",
+
   "state.publications.interviews.title": "E-interviews",
   "state.publications.interviews.label": "E-interviews",
   "state.publications.interviews.abstract": "E-interviews ...",
@@ -91,6 +95,9 @@
 
   "story.status.draft": "draft",
   "story.status.public": "public",
+
+  "collection.status.draft": "draft",
+  "collection.status.public": "public",
 
   "tab.favourite": "your library",
   "tab.all": "all resources",

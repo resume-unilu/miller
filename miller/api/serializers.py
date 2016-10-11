@@ -141,11 +141,13 @@ class CollectionSerializer(serializers.ModelSerializer):
   stories = LiteStorySerializer(many=True)
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
+  covers = LiteDocumentSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
+  metadata = JsonField()
 
   class Meta:
     model = Story
-    fields = ('id', 'authors', 'owner', 'tags', 'documents', 'stories')
+    fields = ('id', 'status', 'title', 'covers', 'authors', 'owner', 'tags', 'documents', 'stories', 'metadata')
 
 
 

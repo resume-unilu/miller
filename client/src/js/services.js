@@ -148,42 +148,44 @@ angular.module('miller')
         .use(window.markdownitContainer, 'profile-others');
 
       
-      md.renderer.rules.paragraph_open = function(tokens, idx) {
-        // console.log('paragraph', results.paragraphs, tokens[idx-1])
-        if(idx > 0 && tokens[idx-1] && tokens[idx-1].type != 'footnote_open'){
-          // debugger
-          results.paragraphs++;
-          // return '<p><div class="paragraph-number">'+results.paragraphs+'</div>'
-          return '<p><span class="paragraph-number">'+results.paragraphs+'</span>'
-        } else {
-          return '<p>'
-        }
-      }
+      // md.renderer.rules.paragraph_open = function(tokens, idx) {
+      //   // console.log('paragraph', results.paragraphs, tokens[idx-1])
+      //   if(idx > 0 && tokens[idx-1] && tokens[idx-1].type != 'footnote_open'){
+      //     // debugger
+      //     results.paragraphs++;
+      //     // return '<p><div class="paragraph-number">'+results.paragraphs+'</div>'
+      //     return '<p><span class="paragraph-number">'+results.paragraphs+'</span>'
+      //   } else {
+      //     return '<p>'
+      //   }
+      // }
 
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){
         var url = tokens[idx].attrGet('href').trim();
         // console.log('LINK_OPEN', url, tokens[idx])
         if(url.indexOf('doc/') === 0){
-          var documents = url.trim().replace('doc/','').replace(/\//g,'-').split(',');
-          for(var i in documents){
+          var doc = url.trim().replace('doc/','').replace(/\//g,'-').split(',')[0];
+          // for(var i in documents){
+            linkIndex++;
             results.docs.push({
-              _index: (linkIndex++), // internal id
+              _index: linkIndex, // internal id
               _type: 'doc',
               citation: tokens[idx + 1].content,
-              slug: documents[i]
+              slug: doc
             });
-          }
+          // }
           if(!tokens[idx + 1].content.length){
-            return '<span type="doc" lazy-placeholder="'+ documents[0] + '">';
+            return '<a id="item-'+linkIndex+'" class="lazy-placeholder" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')">&nbsp;<span class="abstract-placeholder">^^</span><span type="doc" lazy-placeholder="'+ doc + '"></span>';
           }
-          return '<a id="item-'+linkIndex+'" class="special-link" name="'+ documents[0] +'" ng-click="fullsize(\'' +url+'\', \'doc\')"><span hold slug="'+ documents[0] +'" type="doc"  class="anchor-wrapper"></span><span class="icon icon-eye"></span>';
+          return '<a id="item-'+linkIndex+'" class="special-link" name="'+ doc +'" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')"><span hold slug="'+doc +'" type="doc"  class="anchor-wrapper"></span><span class="icon icon-eye"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
         } else if(url.trim().indexOf('voc/') === 0){
           var terms = url.trim().replace('voc/','').split(',');
           for(var ind in terms){
+            linkIndex++;
             results.docs.push({
-              _index: (linkIndex++), // internal id
+              _index: linkIndex, // internal id
               _type: 'voc',
               citation: tokens[idx + 1].content,
               slug: terms[ind],
@@ -201,13 +203,13 @@ angular.module('miller')
       };
 
 
-      md.renderer.rules.link_close = function(tokens, idx){
+      // md.renderer.rules.link_close = function(tokens, idx){
         
-        if(tokens[idx-1].attrGet('href')){ // emtpy content, previous tocken was just href
-          return '</span>';
-        }
-        return '</a>';
-      };
+      //   if(tokens[idx-1].attrGet('href')){ // emtpy content, previous tocken was just href
+      //     return '</span>';
+      //   }
+      //   return '</a>';
+      // };
 
       
       md.renderer.rules.heading_open = function(tokens, idx){
@@ -251,6 +253,7 @@ angular.module('miller')
       md.renderer.rules.footnote_anchor = function(tokens, idx, options, env, slf){
         var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
         // eliminate starting and ending
+        
 
         return '<span class="footnote-anchor">'+caption.replace(/[\[\]]/g, '')+'</span>';
       };
@@ -262,13 +265,27 @@ angular.module('miller')
         // console.log(' md.renderer.rules.footnote_ref')
         var id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
         var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
-        return '<span footnote="'+ id + '" class="footnote-ref" caption="'+caption+'"></span>';
+        linkIndex++;
+        results.docs.push({
+          _index: linkIndex, // internal id
+          _type: 'footnote',
+          id: id,
+          caption: caption
+        });
+
+        return '<span id="item-' + linkIndex +'" footnote="'+ id + '" class="footnote-ref" caption="'+caption+'"></span>';
       };
 
       
       // get the yaml metadata ;)
-      // var yamlmetadata = value.match(/---\n(.*)\.\.\.\n/)
-      // debugger
+      value.replace(/[\n\s\r]*---[\n\r]((.|[\n\r])+)\.{3}[\n\s\r]*/m, function(d, m){
+        // basic metadata chunks @todo
+        results.meta = m;
+        return ''
+      })
+      
+      // if(yamlmetadata)
+      //   metadata = metadata[0]
 
 
       // split sections (main content and footnotes)

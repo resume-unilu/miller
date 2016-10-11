@@ -80,38 +80,38 @@ angular.module('miller')
       }
     }
   })
-  .directive('hold', function($log, $rootScope, $compile, RUNTIME){
-    return {
-      restrict : 'A',
-      scope: {
-      },
-      templateUrl: RUNTIME.static + 'templates/partials/hold.html',
-      link : function(scope, element, attrs) {
-        $log.log(':: hold ready')
+  // .directive('hold', function($log, $rootScope, $compile, RUNTIME){
+  //   return {
+  //     restrict : 'A',
+  //     scope: {
+  //     },
+  //     templateUrl: RUNTIME.static + 'templates/partials/hold.html',
+  //     link : function(scope, element, attrs) {
+  //       $log.log(':: hold ready')
 
-        scope.language = ''+scope.$parent.language;
+  //       scope.language = ''+scope.$parent.language;
         
-        var doc =  _.find(scope.$parent.resources, {
-          slug: attrs.slug,
-          _type: attrs.type
-        });
+  //       var doc =  _.find(scope.$parent.resources, {
+  //         slug: attrs.slug,
+  //         _type: attrs.type
+  //       });
 
-        if(!doc){
-          $log.error(':: hold: cannot find the document or the glossary term specified by attrs:', attrs);
-          return;
-        }
+  //       if(!doc){
+  //         $log.error(':: hold: cannot find the document or the glossary term specified by attrs:', attrs);
+  //         return;
+  //       }
 
-        $rootScope.resolve(doc.slug, attrs.type, function(res){
-          $log.log(':: hold received:', res)
+  //       $rootScope.resolve(doc.slug, attrs.type, function(res){
+  //         $log.log(':: hold received:', res)
 
-          scope.resource = res;
-          // scope.$apply()
-          $compile(element.contents())(scope);
-        })
+  //         scope.resource = res;
+  //         // scope.$apply()
+  //         $compile(element.contents())(scope);
+  //       })
         
-      }
-    }
-  })
+  //     }
+  //   }
+  // })
   // main markdown directive, almost always used
   .directive('markdownit', function ($compile, $log, $location, markdownItService, EVENTS) {
     return {
@@ -137,6 +137,18 @@ angular.module('miller')
           $location.hash(what);
         };
 
+        scope.focus = function(idx) {
+          $log.log(':: markdownit > focus - idx:', idx);
+          if(scope.listener){
+            scope.listener({
+              event: EVENTS.MARKDOWNIT_FOCUS, 
+              data: {
+                idx: idx
+              }
+            });
+            
+          }
+        }
 
         scope.fullsize = function(slug, type){
           if(scope.listener){

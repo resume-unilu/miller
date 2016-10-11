@@ -12,7 +12,7 @@ from serializers import CollectionSerializer
 # Collection viewset. A collection is a story which contain other stories inside his content.
 # Where should we parse the content?
 class CollectionViewSet(viewsets.ModelViewSet):
-  queryset = Story.objects.filter(tags__category=Tag.COLLECTION)
+  queryset = Story.objects.filter(tags__slug=Tag.COLLECTION)
   serializer_class = CollectionSerializer
 
   # retrieve method
@@ -23,6 +23,7 @@ class CollectionViewSet(viewsets.ModelViewSet):
       queryset = self.queryset.filter(status=Story.PUBLIC).distinct()
 
     if 'pk' in kwargs and not kwargs['pk'].isdigit():
+      print 'PK', kwargs['pk']
       story = get_object_or_404(queryset, slug=kwargs['pk'])
     else:
       story = get_object_or_404(queryset, pk=kwargs['pk'])

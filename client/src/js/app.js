@@ -39,7 +39,8 @@ angular
     'BAD_REQUEST':'bad_request',
     // namespace for markdownit directive
     'MARKDOWNIT_FULLSIZE': 'markdownit_fullsize',
-    'MARKDOWNIT_RESOLVE': 'markdownit_resolve'
+    'MARKDOWNIT_RESOLVE': 'markdownit_resolve',
+    'MARKDOWNIT_FOCUS': 'markdownit_focus',
   })
   /*
     disqus configuration
@@ -477,7 +478,7 @@ angular
         reloadOnSearch : false,
         templateUrl: RUNTIME.static + 'templates/collection.html',
         resolve: {
-          story: function(StoryFactory, $stateParams) {
+          collection: function(CollectionFactory, $stateParams) {
             return CollectionFactory.get({id: $stateParams.collectionId}).$promise;
           },
         }

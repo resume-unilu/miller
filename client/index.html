@@ -441,6 +441,40 @@
         margin: 0 20px;
       }
 
+      .lazy-placeholder .placeholder{
+        display: block;
+      }
+      .lazy-placeholder .abstract-placeholder{
+        width: 20px;
+        height: 20px;
+        background-color: gold;
+        position: absolute;
+        left: -30px;
+      }
+
+      @media only screen and (min-width : 768px) {
+        .chapter {
+            display: table;
+            width: 100%
+        }
+        .chapter .cover{
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          top: 0;
+        }
+        .chapter [class*="col-"] {
+            float: none;
+            display: table-cell;
+            vertical-align: top;
+            background-color: white;
+        }
+        .chapter .image-wrapper{
+          height: 100%;
+        }
+      }
+
       @media (min-width: 768px){
         .coverstory.other, .coverstory.news{
           margin: 0
@@ -462,6 +496,12 @@
         }
       }
       @media (min-width: 992px){
+        .lazy-placeholder .placeholder{
+          display: none;
+        }
+        .lazy-placeholder .abstract-placeholder{
+          display: block;
+        }
         .story .cover .metadata-wrapper{
             margin: 0px 20px 20px -29px;
             max-height: 400;
@@ -513,15 +553,17 @@
     <!-- where highlights are -->
     <div id='showreel'>
       <div class='container'>
-        <div style='height: 140px'>
-      {% verbatim %}
-      <div class="breakingNews">
-        <div id='unilu-logo-wrapper'>
-          <div id='unilu-logo'></div>
-        </div>
-      </div>
-      <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
-      {% endverbatim %}
+        <div class="row" >
+          <div style='height: 140px'>
+            {% verbatim %}
+            <div class="breakingNews">
+              <div id='unilu-logo-wrapper'>
+                <div id='unilu-logo'></div>
+              </div>
+            </div>
+            <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
+            {% endverbatim %}
+          </div>
         </div>
       </div>
     </div>
@@ -627,9 +669,9 @@
     
     <!-- CONTENTS -->
     <div id='wrapper' ng-class='state'>
-      <div class='container'  ng-click='hasToC = false;' ng-class='{"with-ToC": hasToC && ToC.length>0}' >
+      <div ng-click='hasToC = false;' ng-class='{"with-ToC": hasToC && ToC.length>0}' >
         {% block content %}
-        <div class='view' ng-class='state' ui-view=''>
+        <div ng-class='state' ui-view=''>
         </div>
         {% endblock %}
       </div>
@@ -728,6 +770,7 @@
    
     <script src='{% static "js/app.js" %}'></script>
     <script src='{% static "js/controllers/core.js" %}'></script>
+    <script src='{% static "js/controllers/collection.js" %}'></script>
     <script src='{% static "js/controllers/draft.js" %}'></script>
     <script src='{% static "js/controllers/index.js" %}'></script>
     <script src='{% static "js/controllers/items.js" %}'></script>
@@ -871,6 +914,11 @@
               {
                 name: 'all',
                 url: ''
+              },
+              {
+                name: 'collection',
+                slug: 'collection',
+                url: '/collection'
               },
               {
                 name: 'interviews',

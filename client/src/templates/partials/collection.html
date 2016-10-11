@@ -1,5 +1,5 @@
-<div ng-if='!story.isCollection' class="story lite">
-  <!-- <div ng-if='!$first' class="divider"></div> -->
+<!-- <div ng-if='!$first' class="divider"></div> -->
+<div class="story collection lite">
   <div class="tags" ng-if="story.tags.length">
       <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
   </div>
@@ -7,11 +7,11 @@
 
   <div  class="divider"></div>
 
-
-  <h3 class="title"><a ui-sref="story({postId: story.slug})"><span embedit='story.metadata.title' language='language'></span> {{story.status != 'public'? '(DRAFT)': ''}}</a></h3>  
+  
+  <h3 class="title"><a ui-sref="collection({collectionId: story.slug})"><span embedit='story.metadata.title' language='language'></span> {{story.status != 'public'? '(DRAFT)': ''}}</a></h3>  
   
   <blockquote ng-if='story.excerpt' class="reduced">{{story.excerpt}}.
-    <a href ui-sref="story({postId: story.id})">
+    <a href ui-sref="collection({collectionId: story.slug})">
       <span class='icon-arrow-right-circle'></span>
     </a>
     <p>
@@ -32,5 +32,3 @@
     </span>
   </p>
 </div>
-
-<div ng-if='story.isCollection' ng-include='"templates/partials/collection.html"|prefixTemplate'></div>

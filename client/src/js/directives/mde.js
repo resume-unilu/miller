@@ -433,6 +433,7 @@ angular.module('miller')
             DocumentFactory.save({
               title: scope.selectedDocument.title,
               contents: JSON.stringify(scope.selectedDocument),
+              metadata: JSON.stringify(scope.selectedDocument),
               type: (scope.selectedDocument.type|| 'link').toLowerCase(),
               slug:  slug,
               url: url

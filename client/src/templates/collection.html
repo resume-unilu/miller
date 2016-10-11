@@ -1,1 +1,85 @@
-collection.html
+<div class="collection">
+
+  
+
+  <div class='container'>
+    <div class="view">
+      
+
+      <div class="actions" >
+        <div ng-if='collection.isWritable' class='btn-line-group primary'>
+          <button  class='btn-line' nref ui-sref='writing({storyId:collection.id})'>edit</button>
+        </div>
+
+        <div ng-if='user.is_staff' class='btn-line-group'>
+          <button class='btn-line' ng-click='setStatus("draft")' ng-class='{"active warning": collection.status=="draft"}' translate="collection.status.draft"></button>
+          <button class='btn-line' ng-click='setStatus("public")' ng-class='{"active": collection.status=="public"}' translate="story.status.public"></button>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  
+  <div class='container' style='margin-bottom: 20px'>
+    <div class='row'>
+      <div class='col-md-8'>
+        <div class="tags" >
+          <span ng-if="collection.tags.length" class='tag sans-serif' ng-repeat='tag in collection.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+          
+        </div>
+        <div class='authors' ng-if="collection.authors.length">
+          by <span ng-repeat='author in collection.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class='row'>
+      <div class='col-md-12'>
+        <h1 embedit='collection.metadata.title' language='language'></h1>
+        <blockquote embedit='collection.metadata.abstract' language='language'></blockquote>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="cover-wrapper">
+    <div class='container' style="">
+      <div class='row'>
+        <div class="col-sm-12" style="position:relative">
+          <div ng-if='collection.covers.length' style='position:absolute' ng-repeat='document in collection.covers'>
+              <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
+               <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
+          </div>
+        </div>
+
+        <div class='col-md-12'>
+          <h1 embedit='collection.metadata.title' language='language'></h1>
+          <blockquote embedit='collection.metadata.abstract' language='language'></blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  <div class="cover-wrapper alternate" ng-repeat="story in collection.stories">
+    <div class='container'>
+      <div class="row chapter" >
+        
+          <div class='col-md-6'>
+            <div class="inner">
+              <div class="divider"></div>
+              <h2 embedit='story.metadata.title' language='language'></h2>
+              <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
+            </div>
+          </div>
+          <div class='col-md-6' style='padding:0'>
+            <div ng-if='story.covers.length' class="cover" ng-repeat='document in story.covers' class='fluid-container'>
+              <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
+               <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
+            </div>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>

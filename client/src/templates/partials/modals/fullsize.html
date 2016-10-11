@@ -24,7 +24,7 @@
         </div>
         <div class="box content" ng-if='fullsized.type == "image"'>
           <div class='embedded'>
-            <div class='image' lazy-img='{{fullsized.metadata.urls.Publishable}}'></div>
+            <div class='image' lazy-image size='contain' src='fullsized.metadata.urls.Publishable'></div>
           </div>
         </div>
         <div class="box sidebar"></div>

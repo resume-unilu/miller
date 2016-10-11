@@ -1,0 +1,17 @@
+<div id='step-{{item._index}}' class='step {{item._type}}' ng-class='{active: item.isFocused}' ng-repeat="item in items" ng-init='document=item' ng-if="item._type">
+  
+
+  <div class="thumbnail" ng-click='fullsize(document.slug, document._type)'>
+    <div class="action fullscreen"><span class="icon icon-size-fullscreen"></span></div>  
+
+    <div class="thumbnail-image" ng-if='document.type=="photo"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.media_url}}'></div>
+    
+    <div class="thumbnail-image" ng-if='document.type=="rich" || document.type=="video"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.thumbnail_url}}' ></div>
+    
+    <div class="thumbnail-image" ng-if='document.type=="image"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.thumbnail_url || document.metadata.urls.Preview}}'></div>
+  </div>
+
+  
+  <div ng-if='item.metadata' ng-include='"templates/partials/document.metadata.html"|prefixTemplate'></div>
+</div>
+<!-- <div id='sliding-steps-line' style='position: absolute; width: 100%; height: 2px; background-color: gold'></div> -->

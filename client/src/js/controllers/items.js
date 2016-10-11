@@ -22,15 +22,21 @@ angular.module('miller')
     function normalizeItems(items) {
       return items
         .map(function(d){
-          if(!d.metadata.abstract[$scope.language])
+          if(d.tags && d.tags.length && _.find(d.tags, {slug: 'collection'})){
+            d.isCollection = true
+          }
+
+          if(!d.metadata.abstract[$scope.language]){
             return d;
+          }
 
           var sentences = tokenize(d.metadata.abstract[$scope.language], 10);
 
           d.excerpt = sentences.shift();
 
-          if(sentences.length)
+          if(sentences.length){
             d.difference = sentences.join('. ');
+          }
 
           return d;
         })

@@ -1,11 +1,15 @@
 <div class='metadata'>
-  <div ng-if='document.metadata.reference' embedit='document.metadata.reference' language='language'></div>
   <div>
-    <span embedit='document.metadata.title' language='language'></span>
-    <a ng-if='!document.metadata.reference && document.metadata.title' ng-click='fullsize(document.slug, "doc")' translate='document.preview'></a>
+    <button class='btn btn-line' ng-if='item._type == "doc"||item._type == "voc"' ng-click='alignTo(item._index, $event)'>
+      <span class='icon icon-eye'></span><span class='type'>{{item.type}}</span>
+    </button>
+    <span class='title' embedit='document.metadata.title' language='language'></span>
+
+    <span ng-if='document.metadata.caption' class='caption' embedit='document.metadata.caption' language='language'></span>
+    <span ng-if='!document.metadata.caption && document.metadata.description' class='caption' embedit='document.metadata.description' language='language'></span>
   </div>
   
-  <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language'></div>
+  <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language' firstline='true'></div>
 
   <div>
     <span ng-if='document.metadata.author_name'>
