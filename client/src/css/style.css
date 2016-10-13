@@ -504,10 +504,12 @@ label{
   text-decoration: none;
 }
 
-.contents a.special-link.active{
+.contents a.special-link.active, .contents .footnote-ref.active{
   background-color: #151515;
   color: white;
 }
+
+
 
 .contents a.special-link > .icon{
   float: right;
