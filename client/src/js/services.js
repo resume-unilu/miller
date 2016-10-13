@@ -173,14 +173,15 @@ angular.module('miller')
             linkIndex++;
             results.docs.push({
               _index: linkIndex, // internal id
-              _type: 'doc',
+              _type: tokens[idx + 1].content.length? 'doc': 'block-doc',
               citation: tokens[idx + 1].content,
               slug: doc
             });
           // }
           if(!tokens[idx + 1].content.length){
-            return '<a id="item-'+linkIndex+'" class="lazy-placeholder" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')"><span class="abstract-placeholder"><span class="icon icon-eye"></span></span><span type="doc" lazy-placeholder="'+ doc + '"></span>';
+            return '<span id="item-'+linkIndex+'" class="lazy-placeholder" type="doc" lazy-placeholder="'+ doc + '"></span>';
           }
+
           return '<a id="item-'+linkIndex+'" class="special-link" name="'+ doc +'" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')"><span hold slug="'+doc +'" type="doc"  class="anchor-wrapper"></span><span class="icon icon-eye"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';
         } else if(url.trim().indexOf('voc/') === 0){
@@ -206,13 +207,13 @@ angular.module('miller')
       };
 
 
-      // md.renderer.rules.link_close = function(tokens, idx){
+      md.renderer.rules.link_close = function(tokens, idx){
         
-      //   if(tokens[idx-1].attrGet('href')){ // emtpy content, previous tocken was just href
-      //     return '</span>';
-      //   }
-      //   return '</a>';
-      // };
+        if(tokens[idx-1].attrGet('href')){ // emtpy content, previous tocken was just href
+          return '</span>';
+        }
+        return '</a>';
+      };
 
       
       md.renderer.rules.heading_open = function(tokens, idx){
