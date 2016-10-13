@@ -54,12 +54,12 @@
       </div>
 
       <div class='row'>
-        <div class='col-md-8'>
+        <div  ng-class='{"col-md-12": !documents.length, "col-md-8": documents.length}'>
           <div class="contents">
             <div markdownit='story.contents' language='language' listener='listener(event, data, callback)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
           </div>
         </div>
-        <div class='col-md-4' respect-previous-sibling><div class="sliding-steps-wrapper">
+        <div class='col-md-4' ng-if='documents.length' respect-previous-sibling update="documents"><div class="sliding-steps-wrapper">
           <div sliding-steps data-language='language' data-focus='focusedIdx' class='sliding-steps' items='documents'></div>
           </div>
         </div>

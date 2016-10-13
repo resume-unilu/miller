@@ -37,6 +37,7 @@ angular
     'DOWNLOAD': 'download',
     'MESSAGE': 'message',
     'BAD_REQUEST':'bad_request',
+    'RESIZED': 'resized',
     // namespace for markdownit directive
     'MARKDOWNIT_FULLSIZE': 'markdownit_fullsize',
     'MARKDOWNIT_RESOLVE': 'markdownit_resolve',

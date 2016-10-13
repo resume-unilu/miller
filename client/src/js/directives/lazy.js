@@ -62,6 +62,7 @@ angular.module('miller')
             $log.log('⏣ lazy-placeholder resolved for type:', type, '- slug:',slug, res);
             // force recompilation
             $compile(element.contents())(scope);
+
           } else {
             $log.error('⏣ lazy-placeholder cannot find', slug );
           }
@@ -79,8 +80,11 @@ angular.module('miller')
     }
   })
 
-  .directive('respectPreviousSibling', function($log){
+  .directive('respectPreviousSibling', function($log, $timeout){
     return {
+      scope:{
+        update: '='
+      },
       restrict : 'A',
       link: function(scope, element){
         $log.log('🚀 respect-previous-sibling ready')
@@ -91,6 +95,8 @@ angular.module('miller')
         }
         setHeight();
         angular.element(window).bind('resize', setHeight);
+
+        
       }
     }
   });

@@ -1530,6 +1530,17 @@ div.profile-others .profile-thumb{
   position: relative;
 }
 
+.sliding-steps .step .external-link{
+    font-size: 11px;
+    line-height: 18px;
+    padding: 10px;
+}
+
+.sliding-steps .step a{
+  color: #2d9f98;
+}
+
+
 .sliding-steps .step .caption{
   margin: 0;
   font-size: 11px;
@@ -1544,7 +1555,7 @@ div.profile-others .profile-thumb{
   margin-bottom: 0;
 
 }
-.sliding-steps .step:hover, .sliding-steps .step.active{
+ .sliding-steps .step.active{
   /*opacity: 1;*/
   background-color: #f0efef;
 }

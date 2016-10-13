@@ -1,7 +1,7 @@
 <div id='step-{{item._index}}' class='step {{item._type}}' ng-class='{active: item.isFocused}' ng-repeat="item in items" ng-init='document=item' ng-if="item._type == 'doc' || item._type == 'voc'">
 
-  <div class="thumbnail" ng-if="item._type=='doc' && item.metadata.thumbnail_url" ng-click='fullsize(document.slug, document._type)'>
-    <div ng-if='item.type != "link"' class="action fullscreen"><span class="icon icon-size-fullscreen"></span></div>  
+  <div class="thumbnail" ng-if='item._type=="doc" && item.metadata.thumbnail_url && item.type != "link"' ng-click='fullsize(document.slug, document._type)'>
+    <div ng-if='' class="action fullscreen"><span class="icon icon-size-fullscreen"></span></div>  
 
     <div class="thumbnail-image" ng-if='document.type=="photo"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.media_url}}'></div>
     
@@ -10,8 +10,8 @@
     <div class="thumbnail-image" ng-if='document.type=="image"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.thumbnail_url || document.metadata.urls.Preview}}'></div>
   </div>
 
-  <div ng-if='item._type=="doc" && item.type=="link"'>
-    <a ng-href='{{item.metadata.url}}'>{{item.metadata.url}}</a>
+  <div ng-if='item.type=="link"' class='external-link'>
+    <span translate='cfr'></span> <a  target='_blank' ng-href='{{item.metadata.url}}'>{{item.metadata.url}}</a>
   <!-- 
     {{item}} -->
   </div>
