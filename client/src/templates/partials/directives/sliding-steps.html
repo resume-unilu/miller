@@ -10,11 +10,7 @@
     <div class="thumbnail-image" ng-if='document.type=="image"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.thumbnail_url || document.metadata.urls.Preview}}'></div>
   </div>
 
-  <div ng-if='item.type=="link"' class='external-link'>
-    <span translate='cfr'></span> <a  target='_blank' ng-href='{{item.metadata.url}}'>{{item.metadata.url}}</a>
-  <!-- 
-    {{item}} -->
-  </div>
+  {{item.type}}
   
 
   <div ng-if="item._type=='voc'">

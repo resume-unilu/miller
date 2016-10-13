@@ -104,7 +104,7 @@ angular.module('miller')
               }
             }, function(res) {
               $log.warn('... CaptionFactory.save success', res);
-              documents.push(res);
+              // documents.push(res);
               // update initialItems.doc ;)
             }, function(err) {
               $log.warn('... CaptionFactory.save failed', err);

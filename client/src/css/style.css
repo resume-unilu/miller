@@ -1533,7 +1533,7 @@ div.profile-others .profile-thumb{
 .sliding-steps .step .external-link{
     font-size: 11px;
     line-height: 18px;
-    padding: 10px;
+    padding: 9px 0;
 }
 
 .sliding-steps .step a{
@@ -1545,6 +1545,7 @@ div.profile-others .profile-thumb{
   margin: 0;
   font-size: 11px;
   line-height: 18px;
+  margin-top: 9px;
 }
 
 .sliding-steps .step .metadata{

@@ -22,6 +22,10 @@
     <div ng-if='document.metadata.details.copyright' embedit='document.metadata.details.copyright' language='language' firstline='true'></div>
   </div>
 
+   <div ng-if='document.type=="link"' class='external-link'>
+    <span translate='cfr'></span> <a  target='_blank' ng-href='{{document.metadata.url}}'>{{document.metadata.url}}</a>
+  </div>
+
   <!-- author part -->
   <div>
     <span ng-if='document.metadata.author_name'>
