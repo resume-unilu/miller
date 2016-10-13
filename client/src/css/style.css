@@ -1538,7 +1538,7 @@ div.profile-others .profile-thumb{
 }
 
 
-.sliding-steps .step .footnote-wrapper a {
+.sliding-steps .step .footnote-wrapper .footnote>a {
   cursor: pointer;
   float: left;
   margin-right: 5px;
