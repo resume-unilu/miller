@@ -1,16 +1,28 @@
 <div class='metadata'>
-  <div>
+  <div ng-if='!document.metadata.details'>
+    <button class='btn btn-line' ng-if='item._type == "doc"||item._type == "voc"' ng-click='alignTo(item._index, $event)'>
+      <span class='icon icon-eye'></span><span class='type {{item.type}}'></span>
+    </button>
+    
+    <span class='title' embedit='document.metadata.title' language='language'></span>
+
+    <div ng-if='document.metadata.abstract' class='abstract' embedit='document.metadata.abstract' language='language'></div>
+    <div ng-if='document.metadata.caption' class='caption' embedit='document.metadata.caption' language='language'></div>
+    <div ng-if='!document.metadata.caption && document.metadata.description' class='caption' embedit='document.metadata.description' language='language'></div>
+    <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language' firstline='true'></div>
+  </div>
+  
+  <!-- having details -->
+  <div ng-if='document.metadata.details'>
     <button class='btn btn-line' ng-if='item._type == "doc"||item._type == "voc"' ng-click='alignTo(item._index, $event)'>
       <span class='icon icon-eye'></span><span class='type'>{{item.type}}</span>
     </button>
-    <span class='title' embedit='document.metadata.title' language='language'></span>
-
-    <span ng-if='document.metadata.caption' class='caption' embedit='document.metadata.caption' language='language'></span>
-    <span ng-if='!document.metadata.caption && document.metadata.description' class='caption' embedit='document.metadata.description' language='language'></span>
+    <span class='title' embedit='document.metadata.details.title' language='language'></span>
+    <div class='caption' embedit='document.metadata.details.caption' language='language'></div>
+    <div ng-if='document.metadata.details.copyright' embedit='document.metadata.details.copyright' language='language' firstline='true'></div>
   </div>
-  
-  <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language' firstline='true'></div>
 
+  <!-- author part -->
   <div>
     <span ng-if='document.metadata.author_name'>
       <span translate='author'></span>

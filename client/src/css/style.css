@@ -1158,22 +1158,20 @@ h4.modal-title{
   background-color: #B7B2B2;
 }
 
-.story .cover{
-  background-color: #f0efef;
-}
-
-.story .cover.main{
+.story .cover.main .metadata{
   margin: 0;
 }
 
-.story .cover .metadata-wrapper{
-  margin: 0 10px;
-}
-
-.story .overlay .cover{
+.story .overlay .cover.main{
   margin-bottom: 50px;
+  padding: 10px;
+  background-color: #f0efef;
 }
 
+.story .overlay .cover.main .image-wrapper.cover{
+  margin:0 0 10px 0;
+  background-color: #bcbcbc;
+}
 
 /*
   dribbble like documents
@@ -1532,6 +1530,12 @@ div.profile-others .profile-thumb{
   position: relative;
 }
 
+.sliding-steps .step .caption{
+  margin: 0;
+  font-size: 11px;
+  line-height: 18px;
+}
+
 .sliding-steps .step .metadata{
   font-size: 11px;
   line-height: 18px;
@@ -1618,4 +1622,10 @@ div.profile-others .profile-thumb{
 .thumbnail > .fullscreen:hover{
   background-color: #4ECDC4;
 
+}
+
+
+
+.noembed-wrapper, .noembed-embed, .noembed-embed-inner{
+  height: 100%
 }

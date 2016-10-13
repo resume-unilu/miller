@@ -99,6 +99,17 @@ angular.module('miller')
             }
           }
 
+          for(i=0;i<story.stories.length;i++){
+            if(story.stories[i].slug == d.slug){
+              return angular.extend({
+                _type: d._type,
+                _index: d._index,
+                citation: d.citation
+              }, story.stories[i]);
+            }
+          }
+
+          // debugger
           // this is another story or a footnote or a missing document (weird)
           // will be lazily filled with stuffs later
           return angular.extend({

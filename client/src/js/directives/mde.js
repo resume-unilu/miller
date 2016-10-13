@@ -15,7 +15,7 @@ angular.module('miller')
         setdocs: '&',
         language: '='
       },
-      templateUrl: RUNTIME.static + 'templates/partials/mde.html',
+      templateUrl: RUNTIME.static + 'templates/directives/mde.html',
       link: function(scope, el, attributes){
         // active tab
         scope.activeStates = [];

@@ -67,7 +67,7 @@ class StoryViewSet(viewsets.ModelViewSet):
 
 
   # for some tags require the request user to be staff user
-  @permission_classes((IsAdminUser, ))
+  # @permission_classes((IsAdminUser, ))
   def partial_update(self, request, *args, **kwargs):
     return super(StoryViewSet, self).partial_update(request, *args, **kwargs)
 
@@ -95,9 +95,8 @@ class StoryViewSet(viewsets.ModelViewSet):
     response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (slugify(story.title),mimetypes.guess_extension(mimetype))
       
     return response
-
-
-
+  
+  
   @list_route(methods=['get'])
   def search(self, request):
     from miller.forms import SearchQueryForm

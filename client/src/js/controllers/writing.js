@@ -6,7 +6,7 @@
  * handle saved story writing ;)
  */
 angular.module('miller')
-  .controller('WritingCtrl', function ($scope, $log, $q, $modal, $filter, story, localStorageService, StoryFactory, StoryTagsFactory, StoryDocumentsFactory, CaptionFactory, DocumentFactory, EVENTS, RUNTIME) {
+  .controller('WritingCtrl', function ($scope, $log, $q, $modal, $filter, story, localStorageService, StoryFactory, StoryTagsFactory, StoryDocumentsFactory, CaptionFactory, MentionFactory, DocumentFactory, EVENTS, RUNTIME) {
     $log.debug('WritingCtrl writing title:', story.title, '-id:', story.id, '- current language:',$scope.language);
 
     $scope.isDraft = false;
@@ -52,45 +52,87 @@ angular.module('miller')
       $scope.save();
     };
 
+
+    var initialItems = {
+      doc: _.map(story.documents, 'slug'),
+      voc: _.map(story.stories, 'slug')
+    };
     /*
       Save or delete documents according to text contents.
     */
-    var documentSlugs =  _.map(story.documents, 'slug');
+    $scope.setDocuments = function(items) {
+      $log.log('WritingCtrl -> setDocuments()', items.length);
+      // get the difference (store item.slug only)
+      var tobesaved   = {
+            doc: [],
+            voc: []
+          },
+          tobedeleted = {
+            doc: [],
+            voc: []
+          },
+          tobekept = {
+            doc: [],
+            voc: []
+          };
 
-    $scope.setDocuments = function(documents) {
-      // check what to save vs what to discard.
-      var saveable = documents.filter(function(d){
-        return d.type != 'glossary' && documentSlugs.indexOf(d.slug) == -1;
-      });
+      // which document / stories needs to be saved?
+      for(var i=0; i<items.length; i++) {
+        if(!initialItems[items[i]._type])
+          continue; // just ignore other types
+        else if(initialItems[items[i]._type].indexOf(items[i].slug) === -1) 
+          tobesaved[items[i]._type].push(items[i].slug);
+        else
+          tobekept[items[i]._type].push(items[i].slug);
+      }
 
-      var deletable = documents.filter(function(d){
-        return documentSlugs.indexOf(d.slug) == -1;
-      });
+      tobedeleted.doc = _.difference(initialItems.doc, tobekept.doc, tobesaved.doc);
+      tobedeleted.voc = _.difference(initialItems.voc, tobekept.voc, tobesaved.voc);
 
-      var included = _.map(documents, 'slug');
+      $log.log('... tobesaved:', tobesaved)
+      $log.log('... tobedeleted:', tobedeleted)
+      $log.log('... tobekept:', tobekept)
 
-      // console.log(documentSlugs)
-      $log.log('WritingCtrl -> setDocuments()', documents.length, '- to be saved:', saveable, '- to be deleted:');
-      
-      documents = story.documents.filter(function(d){
-        return included.indexOf(d.slug) != -1;
-      });
-
-      if(saveable.length || deletable.length){
+      // if something needs to be done, start the chain
+      if(tobesaved.voc.length || tobedeleted.voc.length || tobesaved.doc.length || tobedeleted.doc.length ){
         $q.all(_.compact(
-          saveable.map(function(d) {
+          _.uniq(tobesaved.doc).map(function(slug) {
             var p = CaptionFactory.save({
               story: story.id,
-              document: d
-            }, function(res){
-              $log.warn('WritingCtrl -> setDocuments() CaptionFactory.save success', res);
+              document: {
+                slug: slug
+              }
+            }, function(res) {
+              $log.warn('... CaptionFactory.save success', res);
               documents.push(res);
+              // update initialItems.doc ;)
             }, function(err) {
-              $log.warn('WritingCtrl -> setDocuments() CaptionFactory.save failed', err);
+              $log.warn('... CaptionFactory.save failed', err);
             }).promise;
             return p;
           })
-          // .concat(deletable.map(function(d) {
+          .concat(_.uniq(tobesaved.voc).map(function(slug) {
+            $log.log('... saving voc->story slug:', slug);
+            var p = MentionFactory.save({
+              from_story: story.id,
+              to_story: {
+                slug: slug
+              }
+            }, function(res) {
+              $log.log('... saving voc->story success', res);
+              // documents.push(res);
+              // update initialItems.doc ;)
+            }, function(err) {
+              $log.warn('... saving voc->story success failed miserably: ', err);
+            }).promise;
+            return p;
+          }))
+          .concat(_.uniq(tobedeleted.doc).map(function(slug) {
+            $log.log('... deleting doc->story slug:', slug)
+          }))
+          .concat(_.uniq(tobedeleted.voc).map(function(slug) {
+            $log.log('... deleting voc->story slug:', slug)
+          }))
           //   return CaptionFactory.save({
           //     story: story.id,
           //     document: d
@@ -99,21 +141,23 @@ angular.module('miller')
           //   }).promise
           // }))
         )).then(function(results){
+          $log.log('... setDocuments() done. Results:', results)
+          
           if(results.length){
             $scope.save();
-            $scope.$parent.setDocuments(documents);
+            // $scope.$parent.setDocuments(documents);
           } else {
-            $scope.$parent.setDocuments(documents);
+            //  $scope.$parent.setDocuments(documents);
           }
         });
       } else{
-        var indexed = _.keyBy(story.documents, 'slug'),
-            docs = _(documents).uniq('slug').map(function(d){
-              return indexed[d.slug];
-            }).value();
-        // console.log('indexed', docs)
+        // var indexed = _.keyBy(story.documents, 'slug'),
+        //     docs = _(documents).uniq('slug').map(function(d){
+        //       return indexed[d.slug];
+        //     }).value();
+        // // console.log('indexed', docs)
 
-        $scope.$parent.setDocuments(docs);
+        // $scope.$parent.setDocuments(docs);
       }
     };
 

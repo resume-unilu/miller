@@ -9,7 +9,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from miller.models import Profile, Story, Tag, Document, Caption
+from miller.models import Profile, Story, Tag, Document, Caption, Mention
 
 
 class WritingTagsListFilter(admin.SimpleListFilter):
@@ -83,13 +83,14 @@ class CaptionAdmin(admin.ModelAdmin):
   search_fields = ['contents']
 
 
+
 class CaptionInline(admin.TabularInline):
   model = Caption
   extra = 2 # how many rows to show
 
 class StoryAdmin(admin.ModelAdmin):
   # inlines = (CaptionInline,)
-  exclude=['cover', 'cover_copyright', 'watchers']
+  exclude=['cover', 'cover_copyright', 'watchers', 'stories']
   search_fields = ['title']
   list_filter = (WritingTagsListFilter,)
 
@@ -109,3 +110,4 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Caption, CaptionAdmin)
+admin.site.register(Mention)

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from miller.models import Profile, Document, Tag, Story, Caption
+from miller.models import Profile, Document, Tag, Story, Caption, Mention
 from miller.api.fields import JsonField, HitField, OptionalFileField
 
 
@@ -20,6 +20,7 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = Caption
     fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
+
 
 
 
@@ -64,7 +65,29 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
     fields = ('id', 'metadata', 'url', 'attachment', 'slug')
 
 
+class LiteMentionSerializer(serializers.ModelSerializer):
+  slug     = serializers.ReadOnlyField()
+  metadata = JsonField()
+  covers   = LiteDocumentSerializer(many=True)
+  
+  class Meta:
+    model = Mention
+    fields = ('id', 'slug', 'metadata', 'covers')
 
+
+
+
+# Story Serializer to use in lists
+class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
+  authors = AuthorSerializer(many=True)
+  owner = AuthorSerializer()
+  tags = TagSerializer(many=True)
+  covers = LiteDocumentSerializer(many=True)
+  metadata = JsonField()
+
+  class Meta:
+    model = Story
+    fields = ('id','url', 'slug', 'short_url', 'date',  'date_created', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
 
 
 # retrieve a Story, full
@@ -74,6 +97,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
   tags = TagSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
   covers = LiteDocumentSerializer(many=True)
+  stories = LiteMentionSerializer(many=True)
   metadata = JsonField()
 
   class Meta:
@@ -81,7 +105,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
     fields = (
       'id','url','slug','short_url',
       'title', 'abstract',
-      'documents', 'tags', 'covers',
+      'documents', 'tags', 'covers', 'stories',
       'metadata',
       'contents',
       'date', 'date_created', 
@@ -107,18 +131,6 @@ class MatchingStorySerializer(serializers.HyperlinkedModelSerializer):
     fields = ('id', 'url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'covers', 'metadata', 'authors', 'tags', 'owner', 'matches')
 
 
-# Story Serializer to use in lists
-class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
-  authors = AuthorSerializer(many=True)
-  owner = AuthorSerializer()
-  tags = TagSerializer(many=True)
-  covers = LiteDocumentSerializer(many=True)
-  metadata = JsonField()
-
-  class Meta:
-    model = Story
-    fields = ('id','url', 'slug', 'short_url', 'date',  'date_created', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
-
 
 # Serializer when creating stories. It automatically add the owner as author
 class CreateStorySerializer(serializers.ModelSerializer):
@@ -138,7 +150,7 @@ class CreateStorySerializer(serializers.ModelSerializer):
 # A story of stories
 class CollectionSerializer(serializers.ModelSerializer):
   authors = AuthorSerializer(many=True)
-  stories = LiteStorySerializer(many=True)
+  stories = LiteMentionSerializer(many=True)
   owner = AuthorSerializer()
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
@@ -188,4 +200,16 @@ class CreateDocumentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Document
     fields = ('id', 'owner', 'type','short_url', 'title', 'slug', 'metadata', 'copyrights', 'url', 'attachment', 'snapshot')
+
+
+############
+# Mentions #
+############
+class MentionSerializer(serializers.ModelSerializer):
+  to_story = LiteStorySerializer()
+  from_story     = LiteStorySerializer()
+
+  class Meta:
+    model = Mention
+    fields = ('id', 'to_story', 'from_story')
 

@@ -76,6 +76,9 @@ angular.module('miller')
       }
     });
   })
+  .factory('MentionFactory', function ($resource) {
+    return $resource('/api/mention/:id/');
+  })
   .factory('CaptionFactory', function ($resource) {
     return $resource('/api/caption/:id/', {},{
       update: {
@@ -176,7 +179,7 @@ angular.module('miller')
             });
           // }
           if(!tokens[idx + 1].content.length){
-            return '<a id="item-'+linkIndex+'" class="lazy-placeholder" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')">&nbsp;<span class="abstract-placeholder">^^</span><span type="doc" lazy-placeholder="'+ doc + '"></span>';
+            return '<a id="item-'+linkIndex+'" class="lazy-placeholder" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')"><span class="abstract-placeholder"><span class="icon icon-eye"></span></span><span type="doc" lazy-placeholder="'+ doc + '"></span>';
           }
           return '<a id="item-'+linkIndex+'" class="special-link" name="'+ doc +'" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')"><span hold slug="'+doc +'" type="doc"  class="anchor-wrapper"></span><span class="icon icon-eye"></span>';
           // return '<a name="' + documents[0] +'" ng-click="hash(\''+url+'\')"><span class="anchor-wrapper"></span>'+text+'</a>';

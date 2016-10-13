@@ -30,6 +30,7 @@ router.register(r'collection', api.CollectionViewSet)
 router.register(r'story', api.StoryViewSet)
 router.register(r'caption', api.CaptionViewSet)
 router.register(r'document', api.DocumentViewSet)
+router.register(r'mention', api.MentionViewSet)
 router.register(r'profile', api.ProfileViewSet)
 router.register(r'tag', api.TagViewSet)
 

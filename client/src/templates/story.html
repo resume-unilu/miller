@@ -41,16 +41,16 @@
       </div>
       
       <div ng-if='story.covers.length' class="main cover" ng-repeat='document in story.covers'>
-        <div class='row'>
-          <div class='col-md-8'>
+        <!-- <div class='row'>
+          <div class='col-md-8'> -->
             <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
             <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
-          </div>
+          <!-- </div> -->
           
-          <div class='col-md-4'>
+          <!-- <div class='col-md-4'> -->
             <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
-          </div>
-        </div>
+          <!-- </div> -->
+        <!-- </div> -->
       </div>
 
       <div class='row'>
@@ -60,7 +60,7 @@
           </div>
         </div>
         <div class='col-md-4' respect-previous-sibling><div class="sliding-steps-wrapper">
-          <div sliding-steps data-focus='focusedIdx' class='sliding-steps' items='documents'></div>
+          <div sliding-steps data-language='language' data-focus='focusedIdx' class='sliding-steps' items='documents'></div>
           </div>
         </div>
       </div>

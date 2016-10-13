@@ -3,6 +3,7 @@ from collection import CollectionViewSet
 from story import StoryViewSet
 from tag import TagViewSet
 from caption import CaptionViewSet
+from mention import MentionViewSet
 from document import DocumentViewSet
 from profile import ProfileViewSet
 from django.contrib.auth.models import User
