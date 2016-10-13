@@ -12,20 +12,19 @@ angular.module('miller')
       scope:{
         caption: '=',
         footnote: '='
+        
       },
-      require: "^?markdownit",
+      // require: "^?markdownit",
       template: '<span class="footnote"><a ng-click="toggleFootnote()" style="cursor:pointer">{{caption}}</a><div class="footnote-contents" ng-show="isOpened"></div></span>',
       link: function(scope, element, attrs) {
-        var footnoteSl = '#fn'+scope.caption + ' p', // footnote jquery selector
+        var footnoteSl = '#fn'+ scope.footnote + ' p', // footnote jquery selector
             contents = $(footnoteSl).clone(),
             wrapper = element.find('.footnote-contents');
-        
-        
 
         wrapper.html(contents);
         $compile(wrapper.contents())(scope);
-        
-        scope.isOpened = false;
+       
+        scope.isOpened = !!attrs.isOpened;
 
         scope.toggleFootnote = function(){
           console.log('::footnote > toggleFootnote')

@@ -1528,12 +1528,24 @@ div.profile-others .profile-thumb{
   margin-bottom: 20px;
   padding-bottom: 0px;
   position: relative;
+  font-size: 11px;
+    line-height: 18px;
 }
 
 .sliding-steps .step .external-link{
-    font-size: 11px;
-    line-height: 18px;
+    
     padding: 9px 0;
+}
+
+
+.sliding-steps .step .footnote-wrapper a {
+  cursor: pointer;
+  float: left;
+  margin-right: 5px;
+}
+
+.sliding-steps .step .footnote-wrapper button{
+  float: left;
 }
 
 .sliding-steps .step a{

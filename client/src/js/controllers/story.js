@@ -109,14 +109,10 @@ angular.module('miller')
             }
           }
 
-          // debugger
+          
           // this is another story or a footnote or a missing document (weird)
           // will be lazily filled with stuffs later
-          return angular.extend({
-            _type: d.type,
-            _index: d._index,
-            citation: d.citation
-          });
+          return d;
         }).value();
 
       // $rootScope.emit(documents = documents;
