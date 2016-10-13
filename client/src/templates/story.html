@@ -43,8 +43,8 @@
       <div ng-if='story.covers.length' class="main cover" ng-repeat='document in story.covers'>
         <!-- <div class='row'>
           <div class='col-md-8'> -->
-            <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
-            <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
+            <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Published' lazy-img='{{document.metadata.urls.Published}}'></div>
+            <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.media_url || document.metadata.thumbnail_url}}'></div>
           <!-- </div> -->
           
           <!-- <div class='col-md-4'> -->
