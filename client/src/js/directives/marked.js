@@ -21,7 +21,7 @@ angular.module('miller')
       link : function(scope, element, attrs) {
         var entities = [],
             annotable = false,
-            
+            previousFocus,
             ToC = [],
             docs = [],
             footnotes = {};
@@ -32,7 +32,17 @@ angular.module('miller')
 
         scope.focus = function(idx) {
           $log.log(':: markdownit > focus - idx:', idx);
-          if(scope.listener){
+          if(previousFocus && previousFocus == idx && scope.listener){
+            previousFocus = 0;
+            // unfocus @todo. id = 0 works but i not the best solution.
+            scope.listener({
+              event: EVENTS.MARKDOWNIT_FOCUS, 
+              data: {
+                idx: 0
+              }
+            });
+          } else if(scope.listener){
+            previousFocus = idx;
             scope.listener({
               event: EVENTS.MARKDOWNIT_FOCUS, 
               data: {
@@ -41,6 +51,7 @@ angular.module('miller')
             });
             
           }
+
         }
 
         scope.fullsize = function(slug, type){

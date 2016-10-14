@@ -13,7 +13,7 @@
 
       <div ng-if="item._type=='footnote'" class="metadata footnote-wrapper">
         <button class='btn btn-line' ng-click='alignTo(item._index, $event)'>
-        <span class='icon icon-eye'></span><span class='type'>{{item.type}}</span>
+        <span>{{item.caption}}</span>
         </button>
         <span footnote='item.id' caption='item.caption' is-opened='true'></span>
       </div>

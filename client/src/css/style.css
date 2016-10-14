@@ -504,8 +504,8 @@ label{
   text-decoration: none;
 }
 
-.contents a.special-link.active, .contents .footnote-ref.active{
-  background-color: #151515;
+.contents a.special-link.active, .contents .footnote-ref.active a{
+  background-color: #4ECDC4;
   color: white;
 }
 
@@ -1560,6 +1560,17 @@ div.profile-others .profile-thumb{
 
 .sliding-steps .step .footnote-wrapper button{
   float: left;
+  line-height: 18px;
+  font-size: 11px;
+  border: 0px solid transparent;
+  font-weight: normal;
+  padding: 0 4px;
+  transition: background-color .36s ease-in-out;
+}
+
+.sliding-steps .step.active .footnote-wrapper button{
+  background-color: #4ECDC4;
+  color: #f0f0f0;
 }
 
 .sliding-steps .step a{

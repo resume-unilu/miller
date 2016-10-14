@@ -109,16 +109,29 @@ angular.module('miller')
           sideoffset = _sideOffset || element.find('#step-'+idx)[0].offsetTop;
           refOffset  = _refOffset || item[0].offsetTop;
           
+          // disable if it is the same
+          if (lastIdxSelected == idx -1){
+            scope.reset(item);
+            return;
+          }
 
           if(lastIdxSelected !== undefined){
             scope.items[lastIdxSelected].isFocused = false;
             // console.log('#item-'+lastIdxSelected)
             angular.element('#item-'+(lastIdxSelected+1)).removeClass('active')
-          } 
+          }
           item.addClass('active');
           lastIdxSelected = idx - 1;// idx = 0 does not exist
           scope.items[idx - 1].isFocused = true;
           scope.reach(idx, sideoffset, refOffset);
+        }
+
+        scope.reset = function(){
+          if(lastIdxSelected) {
+            scope.items[lastIdxSelected].isFocused = false;
+            angular.element('#item-'+(lastIdxSelected+1)).removeClass('active');
+            lastIdxSelected = undefined;
+          }
         }
 
         scope.alignTo = function(idx, evt){
@@ -143,12 +156,12 @@ angular.module('miller')
           scope.align(idx,sideOffset,refOffset)
         }
 
-        // on destroy
         scope.$watch('focus', function(idx){
           if(idx){ // idx = 0 does not exist, cfr services.MarkdownitService
             $log.log('⏣ sliding-steps @focus - idx:', idx, scope.items[idx-1]);
             scope.align(idx);
-            
+          } else if(idx === 0) {
+            scope.reset();
           }
         })
       }
