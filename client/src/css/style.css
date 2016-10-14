@@ -42,6 +42,7 @@ a{
   cursor: pointer;
 }
 
+
 .small{
   font-size: 12px;
   line-height: 20px;
@@ -585,7 +586,6 @@ label{
   color: #151515;
 }
 
-
 .contents .footnote-contents p, .contents .footnote-contents span{
   font-size: 12px;
   line-height: 20px;
@@ -598,9 +598,12 @@ label{
   color: #151515;
 }
 
-
-
 .contents .footnotes{
+  display: none;
+}
+
+
+.contents hr.footnote-sep{
   display: none;
 }
 
@@ -1168,6 +1171,7 @@ h4.modal-title{
   margin-bottom: 50px;
   padding: 10px;
   background-color: #f0efef;
+  min-height: 400px;
 }
 
 .story .overlay .cover.main .image-wrapper.cover{
@@ -1662,11 +1666,15 @@ div.profile-others .profile-thumb{
   background-color: rgba(0,0,0,.52);
   color: white;
   text-align: center;
-  line-height: 31px;
   
   transition: background-color .36s ease-in-out;
   z-index: 2;
 }
+
+.thumbnail > .fullscreen .icon{
+  line-height: 31px;
+}
+
 
 .thumbnail > .fullscreen:hover{
   background-color: #4ECDC4;
