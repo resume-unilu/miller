@@ -52,9 +52,9 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
         StoryFactory.get($s.next || {
           filters: JSON.stringify(query.length > 2? {
             contents__icontains: query,
-            tags__slug: 'glossary'
+            tags__slug__in: ['glossary', 'law']
           } : {
-            tags__slug: 'glossary'
+            tags__slug__in: ['glossary', 'law']
           })
         },function(res){
           $log.log('tab.glossary > suggest loaded n.docs:', res.results.length, QueryParamsService(res.next || ''));

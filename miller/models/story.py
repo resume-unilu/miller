@@ -57,7 +57,7 @@ class Story(models.Model):
   
   title     = models.CharField(max_length=500)
   slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
-  abstract  = models.CharField(max_length=500, blank=True, null=True)
+  abstract  = models.CharField(max_length=2000, blank=True, null=True)
   contents  = SimpleMDEField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
   metadata  = JSONField(default=json.dumps({'title':{'en':'', 'fr':''}, 'abstract':{'en':'', 'fr':''}}),blank=True) # it will contain, JSON fashion
 

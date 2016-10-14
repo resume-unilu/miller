@@ -77,13 +77,21 @@
   "state.publications.interviews.label": "E-interviews",
   "state.publications.interviews.abstract": "E-interviews ...",
 
-  "state.publications.papers.title": "EPapers",
-  "state.publications.papers.label": "EPapers",
+  "state.publications.papers.title": "E-papers",
+  "state.publications.papers.label": "E-papers",
   "state.publications.papers.abstract": "E-interviews ...",
+
+  "state.publications.law.title": "law",
+  "state.publications.law.label": "law",
+  "state.publications.law.abstract": "law ...",
 
   "state.publications.glossary.title": "glossary",
   "state.publications.glossary.label": "glossary",
   "state.publications.glossary.abstract": "glossary ...",
+
+  "state.publications.collection.title": "E-publications",
+  "state.publications.collection.label": "E-publication",
+  "state.publications.collection.abstract": "...",
 
   "state.publications.biography.title": "biography",
   "state.publications.biography.label": "biography",
