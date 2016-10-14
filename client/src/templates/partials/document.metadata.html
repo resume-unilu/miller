@@ -1,12 +1,21 @@
 <div class='metadata'>
   <div ng-if='!document.metadata.details'>
-    <button class='btn btn-line' ng-if='item._type == "doc"||item._type == "voc"' ng-click='alignTo(item._index, $event)'>
-      <span class='icon icon-eye'></span><span class='type {{item.type}}'></span>
+    <button class='btn btn-line' ng-if='document._type == "doc"||document._type == "voc"' ng-click='alignTo(document._index, $event)'>
+      <span class='icon icon-eye'></span><span class='type {{document.type}}'></span>
     </button>
     
     <span class='title' embedit='document.metadata.title' language='language'></span>
 
-    <div ng-if='document.metadata.abstract' class='abstract' embedit='document.metadata.abstract' language='language'></div>
+    <div ng-if='document.metadata.abstract'  class='abstract'>
+      <span embedit='document.metadata.abstract' language='language'></span>
+      <span ng-if='document._type == "voc"'>
+        <a ui-sref='story({postId:document.slug})'>
+          <span translate='more'></span>
+          <span class="icon icon-arrow-right-circle"></span>
+        </a>
+      </span>
+    </div>
+
     <div ng-if='document.metadata.caption' class='caption' embedit='document.metadata.caption' language='language'></div>
     <div ng-if='!document.metadata.caption && document.metadata.description' class='caption' embedit='document.metadata.description' language='language'></div>
     <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language' firstline='true'></div>
@@ -14,8 +23,8 @@
   
   <!-- having details -->
   <div ng-if='document.metadata.details'>
-    <button class='btn btn-line' ng-if='item._type == "doc"||item._type == "voc"' ng-click='alignTo(item._index, $event)'>
-      <span class='icon icon-eye'></span><span class='type'>{{item.type}}</span>
+    <button class='btn btn-line' ng-if='document._type == "doc"||document._type == "voc"' ng-click='alignTo(document._index, $event)'>
+      <span class='icon icon-eye'></span><span class='type'>{{document.type}}</span>
     </button>
     <span class='title' embedit='document.metadata.details.title' language='language'></span>
     <div class='caption' embedit='document.metadata.details.caption' language='language'></div>

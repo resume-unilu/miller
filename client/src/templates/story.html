@@ -59,9 +59,8 @@
             <div markdownit='story.contents' language='language' listener='listener(event, data, callback)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
           </div>
         </div>
-        <div class='col-md-4' ng-if='documents.length' respect-previous-sibling update="documents"><div class="sliding-steps-wrapper">
-          <div sliding-steps data-language='language' data-focus='focusedIdx' class='sliding-steps' items='documents'></div>
-          </div>
+        <div class='col-md-4' ng-if='documents.length' respect-previous-sibling update="documents">
+          <div sliding-steps data-language='language' data-focus='focusedIdx' style='height:100%' items='documents'></div>
         </div>
       </div>
       <!-- <div style='margin-top: 50px' disqus="story.slug"></div> -->

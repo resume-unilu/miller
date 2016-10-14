@@ -1514,10 +1514,18 @@ div.profile-others .profile-thumb{
 */
 .sliding-steps-wrapper{
   overflow: hidden;
-  border-top: 2px solid #ddd;
   height: 100%;
+  border-top: 2px solid transparent;
+}
+
+.sliding-steps-wrapper.more-top{
+  border-top: 2px solid #ddd;
+}
+
+.sliding-steps-wrapper.more-bottom{
   border-bottom: 2px solid #ddd;
 }
+
 .sliding-steps{
   transition: transform .36s ease-in-out;
 

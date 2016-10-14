@@ -19,7 +19,7 @@ angular.module('miller')
         var sideOffset = 0,
             refOffset = 0,
             parentOffset = element.offset().top,
-            
+            steps = element.find('.sliding-steps'),
             lastIdxSelected;
 
         // basic request animationframe shim
@@ -72,15 +72,22 @@ angular.module('miller')
         }
 
 
-        function reach(idx, sideoffset, refOffset){
+        scope.reach = function(idx, sideoffset, refOffset){
           $log.log('⏣ sliding-steps > reach idx:', idx, 
                    '- side offset:',  sideoffset, 
                    '- ref offset:',   refOffset, 
                    // '- scrollY:',      window.scrollY,
                    '- parentOffset:', parentOffset);
 
-          element.css('transform', 'translateY(' + (refOffset  - sideoffset) + 'px)');
+          steps.css('transform', 'translateY(' + (refOffset  - sideoffset) + 'px)');
+          scope.isMoreTop =  (refOffset  - sideoffset) < 0;
         };
+
+        /*
+          Scope below
+        */
+        scope.isMoreTop = false;
+        scope.isMoreBottom = false;
 
         scope.fullsize = function(slug, type){
           $log.log('⏣ sliding-steps > fullsize slug:', slug);
@@ -111,7 +118,7 @@ angular.module('miller')
           item.addClass('active');
           lastIdxSelected = idx - 1;// idx = 0 does not exist
           scope.items[idx - 1].isFocused = true;
-          reach(idx, sideoffset, refOffset);
+          scope.reach(idx, sideoffset, refOffset);
         }
 
         scope.alignTo = function(idx, evt){
