@@ -200,7 +200,8 @@ angular.module('miller')
             return '<span type="voc" lazy-placeholder="'+ terms[0] + '">' + terms[0];
           }
           tokens[idx].attrSet('class', 'glossary');
-          return '<a id="item-'+linkIndex+'" class="special-link glossary"  ng-click="fullsize(\'' +url+'\', \'voc\')"><span hold slug="'+ terms[0] +'" type="voc" class="anchor-wrapper"></span><span class="icon icon-arrow-right-circle"></span>';
+          return '<a id="item-'+linkIndex+'" class="special-link glossary"  ng-click="focus(\'' +linkIndex+'\')"><span hold slug="'+ terms[0] +'" type="voc" class="anchor-wrapper"></span><span class="icon icon-arrow-right-circle"></span>';
+          // return '<a id="item-'+linkIndex+'" class="special-link glossary"  ng-click="fullsize(\'' +url+'\', \'voc\')"><span hold slug="'+ terms[0] +'" type="voc" class="anchor-wrapper"></span><span class="icon icon-arrow-right-circle"></span>';
         } else {
           return '<a href="'+url+'" target="_blank">';
         }  

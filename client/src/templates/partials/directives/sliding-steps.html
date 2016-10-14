@@ -1,4 +1,4 @@
-<div id='step-{{item._index}}' class='step {{item._type}}' ng-class='{active: item.isFocused}' ng-repeat="item in items" ng-init='document=item' >
+<div id='step-{{item._index}}' class='step {{item._type}}' ng-class='{active: item.isFocused}' ng-repeat="item in items" ng-init='document=item' ng-if='item._type != "block-doc"'>
 
   <div class="thumbnail" ng-if='item._type=="doc" && item.metadata.thumbnail_url && item.type != "link"' ng-click='fullsize(document.slug, document._type)'>
     <div ng-if='' class="action fullscreen"><span class="icon icon-size-fullscreen"></span></div>  

@@ -1546,6 +1546,10 @@ div.profile-others .profile-thumb{
   margin-right: 5px;
 }
 
+.sliding-steps .step .footnote-wrapper .footnote-anchor{
+  display: none;
+}
+
 .sliding-steps .step .footnote-wrapper button{
   float: left;
 }
