@@ -20,6 +20,7 @@ angular.module('miller')
             refOffset = 0,
             parentOffset = element.offset().top,
             steps = element.find('.sliding-steps'),
+            stepswrapper = steps.parent(),
             lastIdxSelected;
 
         // basic request animationframe shim
@@ -72,15 +73,23 @@ angular.module('miller')
         }
 
 
-        scope.reach = function(idx, sideoffset, refOffset){
-          $log.log('⏣ sliding-steps > reach idx:', idx, 
-                   '- side offset:',  sideoffset, 
-                   '- ref offset:',   refOffset, 
-                   // '- scrollY:',      window.scrollY,
-                   '- parentOffset:', parentOffset);
+        scope.reach = function(idx, sideoffset, refOffset, step){
+          
+          var expectedOffset = (refOffset  - sideoffset),
+              visibleOffset = - (sideoffset + step[0].offsetHeight - stepswrapper[0].offsetHeight);
 
-          steps.css('transform', 'translateY(' + (refOffset  - sideoffset) + 'px)');
-          scope.isMoreTop =  (refOffset  - sideoffset) < 0;
+          $log.log('⏣ sliding-steps > reach idx:', idx, 
+                   '- side offset:',    sideoffset, 
+                   '- ref offset:',     refOffset, 
+                   // '- scrollY:',      window.scrollY,
+                   '- parentOffset:',   parentOffset,
+                   '- expectedOffset:', expectedOffset,
+                   '- visibleOffset:',  visibleOffset,
+                   '- step[0].offsetHeight: ', step[0].offsetHeight);
+          // debugger
+          steps.css('transform', 'translateY(' + Math.min(expectedOffset,visibleOffset) + 'px)');
+          scope.isMoreTop =  expectedOffset < 0;
+
         };
 
         /*
@@ -104,9 +113,10 @@ angular.module('miller')
         //
         // increase or decrease the translation value for the silly thing. 
         scope.align = function(idx, _sideOffset, _refOffset) {
-          var item = angular.element('#item-'+idx);
+          var item = angular.element('#item-'+idx),
+              step = element.find('#step-'+idx);
 
-          sideoffset = _sideOffset || element.find('#step-'+idx)[0].offsetTop;
+          sideoffset = _sideOffset || step[0].offsetTop;
           refOffset  = _refOffset || item[0].offsetTop;
           
           // disable if it is the same
@@ -123,7 +133,7 @@ angular.module('miller')
           item.addClass('active');
           lastIdxSelected = idx - 1;// idx = 0 does not exist
           scope.items[idx - 1].isFocused = true;
-          scope.reach(idx, sideoffset, refOffset);
+          scope.reach(idx, sideoffset, refOffset, step);
         }
 
         scope.reset = function(){
@@ -136,7 +146,8 @@ angular.module('miller')
 
         scope.alignTo = function(idx, evt){
           $log.log('⏣ sliding-steps > alignTo -idx:', idx, '- clientY:', evt.clientY);
-          sideOffset = element.find('#step-'+idx)[0].offsetTop;
+          var step = element.find('#step-'+idx);
+          sideOffset = step[0].offsetTop;
           refOffset  = angular.element('#item-'+idx)[0].offsetTop;
           
           var wrapperOffset = element.parent().offset().top;
@@ -153,7 +164,7 @@ angular.module('miller')
                    '- current scrollY:', window.scrollY);
 
           scrollTo(refOffset + wrapperOffset - window.innerHeight/2)
-          scope.align(idx,sideOffset,refOffset)
+          scope.align(idx,sideOffset,refOffset, step)
         }
 
         scope.$watch('focus', function(idx){

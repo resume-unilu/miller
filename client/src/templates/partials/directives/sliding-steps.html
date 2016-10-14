@@ -1,3 +1,4 @@
+
 <div class="sliding-steps-wrapper" ng-class='{"more-top":isMoreTop, "more-bottom":isMoreBottom}'>
   <div class='sliding-steps'>
     <div id='step-{{item._index}}' class='step {{item._type}}' ng-class='{active: item.isFocused}' ng-repeat="item in items" ng-init='document=item' ng-if='item._type != "block-doc"'>

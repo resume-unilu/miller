@@ -88,15 +88,27 @@ angular.module('miller')
       restrict : 'A',
       link: function(scope, element){
         $log.log('🚀 respect-previous-sibling ready')
-        
+        var p;
+
         function setHeight(){
           $log.log('🚀 respect-previous-sibling > setHeight()')
-          element.height(element.prev()[0].offsetHeight);
+          // debugger
+          $timeout.cancel(p)
+          p = $timeout(function(){
+            element.height(element.prev()[0].offsetHeight);
+          }, 500);
         }
+
+
+        
+
         setHeight();
         angular.element(window).bind('resize', setHeight);
 
-        
+
+        // scope.$watch('update', function(){
+        //   setHeight();
+        // }, true);
       }
     }
   });

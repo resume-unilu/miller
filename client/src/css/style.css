@@ -603,7 +603,7 @@ label{
 }
 
 
-.contents hr.footnote-sep{
+.contents hr.footnotes-sep{
   display: none;
 }
 
@@ -1520,6 +1520,7 @@ div.profile-others .profile-thumb{
   overflow: hidden;
   height: 100%;
   border-top: 2px solid transparent;
+  /*background: gold;*/
 }
 
 .sliding-steps-wrapper.more-top{
