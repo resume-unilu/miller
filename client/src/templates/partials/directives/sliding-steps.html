@@ -1,3 +1,10 @@
+<div class='sliding-steps-direction top' ng-class='{"active":isMoreTop}'>
+  <div class='btn-line-group'>
+    <button class="btn btn-line" ng-click='prev()'>
+      <span translate='button.previous'></span> <span class="icon icon-arrow-up-circle"></span>
+    </button>
+  </div>
+</div>
 
 <div class="sliding-steps-wrapper" ng-class='{"more-top":isMoreTop, "more-bottom":isMoreBottom}'>
   <div class='sliding-steps'>
@@ -24,6 +31,13 @@
       </div> -->
       <div ng-if='item.metadata' ng-include='"templates/partials/document.metadata.html"|prefixTemplate'></div>
     </div>
+  </div>
+</div>
+<div class='sliding-steps-direction bottom' ng-class='{"active":isMoreBottom}'>
+  <div class='btn-line-group'>
+    <button class="btn btn-line" ng-click='next()'>
+      <span translate='button.next'></span> <span class="icon icon-arrow-down-circle"></span>
+    </button>
   </div>
 </div>
 <!-- <div id='sliding-steps-line' style='position: absolute; width: 100%; height: 2px; background-color: gold'></div> -->

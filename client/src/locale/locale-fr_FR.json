@@ -6,6 +6,8 @@
   "button.viewmode": "mode lecture",
   "button.save": "save",
   "button.more": "load more",
+  "button.next": "next",
+  "button.previous": "previous",
   "button.loading": "loading ...",
   "button.choosecover": "choose cover",
   "button.upload.story": "télécharger sur la plateforme",

@@ -6,6 +6,8 @@
   "button.viewmode": "back to reading mode",
   "button.save": "save",
   "button.more": "load more",
+  "button.next": "next",
+  "button.previous": "previous",
   "button.loading": "loading ...",
   "button.choosecover": "choose cover",
   "button.upload.story": "upload my writing",

@@ -21,6 +21,10 @@ angular.module('miller')
             parentOffset = element.offset().top,
             steps = element.find('.sliding-steps'),
             stepswrapper = steps.parent(),
+            stepsHeight = steps[0].offsetHeight,
+            stepswrapperHeight = stepswrapper[0].offsetHeight,
+
+            translateY = 0,
             lastIdxSelected;
 
         // basic request animationframe shim
@@ -74,9 +78,11 @@ angular.module('miller')
 
 
         scope.reach = function(idx, sideoffset, refOffset, step){
-          
+          stepswrapperHeight = stepswrapper[0].offsetHeight;
+          stepsHeight = steps[0].offsetHeight;
+
           var expectedOffset = (refOffset  - sideoffset),
-              visibleOffset = - (sideoffset + step[0].offsetHeight - stepswrapper[0].offsetHeight);
+              visibleOffset = - (sideoffset + step[0].offsetHeight - stepswrapperHeight);
 
           $log.log('⏣ sliding-steps > reach idx:', idx, 
                    '- side offset:',    sideoffset, 
@@ -86,17 +92,72 @@ angular.module('miller')
                    '- expectedOffset:', expectedOffset,
                    '- visibleOffset:',  visibleOffset,
                    '- step[0].offsetHeight: ', step[0].offsetHeight);
-          // debugger
-          steps.css('transform', 'translateY(' + Math.min(expectedOffset,visibleOffset) + 'px)');
-          scope.isMoreTop =  expectedOffset < 0;
 
+          // debugger
+          translateY = Math.min(expectedOffset,visibleOffset);
+          steps.css('transform', 'translateY(' + translateY  + 'px)');
+          scope.isMoreTop =  expectedOffset < -2;
+          scope.isMoreBottom = stepsHeight + translateY > stepswrapperHeight;
+          
+        };
+
+
+        scope.prev = function() {
+          $log.log('⏣ sliding-steps > prev - idx:',lastIdxSelected,
+            '- isMoreTop:', scope.isMoreTop);
+          if(!scope.isMoreTop)
+            return;
+
+          if(lastIdxSelected > 1){
+            scope.alignTo(lastIdxSelected);
+            return;
+          }
+
+          steps.children().each(function(i, d){
+            
+            console.log('...',d.offsetTop, translateY, d.offsetTop + translateY < 0);
+            // debugger
+            if(d.offsetTop + translateY < 0){
+              scope.alignTo(+d.id.replace('step-', ''));
+              // debugger
+              // break it!
+              return false;
+            }
+            
+          });
+          
+        };
+
+        scope.next = function() {
+          // calculate if there is any step that is below floating line.
+          
+          $log.log('⏣ sliding-steps > next - idx:',lastIdxSelected,
+            '- steps',    steps ) 
+
+          steps.children().each(function(i, d){
+            if(i < lastIdxSelected){
+              return true;
+            }
+            console.log('...',(d.offsetTop + d.offsetHeight + translateY),stepswrapperHeight, (d.offsetTop + d.offsetHeight + translateY < stepswrapperHeight));
+            // debugger
+            if(d.offsetTop + d.offsetHeight + translateY > stepswrapperHeight){
+              scope.alignTo(+d.id.replace('step-', ''));
+              // debugger
+              // break it!
+              return false;
+            }
+            
+          });
+          
+          // steps.css('transform', 'translateY(' + Math.min(expectedOffset,visibleOffset) + 'px)');
+          
         };
 
         /*
           Scope below
         */
         scope.isMoreTop = false;
-        scope.isMoreBottom = false;
+        scope.isMoreBottom = stepsHeight > stepswrapperHeight;
 
         scope.fullsize = function(slug, type){
           $log.log('⏣ sliding-steps > fullsize slug:', slug);
@@ -144,8 +205,8 @@ angular.module('miller')
           }
         }
 
-        scope.alignTo = function(idx, evt){
-          $log.log('⏣ sliding-steps > alignTo -idx:', idx, '- clientY:', evt.clientY);
+        scope.alignTo = function(idx){
+          $log.log('⏣ sliding-steps > alignTo -idx:', idx);
           var step = element.find('#step-'+idx);
           sideOffset = step[0].offsetTop;
           refOffset  = angular.element('#item-'+idx)[0].offsetTop;

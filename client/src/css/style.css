@@ -1516,6 +1516,49 @@ div.profile-others .profile-thumb{
 /*
   Sliding-staps directive
 */
+
+.sliding-steps-direction{
+  position: absolute;
+  height: 50px;
+      right: 15px;
+    left: 15px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.sliding-steps-direction .btn-line-group{
+  margin-top: 10px;
+}
+
+.sliding-steps-direction .btn-line-group{
+  transition: transform .36s ease-in-out;
+  
+}
+
+
+
+.sliding-steps-direction.top{
+  top: -50px;
+}
+
+.sliding-steps-direction.top .btn-line-group{
+  transform: translateY(50px);
+}
+
+.sliding-steps-direction.bottom{
+  bottom: -50px;
+}
+
+.sliding-steps-direction.bottom .btn-line-group{
+  transform: translateY(-50px);
+}
+
+.sliding-steps-direction.top.active .btn-line-group, .sliding-steps-direction.bottom.active .btn-line-group{
+  transform: translateY(0px);
+}
+
+
+
 .sliding-steps-wrapper{
   overflow: hidden;
   height: 100%;
