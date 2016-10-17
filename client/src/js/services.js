@@ -148,7 +148,8 @@ angular.module('miller')
         .use(window.markdownitFootnote)
         .use(window.markdownitContainer, 'profile')
         .use(window.markdownitContainer, 'profile-committee')
-        .use(window.markdownitContainer, 'profile-others');
+        .use(window.markdownitContainer, 'profile-others')
+        .use(window.markdownItAttrs);
 
       
       // md.renderer.rules.paragraph_open = function(tokens, idx) {
@@ -165,7 +166,9 @@ angular.module('miller')
 
       // rewrite links
       md.renderer.rules.link_open = function(tokens, idx){
-        var url = tokens[idx].attrGet('href').trim();
+        var url = tokens[idx].attrGet('href').trim(),
+            klass = tokens[idx].attrGet('class') || ''; // only on block element (e.g.  url starting with 'doc/' without any text attached.
+
         // console.log('LINK_OPEN', url, tokens[idx])
         if(url.indexOf('doc/') === 0){
           var doc = url.trim().replace('doc/','').replace(/\//g,'-').split(',')[0];
@@ -179,7 +182,7 @@ angular.module('miller')
             });
           // }
           if(!tokens[idx + 1].content.length){
-            return '<span id="item-'+linkIndex+'" class="lazy-placeholder" type="doc" lazy-placeholder="'+ doc + '"></span>';
+            return '<span id="item-'+linkIndex+'" class="lazy-placeholder '+klass+'" type="doc" lazy-placeholder="'+ doc + '"></span>';
           }
 
           return '<a id="item-'+linkIndex+'" class="special-link" name="'+ doc +'" ng-click="focus(\''+ linkIndex +'\',\'' +url+'\', \'doc\')"><span hold slug="'+doc +'" type="doc"  class="anchor-wrapper"></span><span class="icon icon-eye"></span>';

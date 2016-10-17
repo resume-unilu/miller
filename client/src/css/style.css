@@ -557,10 +557,22 @@ label{
     
 }
 
+.contents .lazy-placeholder.medium .image-wrapper{
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+}
 
+.contents .lazy-placeholder.medium .switch{
+  float: left;
+}
 
 .contents a:hover{
 
+}
+
+.contents  a{
+      word-wrap: break-word;
 }
 
 
@@ -1155,8 +1167,14 @@ h4.modal-title{
 }
 
 .doc .caption, .doc .copyright{
-  font-size: 12px;
-  margin: 10px 50px 10px 20px;
+      font-size: 11px;
+    margin: 0 0 10px;
+    line-height: 18px;
+}
+
+.doc .metadata .title{
+  font-size: 11px;
+  line-height: 18px;
 }
 
 .doc .cover{

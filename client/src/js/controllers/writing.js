@@ -95,7 +95,7 @@ angular.module('miller')
       $log.log('... tobesaved:', tobesaved)
       $log.log('... tobedeleted:', tobedeleted)
       $log.log('... tobekept:', tobekept)
-      debugger
+     
       // if something needs to be done, start the chain
       if(tobesaved.voc.length || tobedeleted.voc.length || tobesaved.doc.length || tobedeleted.doc.length ){
         $q.all(_.compact(
