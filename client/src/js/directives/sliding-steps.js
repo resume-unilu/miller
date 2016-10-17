@@ -108,23 +108,30 @@ angular.module('miller')
           if(!scope.isMoreTop)
             return;
 
-          if(lastIdxSelected > 1){
-            scope.alignTo(lastIdxSelected);
-            return;
-          }
+          // if(lastIdxSelected > 1){
+          //   scope.alignTo(lastIdxSelected);
+          //   return;
+          // }
 
           steps.children().each(function(i, d){
             
-            console.log('...',d.offsetTop, translateY, d.offsetTop + translateY < 0);
             // debugger
-            if(d.offsetTop + translateY < 0){
-              scope.alignTo(+d.id.replace('step-', ''));
+            
+            
+            if(d.offsetTop + translateY > 0){
               // debugger
               // break it!
+              console.log('...',target);
+            
               return false;
             }
+            target = +d.id.replace('step-', '');
             
           });
+
+          if(target)
+            scope.alignTo(target);
+              
           
         };
 
