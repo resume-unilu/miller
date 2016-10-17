@@ -76,14 +76,17 @@ angular.module('miller')
             voc: []
           };
 
+
+
       // which document / stories needs to be saved?
       for(var i=0; i<items.length; i++) {
-        if(!initialItems[items[i]._type])
+        var t = items[i]._type == 'block-doc'? 'doc' : items[i]._type;
+        if(!initialItems[t])
           continue; // just ignore other types
-        else if(initialItems[items[i]._type].indexOf(items[i].slug) === -1) 
-          tobesaved[items[i]._type].push(items[i].slug);
+        else if(initialItems[t].indexOf(items[i].slug) === -1) 
+          tobesaved[t].push(items[i].slug);
         else
-          tobekept[items[i]._type].push(items[i].slug);
+          tobekept[t].push(items[i].slug);
       }
 
       tobedeleted.doc = _.difference(initialItems.doc, tobekept.doc, tobesaved.doc);
@@ -92,7 +95,7 @@ angular.module('miller')
       $log.log('... tobesaved:', tobesaved)
       $log.log('... tobedeleted:', tobedeleted)
       $log.log('... tobekept:', tobekept)
-
+      debugger
       // if something needs to be done, start the chain
       if(tobesaved.voc.length || tobedeleted.voc.length || tobesaved.doc.length || tobedeleted.doc.length ){
         $q.all(_.compact(
