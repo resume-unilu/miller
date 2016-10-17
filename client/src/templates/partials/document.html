@@ -1,13 +1,13 @@
 
 <div class='doc doc-{{document.type}} {{document.isSelected?"active":""}}' ng-click='selectDocument(document)'>
-  <div class='divider'>&nbsp;</div>
+  <!-- <div class='divider'>&nbsp;</div> -->
   
   <div class='switch' ng-if='document.type=="image"' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
 
   <div class='switch' ng-if='document.type=="photo"' ng-include='"templates/partials/document.photo.html"|prefixTemplate'></div>
 
 
-  <div class='switch' ng-if='document.type=="rich" || document.type=="video"' ng-include='"templates/partials/document.rich.html"|prefixTemplate'></div>
+  <div class='switch' ng-if='document.type=="rich" || document.type=="video"' style='height: 150px' rich-oembed oembed='document.metadata' cover='scope.oembed.urls.Preview || scope.oembed.thumbnail_url;'></div>
 
   <div class='switch' ng-if='document.type=="link" && document.metadata.thumbnail_url' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
 

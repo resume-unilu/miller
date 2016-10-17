@@ -1183,17 +1183,24 @@ h4.modal-title{
 
 .story .cover.main .metadata{
   margin: 0;
+  background-color: transparent;
+  padding: 10px 5px;
+  margin-right: 40%;
+}
+
+.story .cover.main .metadata .title,
+.story .cover.main .metadata .caption,
+.story .cover.main .metadata .copyright {
+  display: inline;
 }
 
 .story .overlay .cover.main{
-  margin-bottom: 50px;
-  padding: 10px;
-  background-color: #f0efef;
+  margin-bottom: 20px;
   min-height: 400px;
 }
 
 .story .overlay .cover.main .image-wrapper.cover{
-  margin:0 0 10px 0;
+  margin: 0;
   background-color: #bcbcbc;
 }
 

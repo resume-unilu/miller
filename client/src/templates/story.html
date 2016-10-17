@@ -43,7 +43,8 @@
       <div ng-if='story.covers.length' class="main cover" ng-repeat='document in story.covers'>
         <!-- <div class='row'>
           <div class='col-md-8'> -->
-           <div class='image-wrapper eee cover' lazy-img='{{document.metadata.media_url || document.metadata.urls.Publishable || document.metadata.urls.Preview || document.metadata.thumbnail_url }}'></div>
+          <div rich-oembed autoplay='true' oembed='document.metadata' cover='document.metadata.media_url || document.metadata.urls.Publishable || document.metadata.urls.Preview || document.metadata.thumbnail_url'></div>
+          
           <!-- </div> -->
           
           <!-- <div class='col-md-4'> -->
