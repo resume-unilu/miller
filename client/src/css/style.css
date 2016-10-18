@@ -108,6 +108,15 @@ label{
 
 .icon{
   font-size: 15px;
+      font-family: 'simple-line-icons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /*
@@ -1641,9 +1650,9 @@ div.profile-others .profile-thumb{
   transition: background-color .36s ease-in-out;
 }
 
-.sliding-steps .step.active .footnote-wrapper button{
+.sliding-steps .step.active .footnote-wrapper button, .sliding-steps .step.active .metadata button.btn{
   background-color: #4ECDC4;
-  color: #f0f0f0;
+  color: #fff;
 }
 
 .sliding-steps .step a{
@@ -1754,4 +1763,23 @@ div.profile-others .profile-thumb{
 
 .noembed-wrapper, .noembed-embed, .noembed-embed-inner{
   height: 100%
+}
+
+/*
+  Special icons by documenttype
+*/
+.icon-type-image:before, .icon-type-photo:before, .icon-type-picture:before{
+    content: "\e087";
+}
+
+.icon-type-link:before{
+    content: "\e087";
+}
+
+.icon-type-rich:before{
+    content: "\e087";
+}
+
+.icon-type-voc:before {
+content: "\e07a";
 }

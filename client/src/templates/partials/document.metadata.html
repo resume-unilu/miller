@@ -1,7 +1,7 @@
 <div class='metadata {{document.type}}'>
   <div ng-if='!document.metadata.details'>
     <button class='btn btn-line' ng-if='document._type == "doc"||document._type == "voc"' ng-click='alignTo(document._index, $event)'>
-      <span class='icon icon-eye'></span><span class='type {{document.type}}'></span>
+      <span class='icon icon-type-{{document.type||document._type}}'></span><span class='type {{document.type}}'></span>
     </button>
     
     <span class='title' embedit='document.metadata.title' language='language'></span>
@@ -24,7 +24,7 @@
   <!-- having details -->
   <div ng-if='document.metadata.details'>
     <button class='btn btn-line' ng-if='document._type == "doc"||document._type == "voc"' ng-click='alignTo(document._index, $event)'>
-      <span class='icon icon-eye'></span>
+      <span class='icon icon-type-{{document.type||document._type}}'></span>
     </button>
     <span class='title' embedit='document.metadata.details.title' language='language'></span>
     <div class='caption' embedit='document.metadata.details.caption' language='language'></div>
