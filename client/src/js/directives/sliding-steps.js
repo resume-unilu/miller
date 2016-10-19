@@ -5,7 +5,7 @@
  * 
  */
 angular.module('miller')
-  .directive('slidingSteps', function($log, $rootScope, RUNTIME){
+  .directive('slidingSteps', function($log, $rootScope, RUNTIME, $timeout){
     return {
       restrict : 'A',
       scope: {
@@ -166,6 +166,7 @@ angular.module('miller')
         scope.isMoreTop = false;
         scope.isMoreBottom = stepsHeight > stepswrapperHeight;
 
+
         scope.fullsize = function(slug, type){
           $log.log('⏣ sliding-steps > fullsize slug:', slug);
           $rootScope.fullsize(slug, type);
@@ -243,6 +244,12 @@ angular.module('miller')
             scope.reset();
           }
         })
+
+        $timeout(function() {
+          stepsHeight = steps[0].offsetHeight,
+          stepswrapperHeight = stepswrapper[0].offsetHeight,
+          scope.isMoreBottom = stepsHeight > stepswrapperHeight;
+        }, 1000);
       }
     }
   })

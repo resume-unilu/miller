@@ -18,9 +18,7 @@ angular.module('miller')
       },
       link: function(scope, element, attrs) {
         // console.log('::embedit @link, language:', scope.language, scope.embedit)
-        if(scope.stretch){
-          element.find('iframe').width('100%').height('100%');
-        }
+
 
         scope.render = function(language) {
           if(language && typeof scope.embedit == 'object') {
@@ -29,9 +27,12 @@ angular.module('miller')
               element.html((scope.embedit[language]||scope.embedit[altlanguage]||'').split(/<br\s?\/?>/).shift());
             else
               element.html(scope.embedit[language]||scope.embedit[altlanguage]||'');
-            
           } else {
             element.html(scope.embedit);
+          }
+
+          if(scope.stretch){
+            element.find('iframe').width('100%').height('100%');
           }
         };
         

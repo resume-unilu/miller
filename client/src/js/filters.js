@@ -9,6 +9,14 @@ angular.module('miller')
       return text? text.replace(/[\{\}]/g,''): '';
     };
   })
+  .filter('smartUrl', function(){
+    return function(text){
+      return (text || '')
+        .replace(/^https?:\/\/(www)?\.?([^\/]*)\/(.*)$/, function(m,www,domain,path){
+          return domain + '/...'+ path.substr(-25);
+        })
+    }
+  })
   /*
     Translit non ascii chars and uniform punctuations signs
   */

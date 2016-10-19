@@ -219,14 +219,13 @@ angular.module('miller')
     // 
     $rootScope.fullsize = function(slug, type) {
       $log.log('CoreCtrl -> fullsize, doc slug:', slug, type);
-
-      if(type=="doc"){
-        $location.search('view', slug);
-      }
+      
       if(type=='voc'){
         $state.go('story', {
           postId:slug
         })
+      } else {
+        $location.search('view', slug);
       }
       // $scope.fullsized = doc;
       // $location.search('view', doc.short_url);

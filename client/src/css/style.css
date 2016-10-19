@@ -565,11 +565,21 @@ label{
     color: #4ECDC4;
     
 }
+.contents .placeholder{
+  margin-top: 15px;
+}
+
 
 .contents .lazy-placeholder.medium .image-wrapper{
   width: 200px;
   height: 200px;
   margin-right: 20px;
+  margin-top: 10px;
+  padding:0;
+}
+
+.contents .lazy-placeholder.medium .metadata{
+  background-color: transparent;
 }
 
 .contents .lazy-placeholder.medium .switch{
@@ -1148,9 +1158,15 @@ h4.modal-title{
 }
 
 .metadata .title{
-  font-weight: bold;
+  font-style: bold;
 }
 
+.metadata a{
+  /*color: #2d9f98;*/
+  background-color: #afe9e5;
+  color: #151515;
+  word-break: break-all;
+}
 
 /*
   oembed tiny preview
@@ -1655,9 +1671,20 @@ div.profile-others .profile-thumb{
   color: #fff;
 }
 
-.sliding-steps .step a{
-  color: #2d9f98;
+.sliding-steps .step .metadata .doc{
+  margin-top: 10px;
 }
+
+.sliding-steps .step.active .metadata .doc{
+  background: #e6e5e5;
+}
+
+.sliding-steps .step.active .metadata .doc .image-wrapper{
+    background-color: #e6e5e5;
+    border: 2px solid #e6e5e5;
+}
+
+
 
 
 .sliding-steps .step .caption{

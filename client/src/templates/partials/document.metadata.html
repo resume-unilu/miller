@@ -32,7 +32,7 @@
   </div>
 
    <div ng-if='document.type=="link"' class='external-link'>
-    <span translate='cfr'></span> <a  target='_blank' ng-href='{{document.metadata.url}}'>{{document.metadata.url}}</a>
+    <span translate='cfr'></span> <a  target='_blank' ng-href='{{document.metadata.url}}'>{{document.metadata.url|smartUrl}}</a>
   </div>
 
   <!-- author part -->
@@ -46,4 +46,6 @@
       <a ng-href='{{document.metadata.provider_url}}' target='_blank'>{{document.metadata.provider_name}}</a>
     </span>
   </div>
+
+  <button ng-if='document.type != "link"' ng-click='fullsize(document.slug, document._type )' >preview</button>
 </div>
