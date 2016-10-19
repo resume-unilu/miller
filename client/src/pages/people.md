@@ -43,6 +43,24 @@ Il a rejoint le Digital Humanities Lab du CVCE en mars 2015 et a intégré l’U
 Paolo est un politiste (PhD, King’s College London) spécialisé en partis politiques européens et politique comparée. Il a rejoint le DEIS en septembre 2016 en tant que collaborateur scientifique rattaché au projet RESuME.  
 
 
+::: profile
+![profile/](/static/images/people/susana-munoz.jpg "Susana Muñoz")
+### Susana Muñoz
+> DEIS Research Infrastructure, Rectorat, Université du Luxembourg
+
+:::
+Susana Muñoz is a member of the Digital European Integration Studies (DEIS) research infrastructure at the University of Luxembourg. She holds a PhD in Law from the Public University of Navarre in Spain, where she started her research career in public international law and European law.
+ 
+After gaining professional experience at the European Parliament's DG for Research in Luxembourg, she joined the European NAvigator (ENA) project, forerunner to the Centre Virtuel de la Connaissance sur l'Europe (CVCE), in 1998, where she worked as a researcher in European integration studies until the CVCE was founded in 2002.
+ 
+In 2003 she became Head of European Integration Studies and a Member of the Management Committee at the CVCE. On 1 July 2016, the CVCE joined the University of Luxembourg and since then she has been leading the European Integration Studies Group within DEIS. She is ePublications director and she is the editor of the 'European integration studies' and 'Oral history of European integration' collections, available at the digital research infrastructure on European integration 'CVCE.eu by UNI.lu'.
+ 
+Her research, publications and expertise are cross-disciplinary, ranging from public international law and European law, in particular EU institutional law, human rights, fundamental rights and intellectual property law, to interdisciplinary European integration studies using ICT-based methods and tools.
+ 
+In the RESuME project she chairs the steering committee and is involved in research activities such as the ePapers series, the final conference and the collaborative platform.
+
+
+
 ## Comité scientifique
 
 Un comité scientifique accompagne et conseille l'équipe projet. Il fournit ses avis concernant la mise en œuvre du projet et contribue au processus d'évaluation régulier de celui-ci. L’avis du comité scientifique est en particulier exigé concernant :
@@ -257,6 +275,23 @@ At the CVCE he has developed Histograph, an open source platform for the graph-b
 
 :::
 Paolo is a political scientist (PhD, King’s College London) specialised in party politics and comparative politics. He joined the DEIS in September 2016 as a scientific collaborator of the RESuME project. 
+
+
+::: profile
+![profile/](/static/images/people/susana-munoz.jpg "Susana Muñoz")
+### Susana Muñoz
+> DEIS Research Infrastructure, Rectorat, Université du Luxembourg
+
+:::
+Susana Muñoz is a member of the Digital European Integration Studies (DEIS) research infrastructure at the University of Luxembourg. She holds a PhD in Law from the Public University of Navarre in Spain, where she started her research career in public international law and European law.
+ 
+After gaining professional experience at the European Parliament's DG for Research in Luxembourg, she joined the European NAvigator (ENA) project, forerunner to the Centre Virtuel de la Connaissance sur l'Europe (CVCE), in 1998, where she worked as a researcher in European integration studies until the CVCE was founded in 2002.
+ 
+In 2003 she became Head of European Integration Studies and a Member of the Management Committee at the CVCE. On 1 July 2016, the CVCE joined the University of Luxembourg and since then she has been leading the European Integration Studies Group within DEIS. She is ePublications director and she is the editor of the 'European integration studies' and 'Oral history of European integration' collections, available at the digital research infrastructure on European integration 'CVCE.eu by UNI.lu'.
+ 
+Her research, publications and expertise are cross-disciplinary, ranging from public international law and European law, in particular EU institutional law, human rights, fundamental rights and intellectual property law, to interdisciplinary European integration studies using ICT-based methods and tools.
+ 
+In the RESuME project she chairs the steering committee and is involved in research activities such as the ePapers series, the final conference and the collaborative platform.
 
 
 ::: profile-others
