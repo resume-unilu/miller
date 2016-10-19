@@ -89,7 +89,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       next: undefined,
       suggest: function(query, keep){
         var $s = this;
-        $log.log('tab.CVCE > suggest', $s);
+        $log.log('tab.CVCE > suggest - query:', query);
         $s.isLoadingNextItems = true;
         
         if(!OembedSearchFactory.CVCE){
@@ -97,14 +97,29 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
           return;
         }
 
-        OembedSearchFactory.CVCE({
+        if(!$s.next && (!query || query.length < 3)){
+          return;
+        }
+
+        if(!keep){
+          $s.next = undefined;
+        }
+
+        
+        OembedSearchFactory.CVCE($s.next || {
           q: query
         }).then(function(res){
-          $log.log('tab.CVCE > suggest loaded n.docs:', res.data.results);
-          $s.items = res.data.results;
-          $s.count = res.data.count;
+          $log.log('tab.CVCE > suggest loaded n.docs:', res.data.count);
+          $s.items   = $s.next? ($s.items || []).concat(res.data.results): res.data.results;
+          $s.count   = res.data.count;
+          $s.missing = res.data.count - $s.items.length;
+          $s.next    = QueryParamsService(res.data.next || '');
+          $s.query   = query;
+
           $s.isLoadingNextItems = false;
           // scope.suggestMessage = '(<b>' + res.data.count + '</b> results)';
+        }, function(){
+          debugger
         });
       },
       init: function(){
@@ -159,7 +174,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
 
 
   
-  $scope.setTab('favourite');
+  $scope.setTab('CVCE');
 
 
 });
