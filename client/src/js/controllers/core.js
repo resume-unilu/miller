@@ -182,6 +182,7 @@ angular.module('miller')
 
     $scope.changeLanguage = function(key) {
       $scope.language = key;
+      $rootScope.language = key;
       localStorageService.set('lang', $scope.language);
       $translate.use(key);
     };

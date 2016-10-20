@@ -6,12 +6,12 @@
     <div class="wrapper">
       <div class="header">
         <div class="inner">
-        <h2 embedit='fullsized.metadata.title'></h2>
-        <div class='contents'>
-          <span embedit='fullsized.metadata.reference'></span>
-          <span ng-if='fullsized.metadata.author_name'>by {{fullsized.metadata.author_name}}</span>
-          <a ng-if='fullsized.url' target='_blank' ng-href='{{fullsized.url}}' translate='link.to.original'></a>
-        </div>
+          <h2 embedit='fullsized.metadata.title'></h2>
+          <div class='contents'>
+            <span embedit='fullsized.metadata.reference'></span>
+            <span ng-if='fullsized.metadata.author_name'>by {{fullsized.metadata.author_name}}</span>
+            <a ng-if='fullsized.url' target='_blank' ng-href='{{fullsized.url}}' translate='link.to.original'></a>
+          </div>
         </div>
       </div>
       <div class="main">
@@ -34,41 +34,6 @@
           <div class='text copyright' embedit='fullsized.metadata.copyright' language="language" firstline='true'></div>
         </div>
       </div>
-    </div>
-
-    <div class='table' style='display: none'>
-      
-
-      <div class='wrapper' ng-if='fullsized.type == "link"'>
-        
-      </div>
-      <!-- flickr -->
-      <div class='wrapper' ng-if='fullsized.type == "photo"'>
-        <div class='embedded' ng-if='fullsized.metadata.html' stretch='true' embedit='fullsized.metadata.html'></div>
-      </div>
-      <div class='wrapper' ng-if='fullsized.type == "rich"'>
-      
-        
-
-         <div class='embedded' ng-if='fullsized.metadata.html' stretch='true' embedit='fullsized.metadata.html'></div>
-      </div>
-
-      <div class='wrapper' ng-if='fullsized.type == "image"'>
-
-        <div lazy-image size='contain' src='fullsized.metadata.urls.Publishable'></div>
-
-        <div class='heading'>
-          <h2 embedit='fullsized.metadata.title'></h2>
-          <div embedit='fullsized.metadata.reference'></div>
-          
-        </div>
-        <div class='inner'>
-          <div class='text caption' embedit='fullsized.metadata.caption'></div>
-          <div class='text copyright' embedit='fullsized.metadata.copyright'></div>
-        </div>
-      </div>
-
-      
     </div>
   </div>
 </div>

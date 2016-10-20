@@ -52,8 +52,8 @@ angular.module('miller')
             type = element.attr('type');
 
         scope.type = type;
-        
-        $log.log('⏣ lazy-placeholder on type:', type, '- slug:',slug);
+        scope.language = $rootScope.language;
+        $log.log('⏣ lazy-placeholder on type:', type, '- slug:',slug, 'lang');
         
         scope.complete = function(res){
           // add to this local scope
