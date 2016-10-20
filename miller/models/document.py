@@ -15,6 +15,9 @@ from miller import helpers
 def attachment_file_name(instance, filename):
   return os.path.join(instance.type, filename)
 
+def snapshot_attachment_file_name(instance, filename):
+  return os.path.join(instance.type, 'snapshots', filename)
+
 
 class Document(models.Model):
   BIBLIOGRAPHIC_REFERENCE = 'bibtex'
@@ -62,7 +65,9 @@ class Document(models.Model):
   url        = models.URLField(max_length=500, null=True, blank=True)
   owner      = models.ForeignKey(User); # at least the first author, the one who owns the file.
   attachment = models.FileField(upload_to=attachment_file_name, null=True, blank=True)
-  snapshot   = models.URLField(null=True, blank=True)
+  snapshot   = models.FileField(upload_to=snapshot_attachment_file_name, null=True, blank=True)
+  
+  models.URLField(null=True, blank=True)
 
   class Meta:
     ordering = ['-id']

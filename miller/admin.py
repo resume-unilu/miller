@@ -75,7 +75,7 @@ class DocumentAdminForm(forms.ModelForm):
 
 class DocumentAdmin(admin.ModelAdmin):
   search_fields = ['title', 'contents']
-  exclude=['snapshot', 'copyright']
+  exclude=['copyright']
   list_filter = ('type',)
   form = DocumentAdminForm
 

@@ -7,7 +7,7 @@
   <div class='switch' ng-if='document.type=="photo"' ng-include='"templates/partials/document.photo.html"|prefixTemplate'></div>
 
 
-  <div class='switch' ng-if='document.type=="rich" || document.type=="video"' style='height: 150px' rich-oembed oembed='document.metadata' cover='scope.oembed.urls.Preview || scope.oembed.thumbnail_url;'></div>
+  <div class='switch' ng-if='document.type=="rich" || document.type=="video"' rich-oembed oembed='document.metadata' cover='document.snapshot ||  document.metadata.urls.Preview || document.metadata.thumbnail_url;'></div>
 
   <div class='switch' ng-if='document.type=="link" && document.metadata.thumbnail_url' ng-include='"templates/partials/document.image.html"|prefixTemplate'></div>
 

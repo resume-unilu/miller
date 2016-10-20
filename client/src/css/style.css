@@ -163,6 +163,12 @@ label{
   height: 400px;
 }
 
+/*// if it is in a medium content*/
+.medium .iframe-wrapper.with-thumbnail .iframe-viewport, .iframe-wrapper.with-thumbnail .iframe-viewport.active{
+  height: 200px;
+}
+
+
 .iframe-wrapper.with-thumbnail .iframe-viewport > img{
   height: 400px;
   margin: 0 auto;
@@ -202,6 +208,16 @@ label{
   background-size: cover;
   margin: 10px;
   padding: 0;
+}
+
+.contents .lazy-placeholder.medium .image-wrapper.cover{
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background-color:#151515;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #ddd;
 }
 
 .image-wrapper img{
@@ -584,6 +600,8 @@ label{
 
 .contents .lazy-placeholder.medium .switch{
   float: left;
+  width: 200px;
+  margin-right: 20px;
 }
 
 .contents a:hover{

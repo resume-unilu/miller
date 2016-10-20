@@ -12,8 +12,8 @@
     <div id='step-{{item._index}}' class='step {{item._type}}' ng-class='{active: item.isFocused}' ng-repeat="item in items" ng-init='document=item' ng-if='item._type != "block-doc"'>
       <div class="thumbnail" ng-if='item._type=="doc" && item.metadata.thumbnail_url && item.type != "link"' ng-click='fullsize(document.slug, document._type)'>
         <div class="action fullscreen"><span class="icon icon-size-fullscreen"></span></div>  
-
-        <div class="thumbnail-image" ng-if='document.type=="photo"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.media_url}}'></div>
+        <!-- {{document.metadata}} -->
+        <div class="thumbnail-image" ng-if='document.type=="photo"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.urls.Preview || document.metadata.media_url}}'></div>
         
         <div class="thumbnail-image" ng-if='document.type=="rich" || document.type=="video" || document.type=="link"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.thumbnail_url}}' ></div>
         
