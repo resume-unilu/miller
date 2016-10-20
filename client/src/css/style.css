@@ -1757,7 +1757,7 @@ div.profile-others .profile-thumb{
   line-height: 15px;
 }
 .sliding-steps .step .image-wrapper{
-  height: 200px;
+  height: 100%;
   padding-top: 0;
 }
 
@@ -1771,6 +1771,19 @@ div.profile-others .profile-thumb{
   position: relative;
   overflow: hidden;
   cursor: pointer;
+      border-top: 2px solid #ddd;
+}
+
+.thumbnail.rich{
+  height: 300px;
+}
+
+.thumbnail.rich > .thumbnail-rich{
+  height: 100%
+}
+
+.thumbnail.rich .iframe-wrapper.with-thumbnail .iframe-viewport, .thumbnail.rich .iframe-wrapper.with-thumbnail .iframe-viewport.active{
+  height: 300px
 }
 
 .thumbnail > .thumbnail-image{

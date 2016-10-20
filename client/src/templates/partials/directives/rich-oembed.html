@@ -1,9 +1,9 @@
 <div class='iframe-wrapper' ng-class='{"with-thumbnail": cover}'>
   <!-- <a class='toggle-preview' href ng-click='enabled = !enabled'><span class='icon icon-eye'></span></a> -->
-  <div class='iframe-viewport' ng-class='{"active":enabled}'>
+  <div class='iframe-viewport' ng-class='{"active":iframeEnabled}'>
     <div ng-if="cover" style='height: 100%; width: 100%'>
       <div class='image-wrapper cover'  src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{ cover }}'></div>
     </div>
-    <div ng-if='enabled' style='height: 100%; position: absolute; top:0; left:0;width: 100%' stretch='true' embedit='oembed.html' language='language'></div>
+    <div ng-if='iframeEnabled' style='height: 100%; position: absolute; top:0; left:0;width: 100%' stretch='true' embedit='oembed.html' language='language'></div>
   </div>
 </div>
