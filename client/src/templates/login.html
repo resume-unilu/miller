@@ -1,6 +1,39 @@
-login
+<div class="container">
+  <div class="view">
+    <div class="row">
+      <div class="col-md-6">
+        <h1 translate="login"></h1>
 
-<div class='btn-group'>
-  <a href='/auth/twitter' class='btn btn-default'>connect with twitter</a>
-  <a  class='btn btn-default'>connect with google</a>
+        <form role="form" name="loginform" method="POST">
+          <div class="form-group">
+            <label for="id_login_username" translate="username"></label>
+            <input type="text" ng-model='username' class="form-control" id="id_login_username" autofocus="autofocus" name="username" placeholder="username" required>
+          </div>
+
+          <div class="form-group">
+            <label for="id_login_password" translate="password"></label>
+            <input type="password" ng-model='pwd' class="form-control" id="id_login_password" placeholder="Password" name="password" required>
+          </div>
+
+          <div class='btn-line-group primary'>
+            <button class="btn btn-line" ng-click="login()" translate='button.login'></button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h3 translate='signup.with.social'></h3>
+
+        <div class='btn-line-group'>
+          <a class='btn btn-line' href='/social/login/twitter' translate='button.signup.with.twitter'></a>
+        </div>
+        <div class='btn-line-group'>
+          <a class='btn btn-line' href='/social/login/google-oauth2' translate='button.signup.with.google'></a>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>

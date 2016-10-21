@@ -144,7 +144,18 @@ angular.module('miller')
 
     $rootScope.$on('$stateChangeStart', function (e, state) {
       $log.log('CoreCtrl @stateChangeStart new:', state.name, '- previous:', $scope.state);
-      // for specific state only.
+      // login page
+      if(state.name == 'login' && $scope.user.short_url){
+        $log.warn('... cannot swithc to login, user already logged in:', $scope.user.username);
+        debugger
+        e.preventDefault();
+        if($scope.state && $scope.state!='login')
+          $state.go($scope.state);
+        else
+          $state.go('index');
+        
+        return;
+      }
 
       if($scope.stopStateChangeStart === true){
         // check the user has wirtten sometihing..

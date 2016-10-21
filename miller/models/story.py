@@ -38,12 +38,12 @@ def user_path(instance, filename):
 class Story(models.Model):
 
   
-  DRAFT   = 'draft' # visible just for you
-  SHARED  = 'shared' # share with specific user
-  PUBLIC  = 'public' # everyone can access that.
-  EDITING = 'editing' # only staff and editors access this
-  REVIEW  = 'review' # staff, editors and reviewer acces this
-  
+  DRAFT    = 'draft' # visible just for you
+  SHARED   = 'shared' # share with specific user
+  PUBLIC   = 'public' # everyone can access that.
+  EDITING  = 'editing' # only staff and editors access this
+  REVIEW   = 'review' # staff, editors and reviewer acces this
+  DELETED  = 'deleted' # will be sent to the bin
 
   STATUS_CHOICES = (
     (DRAFT,   'draft'),
@@ -51,6 +51,7 @@ class Story(models.Model):
     (PUBLIC,  'public'), # accepted paper.
     (EDITING, 'editing'),
     (REVIEW,  'review'), # ask for review
+    (DELETED, 'deleted'),
   )
 
   short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)

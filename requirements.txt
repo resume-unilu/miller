@@ -5,10 +5,14 @@ django-codemirror-widget==0.4.1
 django-filter==0.13.0
 django-seo-js==0.3.1
 django-simplemde==0.0.9
+django-socketio==0.3.9
 django-websocket-redis==0.4.6
 djangorestframework==3.3.3
+djoser==0.5.1
 feedparser==5.2.1
 gevent==1.1.1
+gevent-socketio==0.2.1
+gevent-websocket==0.9.5
 gitdb==0.6.4
 GitPython==1.0.2
 greenlet==0.4.9
@@ -30,6 +34,7 @@ requests-oauthlib==0.6.1
 shortuuid==0.4.3
 six==1.10.0
 smmap==0.9.0
+sphinx-me==0.3
 unicodecsv==0.14.1
 uWSGI==2.0.12
 Wand==0.4.2

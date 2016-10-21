@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'social.apps.django_app.default',
     'rest_framework',
+    'djoser',
     'ws4redis',
     'simplemde',
     'miller'
@@ -148,6 +149,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
+
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 4
 }
@@ -276,6 +278,8 @@ LOGGING = {
         },
     },
 }
+
+
 
 #............
 #

@@ -14,6 +14,24 @@ angular.module('miller')
     }
   })
   /*
+    auth factory.
+  */
+  .factory('AuthFactory', function ($resource) {
+    return $resource('/auth/:fn/', {},{
+      login: {
+        method: 'POST',
+        params:{
+          fn: 'login'
+        }
+      },
+      register: {
+        method: 'POST',
+        fn: 'register'
+      }
+    });
+  })
+
+  /*
     Get a list of stories
   */
   .factory('StoryFactory', function ($resource, parseHeaderFilename) {

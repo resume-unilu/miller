@@ -111,12 +111,16 @@ angular
   })
   .config(function($locationProvider) {
     // $locationProvider.html5Mode(true);
+    // $locationProvider.hashPrefix('!');
   })
   .config(function(embedlyServiceProvider, RUNTIME) {
     if(RUNTIME.oembeds.EMBEDLY_API_KEY)
       embedlyServiceProvider.setKey(RUNTIME.oembeds.EMBEDLY_API_KEY);
   })
   .config(function ($stateProvider, $urlRouterProvider, RUNTIME) {
+    // $urlRouterProvider.config({
+    //   absolute: true
+    // })
     $urlRouterProvider
       .otherwise("/");
     $stateProvider
@@ -142,6 +146,14 @@ angular
           } 
         }
       })
+      .state('index.signup', {
+        url: '/',
+        reloadOnSearch : false,
+        controller: 'SignupCtrl',
+        templateUrl: RUNTIME.static + 'templates/signup.html'
+      })
+
+
       .state('authors', {
         url: '/authors',
         reloadOnSearch : false,
@@ -271,11 +283,11 @@ angular
               items: function(StoryFactory, $stateParams, profile) {
                 return StoryFactory.get({
                   filters: d.slug? JSON.stringify({
-                    tags__category: 'writing',
+                    tags__category__in: ['writing', 'blog'],
                     tags__slug: d.slug,
                     authors__username__in: [profile.user.username]
                   }): JSON.stringify({
-                    tags__category: 'writing',
+                    tags__category__in: ['writing', 'blog'],
                     authors__username__in: [profile.user.username]
                   })
                 }).$promise;

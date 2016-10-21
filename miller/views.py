@@ -81,6 +81,17 @@ def login_view(request):
   
   return render_to_response('login.html', _share(request, extra=login_message))
 
+
+def signup_view(request):
+  if request.user.is_authenticated():
+    return redirect('home')
+  form = LoginForm(request.POST)
+  signup_message = {}
+
+  next = request.GET.get('next', 'home')
+  return render_to_response('signup.html', _share(request, extra=signup_message))
+
+
 def logout_view( request ):
   logout(request)
   return redirect('home')
