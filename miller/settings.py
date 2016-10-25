@@ -244,6 +244,12 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
             'formatter': 'lite'
         },
+        'commands': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'commands.log'),
+            'formatter': 'lite'
+        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -268,8 +274,8 @@ LOGGING = {
             'propagate': True,
         },
         'miller.commands': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+            'handlers': ['console','commands'],
+            'level': 'DEBUG'
         },
         'miller': {
             'handlers': ['file'],

@@ -115,7 +115,7 @@ class Document(models.Model):
 
 
   # download remote pdfs allowing to produce snapshots. This should be followed by save() :)
-  def fill_rich_pdf():
+  def fill_from_url(self):
     if not self.mimetype and self.url: 
       res = requests.get(self.url,  timeout=5, stream=True)
       if res.status_code == requests.codes.ok:
@@ -135,10 +135,10 @@ class Document(models.Model):
             
 
           self.attachment.save(filename, files.File(lf))
-          self.create_snapshot()
+
 
   # dep. brew install ghostscript, brew install imagemagick
-  def create_snapshot():
+  def create_snapshot(self):
     if self.attachment and hasattr(self.attachment, 'path'):
       
       mimetype = mimetypes.MimeTypes().guess_type(self.attachment.path)[0]
