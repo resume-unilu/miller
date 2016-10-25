@@ -155,7 +155,7 @@ label{
 
 
 
-.iframe-wrapper .iframe-viewport.active{
+/*.iframe-wrapper .iframe-viewport.active{
   height: 400px;
 }
 
@@ -163,7 +163,7 @@ label{
   height: 400px;
 }
 
-/*// if it is in a medium content*/
+
 .medium .iframe-wrapper.with-thumbnail .iframe-viewport, .iframe-wrapper.with-thumbnail .iframe-viewport.active{
   height: 200px;
 }
@@ -196,16 +196,11 @@ label{
 }
 
 
-.image-wrapper {
-  height: 400px;
-  text-align: center;
-  background-color: #f0efef;
-  padding-top: 10px;
-  overflow:hidden;
-}
+
 .image-wrapper.cover{
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
   margin: 10px;
   padding: 0;
 }
@@ -218,6 +213,12 @@ label{
   background-size: cover;
   background-position: center;
   border: 2px solid #ddd;
+}*/
+
+.image-wrapper {
+  text-align: center;
+  height: 100%;
+  
 }
 
 .image-wrapper img{
@@ -598,9 +599,18 @@ label{
   background-color: transparent;
 }
 
+.contents .switch{
+  height: 300px;
+}
+
+.contents .lazy-placeholder.medium .doc{
+  min-height: 200px;
+  margin-bottom: 20px;
+}
 .contents .lazy-placeholder.medium .switch{
   float: left;
   width: 200px;
+  height: 200px;
   margin-right: 20px;
 }
 
@@ -1176,14 +1186,52 @@ h4.modal-title{
 }
 
 .metadata .title{
-  font-style: bold;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: bold;
+  font-family: 'Lato', sans-serif;
 }
 
 .metadata a{
   /*color: #2d9f98;*/
-  background-color: #afe9e5;
-  color: #151515;
+  /*background-color: #afe9e5;*/
+  color: #9c9696;
   word-break: break-all;
+  text-decoration: underline;
+}
+
+.metadata a:hover{
+  /*color: #2d9f98;*/
+  /*background-color: #afe9e5;*/
+  color: #151515;
+  
+  text-decoration: none;
+}
+
+
+.metadata .rich-oembed-iframe-wrapper{
+  height: 200px;
+}
+
+.rich-oembed-iframe-wrapper .rich-oembed-iframe-viewport{
+  height: 100%;
+}
+
+.rich-oembed-iframe-wrapper{
+  height: 100%;
+  background-color: #f0efef;
+  position: relative
+}
+
+.rich-oembed-iframe-wrapper .toggle-preview{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
+  background-color: #4ECDC4;
 }
 
 /*
@@ -1195,7 +1243,7 @@ h4.modal-title{
 
 .doc blockquote{
   font-size: 12px;
-  font-family: 'Merriweather';
+  font-family: 'Merriweather', serif;
   text-transform: none;
   font-style: italic;
   margin: 10px 50px 10px 20px;
@@ -1215,13 +1263,17 @@ h4.modal-title{
     line-height: 18px;
 }
 
-.doc .metadata .title{
-  font-size: 11px;
-  line-height: 18px;
+.cover{
+  background-color: #f0f0f0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
-
-.doc .cover{
-  background-color: #B7B2B2;
+.story .cover.main {
+  background-color: transparent;
+}
+.story .cover.main .cover-oembed{
+  height: 400px;
 }
 
 .story .cover.main .metadata{
@@ -1648,6 +1700,7 @@ div.profile-others .profile-thumb{
 }
 .sliding-steps .step{
   border-left: 2px solid transparent;
+  border-bottom: 1px solid #f0efef;
   transition: border-color .36s ease-in-out;/*, opacity .36s ease-in-out;
   opacity: .5;*/
   word-wrap: break-word;
@@ -1689,20 +1742,23 @@ div.profile-others .profile-thumb{
   color: #fff;
 }
 
-.sliding-steps .step .metadata .doc{
+.metadata .doc{
   margin-top: 10px;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: 0;
 }
 
-.sliding-steps .step.active .metadata .doc{
-  background: #e6e5e5;
-}
 
-.sliding-steps .step.active .metadata .doc .image-wrapper{
+.metadata .doc .image-wrapper{
     background-color: #e6e5e5;
     border: 2px solid #e6e5e5;
 }
 
 
+.metadata .image-wrapper.cover{
+  margin: 0;
+}
 
 
 .sliding-steps .step .caption{
@@ -1759,6 +1815,7 @@ div.profile-others .profile-thumb{
 .sliding-steps .step .image-wrapper{
   height: 100%;
   padding-top: 0;
+  
 }
 
 .thumbnail{
@@ -1778,13 +1835,15 @@ div.profile-others .profile-thumb{
   height: 300px;
 }
 
-.thumbnail.rich > .thumbnail-rich{
+.thumbnail.rich > .thumbnail-embed{
   height: 100%
 }
 
-.thumbnail.rich .iframe-wrapper.with-thumbnail .iframe-viewport, .thumbnail.rich .iframe-wrapper.with-thumbnail .iframe-viewport.active{
+
+
+/*.thumbnail.rich .iframe-wrapper.with-thumbnail .iframe-viewport, .thumbnail.rich .iframe-wrapper.with-thumbnail .iframe-viewport.active{
   height: 300px
-}
+}*/
 
 .thumbnail > .thumbnail-image{
   height: 100%;
@@ -1795,14 +1854,13 @@ div.profile-others .profile-thumb{
 
 .thumbnail > .fullscreen{
   position: absolute;
-  top: 170px;
+  bottom: 0px;
   right: 0;
   width: 30px;
   height: 30px;
   background-color: rgba(0,0,0,.52);
   color: white;
   text-align: center;
-  
   transition: background-color .36s ease-in-out;
   z-index: 2;
 }
