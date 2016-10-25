@@ -578,7 +578,7 @@ label{
     /*border: 1px solid #4ECDC4;*/
     width: 25px;
     height: 25px;
-    border-radius: 25px;
+    border-radius: 25px;lazy-placeholder
     color: #4ECDC4;
     
 }
@@ -1235,6 +1235,7 @@ h4.modal-title{
   margin-top: -15px;
   margin-left: -15px;
   background-color: #4ECDC4;
+  display: none;
 }
 
 /*
