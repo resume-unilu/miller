@@ -586,6 +586,9 @@ label{
   margin-top: 15px;
 }
 
+.contents .lazy-placeholder .metadata .button{
+  display: none;
+}
 
 .contents .lazy-placeholder.medium .image-wrapper{
   width: 200px;
@@ -1749,6 +1752,9 @@ div.profile-others .profile-thumb{
   margin-bottom: 0;
 }
 
+.metadata .doc .switch{
+  height: 200px;
+}
 
 .metadata .doc .image-wrapper{
     background-color: #e6e5e5;
