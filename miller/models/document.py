@@ -181,15 +181,25 @@ class Document(models.Model):
           logger.debug('snapshot generated for {document:%s}, page %s' % (self.id, page))
 
   def save(self, *args, **kwargs):
-    if not self.id and self.url:
-      print 'CHECK THE ID', self.url
+    if not self.pk and self.url:
+      #print 'verify the url:', self.url
       try:
         doc = Document.objects.get(url=self.url)
-        print 'CHECK THE ID', doc.pk
-        self.pk = doc.pk
+        print 'it exists wit id:', doc.pk
+        self.pk          = doc.pk
+        self.title       = doc.title
+        self.slug        = doc.slug
+        self.contents    = doc.contents
+        self.mimetype    = doc.mimetype
+        self.snapshot    = doc.snapshot
+        self.attachment  = doc.attachment
+
       except Document.DoesNotExist:
+        # print 'not exists, creating'
+        super(Document, self).save(*args, **kwargs)
         pass
-    super(Document, self).save(*args, **kwargs)
+    else:
+      super(Document, self).save(*args, **kwargs)
 
 
 
@@ -201,7 +211,8 @@ def store_working_md(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=Document)
 def create_slug(sender, instance, **kwargs):
-  if not instance.id and not instance.slug:
+  if not instance.pk and not instance.slug:
+    print 
     slug = slugify(instance.title)
     slug_exists = True
     counter = 1

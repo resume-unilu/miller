@@ -35,7 +35,7 @@ class NestedCaptionSerializer(serializers.HyperlinkedModelSerializer):
   copyrights = serializers.ReadOnlyField(source='document.copyrights')
   caption = serializers.ReadOnlyField(source='contents')
   metadata = JsonField(source='document.contents')
-  snapshot = serializers.ReadOnlyField(source='document.snapshot')
+  snapshot = OptionalFileField(source='document.snapshot', read_only=True)
 
   class Meta:
     model = Caption
