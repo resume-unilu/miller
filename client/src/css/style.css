@@ -510,6 +510,15 @@ label{
   text-align: justify;
 }
 
+.contents blockquote{
+  padding: 0 20px;
+}
+
+.contents blockquote p{
+  font-size: 13px;
+  line-height: 20px;
+}
+
 .contents .paragraph-number{
   position: absolute;
   left: 0px;
@@ -1891,7 +1900,7 @@ div.profile-others .profile-thumb{
 /*
   Special icons by documenttype
 */
-.icon-type-image:before, .icon-type-photo:before, .icon-type-picture:before{
+.icon-type-image:before, .icon-type-photo:before, .icon-type-picture:before, .icon-type-video:before{
     content: "\e087";
 }
 
@@ -1906,3 +1915,5 @@ div.profile-others .profile-thumb{
 .icon-type-voc:before {
 content: "\e07a";
 }
+
+
