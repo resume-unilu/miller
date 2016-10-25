@@ -399,7 +399,7 @@ angular.module('miller')
               contents: JSON.stringify(embed),
               metadata: JSON.stringify(embed),
               type: (embed.type|| 'link').toLowerCase(),
-              slug:  slug,
+              // slug:  slug,
               url: url
             }, function(res){
               $log.debug('::mde -> addDocument() document saved:', res.slug, res.id, res.short_url);
