@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs, mimetypes, json, requests, tempfile
+import os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -11,6 +11,8 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 
 from miller import helpers
+
+logger = logging.getLogger('miller.commands')
 
 
 
@@ -116,11 +118,15 @@ class Document(models.Model):
 
   # download remote pdfs allowing to produce snapshots. This should be followed by save() :)
   def fill_from_url(self):
+    logger.debug('on {document:%s}' %  self.url)
+        
     if not self.mimetype and self.url: 
+      logger.debug('url: %s for {document:%s}' % (self.url, self.id))
+
       res = requests.get(self.url,  timeout=5, stream=True)
       if res.status_code == requests.codes.ok:
         self.mimetype = res.headers['content-type']
-        
+        logger.debug('mimetype found: %s for {document:%s}' % (self.mimetype, self.id))
         if self.mimetype == 'application/pdf':
           # Create a temporary file
           filename = self.url.split('/')[-1]
@@ -133,18 +139,20 @@ class Document(models.Model):
               break
             lf.write(block) # Write image block to temporary file
             
-
+          logger.debug('saving attachment: %s for {document:%s}' % (filename, self.id))
+        
           self.attachment.save(filename, files.File(lf))
 
 
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):
-    if self.attachment and hasattr(self.attachment, 'path'):
+    if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
+      logger.debug('snapshot can be generated for {document:%s}' % self.id)
       
-      mimetype = mimetypes.MimeTypes().guess_type(self.attachment.path)[0]
       # print mimetype
-      if mimetype == 'application/pdf':
-        import PyPDF2
+      if self.mimetype == 'application/pdf':
+        logger.debug('generating snapshot for {document:%s}' % self.id)
+      
         pdf_im = PyPDF2.PdfFileReader(self.attachment)
         from wand.image import Image
         try:
@@ -153,9 +161,12 @@ class Document(models.Model):
             img.save(filename=self.attachment.path + '.png')
             snapshot = self.attachment.url + '.png'
             Document.objects.filter(pk=self.pk).update(snapshot=snapshot)
-        except Exception:
+        except Exception as e:
+
           pass
           print 'could not save snapshot of the required resource', self.id
+        else:
+          logger.debug('snapshot generated for {document:%s}' % self.id)
 
   def save(self, *args, **kwargs):
     if not self.id and self.url:

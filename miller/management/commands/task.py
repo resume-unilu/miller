@@ -15,9 +15,8 @@ class Command(BaseCommand):
   help = 'Initialize the JSON field metadata for Story instances'
   
 
-  
-
   available_tasks = (
+    'snapshot', # require document pk
     'snapshots', # handle pdf snapshot
     'cleanbin'
   )
@@ -25,14 +24,35 @@ class Command(BaseCommand):
 
   def add_arguments(self, parser):
     parser.add_argument('taskname')
-
+    # Named (optional) arguments
+    parser.add_argument(
+        '--pk',
+        dest='pk',
+        default=False,
+        help='primary key of the instance',
+    )
 
   def handle(self, *args, **options):
     if options['taskname'] in self.available_tasks:
       getattr(self, options['taskname'])(**options)
 
     logger.debug('command finished.')
+  
+  def snapshot(self, **options):
+    logger.debug('task: snapshot!')
+    if not options['pk']:
+      raise Exception('--pk not found')
     
+    logger.debug('task: snapshot for {document:%s}' % options['pk'])
+
+    doc = Document.objects.get(pk=options['pk'])
+    try:
+      doc.fill_from_url()
+      doc.create_snapshot()
+      doc.save()
+    except Exception as e:
+      logger.exception(e)
+
   def snapshots(self, **options):
     logger.debug('task: snapshots!')
 
