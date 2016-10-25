@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os, json
 
 from rest_framework.reverse import reverse
@@ -100,7 +102,7 @@ class StoryTest(APITestCase):
     }, format='multipart')
     
     self.assertEqual(response.data['slug'], 'test-pdf-2')
-    self.assertEqual(response.data['title'], 'Test pdf')
+    self.assertEqual(response.data['title'], 'Test pdf duplicated')
     self.assertEqual(response.data['url'], 'http://ec.europa.eu/health/files/eudralex/vol-1/reg_2016_161/reg_2016_161_en.pdf')
 
     # save as story caption
@@ -111,9 +113,34 @@ class StoryTest(APITestCase):
       },
       'story': story_id
     }, format='json')
-    print response.data
-    #self.assertEqual(response.data['slug'], 'test-pdf')
+    # print response.data
+    self.assertEqual(response.data['slug'], 'test-pdf-2') # return the document just attached.
 
+    # save with youtube videos
+    url = reverse('document-list')
+    response = self.client.post(url, {
+      'title': 'Test video youtube',
+      'type': 'video',
+      'metadata': '{"provider_url":"https://www.youtube.com/","description":"► Subscribe to the Financial Times on YouTube: http://bit.ly/FTimeSubs Jean-Claude Juncker, president of the European Commission, has provided details of the commission\'s plans to kickstart investment spending in Europe and seed growth. The FT\'s Ferdinando Giugliano provides a rundown of the scheme.","title":"Juncker\'s plan for Europe in 90 seconds | FT World","url":"http://www.youtube.com/watch?v=_gVDiBukGTE","author_name":"Financial Times","height":480,"thumbnail_width":480,"width":854,"html":"<iframe class=\\"embedly-embed\\" src=\\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F_gVDiBukGTE%3Ffeature%3Doembed&url=http%3A%2F%2Fw….jpg&key=28775d6020a142f1a3b7f24b77169194&type=text%2Fhtml&schema=youtube\\" width=\\"854\\" height=\\"480\\" scrolling=\\"no\\" frameborder=\\"0\\" allowfullscreen></iframe>","author_url":"https://www.youtube.com/user/FinancialTimesVideos","version":"1.0","provider_name":"YouTube","thumbnail_url":"https://i.ytimg.com/vi/_gVDiBukGTE/hqdefault.jpg","type":"video","thumbnail_height":360}',
+
+      'url': 'https://www.youtube.com/watch?v=_gVDiBukGTE'
+    }, format='multipart')
+
+    self.assertEqual(response.data['metadata']['title'], "Juncker's plan for Europe in 90 seconds | FT World")
+    #self.assertEqual(, 'test-video-youtube')
+    self.assertEqual(response.data['slug'], 'test-video-youtube')
+    
+    # save with youtube videos, again.
+    response = self.client.post(url, {
+      'title': 'Test video youtube again',
+      'type': 'video',
+      'metadata': '{"provider_url":"https://www.youtube.com/","description":"► Subscribe to the Financial Times on YouTube: http://bit.ly/FTimeSubs Jean-Claude Juncker, president of the European Commission, has provided details of the commission\'s plans to kickstart investment spending in Europe and seed growth. The FT\'s Ferdinando Giugliano provides a rundown of the scheme.","title":"Juncker\'s plan for Europe in 90 seconds | FT World","url":"http://www.youtube.com/watch?v=_gVDiBukGTE","author_name":"Financial Times","height":480,"thumbnail_width":480,"width":854,"html":"<iframe class=\\"embedly-embed\\" src=\\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F_gVDiBukGTE%3Ffeature%3Doembed&url=http%3A%2F%2Fw….jpg&key=28775d6020a142f1a3b7f24b77169194&type=text%2Fhtml&schema=youtube\\" width=\\"854\\" height=\\"480\\" scrolling=\\"no\\" frameborder=\\"0\\" allowfullscreen></iframe>","author_url":"https://www.youtube.com/user/FinancialTimesVideos","version":"1.0","provider_name":"YouTube","thumbnail_url":"https://i.ytimg.com/vi/_gVDiBukGTE/hqdefault.jpg","type":"video","thumbnail_height":360}',
+
+      'url': 'https://www.youtube.com/watch?v=_gVDiBukGTE'
+    }, format='multipart')
+    # print response.data['slug'], response.data
+    self.assertEqual(response.data['title'], 'Test video youtube again') # do we update this...?
+    self.assertEqual(response.data['slug'], 'test-video-youtube')
 
   def _test_delete_story(self):
     # delete every story

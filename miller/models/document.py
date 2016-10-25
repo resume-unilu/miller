@@ -165,7 +165,6 @@ class Document(models.Model):
         except Exception as e:
           logger.exception(e)
         
-
         try:
           # Converting first page into JPG
           with Image(filename=self.attachment.path + '[%s]'%page, resolution=150) as img:
@@ -185,15 +184,10 @@ class Document(models.Model):
       #print 'verify the url:', self.url
       try:
         doc = Document.objects.get(url=self.url)
-        print 'it exists wit id:', doc.pk
         self.pk          = doc.pk
-        self.title       = doc.title
         self.slug        = doc.slug
-        self.contents    = doc.contents
-        self.mimetype    = doc.mimetype
-        self.snapshot    = doc.snapshot
-        self.attachment  = doc.attachment
-
+        super(Document, self).save(force_update=True)
+        
       except Document.DoesNotExist:
         # print 'not exists, creating'
         super(Document, self).save(*args, **kwargs)

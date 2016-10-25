@@ -193,7 +193,7 @@ class MatchingDocumentSerializer(serializers.ModelSerializer):
 
 # define the 
 class CreateDocumentSerializer(serializers.ModelSerializer):
-  metadata = JsonField(source='contents', read_only=True)
+  metadata = JsonField(source='contents')
   owner = serializers.HiddenField(
     default=serializers.CurrentUserDefault()
   )
