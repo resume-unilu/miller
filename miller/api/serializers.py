@@ -192,7 +192,7 @@ class MatchingDocumentSerializer(serializers.ModelSerializer):
 
 # define the 
 class CreateDocumentSerializer(serializers.ModelSerializer):
-  metadata = JsonField(source='contents')
+  metadata = JsonField(source='contents', read_only=True)
   owner = serializers.HiddenField(
     default=serializers.CurrentUserDefault()
   )
@@ -200,7 +200,31 @@ class CreateDocumentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Document
     fields = ('id', 'owner', 'type','short_url', 'title', 'slug', 'metadata', 'copyrights', 'url', 'attachment', 'snapshot')
+  
 
+  # def create(self, validated_data):
+  #   print 'CREATING', validated_data
+
+  #   # owner =  validated_data.pop('owner')
+  #   # print owner.id
+  #   if not 'url' in validated_data:
+  #     return super(CreateDocumentSerializer, self).create(validated_data)
+
+  #   print 'url:', validated_data['url']
+  #   # get object
+  #   try:
+  #     doc = Document.objects.get(url=validated_data['url'])
+  #   except Document.DoesNotExist:
+  #     print "not found, create"
+  #     return super(CreateDocumentSerializer, self).create(validated_data)
+  #   else:
+  #     return doc
+    # print "found doc", doc
+    # instance, _ = Document.objects.get_or_create(url=validated_data['url'], defaults=validated_data)
+    
+    # return instance
+    
+    
 
 ############
 # Mentions #

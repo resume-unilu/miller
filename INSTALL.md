@@ -25,6 +25,13 @@ Add optionally `virtualenvwrapper.sh` to your bash file, or simply:
 
 	source /home/your-user/.local/bin/virtualenvwrapper.sh
 
+## Install Imagemagick
+
+Miller makes use of Imagemagick features through [wand lib for python](http://docs.wand-py.org/en/0.4.4/) to create thumbnails for user uploaded resources: among them image resize and pdf snapshots.
+  
+  sudo apt-get install libmagickwand-dev
+
+
 ### mysql installation
 Feel free to skip this session if you decided to use another database or mysl has been set in your system.
 

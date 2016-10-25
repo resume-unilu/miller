@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs, mimetypes, json
+import os,codecs, mimetypes, json, requests, tempfile
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import files
 from django.db import models
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import pre_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.utils.text import slugify
 
 from miller import helpers
 
@@ -45,10 +47,10 @@ class Document(models.Model):
   )
 
   type       = models.CharField(max_length=24, choices=TYPE_CHOICES)
-  short_url  = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
+  short_url  = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True, blank=True)
   
   title      = models.CharField(max_length=500)
-  slug       = models.CharField(max_length=150, unique=True)
+  slug       = models.CharField(max_length=150, unique=True, blank=True)
 
   contents   = models.TextField(null=True, blank=True, default=json.dumps({
     'provider_name': '',
@@ -66,7 +68,8 @@ class Document(models.Model):
   owner      = models.ForeignKey(User); # at least the first author, the one who owns the file.
   attachment = models.FileField(upload_to=attachment_file_name, null=True, blank=True)
   snapshot   = models.FileField(upload_to=snapshot_attachment_file_name, null=True, blank=True)
-  
+  mimetype   = models.CharField(max_length=127, blank=True, default='')
+
   models.URLField(null=True, blank=True)
 
   class Meta:
@@ -111,30 +114,61 @@ class Document(models.Model):
     writer.commit()
 
 
-# dep. brew install ghostscript, brew install imagemagick
-@receiver(post_save, sender=Document)
-def create_snapshot(sender, instance, created, **kwargs):
-  if instance.attachment and hasattr(instance.attachment, 'path'):
-    import mimetypes
-    mimetype = mimetypes.MimeTypes().guess_type(instance.attachment.path)[0]
-    print mimetype
-    if mimetype == 'application/pdf':
-      import PyPDF2
-      pdf_im = PyPDF2.PdfFileReader(instance.attachment)
-      from wand.image import Image
-      try:
-        # Converting first page into JPG
-        with Image(filename=instance.attachment.path + '[0]', resolution=150) as img:
-          img.save(filename=instance.attachment.path + '.png')
-          snapshot = instance.attachment.url + '.png'
-          Document.objects.filter(pk=instance.pk).update(snapshot=snapshot)
-      except Exception:
-        print 'could not save snapshot of the required resource', instance.id
+  # download remote pdfs allowing to produce snapshots. This should be followed by save() :)
+  def fill_rich_pdf():
+    if not self.mimetype and self.url: 
+      res = requests.get(self.url,  timeout=5, stream=True)
+      if res.status_code == requests.codes.ok:
+        self.mimetype = res.headers['content-type']
+        
+        if self.mimetype == 'application/pdf':
+          # Create a temporary file
+          filename = self.url.split('/')[-1]
+          
+          lf = tempfile.NamedTemporaryFile()
 
-# automatically fill metadata if contents field is empty
-@receiver(post_save, sender=Document)
-def fill_contents(sender, instance, created, **kwargs):
-  pass
+          # Read the streamed image in sections
+          for block in res.iter_content(1024 * 8):
+            if not block: # If no more file then stop
+              break
+            lf.write(block) # Write image block to temporary file
+            
+
+          self.attachment.save(filename, files.File(lf))
+          self.create_snapshot()
+
+  # dep. brew install ghostscript, brew install imagemagick
+  def create_snapshot():
+    if self.attachment and hasattr(self.attachment, 'path'):
+      
+      mimetype = mimetypes.MimeTypes().guess_type(self.attachment.path)[0]
+      # print mimetype
+      if mimetype == 'application/pdf':
+        import PyPDF2
+        pdf_im = PyPDF2.PdfFileReader(self.attachment)
+        from wand.image import Image
+        try:
+          # Converting first page into JPG
+          with Image(filename=self.attachment.path + '[0]', resolution=150) as img:
+            img.save(filename=self.attachment.path + '.png')
+            snapshot = self.attachment.url + '.png'
+            Document.objects.filter(pk=self.pk).update(snapshot=snapshot)
+        except Exception:
+          pass
+          print 'could not save snapshot of the required resource', self.id
+
+  def save(self, *args, **kwargs):
+    if not self.id and self.url:
+      print 'CHECK THE ID', self.url
+      try:
+        doc = Document.objects.get(url=self.url)
+        print 'CHECK THE ID', doc.pk
+        self.pk = doc.pk
+      except Document.DoesNotExist:
+        pass
+    super(Document, self).save(*args, **kwargs)
+
+
 
 # store in whoosh
 @receiver(post_save, sender=Document)
@@ -142,5 +176,21 @@ def store_working_md(sender, instance, created, **kwargs):
   instance.store()
 
 
+@receiver(pre_save, sender=Document)
+def create_slug(sender, instance, **kwargs):
+  if not instance.id and not instance.slug:
+    slug = slugify(instance.title)
+    slug_exists = True
+    counter = 1
+    instance.slug = slug
+    while slug_exists:
+      try:
+        slug_exits = Document.objects.get(slug=slug)
+        if slug_exits:
+            slug = instance.slug + '-' + str(counter)
+            counter += 1
+      except Document.DoesNotExist:
+        instance.slug = slug
+        break
 
 

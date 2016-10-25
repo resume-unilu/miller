@@ -74,7 +74,7 @@ class DocumentAdminForm(forms.ModelForm):
     return self.cleaned_data['contents']
 
 class DocumentAdmin(admin.ModelAdmin):
-  search_fields = ['title', 'contents']
+  search_fields = ['title', 'contents', 'url', 'slug']
   exclude=['copyright']
   list_filter = ('type',)
   form = DocumentAdminForm
