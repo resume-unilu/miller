@@ -11,6 +11,7 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 
 from miller import helpers
+from wand.image import Image
 
 logger = logging.getLogger('miller.commands')
 
@@ -146,6 +147,7 @@ class Document(models.Model):
 
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):
+    
     if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
       logger.debug('snapshot can be generated for {document:%s}' % self.id)
       
@@ -154,19 +156,29 @@ class Document(models.Model):
         logger.debug('generating snapshot for {document:%s}' % self.id)
       
         pdf_im = PyPDF2.PdfFileReader(self.attachment)
-        from wand.image import Image
+
+        # get page
+        page = 0
+        try:
+          metadata = json.loads(self.contents)
+          page = int( metadata['thumbnail_page']) if 'thumbnail_page' in metadata else 0
+        except Exception as e:
+          logger.exception(e)
+        
+
         try:
           # Converting first page into JPG
-          with Image(filename=self.attachment.path + '[0]', resolution=150) as img:
+          with Image(filename=self.attachment.path + '[%s]'%page, resolution=150) as img:
             img.save(filename=self.attachment.path + '.png')
-            snapshot = self.attachment.url + '.png'
-            Document.objects.filter(pk=self.pk).update(snapshot=snapshot)
-        except Exception as e:
 
-          pass
+          with open(self.attachment.path + '.png') as f:
+            self.snapshot.save(os.path.basename(self.attachment.path) + '.png', files.images.ImageFile(f))
+
+        except Exception as e:
+          logger.exception(e)
           print 'could not save snapshot of the required resource', self.id
         else:
-          logger.debug('snapshot generated for {document:%s}' % self.id)
+          logger.debug('snapshot generated for {document:%s}, page %s' % (self.id, page))
 
   def save(self, *args, **kwargs):
     if not self.id and self.url:
