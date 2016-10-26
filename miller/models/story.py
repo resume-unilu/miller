@@ -155,7 +155,12 @@ class Story(models.Model):
   # convert the last saved content (markdown file) to a specific format (default: docx)
   # the media will be in the user MEDIA folder...
   def download(self, outputFormat='docx', language=None, extension=None):
-    outputfile = user_path(self, '%s.%s' % (self.short_url, extension if extension is not None else outputFormat))
+    outputfile = user_path(self, '%s.%s.%s' % (self.short_url, self.date_last_modified.isoformat(), extension if extension is not None else outputFormat))
+    
+    if os.path.exists(outputfile):
+      print "path exists"
+      return outputfile
+
     tempoutputfile = user_path(self, '__%s.md' % self.short_url)
 
     with codecs.open(tempoutputfile, "w", "utf-8") as temp:
