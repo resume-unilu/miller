@@ -97,9 +97,11 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
           return;
         }
 
-        if(!$s.next && (!query || query.length < 3)){
+        if(!query || query.length < 3){
           return;
         }
+
+        
 
         if(!keep){
           $s.next = undefined;
