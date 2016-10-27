@@ -271,6 +271,30 @@ angular
             return StoryFactory;
           }
         }
+      })
+      .state('author.publications.bin', {
+        url: '/bin',
+        reloadOnSearch : false,
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/items.html',
+        resolve: {
+          items: function(StoryFactory, profile) {
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                status: 'deleted',
+                owner__username: profile.user.username,
+                // authors__username__in: [RUNTIME.user.username]
+              })
+            }).$promise;
+          },
+
+          model: function() {
+            return 'story';
+          },
+          factory: function(StoryFactory) {
+            return StoryFactory;
+          }
+        }
       });
 
       _.each(RUNTIME.stories.writing, function(d){

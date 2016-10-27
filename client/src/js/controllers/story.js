@@ -30,6 +30,7 @@ angular.module('miller')
         title: $scope.story.title,
         status: status
       }, function(res) {
+        console.log('StoryCtrl -> setStatus - new status:',res)
         $scope.story.status = res.status;
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.unlock();

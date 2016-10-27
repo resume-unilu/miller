@@ -11,6 +11,9 @@
     <li ng-if='isMe' ui-sref-active="active">
       <a href ui-sref='author.publications.drafts({username: profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="drafts"></a>
     </li>
+    <li ng-if='isMe' ui-sref-active="active">
+      <a href ui-sref='author.publications.bin({username: profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="bin"></a>
+    </li>
   </ul>
   
 
