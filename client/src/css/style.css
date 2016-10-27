@@ -1883,7 +1883,11 @@ div.profile-others .profile-thumb{
   height: 300px;
 }
 
-.thumbnail.rich > .thumbnail-embed{
+.thumbnail.video{
+   height: 180px;
+}
+
+.thumbnail.rich > .thumbnail-embed, .thumbnail.video > .thumbnail-embed{
   height: 100%
 }
 
