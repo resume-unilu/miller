@@ -185,8 +185,8 @@ class Document(models.Model):
       try:
         doc = Document.objects.get(url=self.url)
         self.pk          = doc.pk
-        self.slug        = doc.slug
-        super(Document, self).save(force_update=True)
+        # update contents only
+        super(Document, self).save(force_update=True, update_fields=['contents'])
         
       except Document.DoesNotExist:
         # print 'not exists, creating'
