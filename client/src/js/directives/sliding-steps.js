@@ -27,6 +27,8 @@ angular.module('miller')
             translateY = 0,
             lastIdxSelected;
 
+        scope.user = $rootScope.user;
+        
         // basic request animationframe shim
         var requestAnimFrame = (function(){
           return  window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function( callback ){ window.setTimeout(callback, 1000 / 60); };

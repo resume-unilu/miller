@@ -14,10 +14,13 @@
         </a>
       </span>
     </div>
-
-    <div ng-if='document.metadata.caption' class='caption' embedit='document.metadata.caption' language='language'></div>
-    <div ng-if='!document.metadata.caption && document.metadata.description' class='caption' embedit='document.metadata.description' language='language'></div>
-    <div ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language' firstline='true'></div>
+    <div>
+      <div ng-if='document.metadata.type=="link" && document.metadata.thumbnail_url' class='snapshot' lazy-img='{{document.metadata.thumbnail_url}}'></div>
+      
+      <div ng-if='document.metadata.caption' class='caption' embedit='document.metadata.caption' language='language'></div>
+      <div ng-if='!document.metadata.caption && document.metadata.description' class='caption' embedit='document.metadata.description' language='language'></div>
+    </div>
+    <div style='clear:both' ng-if='document.metadata.copyright' embedit='document.metadata.copyright' language='language' firstline='true'></div>
   </div>
   
   <!-- having details -->

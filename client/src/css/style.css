@@ -1948,4 +1948,18 @@ div.profile-others .profile-thumb{
 content: "\e07a";
 }
 
+/*
+  Link snapshot
+*/
+.snapshot{
+  float: left;
+  height: 60px;
+  width: 60px;
+  margin-right: 10px;
+  margin-top: 5px;
+  background-color: #151515;
+  background-size: cover;
+  background-position: top center;
+}
+
 
