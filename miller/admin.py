@@ -56,9 +56,11 @@ class UserAdmin(BaseUserAdmin):
 
 class DocumentAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
-    codemirror_widget = CodeMirrorTextarea(mode="python", theme="default", config={ 
+    codemirror_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
       'fixedGutter': True, 
       'lineNumbers':True, 
+      'matchBrackets': True,
+      'autoCloseBrackets': True,
       'lineWrapping': True
     })
     super(DocumentAdminForm, self).__init__(*args, **kwargs)
