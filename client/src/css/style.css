@@ -1230,6 +1230,38 @@ h4.modal-title{
 }
 
 .rich-oembed-iframe-wrapper{
+  overflow: hidden;
+}
+.rich-oembed-iframe-wrapper > .actions {
+  bottom: 0;
+  top: auto;
+  right: 0;
+  text-align: center;
+  transform: translateY(28px);
+  transition: transform .16s ease-in-out;
+}
+
+.rich-oembed-iframe-wrapper > .actions > .action {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background-color: rgba(0,0,0,.52);
+  color: white;
+  line-height:  30px;
+  padding-top: 2px;
+  transition: background-color .16s ease-in-out;
+}
+
+.rich-oembed-iframe-wrapper > .actions > .action:hover{
+  background-color: #151515;
+  text-decoration: none;
+}
+
+.rich-oembed-iframe-wrapper:hover > .actions {
+  transform: translateY(0px);
+}
+
+.rich-oembed-iframe-wrapper{
   height: 100%;
   background-color: #f0efef;
   position: relative

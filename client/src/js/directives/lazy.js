@@ -52,6 +52,8 @@ angular.module('miller')
             type = element.attr('type');
 
         scope.type = type;
+        scope.user = $rootScope.user;
+        
         scope.language = $rootScope.language;
         $log.log('⏣ lazy-placeholder on type:', type, '- slug:',slug, 'lang');
         
@@ -59,12 +61,12 @@ angular.module('miller')
           // add to this local scope
           if(res){
             scope.resolved = res;
-            $log.log('⏣ lazy-placeholder resolved for type:', type, '- slug:',slug, res);
+            $log.log('⏣ lazy-placeholder resolved for type:', type, '- slug:',slug);
             // force recompilation
             $compile(element.contents())(scope);
 
           } else {
-            $log.error('⏣ lazy-placeholder cannot find', slug );
+            $log.error('⏣ lazy-placeholder cannot find slug:', slug);
           }
         }
 

@@ -9,7 +9,8 @@ angular.module('miller')
   .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $state, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, DocumentFactory, TagFactory, RUNTIME, EVENTS) {    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
-    $scope.user = RUNTIME.user;
+    $scope.user = $rootScope.user = RUNTIME.user;
+    
 
     $scope.hasToC = false;
     $scope.ToCEnabled = false;

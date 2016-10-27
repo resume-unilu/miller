@@ -1,9 +1,20 @@
 <div class='rich-oembed-iframe-wrapper' ng-class='{"with-thumbnail": with-thumbnail}'>
   <a class='toggle-preview' href ng-click='toggleEnable()'><span class='icon icon-play'></span></a>
-  <div class='rich-oembed-iframe-viewport' ng-class='{"active":iframeEnabled}' ng-click='toggleEnable()'>
+
+  <div class='rich-oembed-iframe-viewport' ng-class='{"active":iframeEnabled}'>
     <div ng-if="cover" style='height: 100%; width: 100%' >
       <div class='image-wrapper cover'  src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{ cover }}'></div>
     </div>
     <div ng-if='iframeEnabled' style='height: 100%; position: absolute; top:0; left:0;width: 100%' stretch='true' embedit='oembed.html' language='language'></div>
   </div>
+  <div class='actions'>
+    <a class="action" ng-click=toggleEnable()>
+      <span ng-if='!iframeEnabled' class='icon icon-control-play'></span>
+      <span ng-if='iframeEnabled' class='icon icon-close'></span>
+    </a>
+    <a class='action' ng-if='fullscreen' ng-click="toggleFullscreen()">
+      <span class='icon icon-size-fullscreen'></span>
+    </a>
+
+  </div> 
 </div>

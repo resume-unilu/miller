@@ -45,6 +45,8 @@
       <a ng-href='{{document.metadata.provider_url}}' target='_blank'>{{document.metadata.provider_name}}</a>
     </span>
   </div>
-
+  
+  <a ng-if='user.is_staff' target='_blank' ng-href='/admin/miller/document/{{document.document_id || document.id}}/change'>modify (admin)</a>
   <!-- <button ng-if='document.type != "link"' ng-click='fullsize(document.slug, document._type )' >preview</button> -->
+  
 </div>

@@ -12,7 +12,8 @@ angular.module('miller')
       scope:{
         enabled: '=',
         oembed: '=',
-        cover: '='
+        cover: '=',
+        fullscreen: '&'
       },
       templateUrl: RUNTIME.static + 'templates/partials/directives/rich-oembed.html',
       
@@ -21,13 +22,17 @@ angular.module('miller')
         var timer;
 
         scope.iframeEnabled = false;
-
-
+        
         $log.log('🍩 rich-oembed ready', scope.cover);
         scope.$watch('enabled', function(v){
           $log.debug('🍩 rich-oembed @enabled:', v);
           scope.toggleEnable(!!v);
         });
+
+        scope.toggleFullscreen = function() {
+          $log.debug('🍩 rich-oembed > toggleFullscreen:', scope.oembed);
+          scope.fullscreen()
+        }
 
         scope.toggleEnable = function(enabled){
           $log.log('🍩 rich-oembed > toggleEnable()', enabled);
