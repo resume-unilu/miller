@@ -133,14 +133,16 @@ angular
           writings: function(StoryFactory){
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__slug: 'highlights'
+                tags__slug: 'highlights',
+                status: 'public'
               })
             }).$promise;
           },
           news: function(StoryFactory){
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category: 'blog'
+                tags__category: 'blog',
+                status: 'public'
               })
             }).$promise;
           } 

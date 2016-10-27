@@ -321,7 +321,8 @@ angular.module('miller')
     // load "huighlights"
     StoryFactory.get({
       filters: JSON.stringify({
-        tags__slug: 'top'
+        tags__slug: 'top',
+        status: 'public'
       })
     }, function(data){
       $log.info('CoreCtrl breaking news loaded', data);
