@@ -63,10 +63,13 @@
   <div class="cover-wrapper alternate" ng-repeat="story in collection.stories">
     <div class='container'>
       <div class="row chapter" >
-        
+          <div class="number">{{$index + 1}}</div>
           <div class='col-md-6'>
             <div class="inner">
               <div class="divider"></div>
+              <div class="tags" ng-if="story.tags.length">
+                <span class="tag" ng-repeat='tag in story.tags|filter:{ category: "writing", status:"public" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+              </div>
               <h2 embedit='story.metadata.title' language='language'></h2>
               <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
             </div>
@@ -77,6 +80,10 @@
                <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
             </div>
           </div>
+          <!-- <div class='col-md-3' style='padding:0'>
+            1. certo non si capisce
+            2. ancora peggio.
+          </div> -->
         
       </div>
     </div>

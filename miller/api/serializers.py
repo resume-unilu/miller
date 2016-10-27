@@ -69,10 +69,10 @@ class LiteMentionSerializer(serializers.ModelSerializer):
   slug     = serializers.ReadOnlyField()
   metadata = JsonField()
   covers   = LiteDocumentSerializer(many=True)
-  
+  tags = TagSerializer(many=True)
   class Meta:
     model = Mention
-    fields = ('id', 'slug', 'metadata', 'covers')
+    fields = ('id', 'slug', 'metadata', 'covers', 'tags')
 
 
 

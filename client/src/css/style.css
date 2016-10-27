@@ -235,11 +235,29 @@ label{
 /*
   collection speciic style
 */
-
+.collection{
+  background-color: #f0f0f0;
+}
 .collection .chapter{
   background-color: white; 
   min-height: 200px;
-  margin-bottom: 20px;
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.collection .chapter .number{
+      position: absolute;
+    left: 20px;
+    width: 30px;
+    font-size: 20px;
+    z-index: 1;
+    top: 53px;
+    text-align: center;
+    border: 2px solid #151515 ;
+    color: #151515;
+    border-radius: 30px;
+    height: 30px;
+    font-family: 'Lato'
 }
 
 .collection .chapter .inner{
@@ -249,6 +267,10 @@ label{
 .collection .chapter h2{
   font-size: 20px;
     line-height: 30px;
+    margin-top: 5px;
+}
+.collection .chapter .tags{
+    margin-top: 15px;
 }
 
 .collection .chapter blockquote{
@@ -1381,6 +1403,13 @@ h4.modal-title{
 }
 .doc.oembedded .title{
   font-weight:bold;
+  text-shadow: 0 0 3px rgba(255,255,255,.8);
+}
+
+.doc.oembedded .abstract{
+  font-size: 11px;
+  line-height: 16px;
+  text-shadow: 0 0 3px rgba(255,255,255,.8);
 }
 
 .doc.oembedded .excerpt{
@@ -1426,10 +1455,22 @@ ul.list-of-documents li{
 ul.list-of-documents li .doc {
   height: 180px;
 }
+
 ul.list-of-documents li .doc .lazy-box{
   height: 160px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.17);
 }
+
+ul.list-of-documents li .term .lazy-box .cover{
+  position: absolute;
+  top:0;
+  left:0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+
 
 /*
   More button

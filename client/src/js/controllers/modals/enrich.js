@@ -44,6 +44,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       suggest: function(query, keep){
         var $s = this;
         $log.log('tab.glossary > suggest', $s);
+        
         $s.isLoadingNextItems = true;
         if(!keep){
           $s.next = undefined;
@@ -52,9 +53,11 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
         StoryFactory.get($s.next || {
           filters: JSON.stringify(query.length > 2? {
             contents__icontains: query,
-            tags__slug__in: ['glossary', 'law']
+            tags__category: 'writing',
+            status: 'public'
           } : {
-            tags__slug__in: ['glossary', 'law']
+            tags__category: 'writing',
+            status: 'public'
           })
         },function(res){
           $log.log('tab.glossary > suggest loaded n.docs:', res.results.length, QueryParamsService(res.next || ''));
@@ -176,7 +179,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
 
 
   
-  $scope.setTab('CVCE');
+  $scope.setTab('glossary');
 
 
 });
