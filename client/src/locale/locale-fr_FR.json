@@ -17,9 +17,10 @@
 
   "document.preview": "(preview)",
 
-  "enrich.fromUrl": "add url",
+  "enrich.fromUrl": "depuis un url",
   "enrich.glossary": "add glossary term",
-  "enrich.resources": "add document/reference",
+  "enrich.publications": "publication",
+  "enrich.resources": "ressource",
   "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
   "enrich.type.notitle": "Original title not found for this remote resource.",
 
