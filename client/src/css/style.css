@@ -1722,7 +1722,12 @@ div.profile-others .profile-thumb{
   transform: translateY(0px);
 }
 
-
+/*#sliding-steps-line{
+  position: absolute; 
+  width: 100%; 
+  height: 25px; 
+  background-color: gold;
+}*/
 
 .sliding-steps-wrapper{
   overflow: hidden;
