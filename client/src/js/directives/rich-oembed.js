@@ -30,7 +30,7 @@ angular.module('miller')
         });
 
         scope.toggleFullscreen = function() {
-          $log.debug('🍩 rich-oembed > toggleFullscreen:', scope.oembed);
+          $log.debug('🍩 rich-oembed > toggleFullscreen:', typeof scope.fullscreen);
           scope.fullscreen()
         }
 
