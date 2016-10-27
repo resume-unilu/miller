@@ -121,12 +121,12 @@ class Document(models.Model):
   def fill_from_url(self):
     logger.debug('on {document:%s}' %  self.url)
         
-    if not self.mimetype and self.url: 
+    if self.url: 
       logger.debug('url: %s for {document:%s}' % (self.url, self.id))
 
       res = requests.get(self.url,  timeout=5, stream=True)
       if res.status_code == requests.codes.ok:
-        self.mimetype = res.headers['content-type']
+        self.mimetype = res.headers['content-type'].split(';')[0]
         logger.debug('mimetype found: %s for {document:%s}' % (self.mimetype, self.id))
         if self.mimetype == 'application/pdf':
           # Create a temporary file
