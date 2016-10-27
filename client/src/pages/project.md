@@ -37,7 +37,7 @@ An ePublication is a **scholarly digital publication** which features a detailed
 
 The analysis for this ePublication is based on research performed by the dedicated team of researchers for the RESuME project and on cooperation with reputed external specialists. Documents are selected for their potential to shed new light on the subject and inform the scientific debate. These resources take a variety of forms—legislation, press articles, archive documents, photographs, press cartoons and interview footage—and have been selected from a wide range of national and European sources.
 
-The ePublication is subject to **peer review**.
+The ePublication is subject to [**peer review**](http://resume.uni.lu/#!/people#the-peer-review-committee).
 
 ### Edited book
 The edited book produced for the RESuME project is the result of a collaborative effort by researchers from a wide range of fields. The aim of the book is to describe and analyse the relationship between competitiveness and solidarity within the new European economic governance. It focuses on the new balance between the European Union, the Member States and the market, offering a critical analysis of macroeconomic policies, the development of monetary policy and the social dimension of EMU. The book is subject to peer review prior to publication.
