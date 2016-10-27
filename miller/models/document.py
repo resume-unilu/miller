@@ -184,7 +184,19 @@ class Document(models.Model):
       #print 'verify the url:', self.url
       try:
         doc = Document.objects.get(url=self.url)
+        
         self.pk          = doc.pk
+        self.title       = doc.title
+        self.slug        = doc.slug
+        self.type        = doc.type
+        self.short_url   = doc.short_url
+        self.copyrights = doc.copyrights
+        self.url        = doc.url
+        self.owner      = doc.owner
+        self.attachment = doc.attachment
+        self.snapshot   = doc.snapshot
+        self.mimetype   = doc.mimetype
+
         # update contents only
         super(Document, self).save(force_update=True, update_fields=['contents'])
         
@@ -206,7 +218,6 @@ def store_working_md(sender, instance, created, **kwargs):
 @receiver(pre_save, sender=Document)
 def create_slug(sender, instance, **kwargs):
   if not instance.pk and not instance.slug:
-    print 
     slug = slugify(instance.title)
     slug_exists = True
     counter = 1
