@@ -1,18 +1,15 @@
 <!-- lang:en_US -->
 # What is RESuME?
 
-> The Resources on the European socio-economic model (RESuME) project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model. This project is co-funded by the [Erasmus+](https://ec.europa.eu/programmes/erasmus-plus/node_en) Programme of the European Union.
+> The Resources on the European socio-economic model (RESuME) project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model. This project is co-funded by the [Erasmus+](https://eacea.ec.europa.eu/sites/eacea-site/files/documents/eac-s11-13_jean-monnet-support-to-institutions-and-associations_en.pdf) Programme of the European Union.
 
 ## Aim of the project
 
 The European integration process completely transformed the approach to public policy in the social, economic, financial and monetary fields. The integration of national markets within an internal European market increased the interdependence of local economies. It also resulted in a confrontation of different national economic, social and capital models which actually served to highlight specific shared characteristics: common values, the strong involvement of public authorities in regulating economic activities and redistributing wealth, macro-economic policies geared towards stability and sustainability, and a tradition of social dialogue and consultation. These common features form the broad outline of a European socio-economic model based on multi-level governance.
 
-
 The 2008–2009 financial crisis and subsequent sovereign debt crisis had a significant impact on the European model. They challenged the resilience of this model to deal with external pressure and its adaptability to an environment shaped by greater market integration and highly risk-averse economic agents. They demonstrated the shortcomings of European multi-level governance. From 2008, the EU launched a reform of the regulation and supervision of its financial services and of EMU. A new socio-economic model began to emerge at European level.
 
-
 **Dispersion of knowledge and the segmentation of disciplines have led to a lack of comprehensive, interdisciplinary analyses on this model.** The project aims to fill this gap. Via the disciplines of contemporary history, law, economics and political science, it aims to contribute to the study of the European socio-economic model, its origins, current characteristics and future development. The project will highlight the interaction between the EU, states and the market. It will also explore the legal and political environment and the historical context that drive economic players in the European area.
-
 
 The project can be broken down into three main areas:
 
@@ -24,7 +21,7 @@ The project involves research and teaching activities leading to the production 
 
 
 ## Partners
-The ‘Resources on the European socioeconomic model’ (RESuME) project is co-funded by the Jean Monnet Programme within the ERASMUS+ Programme (Decision No 2014-1750/001).
+The RESuME project is co-funded by the [Jean Monnet Action Programme](https://eacea.ec.europa.eu/erasmus-plus/actions/jean-monnet_en) within the [ERASMUS+ Programme](http://ec.europa.eu/programmes/erasmus-plus/) (Decision No 2014-1750/001).
 
 
 ## Outputs
@@ -36,9 +33,11 @@ The main outcomes are enhanced support for research and teaching activities by y
 The outputs will impact both the research and teaching communities, notably by creating knowledge through mutually reinforcing research and teaching activities and by producing new forms of multidisciplinary and multilingual open educational resources.
 
 ### ePublication
-An ePublication is a scholarly digital publication which features a detailed, reasoned analysis and provides access to a series of resources on a given subject. The ePublication for the RESuME project particularly looks at the question of competitiveness in the European Union. The approach adopted is an interdisciplinary one, involving legal, political and economic science, contemporary history and political philosophy. While the ePublication is rooted in the field of humanities and social science, it is also fully in line with the concept of digital humanities, encouraging authors and readers to make use of digital tools to analyse data and view results.
+An ePublication is a **scholarly digital publication** which features a detailed, reasoned analysis and provides access to a series of resources on a given subject. The ePublication for the RESuME project particularly looks at the question of competitiveness in the European Union. The approach adopted is an interdisciplinary one, involving legal, political and economic science, contemporary history and political philosophy. While the ePublication is rooted in the field of humanities and social science, it is also fully in line with the concept of digital humanities, encouraging authors and readers to make use of digital tools to analyse data and view results.
+
 The analysis for this ePublication is based on research performed by the dedicated team of researchers for the RESuME project and on cooperation with reputed external specialists. Documents are selected for their potential to shed new light on the subject and inform the scientific debate. These resources take a variety of forms—legislation, press articles, archive documents, photographs, press cartoons and interview footage—and have been selected from a wide range of national and European sources.
-The ePublication is subject to peer review.
+
+The ePublication is subject to [**peer review**](http://resume.uni.lu/#!/people#the-peer-review-committee).
 
 ### Edited book
 The edited book produced for the RESuME project is the result of a collaborative effort by researchers from a wide range of fields. The aim of the book is to describe and analyse the relationship between competitiveness and solidarity within the new European economic governance. It focuses on the new balance between the European Union, the Member States and the market, offering a critical analysis of macroeconomic policies, the development of monetary policy and the social dimension of EMU. The book is subject to peer review prior to publication.
