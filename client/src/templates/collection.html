@@ -42,11 +42,11 @@
     </div> -->
   </div>
 
-  <div class="cover-wrapper">
+  <div class="cover-wrapper" ng-if='collection.covers.length' >
     <div class='container' style="">
       <div class='row'>
         <div class="col-sm-12" style="position:relative">
-          <div ng-if='collection.covers.length' style='position:absolute' ng-repeat='document in collection.covers'>
+          <div style='position:absolute' ng-repeat='document in collection.covers'>
               <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
                <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
           </div>
@@ -59,34 +59,49 @@
       </div>
     </div>
   </div>
-    
-  <div class="cover-wrapper alternate" ng-repeat="story in collection.stories">
-    <div class='container'>
-      <div class="row chapter" >
-          <div class="number">{{$index + 1}}</div>
-          <div class='col-md-6'>
-            <div class="inner">
-              <div class="divider"></div>
-              <div class="tags" ng-if="story.tags.length">
-                <span class="tag" ng-repeat='tag in story.tags|filter:{ category: "writing", status:"public" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
-              </div>
-              <h2 embedit='story.metadata.title' language='language'></h2>
-              <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
-            </div>
-          </div>
-          <div class='col-md-6' style='padding:0'>
-            <div ng-if='story.covers.length' class="cover" ng-repeat='document in story.covers' class='fluid-container'>
-              <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
-               <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
-            </div>
-          </div>
-          <!-- <div class='col-md-3' style='padding:0'>
-            1. certo non si capisce
-            2. ancora peggio.
-          </div> -->
-        
+  
+  <div class='container' style="">
+    <div class='row'>
+      <div class="col-sm-12">
+        <ul class='pagination'>
+          
+          <li ng-repeat="story in collection.stories">
+            <a ui-sref='collection.story({storyId:story.slug})'>{{$index + 1}}</a>
+          </li>
+
+        </ul>
       </div>
     </div>
   </div>
 
+  <div ui-view>
+    <div class="cover-wrapper alternate" ng-repeat="story in collection.stories">
+      <div class='container'>
+        <div class="row chapter" >
+            <a class="number" ui-sref='collection.story({storyId:story.slug})'>{{$index + 1}}</a>
+            <div class='col-md-6'>
+              <div class="inner">
+                <div class="divider"></div>
+                <div class="tags" ng-if="story.tags.length">
+                  <span class="tag" ng-repeat='tag in story.tags|filter:{ category: "writing", status:"public" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+                </div>
+                <h2 embedit='story.metadata.title' language='language'></h2>
+                <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
+              </div>
+            </div>
+            <div class='col-md-6' style='padding:0'>
+              <div ng-if='story.covers.length' class="cover" ng-repeat='document in story.covers' class='fluid-container'>
+                <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
+                 <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
+              </div>
+            </div>
+            <!-- <div class='col-md-3' style='padding:0'>
+              1. certo non si capisce
+              2. ancora peggio.
+            </div> -->
+          
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

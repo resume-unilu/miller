@@ -509,8 +509,9 @@ angular
             return StoryFactory.get({id: $stateParams.postId}).$promise;
           },
         }
-      })
+      });
 
+    $stateProvider
       .state('collection', {
         url: '/collection/:collectionId',
         controller: 'CollectionCtrl',
@@ -522,10 +523,22 @@ angular
           },
         }
       })
+      .state('collection.story', { // i.e the chapters ;)
+        url: '/:storyId',
+        controller: 'StoryCtrl',
+        reloadOnSearch : false,
+        templateUrl: RUNTIME.static + 'templates/collection.story.html',
+        resolve: {
+          story: function(StoryFactory, $stateParams) {
+            return StoryFactory.get({id: $stateParams.storyId}).$promise;
+          },
+        }
+      })
 
       /*
         All the rest are static pages and will download the md files directly
       */
+    $stateProvider
       .state('page', {
         url: '/:name',
         controller: 'PageCtrl',

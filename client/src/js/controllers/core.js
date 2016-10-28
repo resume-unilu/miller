@@ -178,8 +178,11 @@ angular.module('miller')
       $scope.documents = [];
 
       // the ui.router state (cfr app.js)
+      // debugger
       $scope.state = state.name;
-      $timeout($anchorScroll, 0); // wait for the next digest cycle (cfr marked directive)
+      
+      if(h && h.length)
+        $timeout($anchorScroll, 0); // wait for the next digest cycle (cfr marked directive)
 
       // toggle stopChanceStart if the state is among the blocking ones
       $scope.toggleStopStateChangeStart(false);
