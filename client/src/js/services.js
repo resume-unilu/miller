@@ -145,6 +145,51 @@ angular.module('miller')
 
     };
   })
+  /*
+    Given value in markdown, if it found something like <!-- lang:en_EN -->
+    split the content according to the language section.
+  */
+  .service('markdownItLanguageService', function($filter){
+    return function(value, language){
+      var v,
+        candidate;
+
+      candidate = _(value.split(/<!--\s*(lang:[a-zA-Z_]{2,5})\s*-->/))
+        .compact()
+        .chunk(2)
+        .fromPairs()
+        .value();
+      // console.log(language, candidate)
+      if(candidate['lang:'+language])
+        return candidate['lang:'+language];
+      
+      return value
+    }
+  })
+  .service('markdownItChaptersService', function($filter,markdownItLanguageService) {
+    return function(value, language){
+      var links = [],
+          linkIndex = 0,
+          md = new window.markdownit();
+
+      md.renderer.rules.link_open = function(tokens, idx){
+        var url = tokens[idx].attrGet('href').trim(); // only on block element (e.g.  url starting with 'doc/' without any text attached.
+        
+        // console.log('LINK_OPEN', url, tokens[idx])
+        if(url.indexOf('voc/') === 0){
+          linkIndex++;
+          links.push({
+            _index: linkIndex, // internal id
+            citation: tokens[idx + 1].content,
+            slug: url.replace('voc/','').split(',')[0],
+            type: 'chapter'
+          });
+        }
+      };
+      md.render(markdownItLanguageService(value, language));
+      return links
+    }
+  })
   .service('markdownItService', function($filter) {
     return function(value, language){
       var results,

@@ -65,6 +65,7 @@ class Document(models.Model):
     'details':{}
   })) # OEMBED (JSON) metadata field, in different languages if available.
   
+
   copyrights = models.TextField(null=True, blank=True,  default='')
 
   url        = models.URLField(max_length=500, null=True, blank=True)
@@ -72,6 +73,8 @@ class Document(models.Model):
   attachment = models.FileField(upload_to=attachment_file_name, null=True, blank=True)
   snapshot   = models.FileField(upload_to=snapshot_attachment_file_name, null=True, blank=True)
   mimetype   = models.CharField(max_length=127, blank=True, default='')
+
+  locked     = models.BooleanField(default=False) # prevent accidental override when it is not needed.
 
   models.URLField(null=True, blank=True)
 
@@ -190,16 +193,20 @@ class Document(models.Model):
         self.slug        = doc.slug
         self.type        = doc.type
         self.short_url   = doc.short_url
-        self.copyrights = doc.copyrights
-        self.url        = doc.url
-        self.owner      = doc.owner
-        self.attachment = doc.attachment
-        self.snapshot   = doc.snapshot
-        self.mimetype   = doc.mimetype
+        self.copyrights  = doc.copyrights
+        self.url         = doc.url
+        self.owner       = doc.owner
+        self.attachment  = doc.attachment
+        self.snapshot    = doc.snapshot
+        self.mimetype    = doc.mimetype
 
         # update contents only
-        super(Document, self).save(force_update=True, update_fields=['contents'])
-        
+        if not doc.locked and self.contents != doc.contents:
+          # print "updating the content", self.contents, doc.contents
+          super(Document, self).save(force_update=True, update_fields=['contents'])
+          # print "done, now:", self.contents
+        # else:
+          #print "do not update the content"
       except Document.DoesNotExist:
         # print 'not exists, creating'
         super(Document, self).save(*args, **kwargs)

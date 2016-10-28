@@ -6,11 +6,12 @@
  * transfor a story having tag collection in something completely crazy
  */
 angular.module('miller')
-  .controller('CollectionCtrl', function($scope, $log, collection, EVENTS, StoryFactory){
-    $log.log('CollectionCtrl ready', $scope.user.username)
+  .controller('CollectionCtrl', function($scope, $rootScope, $log, collection, EVENTS, StoryFactory, markdownItChaptersService){
+    $log.log('CollectionCtrl ready', $scope.user.username, $scope.language)
 
 
     $scope.collection = collection;
+    
     $scope.collection.isWritable = $scope.hasWritingPermission($scope.user, $scope.collection);
 
     // set status DRAFT or PUBLIC to the document.
@@ -34,5 +35,14 @@ angular.module('miller')
         $scope.unlock();
       });
     }
+
+    var links = markdownItChaptersService(collection.contents, $scope.language);
+    var stories = _.keyBy(collection.stories, 'slug');
+    
+    $scope.chapters = links.map(function(d){
+      if(stories[d.slug])
+        return stories[d.slug]
+      return d;
+    })
 
   })

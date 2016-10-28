@@ -9,27 +9,23 @@
 
       <div class='row'>
         <div class='col-md-12'>
-          <h1 embedit='story.metadata.title' language='language'></h1>
           <div class='authors' ng-if="story.authors.length">
             by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
           </div>
+          <h1 class="" embedit='story.metadata.title' language='language'></h1>
+          
           <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
 
         </div>
       </div>
       
-      <div ng-if='story.covers.length' class="main cover" ng-repeat='document in story.covers'>
-        <!-- <div class='row'>
-          <div class='col-md-8'> -->
+     <!--  <div ng-if='story.covers.length' class="main cover" ng-repeat='document in story.covers'>
+
           <div class='cover-oembed' rich-oembed fullscreen='fullsize(document.slug)' autoplay='true' oembed='document.metadata' cover='document.metadata.media_url || document.metadata.urls.Publishable || document.metadata.urls.Preview || document.metadata.thumbnail_url || document.metadata.url'></div>
-          
-          <!-- </div> -->
-          
-          <!-- <div class='col-md-4'> -->
+         
             <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
-          <!-- </div> -->
-        <!-- </div> -->
-      </div>
+      
+      </div> -->
 
       <div class='row' style='margin-bottom: 50px'>
         <div  ng-class='{"col-md-12": !documents.length, "col-md-8 col-lg-7": documents.length}'>

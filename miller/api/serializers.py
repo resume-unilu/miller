@@ -159,7 +159,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Story
-    fields = ('id', 'status', 'title', 'covers', 'authors', 'owner', 'tags', 'documents', 'stories', 'metadata')
+    fields = ('id', 'status', 'title', 'covers', 'authors', 'owner', 'tags', 'documents', 'stories', 'metadata', 'contents')
 
 
 
