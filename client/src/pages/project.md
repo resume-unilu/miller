@@ -1,7 +1,11 @@
 <!-- lang:en_US -->
 # What is RESuME?
 
-> The Resources on the European socio-economic model (RESuME) project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model. This project is co-funded by the [Erasmus+](https://eacea.ec.europa.eu/sites/eacea-site/files/documents/eac-s11-13_jean-monnet-support-to-institutions-and-associations_en.pdf) Programme of the European Union.
+The Resources on the European socio-economic model (RESuME) project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model.
+
+The projet is est developed by the University of Luxembourg within the [Digital European Integration Studies unit](http://wwwen.uni.lu/research/digital_european_integration_studies). It is coordinated by [Frédéric Allemand](/#!/people#frederic-allemand) as principal investigator.
+
+The RESuME project is co-funded by the [Erasmus+](https://eacea.ec.europa.eu/sites/eacea-site/files/documents/eac-s11-13_jean-monnet-support-to-institutions-and-associations_en.pdf) Programme of the European Union.
 
 ## Aim of the project
 
@@ -61,13 +65,11 @@ The collaborative research and teaching platform on the socio-economic model wil
 
 <!-- lang:fr_FR -->
 # Qu’est-ce que RESuME?
-> Le projet « Ressources sur le modèle socio-économique européen » (RESuME) a pour but de développer et disséminer un ensemble innovant et enrichi de ressources scientifiques et éducatives et d’outils numériques sur le modèle socio-économique de l’UE. 
+Le projet «Ressources sur le modèle socio-économique européen» (RESuME) a pour but de développer et disséminer un ensemble innovant et enrichi de ressources scientifiques et éducatives et d’outils numériques sur le modèle socio-économique de l’UE. S’appuyant sur les technologies et méthodologies développées dans le cadre de l’infrastructure de recherche sur l’intégration européenne, [CVCE.EU by UNI.LU](http://www.cvce.eu/), le projet vise aussi à contribuer au développement et à l’enrichissement de celle-ci. 
 
-S’appuyant sur les technologies et méthodologies développées dans le cadre de l’infrastructure de recherche sur l’intégration européenne, [CVCE.EU by UNI.LU](http://www.cvce.eu/), le projet vise aussi à contribuer au développement et à l’enrichissement de celle-ci. 
+Ce projet est développé par l’Université du Luxembourg, au sein de l’unité [Digital European Integration Studies](http://wwwen.uni.lu/research/digital_european_integration_studies). Il est mis en œuvre par [Frédéric Allemand](/#!/people#frederic-allemand), coordinateur scientifique du projet.
 
-Ce projet est développé par l’Université du Luxembourg, au sein de l’unité [Digital European Integration Studies](http://wwwen.uni.lu/research/digital_european_integration_studies). Il est mis en œuvre par [Frédéric Allemand](/#!/people#frederic-allemand), coordinateur du projet.
-
-Ce projet est cofinancé par le programme [Erasmus+](https://ec.europa.eu/programmes/erasmus-plus/node_en) de l’Union européenne.
+Le projet RESuME est cofinancé par le programme [Erasmus+](https://ec.europa.eu/programmes/erasmus-plus/node_en) de l’Union européenne.
 
 [](doc/jean-monnet-support-to-institutions-and-associations)
 
