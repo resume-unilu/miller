@@ -11,6 +11,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from miller.models import Profile, Story, Tag, Document, Caption, Mention
 
+codemirror_json_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
+  'fixedGutter': True, 
+  'lineNumbers':True, 
+  'matchBrackets': True,
+  'autoCloseBrackets': True,
+  'lineWrapping': True
+})
 
 class WritingTagsListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
@@ -56,15 +63,8 @@ class UserAdmin(BaseUserAdmin):
 
 class DocumentAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
-    codemirror_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
-      'fixedGutter': True, 
-      'lineNumbers':True, 
-      'matchBrackets': True,
-      'autoCloseBrackets': True,
-      'lineWrapping': True
-    })
     super(DocumentAdminForm, self).__init__(*args, **kwargs)
-    self.fields['contents'].widget = codemirror_widget
+    self.fields['contents'].widget = codemirror_json_widget
 
   def clean_contents(self):
     try:
@@ -90,12 +90,39 @@ class CaptionInline(admin.TabularInline):
   model = Caption
   extra = 2 # how many rows to show
 
+
+class StoryAdminForm(forms.ModelForm):
+  def __init__(self, *args, **kwargs):
+    codemirror_md_widget = CodeMirrorTextarea(mode="markdown", theme="elegant", config={ 
+      'fixedGutter': True, 
+      'lineNumbers':True, 
+      'matchBrackets': True,
+      'autoCloseBrackets': True,
+      'lineWrapping': True
+    })
+
+    
+
+    super(StoryAdminForm, self).__init__(*args, **kwargs)
+    self.fields['contents'].widget = codemirror_md_widget
+    self.fields['metadata'].widget = codemirror_json_widget
+
+
+  def clean_metadata(self):
+    try:
+      metadata = json.loads(self.cleaned_data['metadata'])
+    except ValueError as e:
+      raise forms.ValidationError(u'%s'%e)
+      # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
+    
+    return self.cleaned_data['metadata']
+
 class StoryAdmin(admin.ModelAdmin):
   # inlines = (CaptionInline,)
   exclude=['cover', 'cover_copyright', 'watchers', 'stories']
   search_fields = ['title']
   list_filter = (WritingTagsListFilter,)
-
+  form = StoryAdminForm
 
 class TagAdmin(admin.ModelAdmin):
   search_fields = ['name', 'slug', 'category']

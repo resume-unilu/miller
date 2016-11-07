@@ -13,7 +13,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 
-from jsonfield import JSONField
+# from jsonfield import JSONField
 
 from markdown import markdown
 
@@ -28,9 +28,9 @@ logger = logging.getLogger('miller')
 
 story_ready = django.dispatch.Signal(providing_args=["instance", "created"])
 
-def user_path(instance, filename):
+def user_path(instance, filename, safeOrigin=False):
   root, ext = os.path.splitext(filename)
-  src = os.path.join(settings.MEDIA_ROOT, instance.owner.profile.short_url, instance.short_url + ext)
+  src = os.path.join(settings.MEDIA_ROOT, instance.owner.profile.short_url, instance.short_url + ext if not safeOrigin else filename)
   return src
 
 
@@ -59,8 +59,8 @@ class Story(models.Model):
   title     = models.CharField(max_length=500)
   slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
   abstract  = models.CharField(max_length=2000, blank=True, null=True)
-  contents  = SimpleMDEField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
-  metadata  = JSONField(default=json.dumps({'title':{'en':'', 'fr':''}, 'abstract':{'en':'', 'fr':''}}),blank=True) # it will contain, JSON fashion
+  contents  = models.TextField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
+  metadata  = models.TextField(default=json.dumps({'title':{'en':'', 'fr':''}, 'abstract':{'en':'', 'fr':''}}),blank=True) # it will contain, JSON fashion
 
 
   date               = models.DateTimeField(blank=True, null=True) # date displayed (metadata)
@@ -155,27 +155,38 @@ class Story(models.Model):
   # convert the last saved content (markdown file) to a specific format (default: docx)
   # the media will be in the user MEDIA folder...
   def download(self, outputFormat='docx', language=None, extension=None):
-    outputfile = user_path(self, '%s.%s.%s' % (
-      self.short_url, 
-      self.date_last_modified.isoformat(), 
+    outputfile = user_path(self, '%s-%s.%s' % (
+      self.short_url,
+      self.date_last_modified.strftime("%s"), 
       extension if extension is not None else outputFormat
-    ))
+    ), True)
     
     if os.path.exists(outputfile):
+      print "do not regenerate", outputfile, self.date_last_modified.strftime("%s")
       return outputfile
 
     tempoutputfile = user_path(self, '__%s.md' % self.short_url)
 
+    # rewrite links for interactive PDF
     with codecs.open(tempoutputfile, "w", "utf-8") as temp:
       temp.write(u'\n\n'.join([
-        u"#%s" % self.title,
-        u"> %s" % self.abstract if self.abstract else "",
+        # u"#%s" % self.title,
+        # u"> %s" % self.abstract if self.abstract else "",
         # generate citation
         self.contents
       ]))
 
     # reverted = re.sub(r'#(#+)', r'\1', contents) 
-    pypandoc.convert_file(tempoutputfile, outputFormat, outputfile=outputfile, extra_args=['--base-header-level=1', '--latex-engine=xelatex'])
+    pypandoc.convert_file(tempoutputfile, outputFormat, outputfile=outputfile, 
+      extra_args=[
+        '--base-header-level=1', 
+        '--latex-engine=xelatex',
+        '--template=%s' % settings.MILLER_TEX,
+        '-V', 'geometry:top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm',
+        '-V','footer=%s' % settings.MILLER_TITLE,
+        '-V', 'title=%s' % self.title,
+        '-V','abstract=%s' % self.abstract
+      ])
     os.remove(tempoutputfile)
 
     return outputfile

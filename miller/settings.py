@@ -303,7 +303,9 @@ CODEMIRROR_PATH = r'js/codemirror'
 
 MILLER_DEBUG = True
 
-MILLER_TITLE = 'miller'
+MILLER_TITLE = 'RESuME'
+
+MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 # feel free to add your own oembed service in localsettings.
 MILLER_OEMBEDS = {
   'vimeo':  {
