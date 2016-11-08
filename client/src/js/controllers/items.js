@@ -22,10 +22,10 @@ angular.module('miller')
     function normalizeItems(items) {
       return items
         .map(function(d){
-          if(d.tags && d.tags.length && _.find(d.tags, {slug: 'collection'})){
-            d.isCollection = true
-          }
-
+          // if(d.tags && d.tags.length && _.find(d.tags, {slug: 'collection'})){
+          //   d.isCollection = true
+          // }
+          // console.log(d)
           if(!d.metadata.abstract[$scope.language]){
             return d;
           }

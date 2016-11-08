@@ -35,7 +35,7 @@ angular.module('miller')
         },
         rq: {
           en_US: {
-            '«':'”',
+            '»':'”',
             '"':'”'
           },
           fr_FR: {
