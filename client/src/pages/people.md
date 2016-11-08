@@ -2,7 +2,7 @@
 # Équipe projet
 
 ::: profile
-![profile/](/static/images/people/frederic-allemand.jpg "Frédéric Allemand")
+![profile/](/static/images/people/frederic-allemand.jpg 'Frédéric Allemand')
 ### Frédéric Allemand
 > Coordinateur scientifique et gestionnaire du projet RESuME, DEIS, Rectorat, Université du Luxembourg
 :::
@@ -17,7 +17,7 @@ Il est l'auteur d’une cinquantaine de contributions scientifiques sur l'Union 
 
 
 ::: profile
-![profile/](/static/images/people/alessia-virone.jpg "Alessia Virone")
+![profile/](/static/images/people/alessia-virone.jpg 'Alessia Virone')
 ### Alessia Virone
 > DEIS Research Infrastructure, Rectorat, Université du Luxembourg
 :::
@@ -25,7 +25,7 @@ Alessia est une politiste diplômée en sciences politiques avec une spécialisa
 
 
 ::: profile
-![profile/](/static/images/people/daniele-guido.jpg "Daniele Guido")
+![profile/](/static/images/people/daniele-guido.jpg 'Daniele Guido')
 ### Daniele Guido
 > Designer & Developer, DEIS, Rectorat, Université du Luxembourg
 
@@ -35,7 +35,7 @@ Daniele est un designer et un développeur spécialisé en visualisation des don
 Il a rejoint le Digital Humanities Lab du CVCE en mars 2015 et a intégré l’Université du Luxembourg en juillet 2016, après avoir passé plusieurs années au [medialab de Sciences Po](http://www.medialab.sciences-po.fr/) à Paris, où il a participé au développement d’applications Web expérimentales et d’outils pour la visualisation des données, appliquées aux publications savantes améliorées et à la recherche en sciences sociales. Pendant ses années passées en France, il a développé l’interface frontale du projet AIME (la plate-forme AIME) financé par l’Union européenne (UE) et il a participé au projet FORCAST financé par l’UE. Il a également travaillé pendant ses études comme designer et développeur au Density Design Lab du Politecnico di Milano, dans le contexte d’un partenariat conjoint avec le medialab de Sciences Po. Au CVCE, il a développé histograph, une plate-forme open source pour une exploration basée sur des graphiques et une indexation basée sur le crowdsourcing de collections multimédias.
 
 ::: profile
-![profile/](/static/images/people/paolo-chiocchetti.jpg "Paolo Chiocchetti")
+![profile/](/static/images/people/paolo-chiocchetti.jpg 'Paolo Chiocchetti')
 ### Paolo Chiocchetti
 > DEIS Research Infrastructure, Rectorat, Université du Luxembourg
 
@@ -44,7 +44,7 @@ Paolo est un politiste (PhD, King’s College London) spécialisé en partis pol
 
 
 ::: profile
-![profile/](/static/images/people/susana-munoz.jpg "Susana Muñoz")
+![profile/](/static/images/people/susana-munoz.jpg 'Susana Muñoz')
 ### Susana Muñoz
 > DEIS Research Infrastructure, Rectorat, Université du Luxembourg
 
@@ -75,7 +75,7 @@ Le comité scientifique est composé des membres suivants.
 
 
 ::: profile-committee
-![profile/](/static/images/people/nikos-scandamis.jpg "Nikos Scandamis")
+![profile/](/static/images/people/nikos-scandamis.jpg 'Nikos Scandamis')
 ### Nikos Scandamis
 > Professeur émérite, Université d’Athènes
 Président du comité scientifique, projet RESuMEv
@@ -88,7 +88,7 @@ Ses domaines d'expertise sont le droit européen et la philosophie politique. Il
 
 
 ::: profile-committee
-![profile/](/static/images/people/jean-Marc-ferry.jpg "Jean-Marc Ferry")
+![profile/](/static/images/people/jean-Marc-ferry.jpg 'Jean-Marc Ferry')
 ### Jean-Marc Ferry
 > Philosophe, Professeur des Universités, titulaire de la Chaire de Philosophie de l’Europe à l’Université de Nantes
 
@@ -102,7 +102,7 @@ Il est l'auteur d'une trentaine d'ouvrages, dont *Les Puissances de l'expérienc
 
 
 ::: profile-committee
-![profile/](/static/images/people/blanche-sousi.jpg "Blanche Sousi")
+![profile/](/static/images/people/blanche-sousi.jpg 'Blanche Sousi')
 ### Blanche Sousi
 > Professeur émérite de l’Université Lyon III, Chaire Jean Monnet ad personam en Droit bancaire et monétaire européen
 
@@ -119,7 +119,7 @@ Elle est l'auteur de nombreuses publications dans le domaine du droit bancaire e
 
 
 ::: profile-committee
-![profile/kenneth-dyson](/static/images/people/kenneth-dyson.jpg "Kenneth Dyson")
+![profile/kenneth-dyson](/static/images/people/kenneth-dyson.jpg 'Kenneth Dyson')
 ### Kenneth Dyson
 > Professor de science politique, Université de Cardiff
 
@@ -133,7 +133,7 @@ Il est l'auteur de nombreuses publications, dont *The Road to Maastricht* (1999,
 
 
 ::: profile-committee
-![profile/susanna-cafaro](/static/images/people/susanna-cafaro.jpg "Susanna Cafaro")
+![profile/susanna-cafaro](/static/images/people/susanna-cafaro.jpg 'Susanna Cafaro')
 ### Susanna Cafaro
 > Professeur associée en Droit de l'Union européenne, Université du Salento
 
@@ -147,7 +147,7 @@ Ses domaines d'expertise sont le droit de l'Union européenne, l'Union économiq
 
 
 ::: profile-committee
-![profile/david-howarth](/static/images/people/david-howarth.jpg "David Howarth")
+![profile/david-howarth](/static/images/people/david-howarth.jpg 'David Howarth')
 ### David Howarth
 > Professeur d'économie politique, Université du Luxembourg
 
@@ -162,7 +162,7 @@ David Howarth est spécialisé sur la politique économique de l’intégration 
 
 
 ::: profile-committee
-![profile/Manuel -opez -scudero](/static/images/people/manuel-lopez-escudero.jpg "Manuel Lopez Escudero")
+![profile/Manuel -opez -scudero](/static/images/people/manuel-lopez-escudero.jpg 'Manuel Lopez Escudero')
 ### Manuel Lopez Escudero
 > Professeur de droit européen et de droit public international, Université de Grenade
 Référendaire, Cour de justice de l’Union européenne
@@ -180,7 +180,7 @@ Dans le cadre de la [convention de partenariat](/#!/project#partenaires) entre l
 
 
 ::: profile-others
-![profile/donatella-strangio](/static/images/people/donatella-strangio.jpg "Donatella Strangio")
+![profile/donatella-strangio](/static/images/people/donatella-strangio.jpg 'Donatella Strangio')
 ### Donatella Strangio
 > Professeur associé en histoire économique, Université La Sapienza
 
@@ -192,7 +192,7 @@ Elle est spécialiste du système économique préindustriel, avec un intérêt 
 
 
 ::: profile-others
-![profile/raimondo-manca](/static/images/people/raimondo-manca.jpg "Raimondo Manca")
+![profile/raimondo-manca](/static/images/people/raimondo-manca.jpg 'Raimondo Manca')
 ### Raimondo Manca
 > Professeur de mathématiques appliquées à l’économie, à la finance et à l’assurance.
 
@@ -206,7 +206,7 @@ Raimondo Manca est l’auteur de plus de 200 contributions scientifiques, dont d
 
 
 ::: profile-others
-![profile/](/static/images/people/maria-felice-arezzo.jpg "Maria Felice Arezzo")
+![profile/](/static/images/people/maria-felice-arezzo.jpg 'Maria Felice Arezzo')
 ### Maria Felice Arezzo
 > Professeur assistant en statistiques
 
@@ -220,7 +220,7 @@ Elle a travaillé à au Parlement italien (1994-1996) et ensuite comme chercheur
 ## Anciens membres
 
 ::: profile-others
-![profile/Sergio De la Parra](/static/images/people/sergio-delaparra.jpg "Sergio De la Parra")
+![profile/Sergio De la Parra](/static/images/people/sergio-delaparra.jpg 'Sergio De la Parra')
 ### Sergio De la Parra
 > Collaborateur scientifique
 :::
@@ -233,7 +233,7 @@ Avant de rejoindre le CVCE, Sergio a travaillé à l'Observatoire Social Europé
 
 
 ::: profile
-![profile/](/static/images/people/frederic-allemand.jpg "Frédéric Allemand")
+![profile/](/static/images/people/frederic-allemand.jpg 'Frédéric Allemand')
 ### Frédéric Allemand
 > Scientific coordinator
 :::
@@ -246,7 +246,7 @@ He previously worked in the ECB’s legal department, in the French Secretariat-
 
 
 ::: profile
-![profile/](/static/images/people/alessia-virone.jpg "Alessia Virone")
+![profile/](/static/images/people/alessia-virone.jpg 'Alessia Virone')
 ### Alessia Virone
 > Scientific Collaborator
 :::
@@ -257,7 +257,7 @@ Prior to joining the CVCE, she worked for various NGOs and European institutions
 
 
 ::: profile
-![profile/](/static/images/people/daniele-guido.jpg "Daniele Guido")
+![profile/](/static/images/people/daniele-guido.jpg 'Daniele Guido')
 ### Daniele Guido
 > Scientific Collaborator
 
@@ -269,7 +269,7 @@ At the CVCE he has developed Histograph, an open source platform for the graph-b
 
 
 ::: profile
-![profile/](/static/images/people/paolo-chiocchetti.jpg "Paolo Chiocchetti")
+![profile/](/static/images/people/paolo-chiocchetti.jpg 'Paolo Chiocchetti')
 ### Paolo Chiocchetti
 > Scientific collaborator
 
@@ -278,7 +278,7 @@ Paolo is a political scientist (PhD, King’s College London) specialised in par
 
 
 ::: profile
-![profile/](/static/images/people/susana-munoz.jpg "Susana Muñoz")
+![profile/](/static/images/people/susana-munoz.jpg 'Susana Muñoz')
 ### Susana Muñoz
 > DEIS Research Infrastructure, Rectorat, Université du Luxembourg
 
@@ -295,7 +295,7 @@ In the RESuME project she chairs the steering committee and is involved in resea
 
 
 ::: profile-others
-![profile/](/static/images/people/sergio-delaparra.jpg "Sergio De la Parra")
+![profile/](/static/images/people/sergio-delaparra.jpg 'Sergio De la Parra')
 ### Sergio De la Parra
 > Former member / Scientific Collaborator
 :::
@@ -320,7 +320,7 @@ The peer-review committee is composed of the following members:
 
 
 ::: profile-committee
-![profile/](/static/images/people/nikos-scandamidis.jpg "Nikos Scandamis")
+![profile/](/static/images/people/nikos-scandamidis.jpg 'Nikos Scandamis')
 ### Nikos Scandamis
 > Professor
 :::
@@ -331,7 +331,7 @@ Nikos Scandamis graduated with a PhD in Law from Paris 2 University in 1973. He 
 
 
 ::: profile-committee
-![profile/](/static/images/people/jean-Marc-ferry.jpg "Jean-Marc Ferry")
+![profile/](/static/images/people/jean-Marc-ferry.jpg 'Jean-Marc Ferry')
 ### Jean-Marc Ferry
 > Professor
 :::
@@ -341,7 +341,7 @@ Nikos Scandamis graduated with a PhD in Law from Paris 2 University in 1973. He 
 
 
 ::: profile-committee
-![profile/](/static/images/people/blanche-sousi.jpg "Blanche Sousi")
+![profile/](/static/images/people/blanche-sousi.jpg 'Blanche Sousi')
 ### Blanche Sousi
 > Professor
 :::
@@ -352,7 +352,7 @@ Nikos Scandamis graduated with a PhD in Law from Paris 2 University in 1973. He 
 
 
 ::: profile-committee
-![profile/](/static/images/people/kenneth-dyson.jpg "Kenneth Dyson")
+![profile/](/static/images/people/kenneth-dyson.jpg 'Kenneth Dyson')
 ### Kenneth Dyson
 > Research Professor
 :::
@@ -363,7 +363,7 @@ Nikos Scandamis graduated with a PhD in Law from Paris 2 University in 1973. He 
 
 
 ::: profile-committee
-![profile/](/static/images/people/susanna-cafaro.jpg "Susanna Cafaro")
+![profile/](/static/images/people/susanna-cafaro.jpg 'Susanna Cafaro')
 ### Susanna Cafaro
 > Associate Professor
 :::
@@ -373,7 +373,7 @@ Nikos Scandamis graduated with a PhD in Law from Paris 2 University in 1973. He 
 
 
 ::: profile-committee
-![profile/](/static/images/people/david-howarth.jpg "David Howarth")
+![profile/](/static/images/people/david-howarth.jpg 'David Howarth')
 ### David Howarth
 > Professor
 :::
@@ -383,7 +383,7 @@ Nikos Scandamis graduated with a PhD in Law from Paris 2 University in 1973. He 
 
 
 ::: profile-committee
-![profile/](/static/images/people/manuel-lopez-escudero.jpg "Manuel Lopez Escudero")
+![profile/](/static/images/people/manuel-lopez-escudero.jpg 'Manuel Lopez Escudero')
 ### Manuel Lopez Escudero
 > Professor
 :::
@@ -399,7 +399,7 @@ His areas of expertise are Economic and Monetary Union, the economic governance 
 Under the agreement between the CVCE and Sapienza University of Rome’s Department of Methods and Models for Economics, Territory and Finance (MEMOTEF), three visiting researchers spent two days in Luxembourg in February 2016. 
 
 ::: profile-others
-![profile/](/static/images/people/donatella-strangio.jpg "Donatella Strangio")
+![profile/](/static/images/people/donatella-strangio.jpg 'Donatella Strangio')
 ### Donatella Strangio
 > Associate Professor
 :::
@@ -410,7 +410,7 @@ She specialises in the pre-industrial economic system, with a particular focus o
 
 
 ::: profile-others
-![profile/](/static/images/people/raimondo-manca.jpg "Raimondo Manca")
+![profile/](/static/images/people/raimondo-manca.jpg 'Raimondo Manca')
 ### Raimondo Manca
 > Professor
 :::
@@ -421,7 +421,7 @@ Prof. Manca was the local coordinator for research by the Italian Ministry of Un
 
 
 ::: profile-others
-![profile/](/static/images/people/maria-felice-arezzo.jpg "Maria Felice Arezzo")
+![profile/](/static/images/people/maria-felice-arezzo.jpg 'Maria Felice Arezzo')
 ### Maria Felice Arezzo
 > Assistant Professor
 :::
@@ -435,7 +435,7 @@ She worked at the Italian Parliament from 1994 to 1996 and then as a researcher 
 ## Former members
 
 ::: profile-others
-![profile/](/static/images/people/sergio-delaparra.jpg "Sergio De la Parra")
+![profile/](/static/images/people/sergio-delaparra.jpg 'Sergio De la Parra')
 ### Sergio De la Parra
 > Scientific Collaborator
 :::

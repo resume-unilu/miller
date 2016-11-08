@@ -210,8 +210,10 @@ angular.module('miller')
       md
         .use(window.markdownitFootnote)
         .use(window.markdownitContainer, 'profile')
+
         .use(window.markdownitContainer, 'profile-committee')
         .use(window.markdownitContainer, 'profile-others')
+        .use(window.markdownitContainer, 'abstract')
         .use(window.markdownItAttrs);
 
       
@@ -383,6 +385,7 @@ angular.module('miller')
           value = candidate['lang:'+language];
         }
         //value = value.split();
+        value = $filter('quotes')(value, language);
       }
 
       // modify results

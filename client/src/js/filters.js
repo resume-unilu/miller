@@ -18,6 +18,40 @@ angular.module('miller')
     }
   })
   /*
+    Replace quotes
+  */
+  .filter('quotes', function(){
+    return function(text, language){
+      var st = {
+        lq: {
+          en_US: {
+            '«':'“',
+            '"':'“'
+          },
+          fr_FR: {
+            '“':'«',
+            '"':'«'
+          }
+        },
+        rq: {
+          en_US: {
+            '«':'”',
+            '"':'”'
+          },
+          fr_FR: {
+            '”':'»',
+            '"':'»'
+          }
+        }
+      };
+
+      return (text || '')
+        .replace(/([\s,;\?\.\!\[\]\(\)])(["«“])([^"»”]*)(["»”])([\s,;\?\.\!\[\]\(\)])/g, function(m, left, lq, quote, rq, right){
+          return [left, (st.lq[language][lq] || lq), quote, (st.rq[language][rq] || rq), right].join('')
+        });
+    }
+  })
+  /*
     Translit non ascii chars and uniform punctuations signs
   */
   .filter('slugify', function(){

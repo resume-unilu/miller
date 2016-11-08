@@ -61,7 +61,7 @@
       <div class='row' style='margin-bottom: 50px'>
         <div  ng-class='{"col-md-12": !documents.length, "col-md-8 col-lg-7": documents.length}'>
           <div class="contents">
-            <div markdownit='story.contents' language='language' listener='listener(event, data, callback)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
+            <div markdownit='story.contents' watchlanguage='true' language='language' listener='listener(event, data, callback)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
           </div>
         </div>
         <div class='col-md-4 col-lg-5' ng-if='documents.length' respect-previous-sibling update="documents">

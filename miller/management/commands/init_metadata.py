@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     
-    stories = Story.objects.all()
+    stories = Story.objects.all().order_by('-date_last_modified')
 
     
 

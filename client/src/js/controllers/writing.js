@@ -11,6 +11,7 @@ angular.module('miller')
 
     $scope.isDraft = false;
     $scope.isSaving = false;
+    $scope.isCollection = false;
 
     $scope.story = story;
     
@@ -39,6 +40,9 @@ angular.module('miller')
 
     
     $scope.displayedTags = _.filter(story.tags, function(d){
+      if(d.slug == 'collection'){
+        $scope.isCollection = true
+      }
       return d.category != 'keyword';
     });
 

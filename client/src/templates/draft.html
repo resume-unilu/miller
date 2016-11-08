@@ -48,7 +48,8 @@
   <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
   
   <div class='btn-line-group' ng-if='!isDraft && id'>
-    <button  class='btn-line' ui-sref="story({postId: id})" translate="button.viewmode"></button>
+    <button ng-if='!isCollection' class='btn-line' ui-sref="story({postId: id})" translate="button.viewmode"></button>
+    <button ng-if='isCollection' class='btn-line' ui-sref="collection({collectionId: id})" translate="button.viewmode"></button>
   </div>
   <div class='btn-line-group primary'>
     <button ng-click='save()' class='btn-line'  translate="button.save"></button>
