@@ -21,8 +21,15 @@ h1, .h1 {
   margin-bottom: 10px;
   font-size: 30px;
   line-height: 40px;
-  
 }
+
+.page .contents h1, .page .contents .h1 {
+  margin-top:40px;
+  margin-bottom:30px;
+  font-size: 45px;
+  line-height: 60px;
+}
+
 
 h2, .h2 {
   font-size: 22px;
@@ -1427,7 +1434,8 @@ h4.modal-title{
   margin: 0;
   background-color: transparent;
   padding: 10px 5px;
-  margin-right: 40%;
+  /*margin-right: 40%;*/
+  margin-bottom: 40px;
 }
 
 .story .cover.main .metadata .title,

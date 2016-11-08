@@ -22,11 +22,17 @@ angular.module('miller')
 
         scope.render = function(language) {
           if(language && typeof scope.embedit == 'object') {
-            var altlanguage = scope.language.replace(/_[A-Z][A-Z]$/, '');
+            var altlanguage = scope.language.replace(/_[A-Z][A-Z]$/, ''),
+                contents = scope.embedit[language]||scope.embedit[altlanguage]||'';
+
+            if(attrs.markdown){
+              var md = new window.markdownit();
+              contents = md.render(contents)
+            }
             if(scope.firstline)
-              element.html((scope.embedit[language]||scope.embedit[altlanguage]||'').split(/<br\s?\/?>/).shift());
-            else
-              element.html(scope.embedit[language]||scope.embedit[altlanguage]||'');
+              contents = contents.split(/<br\s?\/?>/).shift();
+            
+            element.html(contents);
           } else {
             element.html(scope.embedit);
           }

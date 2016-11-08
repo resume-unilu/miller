@@ -40,6 +40,7 @@
       <div class='row'>
         <div class='col-md-12'>
           <h1 embedit='story.metadata.title' language='language'></h1>
+          <div embedit='story.metadata.reference' ng-if='story.metadata.reference' markdown='true' language='language'></div>
           <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
         </div>
       </div>
