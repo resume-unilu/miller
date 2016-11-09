@@ -140,6 +140,7 @@ class CreateStorySerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Story
+    fields='__all__'
 
 
 

@@ -43,3 +43,10 @@ MILLER_SETTINGS = {
   'debug': MILLER_DEBUG,
   'disqus': 'xxx'   
 }
+
+# e.g modify with your smtp info
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'test@gmail.com'
+EMAIL_HOST_PASSWORD = 'test'
+EMAIL_PORT = 587
