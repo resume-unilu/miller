@@ -124,10 +124,26 @@ class StoryAdmin(admin.ModelAdmin):
   list_filter = (WritingTagsListFilter,)
   form = StoryAdminForm
 
+
+class TagAdminForm(forms.ModelForm):
+  def __init__(self, *args, **kwargs):
+    super(TagAdminForm, self).__init__(*args, **kwargs)
+    self.fields['metadata'].widget = codemirror_json_widget
+
+  def clean_contents(self):
+    try:
+      contents = json.loads(self.cleaned_data['metadata'])
+    except ValueError as e:
+      raise forms.ValidationError(u'%s'%e)
+      # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
+    
+    return self.cleaned_data['metadata']
+
+
 class TagAdmin(admin.ModelAdmin):
   search_fields = ['name', 'slug', 'category']
   list_filter = ('category',)
-
+  form = TagAdminForm
 
 
 

@@ -75,10 +75,9 @@ def fill_with_metadata(instance, fields=(u'title',u'abstract')):
 
     for default_language_code, label, language_code in settings.LANGUAGES:
       if language_code not in metadata[field]:
-        print "value", getattr(instance, field, u'')
         metadata[field][language_code] = getattr(instance, field, u'')
 
-  metadata = json.dumps(metadata)
+  metadata = json.dumps(metadata, indent=1)
   return metadata
 
 

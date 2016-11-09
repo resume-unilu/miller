@@ -24,7 +24,8 @@ angular
     'angular-embed.handlers',
 
     'angularLazyImg',
-    'ngFileUpload'
+    'ngFileUpload',
+    '720kb.socialshare'
   ])
   .constant('LOCALES', {
     'locales': {

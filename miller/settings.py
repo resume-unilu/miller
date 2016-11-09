@@ -315,7 +315,8 @@ MILLER_OEMBEDS = {
 
 MILLER_SETTINGS = {
   'debug': MILLER_DEBUG,
-  'disqus': ''   
+  'disqus': '',
+  'socialtags': 'resume-unilu' # socila tags when sharing on twitter
 }
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.

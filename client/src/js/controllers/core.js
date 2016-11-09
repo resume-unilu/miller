@@ -10,7 +10,7 @@ angular.module('miller')
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = $rootScope.user = RUNTIME.user;
-    
+    $scope.settings = RUNTIME.settings;
 
     $scope.hasToC = false;
     $scope.ToCEnabled = false;
@@ -180,7 +180,10 @@ angular.module('miller')
       // the ui.router state (cfr app.js)
       // debugger
       $scope.state = state.name;
-      
+      $scope.absoluteUrl = $state.href(state.current.name, state.params, {
+        absolute: true
+      });
+
       if(h && h.length)
         $timeout($anchorScroll, 0); // wait for the next digest cycle (cfr marked directive)
 

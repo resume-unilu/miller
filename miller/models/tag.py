@@ -7,7 +7,6 @@ from django.db import models
 
 from miller import helpers
 
-from jsonfield import JSONField
 
 class Tag(models.Model):
   # categories
@@ -38,7 +37,7 @@ class Tag(models.Model):
   category   = models.CharField(max_length=32, choices=CATEGORY_CHOICES, default=KEYWORD) # e.g. 'actor' or 'institution'
   status     = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PUBLIC)
 
-  metadata   = JSONField(default=json.dumps({'name':{}})) # it will contain, JSON fashion
+  metadata   = models.TextField(null=True, blank=True, default=json.dumps({'name':{}})) # it will contain, JSON fashion
 
   def __unicode__(self):
     return '%s (%s)' % (self.name, self.category)

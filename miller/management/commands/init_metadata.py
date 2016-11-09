@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     
-    stories = Story.objects.all().order_by('-date_last_modified')
+    stories = Story.objects.all().order_by('date_last_modified')
 
     
 
@@ -35,13 +35,16 @@ class Command(BaseCommand):
     
     logger.debug('story finished.')
       
-    # tags = Tag.objects.all()
+    tags = Tag.objects.all()
 
     # # The `iterator()` method ensures only a few rows are fetched from
     # # the database at a time, saving memory.
-    # for tag in tags.iterator():
-    #   logger.debug('reconcile metadata of tag id: %s' % tag.id)
-    #   tag.save()
+    for tag in tags.iterator():
+      if re.match(r'^\s*".*"\s*$', tag.metadata):
+        tag.metadata = re.sub(r'^\s*"|"\s*$','', tag.metadata.replace(u'\\"','"').replace(u'\\\\u',u'\\u')).decode("raw_unicode_escape").encode('utf-8')
+        logger.debug('correct JSON metadata of story id: %s' % tag.id)
+      logger.debug('reconcile metadata of tag id: %s' % tag.id)
+      tag.save()
     
     logger.debug('command finished.')
       
