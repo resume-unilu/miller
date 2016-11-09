@@ -63,7 +63,7 @@ class Document(models.Model):
     'description': '',
     'html': '',
     'details':{}
-  })) # OEMBED (JSON) metadata field, in different languages if available.
+  }, indent=1)) # OEMBED (JSON) metadata field, in different languages if available.
   
 
   copyrights = models.TextField(null=True, blank=True,  default='')

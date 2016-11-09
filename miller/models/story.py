@@ -36,7 +36,7 @@ def user_path(instance, filename, safeOrigin=False):
 
 
 class Story(models.Model):
-
+  language_dict = helpers.get_languages_dict()
   
   DRAFT    = 'draft' # visible just for you
   SHARED   = 'shared' # share with specific user
@@ -60,7 +60,11 @@ class Story(models.Model):
   slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
   abstract  = models.CharField(max_length=2000, blank=True, null=True)
   contents  = models.TextField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
-  metadata  = models.TextField(default=json.dumps({'title':{'en':'', 'fr':''}, 'abstract':{'en':'', 'fr':''}}),blank=True) # it will contain, JSON fashion
+  metadata  = models.TextField(default=json.dumps({
+    'title': language_dict,
+    'abstract':language_dict,
+    'abstract': language_dict
+  }, indent=1),blank=True) # it will contain, JSON fashion
 
 
   date               = models.DateTimeField(blank=True, null=True) # date displayed (metadata)
@@ -229,7 +233,7 @@ class Story(models.Model):
             metadata['abstract'][language_code] = self.abstract
 
         logger.debug('metadata filled.')
-        self.metadata = json.dumps(metadata)
+        self.metadata = json.dumps(metadata, ensure_ascii=False, indent=1)
       except Exception as e:
         logger.exception(e)
 
