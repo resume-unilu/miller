@@ -111,7 +111,7 @@ angular
     });
   })
   .config(function($locationProvider) {
-    // $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true);
     // $locationProvider.hashPrefix('!');
   })
   .config(function(embedlyServiceProvider, RUNTIME) {

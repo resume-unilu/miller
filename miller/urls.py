@@ -48,6 +48,8 @@ urlpatterns = [
   url(r'^latest/feed/$', LatestEntriesFeed()),
 
   url(r'^auth/', include('djoser.urls.authtoken')),
+
+  url(r'^.*$', views.home, name='app')
 ]
 
 
