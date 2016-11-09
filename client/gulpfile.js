@@ -52,6 +52,7 @@ gulp.task('libs', function() {
     './src/js/lib/angular-disqus.min.js',
     './src/js/lib/angular-debounce.js', 
     // './src/js/lib/angular-animate.min.js',
+    './src/js/lib/angular-socialshare.min.js',
     './src/js/lib/angular-ui-router.min.js', 
     './src/js/lib/angular-strap.min.js',
     './src/js/lib/angular-strap.tpl.min.js',
