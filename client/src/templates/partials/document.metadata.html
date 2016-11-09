@@ -3,8 +3,9 @@
     <button class='btn btn-line' ng-if='document._type == "doc"||document._type == "voc"' ng-click='alignTo(document._index, $event)'>
       <span class='icon icon-type-{{document.type||document._type}}'></span><span class='type {{document.type}}'></span>
     </button>
-    <span class='title' embedit='document.metadata.title' language='language'></span>
-
+    <span ng-if='document.type!="link"' class='title' embedit='document.metadata.title' language='language'></span>
+    <a  ng-if='document.type=="link"' target='_blank' ng-href='{{document.metadata.url}}'><span class='title' embedit='document.metadata.title' language='language'></span></a>
+    
     <div ng-if='document.metadata.abstract'  class='abstract'>
       <span embedit='document.metadata.abstract' language='language'></span>
       <span ng-if='document._type == "voc"'>
@@ -33,10 +34,7 @@
     <div class='copyright' ng-if='document.metadata.details.copyright' embedit='document.metadata.details.copyright' language='language' firstline='true'></div>
   </div>
 
-   <div ng-if='document.type=="link"' class='external-link'>
-    <span translate='cfr'></span> <a  target='_blank' ng-href='{{document.metadata.url}}'>{{document.metadata.url|smartUrl}}</a>
-  </div>
-
+   
   <!-- author part -->
   <div>
     <span ng-if='document.metadata.author_name'>
