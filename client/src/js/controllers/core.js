@@ -180,7 +180,8 @@ angular.module('miller')
       // the ui.router state (cfr app.js)
       // debugger
       $scope.state = state.name;
-      $scope.absoluteUrl = $state.href(state.current.name, state.params, {
+      
+      $scope.absoluteUrl = $state.href($state.current.name, $state.params, {
         absolute: true
       });
 
