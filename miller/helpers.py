@@ -80,6 +80,9 @@ def fill_with_metadata(instance, fields=(u'title',u'abstract')):
   metadata = json.dumps(metadata, indent=1)
   return metadata
 
+# used for metadata multilanguage mapping
+def get_languages_dict():
+  return dict((language_code,u'') for default_language_code, label, language_code in settings.LANGUAGES)
 
 # Our starting point for zotero related stuffs.
 # for a given username, get or create the proper zotero collection.
