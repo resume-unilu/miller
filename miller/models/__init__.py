@@ -6,3 +6,4 @@ from document import Document
 from story import Story
 from caption import Caption
 from mention import Mention
+from author import Author

@@ -52,7 +52,7 @@ urlpatterns = [
   url(r'^auth/', include('djoser.urls.authtoken')),
 
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
-  url(r'^.*$', views.home, name='app')
+  url(r'^(?!favicon\.ico).*$', views.home, name='app')
 ]
 
 

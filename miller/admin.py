@@ -9,7 +9,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from miller.models import Profile, Story, Tag, Document, Caption, Mention
+from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author
 
 codemirror_json_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
   'fixedGutter': True, 
@@ -18,6 +18,36 @@ codemirror_json_widget = CodeMirrorTextarea(mode="css", theme="elegant", config=
   'autoCloseBrackets': True,
   'lineWrapping': True
 })
+
+class BlogTagsListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('type of blogpost')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'type-of-blogpost'
+
+    def lookups(self, request, model_admin):
+        
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return Tag.objects.filter(category=Tag.BLOG).values_list('slug', 'name')
+        
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if self.value() is None:
+          return queryset
+        return queryset.filter(tags__category=Tag.BLOG, tags__slug=self.value())
 
 class WritingTagsListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
@@ -59,6 +89,28 @@ class ProfileInline(admin.StackedInline):
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
   inlines = (ProfileInline, )
+
+
+
+class AuthorAdminForm(forms.ModelForm):
+  def __init__(self, *args, **kwargs):
+    super(AuthorAdminForm, self).__init__(*args, **kwargs)
+    self.fields['metadata'].widget = codemirror_json_widget
+
+  def clean_metadata(self):
+    try:
+      metadata = json.loads(self.cleaned_data['metadata'])
+    except ValueError as e:
+      raise forms.ValidationError(u'%s'%e)
+      # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
+    
+    return self.cleaned_data['metadata']
+
+
+class AuthorAdmin(admin.ModelAdmin):
+  search_fields = ['fullname', 'metadata']
+  form = AuthorAdminForm
+
 
 
 class DocumentAdminForm(forms.ModelForm):
@@ -121,7 +173,7 @@ class StoryAdmin(admin.ModelAdmin):
   # inlines = (CaptionInline,)
   exclude=['cover', 'cover_copyright', 'watchers', 'stories']
   search_fields = ['title']
-  list_filter = (WritingTagsListFilter,)
+  list_filter = (WritingTagsListFilter, BlogTagsListFilter)
   form = StoryAdminForm
 
 
@@ -151,6 +203,7 @@ class TagAdmin(admin.ModelAdmin):
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(Author, AuthorAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Document, DocumentAdmin)
