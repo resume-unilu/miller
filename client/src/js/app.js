@@ -140,7 +140,8 @@ angular
               filters: JSON.stringify({
                 tags__slug: 'highlights',
                 status: 'public'
-              })
+              }),
+              ordering: '-date'
             }).$promise;
           },
           news: function(StoryFactory){
@@ -148,7 +149,8 @@ angular
               filters: JSON.stringify({
                 tags__category: 'blog',
                 status: 'public'
-              })
+              }),
+              ordering: '-date'
             }).$promise;
           } 
         }

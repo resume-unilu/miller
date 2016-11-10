@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
 from miller.models import Story, Tag, Document, Caption
+from miller.api.utils import filtersFromRequest, orderingFromRequest
 from miller.api.fields import OptionalFileField, JsonField
 from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer
 
@@ -39,22 +40,18 @@ class StoryViewSet(viewsets.ModelViewSet):
   
 
   def list(self, request):
-    filters = self.request.query_params.get('filters', None)
-    
-    if filters is not None:
-      try:
-        filters = json.loads(filters)
-        # print "filters,",filters
-      except Exception, e:
-        # print e
-        filters = {}
-    else:
-      filters = {}
-    
+    filters = filtersFromRequest(request=self.request)
+    ordering = orderingFromRequest(request=self.request)
+
     if request.user.is_authenticated():
       stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
     else:
       stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
+
+    if ordering is not None:
+      stories = stories.order_by(*ordering)
+    # add orderby
+
     # print stories.query
     page    = self.paginate_queryset(stories)
     
