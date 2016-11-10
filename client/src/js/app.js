@@ -111,7 +111,11 @@ angular
     });
   })
   .config(function($locationProvider) {
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false,
+      rewriteLinks: false
+    });
     // $locationProvider.hashPrefix('!');
   })
   .config(function(embedlyServiceProvider, RUNTIME) {
@@ -180,12 +184,12 @@ angular
           }
         }
       })
-      .state('login', {
-        url: '/login',
-        reloadOnSearch : false,
-        controller: 'LoginCtrl',
-        templateUrl: RUNTIME.static + 'templates/login.html'
-      })
+      // .state('login', {
+      //   url: '/login',
+      //   reloadOnSearch : false,
+      //   controller: 'LoginCtrl',
+      //   templateUrl: RUNTIME.static + 'templates/login.html'
+      // })
       .state('draft', {
         url: '/create',
         reloadOnSearch : false,

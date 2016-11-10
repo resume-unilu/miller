@@ -34,6 +34,7 @@ router.register(r'mention', api.MentionViewSet)
 router.register(r'profile', api.ProfileViewSet)
 router.register(r'tag', api.TagViewSet)
 
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
   url(r'^$', views.home, name='home'),
@@ -41,7 +42,8 @@ urlpatterns = [
   url(r'^sitemap\.xml$', sitemap, name='sitemap-xml'),
   url(r'^api/', include(router.urls)),
   url(r'^api-auth/', include('rest_framework.urls')),
-  url(r'^login/$', views.login_view, name='login_view'),
+
+  url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login_view'), # views.login_view, name='login_view'),
   url(r'^signup/$', views.signup_view, name='signup_view'),
   url(r'^logout/$', views.logout_view, name='logout_view'),
   url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
@@ -49,6 +51,7 @@ urlpatterns = [
 
   url(r'^auth/', include('djoser.urls.authtoken')),
 
+  # url(r'^(?!(login|logout)).*$', views.home, name='app'),
   url(r'^.*$', views.home, name='app')
 ]
 
