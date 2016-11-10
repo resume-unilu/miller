@@ -43,10 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'social.apps.django_app.default',
+    'channels',
     'rest_framework',
     'djoser',
     'ws4redis',
     'simplemde',
+
     'miller'
 ]
 
@@ -285,7 +287,20 @@ LOGGING = {
     },
 }
 
-
+#............
+#
+# Django channels
+#
+#............
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+        "ROUTING": "miller.routing.channel_routing",
+    },
+}
 
 #............
 #
@@ -318,6 +333,8 @@ MILLER_SETTINGS = {
   'disqus': '',
   'socialtags': 'resume-unilu' # socila tags when sharing on twitter
 }
+
+
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:
