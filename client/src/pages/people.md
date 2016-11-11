@@ -20,6 +20,7 @@ Il est l'auteur d’une cinquantaine de contributions scientifiques sur l'Union 
 ![profile/](/static/images/people/alessia-virone.jpg 'Alessia Virone')
 ### Alessia Virone
 > DEIS Research Infrastructure, Rectorat, Université du Luxembourg
+
 :::
 Alessia est une politiste diplômée en sciences politiques avec une spécialisation sur les pays émergents (Université Libre de Bruxelles). Elle est également titulaire d’un master complémentaire en études européennes (Université Catholique de Louvain – St Louis). Elle a rejoint le CVCE en 2015 en tant que collaboratrice scientifique et l’Université du Luxembourg en juillet 2016. Elle est collaboratrice scientifique au sein de l’unité *Digital European Integration Studies*. Elle a collaboré antérieurement avec des ONG et institutions européennes en tant que chercheuse et responsable de la communication. Elle a également enseigné l’économie européenne (EPHEC, Bruxelles). Ses principaux champs d’étude sont l’analyse de discours et le processus de transformation de l’Etat-providence.
 
@@ -40,8 +41,15 @@ Il a rejoint le Digital Humanities Lab du CVCE en mars 2015 et a intégré l’U
 > DEIS Research Infrastructure, Rectorat, Université du Luxembourg
 
 :::
-Paolo est un politiste (PhD, King’s College London) spécialisé en partis politiques européens et politique comparée. Il a rejoint le DEIS en septembre 2016 en tant que collaborateur scientifique rattaché au projet RESuME.  
+Paolo est un politiste (PhD, King’s College London) spécialisé en partis politiques européens et politique comparée.  Il a rejoint le DEIS en septembre 2016 en tant que collaborateur scientifique rattaché au projet RESuME.
 
+::: profile
+![profile/](/static/images/people/hicham-rassafi.jpg 'Hicham Rassafi-Guibal')
+### Hicham Rassafi-Guibal
+> Chercheur associé, RESuME, DEIS, Rectorat, Université du Luxembourg 
+
+:::
+Hicham Rassafi-Guibal est Docteur en droit public. Son domaine de spécialité est lié au droit public économique et au droit européen. Il a rejoint le projet RESuME en 2016.  Hicham Rassafi-Guibal est un ancien élève de l'Institut d'études politiques de Bordeaux et des Universités de Valenciennes et de Lille 2. 
 
 ::: profile
 ![profile/](/static/images/people/susana-munoz.jpg 'Susana Muñoz')
@@ -276,6 +284,13 @@ At the CVCE he has developed Histograph, an open source platform for the graph-b
 :::
 Paolo is a political scientist (PhD, King’s College London) specialised in party politics and comparative politics. He joined the DEIS in September 2016 as a scientific collaborator of the RESuME project. 
 
+::: profile
+![profile/](/static/images/people/hicham-rassafi.jpg 'Hicham Rassafi-Guibal')
+### Hicham Rassafi-Guibal
+> Associate researcher, RESuME, DEIS, Rectorate, University of Luxembourg 
+
+:::
+Hicham Rassafi-Guibal holds a PhD in Public Law. His specialties are Economic Public law and European Law. He joined the RESuME project in 2016. Hicham Rassafi-Guibal studied at the Bordeaux Institut d'études politiques (Sciences po Bordeaux) and at Universities of Valenciennes and Lille 2. 
 
 ::: profile
 ![profile/](/static/images/people/susana-munoz.jpg 'Susana Muñoz')
