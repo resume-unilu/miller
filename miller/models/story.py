@@ -18,7 +18,7 @@ from django.utils.text import slugify
 from markdown import markdown
 
 from miller import helpers
-from miller.models import Tag, Document
+from miller.models import Tag, Document, Author
 
 from simplemde.fields import SimpleMDEField
 
@@ -62,8 +62,7 @@ class Story(models.Model):
   contents  = models.TextField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
   metadata  = models.TextField(default=json.dumps({
     'title': language_dict,
-    'abstract':language_dict,
-    'abstract': language_dict
+    'abstract':language_dict
   }, indent=1),blank=True) # it will contain, JSON fashion
 
 
@@ -74,7 +73,7 @@ class Story(models.Model):
   status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT)
 
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
-  authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
+  authors   = models.ManyToManyField(Author, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
   documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
   stories   = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_to')
@@ -215,7 +214,6 @@ class Story(models.Model):
 
     if not hasattr(self, 'filling_metadata'):
       self.filling_metadata = True
-      
       try:
         metadata = self.metadata if type(self.metadata) is dict else json.loads(self.metadata)
         
@@ -226,10 +224,10 @@ class Story(models.Model):
 
         for default_language_code, label, language_code in settings.LANGUAGES:
           logger.debug('metadata filling lang:%s' % language_code)
-          if language_code not in metadata['title']:
+          if language_code not in metadata['title'] or not metadata['title'][language_code]:
             metadata['title'][language_code] = self.title
 
-          if language_code not in metadata['abstract']:
+          if language_code not in metadata['abstract'] or not metadata['abstract'][language_code]:
             metadata['abstract'][language_code] = self.abstract
 
         logger.debug('metadata filled.')
@@ -304,7 +302,7 @@ def transform_source(sender, instance, created, **kwargs):
 @receiver(story_ready, sender=Story)
 def create_first_author(sender, instance, created, **kwargs):
   if created:
-    instance.authors.add(instance.owner)
+    instance.authors.add(instance.owner.authorship.first())
     instance.__dirty = True
     logger.debug('(story {pk:%s}) @story_ready: {username:%s}" done.' % (instance.pk, instance.owner.username))
 

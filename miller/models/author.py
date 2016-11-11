@@ -25,6 +25,13 @@ class Author(models.Model):
   class Meta:
     app_label="miller"
 
+  def __unicode__(self):
+    return u' '.join(filter(None,[
+      self.fullname, 
+      '(%s)'%self.user.username if self.user else None,
+      self.affiliation
+    ]))
+
   def save(self, *args, **kwargs):
     if not self.pk and not self.slug:
       self.slug = helpers.get_unique_slug(self, self.fullname)
