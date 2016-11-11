@@ -318,10 +318,10 @@ angular
                   filters: d.slug? JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
                     tags__slug: d.slug,
-                    authors__username__in: [profile.user.username]
+                    authors__user__username: profile.user.username
                   }): JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
-                    authors__username__in: [profile.user.username]
+                    authors__user__username: profile.user.username
                   })
                 }).$promise;
               },
