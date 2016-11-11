@@ -44,7 +44,7 @@ The edited book produced for the RESuME project is the result of a collaborative
 ### ePapers
 To shed further light on the wide range of topics covered by the RESuME project, this latter is creating an innovative new series of scholarly contributions: the *State, Society, Market and Europe’ Research Papers* (RESuME Papers / Cahiers RESuME). The RESuME Papers will be published on an *open access* basis via the dedicated project platform and will serve as a basis for high-level multidisciplinary, cross-sectoral reflection on the multiple dynamic interactions between society, the economy and the state that are encouraged and/or reflected by the pursuit of competitiveness in the European area.
 These ePapers are academic publications which are subject to peer review. 
-They are selected on the basis of a call for papers. (link to call)
+They are selected on the basis of a call for papers. [](doc/cahiers-resume-call-for-contributions-2-nov-2016)
 
 [Go to the RESuME papers](/#/publications/papers)
 
@@ -105,7 +105,7 @@ Fruit de la collaboration de chercheurs issus de multiples champs disciplinaires
 ### ePapers
 Afin d’éclairer les différents thèmes qu'il couvre, le projet RESuME crée une nouvelle série innovante de contributions scientifiques: les *Cahiers de recherche Etat, Société, Marché, Europe* (Cahiers RESuME). Publiés en *open access* sur la plateforme d’édition scientifique du projet, les Cahiers RESuME se veulent le lieu d’une réflexion multidisciplinaire et transversale de haut niveau sur les interrelations dynamiques et multiples entre la société, l’économie et l’Etat que la poursuite de l’objectif de compétitivité dans l’espace européen nourrit et/ou reflète.
 Les ePapers publiées au sein des Cahiers RESuME sont soumises à un [processus d’évaluation par les pairs](voc/peer-evaluation). 
-Les ePapers sont sélectionnés sur la base d’un [appel à candidature](voc/call-for-application).
+Les ePapers sont sélectionnés sur la base d’un appel à candidature. [](doc/cahiers-resume-appel-a-contribution-02-nov-2016)
 
 [Accéder à la collection d'ePapers](/#/publications/papers)
 
