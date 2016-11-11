@@ -18,7 +18,7 @@ from django.utils.text import slugify
 from markdown import markdown
 
 from miller import helpers
-from miller.models import Tag, Document
+from miller.models import Tag, Document, Author
 
 from simplemde.fields import SimpleMDEField
 
@@ -74,7 +74,7 @@ class Story(models.Model):
   status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT)
 
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
-  authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
+  authors   = models.ManyToManyField(Author, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
   documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
   stories   = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_to')

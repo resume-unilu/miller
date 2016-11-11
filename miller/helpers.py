@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.utils.text import slugify
 from pyzotero import zotero
 
 import shortuuid, os, json, logging
@@ -17,6 +18,22 @@ usage sample:
   print helpers.echo()
 
 """
+def get_unique_slug(instance, trigger):
+  slug = slugify(trigger)
+  slug_exists = True
+  counter = 1
+  _slug = u'%s' % slug
+
+  while slug_exists:
+    try:
+      slug_exits = instance.__class__.objects.get(slug=slug)
+      if slug_exits:
+        slug = _slug + '-' + str(counter)
+        counter += 1
+    except instance.__class__.DoesNotExist:
+      break
+  return slug
+
 
 def create_short_url(): 
   return shortuuid.uuid()[:7]
