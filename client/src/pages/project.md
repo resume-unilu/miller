@@ -44,7 +44,8 @@ The edited book produced for the RESuME project is the result of a collaborative
 ### ePapers
 To shed further light on the wide range of topics covered by the RESuME project, this latter is creating an innovative new series of scholarly contributions: the *State, Society, Market and Europe’ Research Papers* (RESuME Papers / Cahiers RESuME). The RESuME Papers will be published on an *open access* basis via the dedicated project platform and will serve as a basis for high-level multidisciplinary, cross-sectoral reflection on the multiple dynamic interactions between society, the economy and the state that are encouraged and/or reflected by the pursuit of competitiveness in the European area.
 These ePapers are academic publications which are subject to peer review. 
-They are selected on the basis of a call for papers. (link to call) 
+They are selected on the basis of a call for papers. (link to call)
+
 [Go to the RESuME papers](/#/publications/papers)
 
 ### eInterviews
