@@ -309,14 +309,6 @@ Her research, publications and expertise are cross-disciplinary, ranging from pu
 In the RESuME project she chairs the steering committee and is involved in research activities such as the ePapers series, the final conference and the collaborative platform.
 
 
-::: profile-others
-![profile/](/static/images/people/sergio-delaparra.jpg 'Sergio De la Parra')
-### Sergio De la Parra
-> Former member / Scientific Collaborator
-:::
-Sergio De la Parra joined the CVCE in September 2014. He has mainly been involved in the work to enhance and update the research corpus ‘Economic and Monetary Union: origins, workings and future prospects’.
-Sergio has degrees in European law (King’s College London), political science (University of Bologna) and the philology of Romance languages (Université libre de Bruxelles). He specialises in the law of Economic and Monetary Union and has written several articles on the new European economic governance. 
-Before joining the CVCE, he worked at the European Social Observatory (OSE), the European Trade Union Institute (ETUI) and the Belgian Senate.
 
 
 
