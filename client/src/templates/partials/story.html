@@ -30,6 +30,8 @@
     <span class='authors' ng-if="story.authors.length">
       <span translate="written.by"></span> <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
     </span>
+    <a ng-if='user.is_staff' target='_blank' ng-href='/admin/miller/story/{{story.id}}/change/'>modify (admin)</a>
+  
   </p>
 </div>
 
