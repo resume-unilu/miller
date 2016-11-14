@@ -24,11 +24,11 @@
 
   <p>
     
-    <span class='creator' ng-if="!story.authors.length">
+    <!-- <span class='creator' ng-if="!story.authors.length">
       created by <span ng-init='author=story.owner;$last=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-    </span>
+    </span> -->
     <span class='authors' ng-if="story.authors.length">
-      written by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+      <span translate="written.by"></span> <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
     </span>
   </p>
 </div>

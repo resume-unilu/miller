@@ -468,7 +468,7 @@ angular
           controller: 'ItemsCtrl',
           templateUrl: RUNTIME.static + 'templates/items.html',
           resolve: {
-            items: function(StoryFactory, profile) {
+            items: function(StoryFactory) {
               return StoryFactory.get({
                 filters: JSON.stringify({
                   tags__category: 'writing'
