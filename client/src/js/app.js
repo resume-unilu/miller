@@ -269,7 +269,8 @@ angular
                 status: 'draft',
                 owner__username: profile.user.username,
                 // authors__username__in: [RUNTIME.user.username]
-              })
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
 
@@ -294,7 +295,8 @@ angular
                 owner__username: profile.user.username,
                 ordering: '-date'
                 // authors__username__in: [RUNTIME.user.username]
-              })
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
 
@@ -317,7 +319,8 @@ angular
               filters: JSON.stringify({
                 owner__username: profile.user.username,
                 // authors__username__in: [RUNTIME.user.username]
-              })
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
 
@@ -346,7 +349,8 @@ angular
                   }): JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
                     authors__user__username: profile.user.username
-                  })
+                  }),
+                  ordering: '-date,-date_last_modified'
                 }).$promise;
               },
 
@@ -472,7 +476,8 @@ angular
               return StoryFactory.get({
                 filters: JSON.stringify({
                   tags__category: 'writing'
-                })
+                }),
+                ordering: '-date,-date_last_modified'
               }).$promise;
             },
 
@@ -493,7 +498,8 @@ angular
               return StoryFactory.get({
                 filters: JSON.stringify({
                   tags__slug: $stateParams.slug
-                })
+                }),
+                ordering: '-date,-date_last_modified'
               }).$promise;
             },
 
@@ -520,7 +526,8 @@ angular
                     tags__slug: d.slug
                   }): JSON.stringify({
                     tags__category: 'writing'
-                  })
+                  }),
+                  ordering: '-date,-date_last_modified'
                 }).$promise;
               },
 
