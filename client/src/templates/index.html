@@ -48,7 +48,7 @@
     <div ng-repeat='story in news'>
       <div class="coverstory news">
         <div ng-if='!$first' class="divider"></div>
-        <div class="date">{{story.date_created|date:'mediumDate'}}</div>
+        <div class="date">{{story.date|date:'mediumDate'}}</div>
         <h4><a href ui-sref="story({postId: story.slug})" embedit='story.metadata.title' language='language'></a></h4>
 
         <div class='authors' ng-if="story.authors.length">
