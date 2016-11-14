@@ -197,7 +197,7 @@ class Story(models.Model):
 
   # save hook
   def save(self, *args, **kwargs):
-    if not self.id and not self.slug:
+    if not self.pk and not self.slug:
       slug = slugify(self.title)
       slug_exists = True
       counter = 1
@@ -212,6 +212,9 @@ class Story(models.Model):
           self.slug = slug
           break
 
+    if self.date is None:
+      logger.debug('(story {slug:%s,pk:%s}) @save not having a default date. Fixing...' % (self.slug, self.pk))
+      self.date = self.date_last_modified
     if not hasattr(self, 'filling_metadata'):
       self.filling_metadata = True
       try:
