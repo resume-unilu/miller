@@ -292,6 +292,30 @@ angular
               filters: JSON.stringify({
                 status: 'deleted',
                 owner__username: profile.user.username,
+                ordering: '-date'
+                // authors__username__in: [RUNTIME.user.username]
+              })
+            }).$promise;
+          },
+
+          model: function() {
+            return 'story';
+          },
+          factory: function(StoryFactory) {
+            return StoryFactory;
+          }
+        }
+      })
+      .state('author.publications.all', {
+        url: '/',
+        reloadOnSearch : false,
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/items.html',
+        resolve: {
+          items: function(StoryFactory, profile) {
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                owner__username: profile.user.username,
                 // authors__username__in: [RUNTIME.user.username]
               })
             }).$promise;
@@ -318,10 +342,10 @@ angular
                   filters: d.slug? JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
                     tags__slug: d.slug,
-                    authors__username__in: [profile.user.username]
+                    authors__user__username: profile.user.username
                   }): JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
-                    authors__username__in: [profile.user.username]
+                    authors__user__username: profile.user.username
                   })
                 }).$promise;
               },
@@ -439,6 +463,27 @@ angular
         templateUrl: RUNTIME.static + 'templates/publications.html',
         
       })
+        .state('publications.all', {
+          url: '',
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/items.html',
+          resolve: {
+            items: function(StoryFactory, profile) {
+              return StoryFactory.get({
+                filters: JSON.stringify({
+                  tags__category: 'writing'
+                })
+              }).$promise;
+            },
+
+            model: function() {
+              return 'story';
+            },
+            factory: function(StoryFactory) {
+              return StoryFactory;
+            }
+          }
+        })
         .state('publications.tags', {
           url: '/tags/:slug',
           controller: 'ItemsCtrl',

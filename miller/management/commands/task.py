@@ -18,7 +18,7 @@ class Command(BaseCommand):
   available_tasks = (
     'snapshot', # require document pk
     'snapshots', # handle pdf snapshot
-    'cleanbin'
+    'cleanbin',
   )
 
 
