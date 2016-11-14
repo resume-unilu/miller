@@ -66,7 +66,7 @@ class Story(models.Model):
   }, indent=1),blank=True) # it will contain, JSON fashion
 
 
-  date               = models.DateTimeField(auto_now_add=True, null=True, blank=True) # date displayed (metadata)
+  date               = models.DateTimeField(null=True, blank=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
