@@ -141,6 +141,7 @@ angular
                 tags__slug: 'highlights',
                 status: 'public'
               }),
+              limit: 7,
               ordering: '-date'
             }).$promise;
           },
@@ -385,7 +386,8 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 tags__category: 'blog'
-              })
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
           model: function() {
@@ -407,7 +409,8 @@ angular
               filters: JSON.stringify({
                 tags__category: 'blog',
                 tags__slug: 'event'
-              })
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
           model: function() {
