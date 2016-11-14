@@ -3,7 +3,7 @@
   <div class="tags" ng-if="story.tags.length">
       <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
   </div>
-  <div class="date">{{story.date_created|date:'mediumDate'}}</div>
+  <div class="date">{{story.date|date:'mediumDate'}}</div>
 
   <div  class="divider"></div>
 
