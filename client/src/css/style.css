@@ -115,6 +115,14 @@ label{
   margin-top: 20px;
 }
 
+
+ul.errorlist{
+  font-size: 11px;
+  line-height: 18px;
+  list-style-type: none;
+  padding:5px;
+  margin:0;
+}
 /*
   generic classes
 */

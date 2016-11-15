@@ -44,9 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'social.apps.django_app.default',
     'rest_framework',
+    'templated_email',
     'djoser',
     'ws4redis',
     'simplemde',
+    'captcha',
     'miller'
 ]
 
@@ -294,6 +296,15 @@ LOGGING = {
 #............
 
 CODEMIRROR_PATH = r'js/codemirror'
+
+
+#............
+#
+# DJANGO-REGISTRATION SETTINGS
+# 
+#............
+ACCOUNT_ACTIVATION_DAYS = 7
+
 #............
 #
 # MILLER APP

@@ -50,3 +50,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'test@gmail.com'
 EMAIL_HOST_PASSWORD = 'test'
 EMAIL_PORT = 587
+EMAIL_ACTIVATION_ACCOUNT = "info@miller.miller"
+
+
+REGISTRATION_SALT = 'your registration salt'
