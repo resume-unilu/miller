@@ -529,6 +529,7 @@
   </head>
   {% block body %}
   <body  ng-controller='CoreCtrl' >
+    {% block page %}
     <!-- where highlights are -->
     <div id='showreel'>
       <div class='container'>
@@ -710,6 +711,7 @@
     {% verbatim %}
     <div id="messenger" ng-class='{"active":message}' translate="{{message}}"></div>
     {% endverbatim %}
+    {% endblock %}
     {% if debug %}
     <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
     <script src='{% static "js/lib/md5.js" %}'></script>

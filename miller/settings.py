@@ -79,6 +79,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 # 'django.core.context_processors.static',
                 'ws4redis.context_processors.default',
+                'miller.context_processors.default',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -330,6 +331,7 @@ MILLER_SETTINGS = {
   'socialtags': 'resume-unilu' # socila tags when sharing on twitter
 }
 
+CSRF_COOKIE_NAME = 'Miller'
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:
     from local_settings import *

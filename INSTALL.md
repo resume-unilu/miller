@@ -152,4 +152,5 @@ Remember to add
 	eval "$(ssh-agent -s)"
 	ssh-add ~/.ssh/id_rsa_custom
 
-	
+# template email
+python manage.py makemigrations templated_email
