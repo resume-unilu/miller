@@ -1,0 +1,75 @@
+{% extends 'index.html'%}
+{% load staticfiles %}
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+    <h3>Sign up {{title}}</h3>
+      {{form.errors}}
+      <form role="form" method="POST" action="">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="id_signup_first_name">first name*</label>
+              {% if form.errors.first_name %}
+              {{form.errors.first_name}}
+              {% endif %}
+              <input type="text" class="form-control" id="id_signup_first_name" autofocus="autofocus" name="first_name" placeholder="" >
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="id_signup_last_name">last name*</label>
+              {% if form.errors.last_name %}
+              {{form.errors.last_name}}
+              {% endif %}
+              <input type="text" class="form-control" id="id_signup_last_name" autofocus="autofocus" name="last_name" placeholder="" >
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="id_signup_email">email*</label>
+          <input type="text" value='{{ form.email.value|default_if_none:"" }}' class="form-control" id="id_signup_email"  name="email" placeholder="your email" >
+        </div>
+
+        <div class="form-group">
+          <label for="id_signup_username">desired username*</label>
+          {% if form.errors.username %}
+          {{form.errors.username}}
+          {% endif %}
+          <input type="text" value='{{ form.username.value|default_if_none:"" }}' class="form-control {% if form.errors.username %} error {% endif %}" id="id_signup_username"  name="username" placeholder="username" >
+        </div>
+
+        <div class="form-group">
+          <label for="id_signup_password1">password*</label>
+          {% if form.errors.password1 %}
+          {{form.errors.password1}}
+          {% endif %}
+          <input type="password"  class="form-control" id="id_signup_password1" placeholder="Password" name="password1">
+        </div>
+
+        <div class="form-group">
+          <label for="id_signup_password2">password confirmation*</label>
+          {% if form.errors.password2 %}
+          {{form.errors.password2}}
+          {% endif %}
+          <input type="password" class="form-control" id="id_signup_password2" placeholder="Password" name="password2">
+        </div>
+
+        <div class="form-group">
+          <label for="id_signup_affiliation">affiliation</label>
+          <input type="text" class="form-control" id="id_signup_affiliation"  name="affiliation" placeholder="University, Contry ..." >
+        </div>
+      
+        {{form.captcha}}
+
+        <input type="hidden" value="{{ next }}" name="next" />
+        {% csrf_token %}
+        <button class="btn-line">sing up</button>
+        {{error}}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

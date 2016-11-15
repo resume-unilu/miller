@@ -6,6 +6,7 @@
   "button.viewmode": "back to reading mode",
   "button.save": "save",
   "button.more": "load more",
+  "button.more.news": "others news",
   "button.next": "next",
   "button.previous": "previous",
   "button.loading": "loading ...",
@@ -118,5 +119,7 @@
   "upload.description": "Four easy steps",
   "upload.missing.steps": "Almost there! ... {{steps}} missing {{steps > 1? 'steps': 'one last step'}} before uploading",
   "upload.success.title": "Your content has been submitted",
-  "upload.success.description": "You can find your submitted content here"
+  "upload.success.description": "You can find your submitted content here",
+
+  "written.by": "written by"
 }

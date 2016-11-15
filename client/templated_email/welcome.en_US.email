@@ -1,0 +1,25 @@
+{% block subject %}Welcome on board, {{username}}!{% endblock %}
+{% block plain %}
+  Hi {{full_name}},
+
+  You just signed up for {{site_name}} ({{site_url}} ) with the username: {{username}}
+
+  Please copy this link to your browser address bar to activate your account, then you will be able to login to our platform.
+
+  {{activation_link}}
+
+  Join date: {{signup_date}}
+
+  Thanks, you rock!
+{% endblock %}
+{% block html %}
+  <p>Hi {{full_name}},</p>
+
+  <p>You just signed up for {{site_name}} ({{site_url}} ) with the username: {{username}}</p>
+
+  <p> Please follow this link or copy it to your browser address bar to activate your account. 
+  Then you will be able to login to our platform.
+  </p>
+  <a href="{{activation_link}}">{{activation_link}}</a>
+  <p>Thanks, you rock!</p>
+{% endblock %}

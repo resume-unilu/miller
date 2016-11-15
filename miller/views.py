@@ -1,15 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json, codecs, markdown, os
+import json, codecs, markdown, os, logging, datetime
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
+from django.core import signing
 from django.shortcuts import render_to_response, redirect, render
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import cache_page
-from miller.forms import LoginForm
+
+from templated_email import get_templated_mail, send_templated_mail
+
+from miller.forms import LoginForm, SignupForm
+
+
+logger = logging.getLogger('miller')
 
 
 # return a shared object to be sent to normal views
@@ -20,6 +28,7 @@ def _share(request, extra={}):
     'settings': json.dumps(settings.MILLER_SETTINGS),
     'oembeds': json.dumps(settings.MILLER_OEMBEDS)
   }
+
 
   # if request.user.is_authenticated():
   #   d.update({
@@ -84,15 +93,75 @@ def home(request):
   
 #   return render_to_response('login.html', _share(request, extra=login_message))
 
-
+@csrf_protect
 def signup_view(request):
-  if request.user.is_authenticated():
-    return redirect('home')
-  form = LoginForm(request.POST)
-  signup_message = {}
+  if request.method == 'GET':
+    signup_message = {}
+    form = SignupForm(initial={
+      'date_joined': datetime.datetime
+    })
+    next = request.GET.get('next', 'home')
+  elif request.method == 'POST':
+    #print 'ooooo', datetime.datetime
+    # send registration email
+    form = SignupForm(request.POST, initial={
+      'date_joined': datetime.datetime
+    })
+    # confirm
+    # register user and all
 
-  next = request.GET.get('next', 'home')
-  return render_to_response('signup.html', _share(request, extra=signup_message))
+
+    if form.is_valid():
+      REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
+
+      user = form.save(commit=False)
+      # this is useful for auto saving the user related author cfr. miller.models.Author
+      # we use here some code from https://github.com/ubernostrum/django-registration/blob/2.2/registration/backends/hmac/views.py
+      user.first_name = form.cleaned_data['first_name']
+      user.last_name  = form.cleaned_data['last_name']
+      user.is_active = False
+
+      user.save()
+
+      aut = user.authorship.first()
+      aut.affiliation = form.cleaned_data['affiliation']
+      aut.save()
+
+      logger.info('registration success {user:%s}' % user.username)
+      
+      activation_key = signing.dumps(
+        obj=user.username,
+        salt=REGISTRATION_SALT
+      )
+
+      # send here the email with html
+      print activation_key
+      print settings.EMAIL_ACTIVATION_ACCOUNT
+      print user.email
+
+      tmp = send_templated_mail(
+        template_name='welcome.en_US', 
+        from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
+        recipient_list=[user.email],
+        context={
+          'activation_link': request.build_absolute_uri(reverse('registration_activate', args=[activation_key])),
+          'username': user.username,
+          'fullname': aut.fullname,
+          'site_name': settings.MILLER_TITLE,
+          'site_url': request.get_full_path()
+        }, 
+        create_link=True
+      )
+      print tmp
+
+      return redirect('home')
+
+
+  return render(request, 'signup.html', _share(request, extra={
+    'form': form
+  }))
+
+  
 
 
 def logout_view( request ):

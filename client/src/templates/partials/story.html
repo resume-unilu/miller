@@ -3,7 +3,7 @@
   <div class="tags" ng-if="story.tags.length">
       <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
   </div>
-  <div class="date">{{story.date_created|date:'mediumDate'}}</div>
+  <div class="date">{{story.date|date:'mediumDate'}}</div>
 
   <div  class="divider"></div>
 
@@ -24,12 +24,14 @@
 
   <p>
     
-    <span class='creator' ng-if="!story.authors.length">
+    <!-- <span class='creator' ng-if="!story.authors.length">
       created by <span ng-init='author=story.owner;$last=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-    </span>
+    </span> -->
     <span class='authors' ng-if="story.authors.length">
-      written by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+      <span translate="written.by"></span> <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
     </span>
+    <a ng-if='user.is_staff' target='_blank' ng-href='/admin/miller/story/{{story.id}}/change/'>modify (admin)</a>
+  
   </p>
 </div>
 

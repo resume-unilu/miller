@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-  <html>
+  <html ng-app='miller'>
   <head>
     <title>{{title}} - {{page}}</title>
     <base href="/">
@@ -528,7 +528,7 @@
     </style>
   </head>
   {% block body %}
-  <body ng-app='miller' ng-controller='CoreCtrl' >
+  <body  ng-controller='CoreCtrl' >
     <!-- where highlights are -->
     <div id='showreel'>
       <div class='container'>
@@ -900,10 +900,6 @@
           settings: settings,
           stories: {
             writing: [
-              {
-                name: 'all',
-                url: ''
-              },
               {
                 name: 'collection',
                 slug: 'collection',

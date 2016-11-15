@@ -89,7 +89,7 @@ class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
 
   class Meta:
     model = Story
-    fields = ('id','url', 'slug', 'short_url', 'date',  'date_created', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
+    fields = ('id','url', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
 
 
 # retrieve a Story, full

@@ -141,6 +141,7 @@ angular
                 tags__slug: 'highlights',
                 status: 'public'
               }),
+              limit: 7,
               ordering: '-date'
             }).$promise;
           },
@@ -267,9 +268,10 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 status: 'draft',
-                owner__username: profile.user.username,
-                // authors__username__in: [RUNTIME.user.username]
-              })
+                // owner__username: profile.user.username,
+                authors__user__username__in: [RUNTIME.user.username]
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
 
@@ -291,9 +293,34 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 status: 'deleted',
-                owner__username: profile.user.username,
-                // authors__username__in: [RUNTIME.user.username]
-              })
+                // owner__username: profile.user.username,
+                authors__user__username__in: [RUNTIME.user.username]
+              }),
+              ordering: '-date,-date_last_modified'
+            }).$promise;
+          },
+
+          model: function() {
+            return 'story';
+          },
+          factory: function(StoryFactory) {
+            return StoryFactory;
+          }
+        }
+      })
+      .state('author.publications.all', {
+        url: '/',
+        reloadOnSearch : false,
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/items.html',
+        resolve: {
+          items: function(StoryFactory, profile) {
+            return StoryFactory.get({
+              filters: JSON.stringify({
+                // owner__username: profile.user.username,
+                authors__user__username__in: [RUNTIME.user.username]
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
 
@@ -322,7 +349,8 @@ angular
                   }): JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
                     authors__user__username: profile.user.username
-                  })
+                  }),
+                  ordering: '-date,-date_last_modified'
                 }).$promise;
               },
 
@@ -358,7 +386,8 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 tags__category: 'blog'
-              })
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
           model: function() {
@@ -380,7 +409,8 @@ angular
               filters: JSON.stringify({
                 tags__category: 'blog',
                 tags__slug: 'event'
-              })
+              }),
+              ordering: '-date,-date_last_modified'
             }).$promise;
           },
           model: function() {
@@ -439,6 +469,28 @@ angular
         templateUrl: RUNTIME.static + 'templates/publications.html',
         
       })
+        .state('publications.all', {
+          url: '',
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/items.html',
+          resolve: {
+            items: function(StoryFactory) {
+              return StoryFactory.get({
+                filters: JSON.stringify({
+                  tags__category: 'writing'
+                }),
+                ordering: '-date,-date_last_modified'
+              }).$promise;
+            },
+
+            model: function() {
+              return 'story';
+            },
+            factory: function(StoryFactory) {
+              return StoryFactory;
+            }
+          }
+        })
         .state('publications.tags', {
           url: '/tags/:slug',
           controller: 'ItemsCtrl',
@@ -448,7 +500,8 @@ angular
               return StoryFactory.get({
                 filters: JSON.stringify({
                   tags__slug: $stateParams.slug
-                })
+                }),
+                ordering: '-date,-date_last_modified'
               }).$promise;
             },
 
@@ -475,7 +528,8 @@ angular
                     tags__slug: d.slug
                   }): JSON.stringify({
                     tags__category: 'writing'
-                  })
+                  }),
+                  ordering: '-date,-date_last_modified'
                 }).$promise;
               },
 
