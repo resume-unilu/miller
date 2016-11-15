@@ -144,9 +144,9 @@ def signup_view(request):
       )
 
       # send here the email with html
-      print activation_key
-      print settings.EMAIL_ACTIVATION_ACCOUNT
-      print user.email
+      # print activation_key
+      # print settings.EMAIL_ACTIVATION_ACCOUNT
+      # print user.email
 
       tmp = send_templated_mail(
         template_name='welcome.en_US', 
