@@ -6,8 +6,8 @@
     <div class="col-sm-6 col-sm-offset-3">
 
 
-      <h3>Login to {{title}}</h3>
-      <p>Enter your username and password to log on:</p>
+      <h3 >Login to {{title}}</h3>
+      <p >Enter your username and password to log on:</p>
       
       {% if form.non_field_errors %}
         {{ form.non_field_errors }}
@@ -31,22 +31,44 @@
      
         <input type="hidden" value="{{ next }}" name="next" />
         {% csrf_token %}
-
+        <div class="center">
         <div class="btn-line-group primary">
           <button class="btn-line">
             <span translate="login" class="ng-scope">log in</span>
           </button>
         </div>
-        <div class="btn-line-group">
+        </div>
+      </form>
+
+      <h3 class="center" style='border-top: 2px solid #f0f0f0; padding-top:10px'> ... or create a free account</h3> 
+      <div class="center">
+        <div class="btn-line-group primary">
           <a class="btn-line" href='{% url "signup_view" %}'>
             <span translate="button.more.news" class="ng-scope">sign up</span>
           </a>
         </div>
+      </div>
+     
+      <h3 class="center" style='border-top: 2px solid #f0f0f0; padding-top:10px'>...or register / log in with:</h3>
+
+      <div class="social-login-buttons center">
+        <div class="btn-line-group primary">
+          <a class="btn btn-line" href="{% url 'social:begin' 'twitter' %}">
+            <i class="icon icon-social-twitter"></i> Twitter
+          </a>
+        </div>
+        <div class="btn-line-group primary">
+        <a class="btn btn-line" href="{% url 'social:begin' 'google-oauth2' %}">
+          <i class="icon icon-social-google"></i> Google Plus
+        </a>
+        </div>
+      </div>
+
+
+        
 
         
         
-      </form>
-
 
     </div>
   </div>
