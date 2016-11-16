@@ -9,7 +9,7 @@ from django.shortcuts import render_to_response, redirect, render
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.views.decorators.cache import cache_page
 
 from templated_email import get_templated_mail, send_templated_mail
@@ -50,6 +50,7 @@ def _share(request=None, extra={}):
   return d
 
 # views here
+@ensure_csrf_cookie
 def home(request):
   return render(request, "index.html", _share(request))
 

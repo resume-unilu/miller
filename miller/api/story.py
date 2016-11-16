@@ -24,7 +24,7 @@ class StoryViewSet(viewsets.ModelViewSet):
   def _getUserAuthorizations(self, request):
     if request.user.is_staff:
       q = Story.objects.all()
-    elif is_authenticated():
+    elif request.user.is_authenticated():
       q = Story.objects.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(authors__user=request.user)).distinct()
     else:
       q = Story.objects.filter(status=Story.PUBLIC)

@@ -325,13 +325,15 @@ MILLER_OEMBEDS = {
   }
 }
 
+CSRF_COOKIE_NAME = 'Miller'
+
 MILLER_SETTINGS = {
   'debug': MILLER_DEBUG,
   'disqus': '',
   'socialtags': 'resume-unilu' # socila tags when sharing on twitter
 }
 
-CSRF_COOKIE_NAME = 'Miller'
+
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:
     from local_settings import *

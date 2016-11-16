@@ -5,6 +5,7 @@
   "button.back": "back",
   "button.viewmode": "back to reading mode",
   "button.save": "save",
+  "button.issaving": "saving ...",
   "button.more": "load more",
   "button.more.news": "others news",
   "button.next": "next",

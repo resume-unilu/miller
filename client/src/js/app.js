@@ -94,9 +94,10 @@ angular
     $resourceProvider.defaults.stripTrailingSlashes = false;
   })
   .config(function($httpProvider) {
-    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    // $httpProvider.defaults.xsrfCookieName = 'Miller';
+    // $httpProvider.defaults.xsrfHeaderName = 'HTTP_X_CSFRTOKEN';
+    $httpProvider.defaults.xsrfCookieName = 'Miller';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-
     // intercept BAD request errors
     $httpProvider.interceptors.push(function($q, $rootScope, EVENTS) {
       return {
