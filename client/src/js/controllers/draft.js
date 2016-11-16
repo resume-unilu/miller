@@ -10,10 +10,17 @@ angular.module('miller')
     $log.debug('DraftCtrl welcome');
     
     $scope.isDraft = true;
+    $scope.isSaving = false;
 
     $scope.tags = [];
 
     $scope.save = function(){
+      $log.log('DraftCtrl -> save()')
+      if($scope.isSaving){
+        $log.warn(' .. is still saving, be patient.')
+        return;
+      }
+      $scope.isSaving = true;
       StoryFactory.save({}, {
         title: $scope.title,
         abstract: $scope.abstract,
@@ -21,6 +28,7 @@ angular.module('miller')
         status: 'draft',
         tags: _.map($scope.tags, 'id')
       }, function(res) {
+        $scope.isSaving = false;
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $log.log('DraftCtrl -> @EVENTS.SAVE saved:', res);
         // handle redirection.
@@ -28,6 +36,8 @@ angular.module('miller')
           storyId: res.id
         });
         // debugger
+      }, function(){
+        $scope.isSaving = false;
       });
     };
     

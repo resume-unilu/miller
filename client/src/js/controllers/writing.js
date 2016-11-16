@@ -249,8 +249,13 @@ angular.module('miller')
     $scope.save = function() {
       $log.debug('WritingCtrl @SAVE');
       $scope.$emit(EVENTS.MESSAGE, 'saving');
-      $scope.isSaving = true;
       $scope.lock();
+      if($scope.isSaving){
+        $log.warn('wait, try again in. Is still saving.')
+        return
+      }
+      $scope.isSaving = true;
+      
       StoryFactory.update({id: story.id}, angular.extend({
         title: $scope.title,
         abstract: $scope.abstract,
@@ -261,9 +266,11 @@ angular.module('miller')
         $log.debug('WritingCtrl @SAVE: success');
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.unlock();
-        $scope.isSaving =false;
+        $scope.isSaving = false;
         // disable stopping change status, cfr core controller
         $scope.toggleStopStateChangeStart(false);
+      }, function(){
+        $scope.isSaving = false;
       });
     };
 

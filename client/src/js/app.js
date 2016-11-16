@@ -94,9 +94,10 @@ angular
     $resourceProvider.defaults.stripTrailingSlashes = false;
   })
   .config(function($httpProvider) {
-    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    // $httpProvider.defaults.xsrfCookieName = 'Miller';
+    // $httpProvider.defaults.xsrfHeaderName = 'HTTP_X_CSFRTOKEN';
+    $httpProvider.defaults.xsrfCookieName = 'Miller';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-
     // intercept BAD request errors
     $httpProvider.interceptors.push(function($q, $rootScope, EVENTS) {
       return {
@@ -269,7 +270,7 @@ angular
               filters: JSON.stringify({
                 status: 'draft',
                 // owner__username: profile.user.username,
-                authors__user__username__in: [RUNTIME.user.username]
+                authors__user__username: profile.user.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -294,7 +295,7 @@ angular
               filters: JSON.stringify({
                 status: 'deleted',
                 // owner__username: profile.user.username,
-                authors__user__username__in: [RUNTIME.user.username]
+                authors__user__username:  profile.user.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -318,7 +319,7 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 // owner__username: profile.user.username,
-                authors__user__username__in: [RUNTIME.user.username]
+                authors__user__username: profile.user.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
