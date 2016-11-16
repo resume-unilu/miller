@@ -37,14 +37,11 @@ class Author(models.Model):
       self.slug = helpers.get_unique_slug(self, self.fullname)
     super(Author, self).save(*args, **kwargs)
 
-      
 
-
+# create an author whenever a 
 @receiver(post_save, sender=User)
 def create_author(sender, instance, created, **kwargs):
-  logger.debug('(user {pk:%s}) @post_save.' % instance.pk)
-
-  if created or instance.authorship.count() == 0:
+  if created:
     fullname = u'%s %s' % (instance.first_name, instance.last_name) if instance.first_name else instance.username
     aut = Author(user=instance, fullname=fullname, metadata=json.dumps({
       'firstname': instance.first_name,

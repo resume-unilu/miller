@@ -122,6 +122,7 @@ def signup_view(request):
 
 
     if form.is_valid():
+      logger.info('registration started  {first_name:%s}' % form.cleaned_data['first_name'])
       REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 
       user = form.save(commit=False)
@@ -132,10 +133,12 @@ def signup_view(request):
       user.is_active = False
 
       user.save()
-
+      logger.info('user saved  {pk:%s}' % user.pk)
       aut = user.authorship.first()
+
       aut.affiliation = form.cleaned_data['affiliation']
       aut.save()
+      logger.info('user-author saved  {author:%s}' % aut)
 
       logger.info('registration success {user:%s}' % user.username)
       
@@ -148,7 +151,7 @@ def signup_view(request):
       # print activation_key
       # print settings.EMAIL_ACTIVATION_ACCOUNT
       # print user.email
-
+      #if settings.ENABLE_EMAIL_ACTIVATION:
       tmp = send_templated_mail(
         template_name='welcome.en_US', 
         from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
@@ -162,8 +165,6 @@ def signup_view(request):
         }, 
         create_link=True
       )
-      
-
       return redirect('home')
 
 
