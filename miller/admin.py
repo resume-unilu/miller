@@ -193,7 +193,7 @@ class TagAdminForm(forms.ModelForm):
 
 
 class TagAdmin(admin.ModelAdmin):
-  search_fields = ['name', 'slug', 'category']
+  search_fields = ['name', 'metadata']
   list_filter = ('category',)
   form = TagAdminForm
 

@@ -259,7 +259,7 @@ def dispatcher(sender, instance, created, **kwargs):
     return
   # dispatch (call). 
   logger.debug('(story {pk:%s}) dispatch @story_ready' % instance.pk)
-  story_ready.send(sender=sender, instance=instance, created=created)
+  story_ready.send_robust(sender=sender, instance=instance, created=created)
   
   if hasattr(instance, '__dirty'):
     instance.save()

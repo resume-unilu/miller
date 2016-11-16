@@ -27,6 +27,8 @@ class Profile(models.Model):
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
+  def __unicode__(self):
+    return self.user.username
 
   class Meta:
     app_label="miller"
