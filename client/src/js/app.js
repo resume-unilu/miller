@@ -269,7 +269,7 @@ angular
               filters: JSON.stringify({
                 status: 'draft',
                 // owner__username: profile.user.username,
-                authors__user__username__in: [RUNTIME.user.username]
+                authors__user__username: profile.user.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -294,7 +294,7 @@ angular
               filters: JSON.stringify({
                 status: 'deleted',
                 // owner__username: profile.user.username,
-                authors__user__username__in: [RUNTIME.user.username]
+                authors__user__username:  profile.user.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -318,7 +318,7 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 // owner__username: profile.user.username,
-                authors__user__username__in: [RUNTIME.user.username]
+                authors__user__username: profile.user.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
