@@ -15,6 +15,7 @@ from django.views.decorators.cache import cache_page
 from templated_email import get_templated_mail, send_templated_mail
 
 from miller.forms import LoginForm, SignupForm
+from miller.models import Author
 
 
 logger = logging.getLogger('miller')
@@ -134,13 +135,14 @@ def signup_view(request):
 
       user.save()
       logger.info('user saved  {pk:%s}' % user.pk)
-      aut = user.authorship.first()
 
+      aut = Author.objects.filter(user=user).first()
       aut.affiliation = form.cleaned_data['affiliation']
       aut.save()
-      logger.info('user-author saved  {author:%s}' % aut)
+      
+      logger.info('user-author saved  {author:%s, user.pk:%s}' % (aut, aut.user.pk))
 
-      logger.info('registration success {user:%s}' % user.username)
+      logger.info('registration success {pk:%s}' % user.pk)
       
       activation_key = signing.dumps(
         obj=user.username,
@@ -151,20 +153,23 @@ def signup_view(request):
       # print activation_key
       # print settings.EMAIL_ACTIVATION_ACCOUNT
       # print user.email
-      #if settings.ENABLE_EMAIL_ACTIVATION:
-      tmp = send_templated_mail(
-        template_name='welcome.en_US', 
-        from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
-        recipient_list=[user.email],
-        context={
-          'activation_link': request.build_absolute_uri(reverse('registration_activate', args=[activation_key])),
-          'username': user.username,
-          'fullname': aut.fullname,
-          'site_name': settings.MILLER_TITLE,
-          'site_url': request.build_absolute_uri(reverse('home'))
-        }, 
-        create_link=True
-      )
+      if hasattr(settings,'DISABLE_EMAIL_ACTIVATION'):
+        print activation_key
+      else:
+        logger.info('sending activation email {pk:%s}' % user.pk)
+        tmp = send_templated_mail(
+          template_name='welcome.en_US', 
+          from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
+          recipient_list=[user.email],
+          context={
+            'activation_link': request.build_absolute_uri(reverse('registration_activate', args=[activation_key])),
+            'username': user.username,
+            'fullname': aut.fullname,
+            'site_name': settings.MILLER_TITLE,
+            'site_url': request.build_absolute_uri(reverse('home'))
+          }, 
+          create_link=True
+        )
       return redirect('home')
 
 

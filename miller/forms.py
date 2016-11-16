@@ -20,6 +20,8 @@ class UploadDocxForm(forms.Form):
 class SignupForm(RegistrationFormUniqueEmail):
   captcha     = CaptchaField()
 
+  tos         = forms.BooleanField(widget=forms.CheckboxInput)
+
   first_name  = forms.CharField(min_length=3, max_length=128, widget=forms.TextInput)
   last_name   = forms.CharField(min_length=3, max_length=128, widget=forms.TextInput)
   affiliation = forms.CharField(required=False, max_length=500, widget=forms.TextInput)
