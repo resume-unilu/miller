@@ -46,6 +46,7 @@
   "headline.authors": "auteurs",
   "headline.blogs": "blogs",
   "headline.events": "Evénements",
+  "headline.news": "news",
 
   "headline.blog": "blog",
   "headline.blog.title": "Èvenements",
@@ -70,6 +71,9 @@
   "remote.url.placeholder": "source",
 
   "staff.drafts.tags.placeholder": "website placement (staff only)",
+
+  "state.blog.events.label": "Evénements",
+  "state.blog.news.label": "news",
 
   "state.publications.all.title": "browse all the publications",
   "state.publications.all.label": "recent",

@@ -377,8 +377,9 @@ angular
         
       })
 
-      .state('blog.everything', {
-        url: '',
+      
+      .state('blog.events', {
+        url: '/events',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/items.html',
@@ -386,7 +387,8 @@ angular
           items: function(StoryFactory, $stateParams) {
             return StoryFactory.get({
               filters: JSON.stringify({
-                tags__category: 'blog'
+                tags__category: 'blog',
+                tags__slug: 'event'
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -399,8 +401,8 @@ angular
           }
         }
       })
-      .state('blog.events', {
-        url: '/events',
+      .state('blog.news', {
+        url: '/news',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/items.html',
@@ -409,7 +411,7 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 tags__category: 'blog',
-                tags__slug: 'event'
+                tags__slug: 'news'
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
