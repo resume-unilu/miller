@@ -624,7 +624,7 @@
             </li>
             {% else %}
             <li>
-              <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}'>log in</a>
+              <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}' translate="headline.login.or.signup">log in / sign up</a>
             </li>
             {% endif %}
             <li class='compact' ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
