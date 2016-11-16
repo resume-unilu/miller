@@ -1,8 +1,8 @@
 {% block subject %}Welcome on board, {{username}}!{% endblock %}
 {% block plain %}
-  Hi {{full_name}},
+  Dear {{fullname}},
 
-  You just signed up for {{site_name}} ({{site_url}} ) with the username: {{username}}
+  You just signed up for {{site_name}} ({{site_url}}) with the username: {{username}}
 
   Please copy this link to your browser address bar to activate your account, then you will be able to login to our platform.
 
@@ -13,9 +13,9 @@
   Thanks, you rock!
 {% endblock %}
 {% block html %}
-  <p>Hi {{full_name}},</p>
+  <p>Dear {{fullname}},</p>
 
-  <p>You just signed up for {{site_name}} ({{site_url}} ) with the username: {{username}}</p>
+  <p>You just signed up for {{site_name}} ({{site_url}}) with the username: {{username}}</p>
 
   <p> Please follow this link or copy it to your browser address bar to activate your account. 
   Then you will be able to login to our platform.

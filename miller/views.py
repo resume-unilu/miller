@@ -158,11 +158,11 @@ def signup_view(request):
           'username': user.username,
           'fullname': aut.fullname,
           'site_name': settings.MILLER_TITLE,
-          'site_url': request.get_full_path()
+          'site_url': request.build_absolute_uri(reverse('home'))
         }, 
         create_link=True
       )
-      print tmp
+      
 
       return redirect('home')
 
