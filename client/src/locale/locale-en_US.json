@@ -5,7 +5,9 @@
   "button.back": "back",
   "button.viewmode": "back to reading mode",
   "button.save": "save",
+  "button.issaving": "saving ...",
   "button.more": "load more",
+  "button.more.news": "others news",
   "button.next": "next",
   "button.previous": "previous",
   "button.loading": "loading ...",
@@ -44,11 +46,12 @@
   "headline.authors": "authors",
   "headline.blogs": "blogs",
   "headline.events": "events",
+  "headline.news": "news",
 
   "headline.blog": "blog",
   "headline.blog.title": "Events",
   "headline.blog.abstract": "",
-  
+  "headline.login.or.signup": "log in / sign up",
   "headline.write": "write",
   "headline.you": "(you)",
 
@@ -68,6 +71,9 @@
   "remote.url.placeholder": "source",
 
   "staff.drafts.tags.placeholder": "website placement (staff only)",
+  
+  "state.blog.events.label": "events",
+  "state.blog.news.label": "news",
 
   "state.publications.all.title": "browse all the publications",
   "state.publications.all.label": "recent",
@@ -118,5 +124,7 @@
   "upload.description": "Four easy steps",
   "upload.missing.steps": "Almost there! ... {{steps}} missing {{steps > 1? 'steps': 'one last step'}} before uploading",
   "upload.success.title": "Your content has been submitted",
-  "upload.success.description": "You can find your submitted content here"
+  "upload.success.description": "You can find your submitted content here",
+
+  "written.by": "written by"
 }

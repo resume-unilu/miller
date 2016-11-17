@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
 from miller.models import Story, Tag, Document, Caption
+from miller.api.utils import filtersFromRequest, orderingFromRequest
 from miller.api.fields import OptionalFileField, JsonField
 from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer
 
@@ -20,17 +21,28 @@ class StoryViewSet(viewsets.ModelViewSet):
   queryset = Story.objects.all()
   serializer_class = CreateStorySerializer
 
+  def _getUserAuthorizations(self, request):
+    if request.user.is_staff:
+      q = Story.objects.all()
+    elif request.user.is_authenticated():
+      q = Story.objects.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(authors__user=request.user)).distinct()
+    else:
+      q = Story.objects.filter(status=Story.PUBLIC)
+    return q
+
+
   # retrieve by PK or slug
   def retrieve(self, request, *args, **kwargs):
-    if request.user.is_authenticated():
-      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).distinct()
-    else:
-      queryset = self.queryset.filter(status=Story.PUBLIC).distinct()
+    q = self._getUserAuthorizations(request)
+    # if request.user.is_authenticated():
+    #   q = Q(owner=request.user) | Q(status=Story.PUBLIC)
+    # else:
+    #   q = Q(status=Story.PUBLIC)
 
     if 'pk' in kwargs and not kwargs['pk'].isdigit():
-      story = get_object_or_404(queryset, slug=kwargs['pk'])
+      story = get_object_or_404(q, slug=kwargs['pk'])
     else:
-      story = get_object_or_404(queryset, pk=kwargs['pk'])
+      story = get_object_or_404(q, pk=kwargs['pk'])
     
     serializer = StorySerializer(story,
         context={'request': request},
@@ -39,22 +51,16 @@ class StoryViewSet(viewsets.ModelViewSet):
   
 
   def list(self, request):
-    filters = self.request.query_params.get('filters', None)
-    
-    if filters is not None:
-      try:
-        filters = json.loads(filters)
-        # print "filters,",filters
-      except Exception, e:
-        # print e
-        filters = {}
-    else:
-      filters = {}
-    
-    if request.user.is_authenticated():
-      stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
-    else:
-      stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
+    filters = filtersFromRequest(request=self.request)
+    ordering = orderingFromRequest(request=self.request)
+
+    stories = self._getUserAuthorizations(request)
+    stories = stories.filter(**filters).distinct()
+
+    if ordering is not None:
+      stories = stories.order_by(*ordering)
+    # add orderby
+
     # print stories.query
     page    = self.paginate_queryset(stories)
     
@@ -74,11 +80,8 @@ class StoryViewSet(viewsets.ModelViewSet):
 
   @detail_route(methods=['get'])
   def download(self, request, pk):
-    if request.user.is_authenticated():
-      stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC))
-    else:
-      stories = self.queryset.filter(status=Story.PUBLIC)
-    story = get_object_or_404(stories, pk=pk)
+    q = self._getUserAuthorizations(request)
+    story = get_object_or_404(q, pk=pk)
 
 
     import os, mimetypes
@@ -112,7 +115,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     }
     # check if the user is allowed this content
     if request.user.is_authenticated():
-      stories = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
+      stories = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
     else:
       stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
 
@@ -135,7 +138,7 @@ class StoryViewSet(viewsets.ModelViewSet):
 
   @detail_route(methods=['put'])
   def tags(self, request, pk=None):
-    queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user))
+    queryset = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()))
 
     story = get_object_or_404(queryset, pk=12333)
 
@@ -149,7 +152,7 @@ class StoryViewSet(viewsets.ModelViewSet):
 
   # @list_route(methods=['post', 'patch'], parser_classes=(FormParser, MultiPartParser,))
   # def upload_docx(self, request, pk=None):
-  #   queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user))
+  #   queryset = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()))
 
   #   print request.FILES
   #   docx = request.FILES.get('docx')

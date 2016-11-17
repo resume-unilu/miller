@@ -18,7 +18,7 @@ from django.utils.text import slugify
 from markdown import markdown
 
 from miller import helpers
-from miller.models import Tag, Document
+from miller.models import Tag, Document, Author
 
 from simplemde.fields import SimpleMDEField
 
@@ -62,19 +62,18 @@ class Story(models.Model):
   contents  = models.TextField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
   metadata  = models.TextField(default=json.dumps({
     'title': language_dict,
-    'abstract':language_dict,
-    'abstract': language_dict
+    'abstract':language_dict
   }, indent=1),blank=True) # it will contain, JSON fashion
 
 
-  date               = models.DateTimeField(blank=True, null=True) # date displayed (metadata)
+  date               = models.DateTimeField(null=True, blank=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
   status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT)
 
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
-  authors   = models.ManyToManyField(User, related_name='authors', blank=True) # collaborators
+  authors   = models.ManyToManyField(Author, related_name='authors', blank=True) # collaborators
   watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
   documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
   stories   = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_to')
@@ -198,7 +197,7 @@ class Story(models.Model):
 
   # save hook
   def save(self, *args, **kwargs):
-    if not self.id and not self.slug:
+    if not self.pk and not self.slug:
       slug = slugify(self.title)
       slug_exists = True
       counter = 1
@@ -213,9 +212,11 @@ class Story(models.Model):
           self.slug = slug
           break
 
+    if self.date is None:
+      logger.debug('(story {slug:%s,pk:%s}) @save not having a default date. Fixing...' % (self.slug, self.pk))
+      self.date = self.date_last_modified
     if not hasattr(self, 'filling_metadata'):
       self.filling_metadata = True
-      
       try:
         metadata = self.metadata if type(self.metadata) is dict else json.loads(self.metadata)
         
@@ -226,10 +227,10 @@ class Story(models.Model):
 
         for default_language_code, label, language_code in settings.LANGUAGES:
           logger.debug('metadata filling lang:%s' % language_code)
-          if language_code not in metadata['title']:
+          if language_code not in metadata['title'] or not metadata['title'][language_code]:
             metadata['title'][language_code] = self.title
 
-          if language_code not in metadata['abstract']:
+          if language_code not in metadata['abstract'] or not metadata['abstract'][language_code]:
             metadata['abstract'][language_code] = self.abstract
 
         logger.debug('metadata filled.')
@@ -258,7 +259,7 @@ def dispatcher(sender, instance, created, **kwargs):
     return
   # dispatch (call). 
   logger.debug('(story {pk:%s}) dispatch @story_ready' % instance.pk)
-  story_ready.send(sender=sender, instance=instance, created=created)
+  story_ready.send_robust(sender=sender, instance=instance, created=created)
   
   if hasattr(instance, '__dirty'):
     instance.save()
@@ -304,7 +305,7 @@ def transform_source(sender, instance, created, **kwargs):
 @receiver(story_ready, sender=Story)
 def create_first_author(sender, instance, created, **kwargs):
   if created:
-    instance.authors.add(instance.owner)
+    instance.authors.add(instance.owner.authorship.first())
     instance.__dirty = True
     logger.debug('(story {pk:%s}) @story_ready: {username:%s}" done.' % (instance.pk, instance.owner.username))
 

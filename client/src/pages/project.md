@@ -1,11 +1,9 @@
 <!-- lang:en_US -->
 # What is RESuME?
 
-::: abstract
 The Resources on the European socio-economic model (RESuME) project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model.
-:::
 
-The projet is est developed by the University of Luxembourg within the [Digital European Integration Studies unit](http://wwwen.uni.lu/research/digital_european_integration_studies). It is coordinated by [Frédéric Allemand](/#!/people#frederic-allemand) as principal investigator.
+The projet is developed by the University of Luxembourg within the [Digital European Integration Studies unit](http://wwwen.uni.lu/research/digital_european_integration_studies) and coordinated by [Frédéric Allemand](/#!/people#frederic-allemand) as principal investigator.
 
 The RESuME project is co-funded by the [Erasmus+](https://eacea.ec.europa.eu/sites/eacea-site/files/documents/eac-s11-13_jean-monnet-support-to-institutions-and-associations_en.pdf) Programme of the European Union.
 
@@ -15,13 +13,7 @@ The European integration process completely transformed the approach to public p
 
 The 2008–2009 financial crisis and subsequent sovereign debt crisis had a significant impact on the European model. They challenged the resilience of this model to deal with external pressure and its adaptability to an environment shaped by greater market integration and highly risk-averse economic agents. They demonstrated the shortcomings of European multi-level governance. From 2008, the EU launched a reform of the regulation and supervision of its financial services and of EMU. A new socio-economic model began to emerge at European level.
 
-**Dispersion of knowledge and the segmentation of disciplines have led to a lack of comprehensive, interdisciplinary analyses on this model.** The project aims to fill this gap. Via the disciplines of contemporary history, law, economics and political science, it aims to contribute to the study of the European socio-economic model, its origins, current characteristics and future development. The project will highlight the interaction between the EU, states and the market. It will also explore the legal and political environment and the historical context that drive economic players in the European area.
-
-The project can be broken down into three main areas:
-
-- European socio-economic values
-- The European socio-economic model from a historical perspective: achieving a balance between the EU, states and markets
-- The post-crisis socio-economic model: evolution or revolution. A prospective multidisciplinary analysis
+**Dispersion of knowledge and the segmentation of disciplines have led to a lack of comprehensive, interdisciplinary analyses on this model.** The project aims to fill this gap. Via the disciplines of contemporary history, law, economics, political science or polotical philosophy, it aims to contribute to the study of the European socio-economic model, its origins, current characteristics and future development. The project focuses on the interaction between society, economic players and public authorities, through the prism of the notion of European competitiveness.
 
 The project involves research and teaching activities leading to the production of several publications and the organisation of events.
 
@@ -42,19 +34,25 @@ The outputs will impact both the research and teaching communities, notably by c
 An ePublication is a **scholarly digital publication** which features a detailed, reasoned analysis and provides access to a series of resources on a given subject. The ePublication for the RESuME project particularly looks at the question of competitiveness in the European Union. The approach adopted is an interdisciplinary one, involving legal, political and economic science, contemporary history and political philosophy. While the ePublication is rooted in the field of humanities and social science, it is also fully in line with the concept of digital humanities, encouraging authors and readers to make use of digital tools to analyse data and view results.
 
 The analysis for this ePublication is based on research performed by the dedicated team of researchers for the RESuME project and on cooperation with reputed external specialists. Documents are selected for their potential to shed new light on the subject and inform the scientific debate. These resources take a variety of forms—legislation, press articles, archive documents, photographs, press cartoons and interview footage—and have been selected from a wide range of national and European sources.
-
 The ePublication is subject to [**peer review**](http://resume.uni.lu/#!/people#the-peer-review-committee).
+
+[Go to the ePublication](/#/publications/collection)
 
 ### Edited book
 The edited book produced for the RESuME project is the result of a collaborative effort by researchers from a wide range of fields. The aim of the book is to describe and analyse the relationship between competitiveness and solidarity within the new European economic governance. It focuses on the new balance between the European Union, the Member States and the market, offering a critical analysis of macroeconomic policies, the development of monetary policy and the social dimension of EMU. The book is subject to peer review prior to publication.
 
 ### ePapers
-The ePapers collection is a series of detailed analyses on a variety of themes covered by the RESuME project, including socio-economic European values, Europe’s competitiveness on the international stage, solidarity, liberalism, economic governance and the European social model. These ePapers are academic publications which are subject to peer review. 
-They are selected on the basis of a call for papers. (link to call) 
+To shed further light on the wide range of topics covered by the RESuME project, this latter is creating an innovative new series of scholarly contributions: the *State, Society, Market and Europe’ Research Papers* (RESuME Papers / Cahiers RESuME). The RESuME Papers will be published on an *open access* basis via the dedicated project platform and will serve as a basis for high-level multidisciplinary, cross-sectoral reflection on the multiple dynamic interactions between society, the economy and the state that are encouraged and/or reflected by the pursuit of competitiveness in the European area.
+These ePapers are academic publications which are subject to peer review. 
+They are selected on the basis of a call for papers. [](doc/cahiers-resume-call-for-contributions-2-nov-2016)
+
+[Go to the RESuME papers](/#/publications/papers)
 
 ### eInterviews
 An eInterview is an ePublication specifically structured around recorded interviews. The overriding aim of an eInterview is to create new primary sources for researchers specialising in European studies. These sources often represent a useful complement to other resources and archive material, and may even serve to shed new light on this material.
 The interviews produced for the RESuME project also constitute a precious legacy for present and future generations. These recorded accounts give researchers a dynamic, tangible window onto the key moments in the history of European integration, thereby providing new insights into the development of this process.
+
+[Go to the eInterviews](/#/publications/interviews)
 
 ## Teaching eModules
 Teaching eModules are educational resources that offer access to enhanced sources on a given subject related to the European integration process and also to relevant additional teaching resources. The main aim of eModules is to improve the possibilities for teaching and training by providing support for teachers, lecturers and trainers for their preparation and teaching activities and for leading seminars and workshops. 
@@ -80,9 +78,7 @@ Le processus d’intégration européenne a profondément modifié la façon de 
 
 La crise financière de 2008-2009 et celle des dettes souveraines qui en découle affectent profondément le modèle européen. Elles interrogent le degré de résilience de ce modèle face à un choc externe et son adéquation à un environnement marqué par une intégration accrue des marchés et l’aversion au risque des agents économiques. Ces crises témoignent de l’inadaptation de la gouvernance européenne multi-niveaux à ce nouvel environnement. À compter de 2008, l’Union européenne (UE) engage une réforme de la régulation et de la supervision de ses services financiers. L’Union économique et monétaire (UEM) est profondément remaniée. Un nouveau modèle socio-économique commence à émerger au niveau européen.
 
-### La dispersion des connaissances et la segmentation des disciplines ont abouti à un manque d’analyses détaillées, interdisciplinaires sur ce modèle.
-
-Le projet vise à combler cette lacune. À travers des disciplines telles que l’histoire contemporaine, le droit, l’économie et les sciences politiques, il entend contribuer à l’étude du modèle socio-économique européen, de ses origines, de ses caractéristiques actuelles et de son développement à venir. Le projet mettra en exergue l’interaction entre l’UE, les États et le marché. Il explorera également l’environnement juridique et politique et le contexte historique qui poussent les acteurs économiques dans l’espace européen.
+**La dispersion des connaissances et la segmentation des disciplines ont abouti à un manque d’analyses détaillées, interdisciplinaires sur ce modèle.** Le projet vise à combler cette lacune. Le projet RESuME a pour objectif de contribuer à l’étude du modèle socio-économique européen, de ses origines, de ses caractéristiques actuelles et de son développement à venir. Le projet se concentre sur l’interaction entre la société, les acteurs économiques et les autorités publiques, à travers le prisme de la notion de compétitivité européenne. Il mobilise à ce titre l’histoire contemporaine, le droit, l’économie, les sciences politiques, ainsi que la philosophie politique ou la sociologie.
 
 
 
@@ -100,21 +96,25 @@ L’ePublication est une publication numérique scientifique qui propose une ana
 L’analyse est le fruit des travaux de l’équipe de chercheurs du projet RESuME ainsi que de collaborations externes avec des spécialistes renommés. Les ressources documentaires sélectionnées et traitées se distinguent par leur capacité à éclairer le sujet et à nourrir le débat scientifique. De types et de formats variés (législation, articles de presse, documents d’archives, photographies, dessins de presse, entretiens audiovisuels), ces ressources proviennent d’une sélection de sources multiples nationales et européennes.
 L’ePublication est soumise à un [processus d’évaluation par les pairs](voc/peer-evaluation). 
 
+[Accéder à l'ePublication](/#/publications/collection)
 
 ### Ouvrage collectif
 Fruit de la collaboration de chercheurs issus de multiples champs disciplinaires, l’ouvrage collectif produit dans le cadre du projet RESuME vise à décrire et à analyser la relation entre la compétitivité et la solidarité dans le cadre de la nouvelle gouvernance économique européenne. Il porte sur le nouvel équilibre entre l’Union européenne, les États membres et le marché en livrant un exposé critique des politiques macroéconomiques, du développement de la politique monétaire et de la dimension sociale de l’UEM. L’ouvrage est publié après [évaluation par les pairs](voc/peer-evaluation).
 
 
 ### ePapers
-La collection d’ePapers rassemble une série d’analyses détaillées sur les différents thèmes couverts par le projet RESuME : valeurs socio-économiques européennes, compétitivité internationale et européenne, solidarité, libéralisme, gouvernance économique, modèle social européen, etc. Les ePapers sont des publications scientifiques soumises à un [processus d’évaluation par les pairs](voc/peer-evaluation). 
-Les ePapers sont sélectionnés sur la base d’un [appel à candidature](voc/call-for-application).
+Afin d’éclairer les différents thèmes qu'il couvre, le projet RESuME crée une nouvelle série innovante de contributions scientifiques: les *Cahiers de recherche Etat, Société, Marché, Europe* (Cahiers RESuME). Publiés en *open access* sur la plateforme d’édition scientifique du projet, les Cahiers RESuME se veulent le lieu d’une réflexion multidisciplinaire et transversale de haut niveau sur les interrelations dynamiques et multiples entre la société, l’économie et l’Etat que la poursuite de l’objectif de compétitivité dans l’espace européen nourrit et/ou reflète.
+Les ePapers publiées au sein des Cahiers RESuME sont soumises à un [processus d’évaluation par les pairs](voc/peer-evaluation). 
+Les ePapers sont sélectionnés sur la base d’un appel à candidature. [](doc/cahiers-resume-appel-a-contribution-02-nov-2016)
 
+[Accéder à la collection d'ePapers](/#/publications/papers)
 
 ### eInterviews
 Une eInterview est un type spécifique d’ePublication. Elle repose sur des entretiens audiovisuels. Sa production s’inscrit dans une optique scientifique, à savoir créer de nouvelles sources primaires pour les chercheurs spécialisés en études européennes. Ces sources complètent utilement d'autres ressources et documents d'archives ou leur donnent un nouvel éclairage.
 
-Les [eInterviews produites](/#!/publications/interviews) dans le cadre du projet RESuME comportent également une dimension patrimoniale précieuse pour les générations présentes et futures. Ces témoignages permettent au chercheur d’avoir un accès « vivant » à des moments clés de l'histoire de la construction européenne pour mieux en comprendre l'évolution. 
+Les eInterviews produites dans le cadre du projet RESuME comportent également une dimension patrimoniale précieuse pour les générations présentes et futures. Ces témoignages permettent au chercheur d’avoir un accès « vivant » à des moments clés de l'histoire de la construction européenne pour mieux en comprendre l'évolution.
 
+[Accéder aux eInterviews](/#!/publications/interviews)
 
 ### eModules d’enseignement
 Les eModules d’enseignement sont des ressources pédagogiques qui ouvrent l’accès à des sources documentaires enrichies sur un sujet donné concernant le processus d’intégration européenne ainsi que sur des ressources pédagogiques pertinentes. Le principal objectif des eModules est d’améliorer les activités d’enseignement et de formation en fournissant un soutien aux professeurs, enseignants, formateurs, etc. pour préparer et donner des cours, tenir des séminaires et des ateliers. 

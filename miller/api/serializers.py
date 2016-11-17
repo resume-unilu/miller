@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from miller.models import Profile, Document, Tag, Story, Caption, Mention
+from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author
 from miller.api.fields import JsonField, HitField, OptionalFileField
 
 
@@ -23,12 +23,18 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
 
 
 
+class UserSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ('username', 'first_name', 'last_name', 'is_staff')
 
 # serializer the authors.
 class AuthorSerializer(serializers.ModelSerializer):
+  user = UserSerializer()
+  metadata = JsonField()
   class Meta:
-    model = User
-    fields = ('id', 'username', 'first_name', 'last_name', 'is_staff', 'url')
+    model = Author
+    fields = ('id', 'user', 'fullname', 'affiliation', 'metadata')
 
 
 # tag represnetation in many to many
@@ -39,10 +45,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 
-class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ('username', 'first_name', 'last_name', 'is_staff')
 
 
 # story serializer for tags
@@ -80,20 +82,20 @@ class LiteMentionSerializer(serializers.ModelSerializer):
 # Story Serializer to use in lists
 class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
-  owner = AuthorSerializer()
+  owner = UserSerializer()
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
   metadata = JsonField()
 
   class Meta:
     model = Story
-    fields = ('id','url', 'slug', 'short_url', 'date',  'date_created', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
+    fields = ('id','url', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
 
 
 # retrieve a Story, full
 class StorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
-  owner = AuthorSerializer()
+  owner = UserSerializer()
   tags = TagSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
   covers = LiteDocumentSerializer(many=True)
@@ -117,7 +119,7 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
 # Story serializer containing whoosh matches
 class MatchingStorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
-  owner = AuthorSerializer()
+  owner = UserSerializer()
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
   matches = HitField()
@@ -152,7 +154,7 @@ class CreateStorySerializer(serializers.ModelSerializer):
 class CollectionSerializer(serializers.ModelSerializer):
   authors = AuthorSerializer(many=True)
   stories = LiteMentionSerializer(many=True)
-  owner = AuthorSerializer()
+  owner = UserSerializer()
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
@@ -171,7 +173,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 # Serializers define the API representation.
 class DocumentSerializer(serializers.ModelSerializer):
   # authors = AuthorSerializer(many=True)
-  # owner = AuthorSerializer()
+  # owner = UserSerializer()
   # tags = TagSerializer(many=True)
   # captions = CaptionSerializer(source='caption_set', many=True)
   metadata = JsonField(source='contents')

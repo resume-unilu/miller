@@ -22,6 +22,8 @@ from rest_framework import routers
 
 from miller import views, api
 from miller.feeds import LatestEntriesFeed
+from miller.views import _share
+#from miller.forms import SignupForm
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter(trailing_slash=True)
 
@@ -35,6 +37,7 @@ router.register(r'profile', api.ProfileViewSet)
 router.register(r'tag', api.TagViewSet)
 
 from django.contrib.auth import views as auth_views
+#from registration.views import RegistrationView
 
 urlpatterns = [
   url(r'^$', views.home, name='home'),
@@ -44,15 +47,24 @@ urlpatterns = [
   url(r'^api-auth/', include('rest_framework.urls')),
 
   url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login_view'), # views.login_view, name='login_view'),
+  # url(r'^login/$', views.login_view, name='login_view'),
+  
   url(r'^signup/$', views.signup_view, name='signup_view'),
+
+
   url(r'^logout/$', views.logout_view, name='logout_view'),
   url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
   url(r'^latest/feed/$', LatestEntriesFeed()),
 
   url(r'^auth/', include('djoser.urls.authtoken')),
+  url(r'^captcha/', include('captcha.urls')),
+  url(r'^accounts/activate/complete/', views.activation_complete, name='activation_complete'),
+  url(r'^accounts/', include('registration.backends.hmac.urls')),
+
+  url(r'^', include('templated_email.urls', namespace='templated_email')),
 
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
-  url(r'^.*$', views.home, name='app')
+  url(r'^(?!favicon\.ico|signup).*$', views.home, name='app')
 ]
 
 

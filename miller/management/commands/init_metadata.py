@@ -29,7 +29,12 @@ class Command(BaseCommand):
         story.metadata = re.sub(r'^\s*"|"\s*$','', story.metadata.replace(u'\\"','"').replace(u'\\\\u',u'\\u')).decode("raw_unicode_escape").encode('utf-8')
         logger.debug('correct JSON metadata of story id: %s' % story.id)
       
-      
+      if story.authors.count() == 0:
+        story.owner.save()
+        aut = story.owner.authorship.first()
+        story.authors.add(aut)
+        logger.debug('reconcile authorship of story id: %s' % story.id)
+
       logger.debug('reconcile metadata of story id: %s' % story.id)
       story.save()
     
