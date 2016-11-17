@@ -1,0 +1,24 @@
+{% block subject %}Welcome on RESuME, {{username}}{% endblock %}
+{% block plain %}
+Cher {{fullname}}, 
+
+Vous venez de vous inscrire à {{site_name}} ({{site_url}}). Votre nom d’utilisateur est : {{username}}
+
+Pour activer votre compte, cliquez sur le lien suivant ou copiez le dans la barre d’adresse de votre navigateur. Vous pourrez ensuite vous connecter à la plateforme. 
+
+{{activation_link}}
+
+Merci et bonne navigation ! 
+
+{% endblock %}
+
+{% block html %}
+  <p>Cher {{fullname}},</p>
+
+  <p>Vous venez de vous inscrire à {{site_name}} ({{site_url}}). Votre nom d’utilisateur est : {{username}}</p>
+
+  <p> Pour activer votre compte, cliquez sur le lien suivant ou copiez le dans la barre d’adresse de votre navigateur. Vous pourrez ensuite vous connecter à la plateforme.
+  </p>
+  <a href="{{activation_link}}">{{activation_link}}</a>
+  <p>Merci et bonne navigation ! </p>
+{% endblock %}

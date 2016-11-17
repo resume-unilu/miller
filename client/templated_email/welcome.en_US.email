@@ -1,4 +1,4 @@
-{% block subject %}Welcome on board, {{username}}!{% endblock %}
+{% block subject %}Welcome on RESuME, {{username}}{% endblock %}
 {% block plain %}
   Dear {{fullname}},
 
@@ -10,7 +10,9 @@
 
   Join date: {{signup_date}}
 
-  Thanks, you rock!
+  Thank you
+
+  Merci et bonne navigation !
 {% endblock %}
 {% block html %}
   <p>Dear {{fullname}},</p>
@@ -21,5 +23,5 @@
   Then you will be able to login to our platform.
   </p>
   <a href="{{activation_link}}">{{activation_link}}</a>
-  <p>Thanks, you rock!</p>
+  <p>Thank you<br/><i>Merci et bonne navigation !</i></p>
 {% endblock %}
