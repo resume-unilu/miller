@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     logger.debug('looking for a whoosh index')
-    ix = get_whoosh_index()
+    ix = get_whoosh_index(force_create=True)
     logger.debug('whoosh index available! Updating ...')
     
     stories = Story.objects.all()

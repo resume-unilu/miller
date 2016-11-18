@@ -3,7 +3,14 @@
 <div class='row'>
   <div class='col-md-8'>
 
-  search: {{query}}
+    {{count}} results for search: {{query}}
+    
+    <ul class="filters">
+      <li class='filter' ng-class='k' ng-repeat="(k, v) in qs">
+        <span ng-if='k == "q"'>{{v}}</span>
+        <span ng-if='k != "q"'>{{k}}: {{v}} <span ng-click="removeLocationFilter(k)" class="icon icon-close"></span></span>
+      </li>
+    </ul>
   </div>
 </div>
 <!-- Nav tabs -->
@@ -13,18 +20,28 @@
   <div ng-repeat="story in items">
     <div class="story lite">
       <div class="coverstory other">
-        <div class="divider"></div>
         <div class="tags" ng-if="story.tags.length">
-          <span  class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+          <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-click='setLocationFilter("tags",tag.slug)'>
+            <span ng-class='tag.category'>{{tag.name}}</span>{{$last?' ': ', '}}
+
+          </span>
         </div>
-        <h4><a href ui-sref="story({postId: story.id})">{{story.title}}</a></h4>
+        <div class="date">{{story.date|date:'mediumDate'}}</div>
+
+        <div  class="divider"></div>
+        <h4>
+          <a href ui-sref="story({postId: story.id})">
+            <span embedit='story.metadata.title' language='language'></span> 
+            {{story.status != 'public'? '(DRAFT)': ''}}
+          </a>
+        </h4>
         
-        <blockquote class="reduced">
+        <blockquote class="reduced" ng-if="story.matches.highlights">
             <div embedit='story.matches.highlights'></div>
-            <span class='icon-arrow-right-circle'></span>
+            
         </blockquote>
-        <div class='authors' ng-if="coverstory.authors.length">
-          by <span ng-repeat='author in coverstory.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+        <div class='authors' ng-if="story.authors.length">
+          <span translate="written.by"></span> <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
         </div>
       </div>
     </div>

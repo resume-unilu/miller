@@ -580,7 +580,7 @@
             <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
             <li ng-class="{active: (state.includes('publications') || state.includes('story') || state.includes('collection')) && !state.includes('me')}"><a href ui-sref='publications.all' translate="headline.publications"></a></li>
             <!-- <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li> -->
-            <li ui-sref-active="active"><a ui-sref="blog.events" translate="headline.events"></a></li>
+            <li ui-sref-active="active"><a ui-sref="blog.event" translate="headline.events"></a></li>
             <li ui-sref-active="active"><a ui-sref="blog.news" translate="headline.news"></a></li>
 
            <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
@@ -654,7 +654,7 @@
     <div id='wrapper' ng-class='state'>
       <div ng-click='hasToC = false;' ng-class='{"with-ToC": hasToC && ToC.length>0}' >
         {% block content %}
-        <div ng-class='state' ui-view=''>
+        <div ng-class='state' ui-view='' autoscroll>
         </div>
         {% endblock %}
       </div>
@@ -769,6 +769,7 @@
     <script src='{% static "js/controllers/story.js" %}'></script>
     <script src='{% static "js/controllers/blog.js" %}'></script>
     <script src='{% static "js/controllers/page.js" %}'></script>
+    <script src='{% static "js/controllers/search.js" %}'></script>
     <script src='{% static "js/controllers/upload.js" %}'></script>
     <script src='{% static "js/controllers/uploaded.js" %}'></script>
     <script src='{% static "js/controllers/writing.js" %}'></script>

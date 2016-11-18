@@ -40,10 +40,12 @@ angular.module('miller')
     };
 
     // search
+
     $scope.search = function(searchquery){
       $log.log('CoreCtrl > search() searchquery:', searchquery);
+
       $state.go('search', {
-        query: searchquery
+        q: searchquery
       });
     };
 
@@ -278,7 +280,7 @@ angular.module('miller')
       $scope.qs = $location.search();
       $scope.locationPath = path;
       $scope.path = $location.path();
-
+      $scope.searchquery = $scope.qs.q;
       // load fullsize
       if($scope.qs.view){
         DocumentFactory.get({id: $scope.qs.view}, function(res){
@@ -294,6 +296,14 @@ angular.module('miller')
          fullsizeModal.hide();
       }
     });
+
+    $scope.setLocationFilter = function(field, value) {
+      $location.search(field, value);
+    };
+
+    $scope.removeLocationFilter = function(field) {
+      $location.search(field, null);
+    };
 
     // watch 400 bad request form error. Cfr app.js interceptors.
     $rootScope.$on(EVENTS.BAD_REQUEST, function(e, rejection){

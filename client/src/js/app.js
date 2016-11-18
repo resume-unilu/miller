@@ -336,7 +336,7 @@ angular
 
       _.each(RUNTIME.stories.writing, function(d){
         $stateProvider
-          .state('author.publications.' + d.name, {
+          .state('author.publications.' + d.slug, {
             url: d.url,
             controller: 'ItemsCtrl',
             templateUrl: RUNTIME.static + 'templates/items.html',
@@ -365,8 +365,6 @@ angular
           });
       });
 
-  
-
     $stateProvider
      .state('blog', {
         url: '/blog',
@@ -378,7 +376,7 @@ angular
       })
 
       
-      .state('blog.events', {
+      .state('blog.event', {
         url: '/events',
         reloadOnSearch : false,
         controller: 'ItemsCtrl',
@@ -519,7 +517,7 @@ angular
 
       _.each(RUNTIME.stories.writing, function(d){
         $stateProvider
-          .state('publications.' + d.name, {
+          .state('publications.' + d.slug, {
             url: d.url,
             controller: 'ItemsCtrl',
             templateUrl: RUNTIME.static + 'templates/items.html',
@@ -548,16 +546,15 @@ angular
 
     $stateProvider
       .state('search', {
-        url: '/search/:query',
-        controller: function($scope, items){
-          // console.log(items)
-          $scope.items = items.results;
-        },
+        url: '/search?q&tags&authors',
+        controller: 'SearchCtrl',
         reloadOnSearch : false,
         templateUrl: RUNTIME.static + 'templates/search.html',
         resolve: {
-          items: function(StoryFactory, $stateParams) {
-            return StoryFactory.get({id: 'search', q:$stateParams.query}).$promise;
+          items: function(StoryFactory, $location) {
+            var qs = $location.search()
+            // transform filters keywords in using a service
+            return StoryFactory.search(qs).$promise;
           },
         }
       });
