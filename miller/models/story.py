@@ -123,8 +123,11 @@ class Story(models.Model):
     authors   =  u", ".join([u'%s' % t.fullname for t in self.authors.all()])
     tags      = u",".join([u'%s' % t.slug for t in self.tags.all()])
     writer    = ix.writer()
-
-    metadata  = json.loads(self.metadata)
+    try:
+      metadata  = json.loads(self.metadata)
+    except Exception as e:
+      logger.exception(e)
+      return
 
     # multilingual abstract, reduced
     abstracts = u"\n".join(filter(None,list(set([metadata['abstract'][language_code] for dlc, l, language_code in settings.LANGUAGES]))))
