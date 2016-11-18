@@ -122,6 +122,10 @@
         margin: 10px;
       }
 
+      #footer .icon{
+        line-height: 15px;
+      }
+
       .navbar-default .navbar-nav > li, #footer ul.navbar-nav > li{
         padding: 22px 0 20px 5px;
       }
@@ -685,7 +689,7 @@
               </li>
               <li ui-sref-active="active"><a href ui-sref='page({name:"guide-for-authors"})' translate='footer.guideforauthors'></a>
               </li>
-              
+              <li><a href='{% url "latest_rss"%}' target='_blank'><span translate="footer.latest_rss"></span>&nbsp;<span class="icon icon-feed"></span></a></li>
             </ul>
           </div>
         </div>

@@ -55,7 +55,7 @@ urlpatterns = [
   url(r'^logout/$', views.logout_view, name='logout_view'),
   url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
   
-  url(r'^latest/rss/$', LatestEntriesFeed()),
+  url(r'^latest/rss\.xml$', LatestEntriesFeed(), name='latest_rss'),
   url(r'^latest/atom/$', AtomLatestEntriesFeed()),
 
   url(r'^auth/', include('djoser.urls.authtoken')),
