@@ -39,6 +39,10 @@ angular.module('miller')
       update: {
         method:'PUT'
       },
+      search: {
+        method: 'GET',
+        params:{fn:'search/'},
+      },
       patch: {
         method:'PATCH'
       },

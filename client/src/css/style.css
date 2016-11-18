@@ -71,7 +71,43 @@ a{
   margin-top:0;
 }
 
+.filters{
+  list-style-type: none;
+  display: inline-block;
+  padding: 0;
+}
 
+.filters .filter{
+    display: inline-block;
+    margin: 0 2px;
+    padding: 0 5px 0 10px;
+    font: 11px/25px "Lato",sans-serif;
+    color: #585858;
+    text-transform: uppercase;
+    border: 2px solid #B7B2B2;
+    font-weight: bold;
+
+}
+
+.filters .filter.tags > span{
+
+}
+
+.filters .filter.q{
+      text-transform: none;
+    border: none;
+    font-size: 25px;
+    padding-left: 0;
+    line-height: 25px;
+}
+
+.filters .filter .icon{
+  line-height: 25px;
+}
+
+.match{
+  background-color: #C7F464;
+}
 blockquote, blockquote p{
   font-size: 20px;
   line-height: 35px;
@@ -565,9 +601,12 @@ ul.errorlist{
   font-family: 'Lato', sans-serif;
 }
 
+
 .tag a{
-  color: #FF6B6B;
+  color: #151515;
 }
+
+
 
 
 

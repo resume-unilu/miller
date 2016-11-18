@@ -18,7 +18,7 @@
     <a href ui-sref='publications.all' aria-controls="home" role="tab" data-toggle="tab" translate="state.publications.all.label"></a>
   </li>
   <li ng-repeat='link in urls' role="presentation" ui-sref-active="active">
-    <a href ui-sref='publications.{{link.slug}}' aria-controls="home" role="tab" data-toggle="tab" translate="state.publications.{{link.name}}.label"></a>
+    <a href ui-sref='publications.{{link.name}}' aria-controls="home" role="tab" data-toggle="tab" translate="state.publications.{{link.name}}.label"></a>
   </li>
   <li ng-if='slug' role="presentation" ui-sref-active="active" >
     <a href ui-sref='publications.tags({slug: slug})' aria-controls="home" role="tab" data-toggle="tab">/filter: <b>{{slug}}</b>/</a>
@@ -29,13 +29,3 @@
 <div ui-view></div>
 </div>
 </div>
-<!-- <div class='row'>
-  
-  <div class='col-md-4'>
-    <h2 class='no-margin-top' translate='state.{{state}}.title'></h2>
-    <p class="small" translate='state.{{state}}.abstract'></p>
-  </div>
-  <div class='col-md-8'>
-    <div ui-view></div>
-  </div>
-</div> -->
