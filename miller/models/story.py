@@ -106,7 +106,7 @@ class Story(models.Model):
     return os.path.join(self.owner.profile.get_path(), self.short_url+ '.md')
   
   def get_absolute_url(self):
-    return u"/#!/story/%s/" % self.slug
+    return u"/story/%s/" % self.slug
 
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)

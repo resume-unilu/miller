@@ -2,6 +2,7 @@
 from django.conf  import settings
 from django.contrib.syndication.views import Feed
 from miller.models import Story
+from django.utils.feedgenerator import Atom1Feed
 
 class LatestEntriesFeed(Feed):
     title = settings.RSS_TITLE
@@ -24,3 +25,8 @@ class LatestEntriesFeed(Feed):
         context = super(LatestEntriesFeed, self).get_context_data(**kwargs)
         context['foo'] = 'bar'
         return context
+
+
+class AtomLatestEntriesFeed(LatestEntriesFeed):
+    feed_type = Atom1Feed
+    subtitle = LatestEntriesFeed.description
