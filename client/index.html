@@ -666,7 +666,7 @@
       
     </div>
 
-    
+    {% block footer %}
     <div id="footer" ng-class='state'>
       <div class='container'>
         <div class='row'>
@@ -695,7 +695,7 @@
         </div>
       </div>
     </div>
-
+    {% endblock %}
     <aside id='table-of-contents'  ng-class='{"active":hasToC && ToC.length>0}'>
       <div id="inner-table-of-contents"><div ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'></div></div>
     </aside>
