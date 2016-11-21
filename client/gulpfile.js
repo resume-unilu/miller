@@ -41,7 +41,7 @@ gulp.task('libs', function() {
     './src/js/lib/markdown-it-attrs.min.js',
     './src/js/lib/simplemde.min.js',
     './src/js/lib/bibtexParse.js',
-    
+    './src/js/lib/reconnecting-websocket.min.js',
 
     './src/js/lib/angular.min.js', 
     './src/js/lib/angular-route.min.js', 

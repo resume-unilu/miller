@@ -554,7 +554,7 @@
     </div>
     
     
-    <nav id="navbar" class='navbar navbar-default navbar-fixed-top'>
+    <nav id="navbar" class='navbar navbar-default navbar-fixed-top' ng-controller='PulseCtrl'>
       
       <div class='container'> 
         <div class="navbar-header">
@@ -736,7 +736,7 @@
     <script src='{% static "js/lib/simplemde.min.js" %}'></script>
     <script src='{% static "js/lib/bibtexParse.js" %}'></script>
     <!-- <script src='{% static "js/lib/codemirror.addons.placeholder.js'></script> -->
-
+    <script src='{% static "js/lib/reconnecting-websocket.min.js" %}'></script>
     
 
     <script src='{% static "js/lib/angular.min.js" %}'></script> 
@@ -763,16 +763,17 @@
     
    
     <script src='{% static "js/app.js" %}'></script>
+    <script src='{% static "js/controllers/author.js" %}'></script>
     <script src='{% static "js/controllers/core.js" %}'></script>
     <script src='{% static "js/controllers/collection.js" %}'></script>
     <script src='{% static "js/controllers/draft.js" %}'></script>
     <script src='{% static "js/controllers/index.js" %}'></script>
     <script src='{% static "js/controllers/items.js" %}'></script>
     <script src='{% static "js/controllers/login.js" %}'></script>
-    <script src='{% static "js/controllers/author.js" %}'></script>
     <script src='{% static "js/controllers/story.js" %}'></script>
     <script src='{% static "js/controllers/blog.js" %}'></script>
     <script src='{% static "js/controllers/page.js" %}'></script>
+    <script src='{% static "js/controllers/pulse.js" %}'></script>
     <script src='{% static "js/controllers/search.js" %}'></script>
     <script src='{% static "js/controllers/upload.js" %}'></script>
     <script src='{% static "js/controllers/uploaded.js" %}'></script>
@@ -801,7 +802,7 @@
 
     <script>
       console.log('\n    oila!   \n(-(-_(-_-)_-)-)\n\n\n');
-    
+      
       var user = {
         username: "{{user.username}}",
         first_name: "{{user.first_name}}",
@@ -811,6 +812,8 @@
 
       var oembeds = {{oembeds}};
       var settings = {{settings}};
+
+      settings.session_key = "{{ request.session.session_key }}";
 
       var _windox  = $(window),
           _offsetables = {
