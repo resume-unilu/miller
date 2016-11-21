@@ -8,7 +8,7 @@ from BeautifulSoup import BeautifulSoup
 from django.conf import settings
 from django.core.signals import request_finished
 from django.db import models
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import pre_delete, post_save, m2m_changed
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -106,7 +106,7 @@ class Story(models.Model):
     return os.path.join(self.owner.profile.get_path(), self.short_url+ '.md')
   
   def get_absolute_url(self):
-    return u"/#!/story/%s/" % self.slug
+    return u"/story/%s" % self.slug
 
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)
@@ -119,13 +119,32 @@ class Story(models.Model):
 
     if ix is None:
       ix = helpers.get_whoosh_index()
-    writer = ix.writer()
+
+    authors   =  u", ".join([u'%s' % t.fullname for t in self.authors.all()])
+    tags      = u",".join([u'%s' % t.slug for t in self.tags.all()])
+    writer    = ix.writer()
+    try:
+      metadata  = json.loads(self.metadata)
+    except Exception as e:
+      logger.exception(e)
+      return
+
+    # multilingual abstract, reduced
+    abstracts = u"\n".join(filter(None,list(set([metadata['abstract'][language_code] for dlc, l, language_code in settings.LANGUAGES]))))
+    titles    = u"\n".join(filter(None,list(set([metadata['title'][language_code] for dlc, l, language_code in settings.LANGUAGES]))))
+
     writer.update_document(
-      title = self.title,
-      path = u"%s"%self.short_url,
-      content =  u"\n".join(BeautifulSoup(markdown(u"\n".join(filter(None,[self.title, self.abstract, self.contents])), extensions=['footnotes'])).findAll(text=True)),
-      tags = u",".join([u'%s'%t.name for t in self.tags.all()]),
+      title     = titles,
+      abstract  = abstracts,
+      path      = u"%s"%self.short_url,
+      content   = u"\n".join(BeautifulSoup(markdown(u"\n\n".join(filter(None,[
+        self.contents,
+      ])), extensions=['footnotes'])).findAll(text=True)),
+      tags      = tags,
+      authors   = authors,
+      status    = u"%s" % self.status,
       classname = u"story")
+    # print "saving",  u",".join([u'%s' % t.slug for t in self.tags.all()])
     writer.commit()
 
 
@@ -367,4 +386,16 @@ def delete_working_md(sender, instance, **kwargs):
 
 
   logger.debug('(story {pk:%s}) @story_ready: done.' % instance.pk)
+
+
+@receiver(m2m_changed, sender=Story.tags.through)
+def store_tags(sender, instance, **kwargs):
+  if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
+    instance.store()
+
+@receiver(m2m_changed, sender=Story.authors.through)
+def store_authors(sender, instance, **kwargs):
+  if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
+    instance.store()
+
 

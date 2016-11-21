@@ -10,8 +10,9 @@ class LoginForm(forms.Form):
   password = forms.CharField(max_length=64, label='Password', widget=forms.PasswordInput(render_value=False))
 
 class SearchQueryForm(forms.Form):
-  q = forms.CharField(max_length=128, widget=forms.TextInput)
-
+  q = forms.CharField(max_length=128, widget=forms.TextInput, required=False)
+  tags = forms.CharField(max_length=128, required=False)
+  authors = forms.CharField(max_length=128, required=False)
 
 class UploadDocxForm(forms.Form):
   docx = forms.FileField()

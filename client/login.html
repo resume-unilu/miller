@@ -32,6 +32,7 @@
         <input type="hidden" value="{{ next }}" name="next" />
         {% csrf_token %}
         <div class="center">
+        <p><a href='{% url "auth_password_reset"%}'>I forgot my password.</a></p>
         <div class="btn-line-group primary">
           <button class="btn-line">
             <span translate="login" class="ng-scope">log in</span>

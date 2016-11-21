@@ -39,16 +39,29 @@ def create_short_url():
   return shortuuid.uuid()[:7]
 
 
-def get_whoosh_index():
+def get_whoosh_index(force_create=False):
   from whoosh.index import create_in, exists_in, open_dir
   from whoosh.fields import Schema, TEXT, KEYWORD, ID, STORED
-    
-  schema = Schema(title=TEXT(stored=True), path=ID(unique=True, stored=True), content=TEXT(stored=True), tags=KEYWORD, classname=KEYWORD)
+  from whoosh.analysis import CharsetFilter, StemmingAnalyzer
+  from whoosh.support.charset import accent_map
+
+  analyzer = StemmingAnalyzer() | CharsetFilter(accent_map)
+
+  schema = Schema(
+    title     = TEXT(analyzer=analyzer, stored=True, field_boost=3.0, ), 
+    abstract  = TEXT(analyzer=analyzer, stored=True, field_boost=2.0), 
+    path      = ID(unique=True, stored=True), 
+    authors   = TEXT(analyzer=analyzer, sortable=True, field_boost=1.5), 
+    content   = TEXT(analyzer=analyzer, stored=True), 
+    tags      = KEYWORD(sortable=True, commas=True, field_boost=1.5, lowercase=True), 
+    status    = KEYWORD,
+    classname = KEYWORD
+  )
     
   if not os.path.exists(settings.WHOOSH_ROOT):
     os.mkdir(settings.WHOOSH_ROOT)
   
-  if not exists_in(settings.WHOOSH_ROOT):
+  if not exists_in(settings.WHOOSH_ROOT) or force_create:
     index = create_in(settings.WHOOSH_ROOT, schema)
   else:
     index = open_dir(settings.WHOOSH_ROOT)
@@ -56,20 +69,22 @@ def get_whoosh_index():
 
 
 def search_whoosh_index(query, *args, **kwargs):
-    from whoosh.qparser import QueryParser
-    from whoosh.query import Term, And
+    from whoosh.qparser import MultifieldParser
+    from whoosh.query import Term, And, Every
     ix = get_whoosh_index()
-    parser = QueryParser("content", ix.schema)
+    parser = MultifieldParser(['content', 'authors', 'tags', 'title', 'abstract'], ix.schema)
     # user query
     q = parser.parse(query)
+    
+    if not query:
+      q = Every()
+      print 'arch'
 
-    print kwargs
     allow_q = And([Term(key, value) for key, value in kwargs.iteritems()])
-    print allow_q
     # parse remaining args
     res = []
     # restrict_q = Or([Term("path", u'%s' % d.id) for d in qs])
-
+    #print 'query', q, allow_q, kwargs
     with ix.searcher() as searcher:
       results = searcher.search(q, filter=allow_q, limit=10, terms=True)
         
@@ -79,7 +94,7 @@ def search_whoosh_index(query, *args, **kwargs):
           'short_url': hit['path'],
           'highlights': hit.highlights("content", top=5)
         })
-      
+    # @todo filter by empty highlight strings
     return res 
 
 

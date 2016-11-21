@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import json
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -108,16 +110,27 @@ class StoryViewSet(viewsets.ModelViewSet):
     if not form.is_valid():
       return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
     # get the results
-    results = search_whoosh_index(form.cleaned_data['q'], classname=u'story')
-    
     filters = {
-      'short_url__in': [hit['short_url'] for hit in results]
+      'classname': u'story',
     }
+
+    if form.cleaned_data['tags']:
+      filters['tags'] = form.cleaned_data['tags']
+    
+    if form.cleaned_data['authors']:
+      filters['authors'] = form.cleaned_data['authors']
+    
+    if not request.user.is_staff:
+      filters['status'] = Story.PUBLIC
+
+    results = search_whoosh_index(form.cleaned_data['q'], **filters)
+    
     # check if the user is allowed this content
-    if request.user.is_authenticated():
-      stories = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
-    else:
-      stories = self.queryset.filter(status=Story.PUBLIC).filter(**filters).distinct()
+    # if request.user.is_authenticated():
+    #   stories = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
+    # else:
+    stories = self.queryset.filter(short_url__in = [hit['short_url'] for hit in results]).distinct()
+
 
     def mapper(d):
       d.matches = []
