@@ -21,7 +21,7 @@ from django.contrib.sitemaps.views import sitemap
 from rest_framework import routers
 
 from miller import views, api
-from miller.feeds import LatestEntriesFeed
+from miller.feeds import LatestEntriesFeed, AtomLatestEntriesFeed
 from miller.views import _share
 #from miller.forms import SignupForm
 # Routers provide an easy way of automatically determining the URL conf.
@@ -54,7 +54,9 @@ urlpatterns = [
 
   url(r'^logout/$', views.logout_view, name='logout_view'),
   url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
-  url(r'^latest/feed/$', LatestEntriesFeed()),
+  
+  url(r'^latest/rss\.xml$', LatestEntriesFeed(), name='latest_rss'),
+  url(r'^latest/atom/$', AtomLatestEntriesFeed()),
 
   url(r'^auth/', include('djoser.urls.authtoken')),
   url(r'^captcha/', include('captcha.urls')),

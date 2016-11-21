@@ -5,6 +5,8 @@ import django.dispatch
 
 from BeautifulSoup import BeautifulSoup
 
+from channels import Group
+
 from django.conf import settings
 from django.core.signals import request_finished
 from django.db import models
@@ -106,7 +108,7 @@ class Story(models.Model):
     return os.path.join(self.owner.profile.get_path(), self.short_url+ '.md')
   
   def get_absolute_url(self):
-    return u"/#!/story/%s/" % self.slug
+    return u"/story/%s" % self.slug
 
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)
@@ -258,14 +260,16 @@ class Story(models.Model):
         logger.exception(e)
 
 
-
+    
 
     # transform automatically text in ontents if contents is empty
 
     # if bool(self.source):
     #   print "))))))need conversion"
     #   self.convert()
-    
+    Group('pulse-staff').send({
+      'text': json.dumps({'save': 'story'})
+    });
     super(Story, self).save(*args, **kwargs)
 
 
@@ -284,6 +288,7 @@ def dispatcher(sender, instance, created, **kwargs):
     instance.save()
     logger.debug('(story {pk:%s}) saved.' % instance.pk)
   
+  
 
 
 # store in whoosh
@@ -292,6 +297,24 @@ def store_working_md(sender, instance, created, **kwargs):
   instance.store()
   logger.debug('(story {pk:%s}) @story_ready store_working_md: done' % instance.pk)
 
+# dispatch channel
+# dispatch the info to the different groups
+@receiver(story_ready, sender=Story)
+def dispatch_pulse(sender, instance, created, **kwargs):
+  msg = json.dumps({
+    'pk': instance.pk,
+    'slug': instance.slug,
+    'metadata': json.loads(instance.metadata),
+    'status': instance.status,
+    'created': created,
+    'owner': {
+      'username': instance.owner.username
+    }
+  })
+
+  Group('pulse-staff').send({
+    'text': msg
+  });
 
 # clean store in whoosh when deleted
 @receiver(pre_delete, sender=Story)

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 MILLER_TITLE = 'MILLER'
 MILLER_DEBUG = False
 
@@ -54,3 +56,8 @@ EMAIL_ACTIVATION_ACCOUNT = "info@miller.miller"
 
 
 REGISTRATION_SALT = 'your registration salt'
+
+RSS_TITLE = 'Miller - an rss feed'
+RSS_DESCRIPTION = '''
+  here below the rss description
+'''
