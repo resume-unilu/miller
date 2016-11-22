@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2
 
+from actstream import action
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import files
@@ -202,16 +204,21 @@ class Document(models.Model):
 
         # update contents only
         if not doc.locked and self.contents != doc.contents:
-          # print "updating the content", self.contents, doc.contents
+          print "updating the content", self.contents, doc.contents
           super(Document, self).save(force_update=True, update_fields=['contents'])
           # print "done, now:", self.contents
-        # else:
-          #print "do not update the content"
+        else:
+          print "do not update the content"
+          self.contents = doc.contents
       except Document.DoesNotExist:
+        # create a new document!
+        action.send(self.owner, verb='created', target=self)
         # print 'not exists, creating'
         super(Document, self).save(*args, **kwargs)
         pass
     else:
+      action.send(self.owner, verb='updated', target=self)
+        
       super(Document, self).save(*args, **kwargs)
 
 

@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import os, logging, shutil
 
+from actstream import action
+
 from miller import helpers
 
 from django.conf import settings
@@ -46,6 +48,7 @@ def create_working_folder(sender, instance, created, **kwargs):
     pro = Profile(user=instance)
     pro.save()
     logger.debug('(user {pk:%s}) @post_save: done.' % instance.pk)
+    action.send(pro.user, verb='created', target=pro)
 
 
 

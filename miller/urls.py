@@ -65,6 +65,7 @@ urlpatterns = [
 
   url(r'^', include('templated_email.urls', namespace='templated_email')),
 
+  
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
   url(r'^(?!favicon\.ico|signup).*$', views.home, name='app')
 ]

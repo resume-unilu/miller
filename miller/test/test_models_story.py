@@ -32,7 +32,6 @@ class StoryTest(TestCase):
     self.story.save()
     self.assertTrue(os.path.exists(self.story.get_path()))
 
-
   def _test_download_docx(self):
     path = self.story.download(outputFormat='docx')
     self.assertTrue(os.path.exists(path))

@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'ws4redis',
     'simplemde',
     'captcha',
-    'miller'
+    'miller',
+
+    'actstream',
 ]
 
 MIDDLEWARE_CLASSES = [

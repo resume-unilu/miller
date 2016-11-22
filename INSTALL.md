@@ -157,10 +157,20 @@ python manage.py makemigrations templated_email
 
 
 # sockets
-install supervisord
-cp and modify runworker.supervisor.conf and dapnhe.supervisor.conf
+install supervisord:
+	
+
+
+cp and modify `miller.supervisor.conf.example` putting the path to your resume installation folder and to the right python bin inside the resume virtualenv in our case.
 
 sudo ln -s /home/devuser/resume/miller.supevisor.conf /etc/supervisor/conf.d/miller.supervisor.conf
 
 sudo systemctl enable supervisor
 sudo systemctl start supervisor
+
+When cahanging stuff
+sudo supervisorctl reread
+sudo supervisorctl update
+
+reread
+

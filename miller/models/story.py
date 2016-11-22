@@ -3,9 +3,9 @@
 import pypandoc, re, os, codecs, json, logging
 import django.dispatch
 
-from BeautifulSoup import BeautifulSoup
+from actstream import action
 
-from channels import Group
+from BeautifulSoup import BeautifulSoup
 
 from django.conf import settings
 from django.core.signals import request_finished
@@ -97,6 +97,7 @@ class Story(models.Model):
   # fileField (usually a zotero-friendly importable file)
   bibliography = models.FileField(upload_to=user_path, blank=True, null=True)
 
+
   # set the plural name and fix the default sorting order
   class Meta:
     ordering = ('-date_last_modified',)
@@ -106,9 +107,11 @@ class Story(models.Model):
   # get story path based on random generated shorten url
   def get_path(self):
     return os.path.join(self.owner.profile.get_path(), self.short_url+ '.md')
+
   
   def get_absolute_url(self):
     return u"/story/%s" % self.slug
+
 
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)
@@ -216,6 +219,25 @@ class Story(models.Model):
     return outputfile
 
 
+  # hook init so that during save we won't keep data
+  def __init__(self, *args, **kwargs):
+    super(Story, self).__init__(*args, **kwargs)
+    self.__original = (
+      ('status', self.status),
+      ('metadata', self.metadata),
+      ('contents', self.contents),
+      ('date', self.date),
+    )
+
+
+  # check if the saveable instance differs from the original stored one. Cfr the overriding of __init__ function
+  def has_diffs(self):
+    for field, value in self.__original:
+      if getattr(self, field) != value:
+        return True
+    return False
+
+
   # save hook
   def save(self, *args, **kwargs):
     if not self.pk and not self.slug:
@@ -259,17 +281,6 @@ class Story(models.Model):
       except Exception as e:
         logger.exception(e)
 
-
-    
-
-    # transform automatically text in ontents if contents is empty
-
-    # if bool(self.source):
-    #   print "))))))need conversion"
-    #   self.convert()
-    Group('pulse-staff').send({
-      'text': json.dumps({'save': 'story'})
-    });
     super(Story, self).save(*args, **kwargs)
 
 
@@ -288,7 +299,11 @@ def dispatcher(sender, instance, created, **kwargs):
     instance.save()
     logger.debug('(story {pk:%s}) saved.' % instance.pk)
   
-  
+  if created:  
+    action.send(instance.owner, verb='created', target=instance)
+  elif instance.status != Story.DRAFT and instance.has_diffs():
+    # something changed in a NON DRAFT document.
+    action.send(self.owner, verb='updated', target=instance)
 
 
 # store in whoosh
@@ -297,24 +312,7 @@ def store_working_md(sender, instance, created, **kwargs):
   instance.store()
   logger.debug('(story {pk:%s}) @story_ready store_working_md: done' % instance.pk)
 
-# dispatch channel
-# dispatch the info to the different groups
-@receiver(story_ready, sender=Story)
-def dispatch_pulse(sender, instance, created, **kwargs):
-  msg = json.dumps({
-    'pk': instance.pk,
-    'slug': instance.slug,
-    'metadata': json.loads(instance.metadata),
-    'status': instance.status,
-    'created': created,
-    'owner': {
-      'username': instance.owner.username
-    }
-  })
 
-  Group('pulse-staff').send({
-    'text': msg
-  });
 
 # clean store in whoosh when deleted
 @receiver(pre_delete, sender=Story)
