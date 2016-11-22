@@ -10,7 +10,12 @@ angular.module('miller')
   .controller('PulseCtrl', function ($scope, $log, RUNTIME) {
     $log.log('⚡ PulseCtrl ready');
     
-    var socket = window.socket = new ReconnectingWebSocket('wss://' + window.location.host + '/ws/?session_key=' +  RUNTIME.settings.session_key);
+    if(!RUNTIME.settings.wshost){
+      $log.warn('⚡ PulseCtrl disabled, no wshost received; please check your miller settings.');
+      return;
+    }
+
+    var socket = window.socket = new ReconnectingWebSocket(RUNTIME.settings.wshost + '?session_key=' +  RUNTIME.settings.session_key);
 
     socket.onmessage = function(e) {
       $log.log('⚡ -> ',e.data, e)

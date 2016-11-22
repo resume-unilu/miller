@@ -296,6 +296,7 @@ LOGGING = {
 # Django channels
 #
 #............
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
@@ -327,7 +328,7 @@ ACCOUNT_ACTIVATION_DAYS = 7
 # MILLER APP
 #
 #............
-
+MILLER_WS_HOST = None # override in your localsettings with the full address for your websocket e;g. ws://resume.cvce.eu
 
 MILLER_DEBUG = True
 
@@ -344,6 +345,7 @@ MILLER_OEMBEDS = {
 CSRF_COOKIE_NAME = 'Miller'
 
 MILLER_SETTINGS = {
+  'wshost': MILLER_WS_HOST,
   'debug': MILLER_DEBUG,
   'disqus': '',
   'socialtags': 'resume-unilu' # socila tags when sharing on twitter
