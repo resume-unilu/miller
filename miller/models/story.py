@@ -303,7 +303,7 @@ def dispatcher(sender, instance, created, **kwargs):
     action.send(instance.owner, verb='created', target=instance)
   elif instance.status != Story.DRAFT and instance.has_diffs():
     # something changed in a NON DRAFT document.
-    action.send(self.owner, verb='updated', target=instance)
+    action.send(instance.owner, verb='updated', target=instance)
 
 
 # store in whoosh
