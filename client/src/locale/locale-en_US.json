@@ -84,6 +84,10 @@
   "state.publications.collection.label": "E-publication",
   "state.publications.collection.abstract": "...",
 
+  "state.publications.cahiers.title": "Cahiers",
+  "state.publications.cahiers.label": "Cahiers",
+  "state.publications.cahiers.abstract": "Cahiers ...",
+
   "state.publications.interviews.title": "E-interviews",
   "state.publications.interviews.label": "E-interviews",
   "state.publications.interviews.abstract": "E-interviews ...",
