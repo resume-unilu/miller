@@ -59,7 +59,7 @@ class Story(models.Model):
   short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
   
   title     = models.CharField(max_length=500)
-  slug      = models.CharField(max_length=140, unique=True, blank=True) # force the unicity of the slug (story lookup from the short_url)
+  slug      = models.CharField(max_length=140, unique=True, blank=True, db_index=True) # force the unicity of the slug (story lookup from the short_url)
   abstract  = models.CharField(max_length=2000, blank=True, null=True)
   contents  = models.TextField(verbose_name=u'mardown content',default='',blank=True) # It will store the last markdown contents.
   metadata  = models.TextField(default=json.dumps({
@@ -68,7 +68,7 @@ class Story(models.Model):
   }, indent=1),blank=True) # it will contain, JSON fashion
 
 
-  date               = models.DateTimeField(null=True, blank=True) # date displayed (metadata)
+  date               = models.DateTimeField(null=True, blank=True, db_index=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 

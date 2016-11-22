@@ -55,7 +55,7 @@ class Document(models.Model):
   short_url  = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True, blank=True)
   
   title      = models.CharField(max_length=500)
-  slug       = models.CharField(max_length=150, unique=True, blank=True)
+  slug       = models.CharField(max_length=150, unique=True, blank=True, db_index=True)
 
   contents   = models.TextField(null=True, blank=True, default=json.dumps({
     'provider_name': '',
