@@ -211,8 +211,8 @@ class Story(models.Model):
         '--template=%s' % settings.MILLER_TEX,
         '-V', 'geometry:top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm',
         '-V','footer=%s' % settings.MILLER_TITLE,
-        '-V', 'title=%s' % self.title,
-        '-V','abstract=%s' % self.abstract
+        '-V', 'title=%s' % self.title.replace('&', '\&'),
+        '-V','abstract=%s' % self.abstract.replace('&', '\&')
       ])
     os.remove(tempoutputfile)
 
