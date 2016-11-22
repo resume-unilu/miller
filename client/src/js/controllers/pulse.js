@@ -10,7 +10,7 @@ angular.module('miller')
   .controller('PulseCtrl', function ($scope, $log, RUNTIME) {
     $log.log('⚡ PulseCtrl ready');
     
-    var socket = window.socket = new ReconnectingWebSocket('ws://' + window.location.host + '/ws/?session_key=' +  RUNTIME.settings.session_key);
+    var socket = window.socket = new ReconnectingWebSocket('wss://' + window.location.host + '/ws/?session_key=' +  RUNTIME.settings.session_key);
 
     socket.onmessage = function(e) {
       $log.log('⚡ -> ',e.data, e)
