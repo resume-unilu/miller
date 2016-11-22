@@ -12,6 +12,8 @@ angular.module('miller')
     $scope.user = $rootScope.user = RUNTIME.user;
     $scope.settings = RUNTIME.settings;
 
+    $rootScope.page = 'index';
+
     $scope.hasToC = false;
     $scope.ToCEnabled = false;
 
@@ -174,7 +176,7 @@ angular.module('miller')
     $rootScope.$on('$stateChangeSuccess', function (e, state) {
       var h =  $location.hash();
 
-      $log.debug('CoreCtrl @stateChangeSuccess', state.name, h);
+      
 
       // clean
       $scope.ToC = [];
@@ -184,9 +186,17 @@ angular.module('miller')
       // debugger
       $scope.state = state.name;
       
+      $rootScope.page = _.compact(state.name.split('.').concat([ 
+        $state.params.name, 
+        $state.params.storyId,
+        $state.params.postId 
+      ])).join(' - ');
+
       $scope.absoluteUrl = $state.href($state.current.name, $state.params, {
         absolute: true
       });
+
+      $log.debug('CoreCtrl @stateChangeSuccess - name:', state.name, '- page:', $rootScope.page);
 
       if(h && h.length)
         $timeout($anchorScroll, 0); // wait for the next digest cycle (cfr marked directive)
