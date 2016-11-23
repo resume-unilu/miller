@@ -3,9 +3,6 @@ upstream django {
     server unix:///var/www/miller/miller.sock;
 }
 
-upstream websocket {
-    server 127.0.0.1:8888;
-}
 
 # configuration of the server
 server {
@@ -22,17 +19,23 @@ server {
       alias /var/www/miller/dist; # your Django project's static files - amend as required, cfr miller/settings.js
     }
 
+    # the websocket config if daphne is using these args: 
+    #`daphne miller.asgi:channel_layer --port 8001 -b 127.0.0.1`
     location /ws {
-      proxy_pass http://websocket;
+      proxy_pass http://127.0.0.1:8001;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection $connection_upgrade;
+      proxy_set_header Connection "upgrade"; 
+    }
+
+    location /media {
+      alias /path/to/miller/media;
     }
 
     # Finally, send all non-media requests to the Django server.
     location / {
       uwsgi_pass  django;
-      include     /home/youruser/miller/uwsgi_params; # the uwsgi_params file you installed
+      include     /path/to/miller/uwsgi_params; # the uwsgi_params file you installed
     }
     
 }
