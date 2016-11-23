@@ -41,10 +41,8 @@ MILLER_OEMBEDS = {
 
 STATIC_ROOT = '/var/www/miller/dist'
 
-MILLER_SETTINGS = {
-  'debug': MILLER_DEBUG,
-  'disqus': 'xxx'   
-}
+# modify settings here
+MILLER_SETTINGS['debug'] = MILLER_DEBUG
 
 # e.g modify with your smtp info
 EMAIL_USE_TLS = True

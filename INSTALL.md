@@ -157,11 +157,26 @@ python manage.py makemigrations templated_email
 
 
 # sockets
-install supervisord:
+We use django-chanell backed by redis to handle notification and realtim interaction on the platform.
+To enable sockets you have to set proper settings in your local_settings.py file
+
+Install [redis](http://redis.io/topics/quickstart)
+
+	wget http://download.redis.io/redis-stable.tar.gz
+	tar xvzf redis-stable.tar.gz
+	cd redis-stable
+	make
+
+Then
+
+	make test
+	make install
+
+Install supervisord:
 	
+	sudo apt-get install supervisor
 
-
-cp and modify `miller.supervisor.conf.example` putting the path to your resume installation folder and to the right python bin inside the resume virtualenv in our case.
+We ship a default configuration file for supervisor: copy and modify `miller.supervisor.conf.example` putting the path to your resume installation folder and to the right python bin inside the resume virtualenv in our case.
 
 sudo ln -s /home/devuser/resume/miller.supevisor.conf /etc/supervisor/conf.d/miller.supervisor.conf
 
@@ -173,4 +188,6 @@ sudo supervisorctl reread
 sudo supervisorctl update
 
 reread
+
+
 

@@ -610,4 +610,10 @@ angular
           },
         }
       });
-  });
+  })
+  .run(function($window, $log, RUNTIME){
+    $log.log('☕ app run, version: spectacular rice; analytics:', RUNTIME.settings.analytics? 'enabled': 'disabled');
+    if(RUNTIME.settings.analytics)
+      $window.ga('create', RUNTIME.settings.analytics || 'UA-XXXXXXXX-X', 'auto');
+  })
+

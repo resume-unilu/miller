@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $anchorScroll, $state, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, DocumentFactory, TagFactory, RUNTIME, EVENTS) {    
+  .controller('CoreCtrl', function ($rootScope, $scope, $log, $location, $window, $anchorScroll, $state, $modal, $alert, localStorageService, $translate, $timeout, StoryFactory, DocumentFactory, TagFactory, RUNTIME, EVENTS) {    
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = $rootScope.user = RUNTIME.user;
@@ -176,7 +176,7 @@ angular.module('miller')
     $rootScope.$on('$stateChangeSuccess', function (e, state) {
       var h =  $location.hash();
 
-      
+      // google
 
       // clean
       $scope.ToC = [];
@@ -204,6 +204,8 @@ angular.module('miller')
       // toggle stopChanceStart if the state is among the blocking ones
       $scope.toggleStopStateChangeStart(false);
 
+      // google analytics
+      $window.ga('send', 'pageview', $location.path());
 
     });
 
