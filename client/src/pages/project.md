@@ -34,9 +34,9 @@ The outputs will impact both the research and teaching communities, notably by c
 An ePublication is a **scholarly digital publication** which features a detailed, reasoned analysis and provides access to a series of resources on a given subject. The ePublication for the RESuME project particularly looks at the question of competitiveness in the European Union. The approach adopted is an interdisciplinary one, involving legal, political and economic science, contemporary history and political philosophy. While the ePublication is rooted in the field of humanities and social science, it is also fully in line with the concept of digital humanities, encouraging authors and readers to make use of digital tools to analyse data and view results.
 
 The analysis for this ePublication is based on research performed by the dedicated team of researchers for the RESuME project and on cooperation with reputed external specialists. Documents are selected for their potential to shed new light on the subject and inform the scientific debate. These resources take a variety of forms—legislation, press articles, archive documents, photographs, press cartoons and interview footage—and have been selected from a wide range of national and European sources.
-The ePublication is subject to [**peer review**](http://resume.uni.lu/#!/people#the-peer-review-committee).
+The ePublication is subject to [**peer review**](http://resume.uni.lu/people#the-peer-review-committee).
 
-[Go to the ePublication](/#/publications/collection)
+[Go to the ePublication](/publications/collection)
 
 ### Edited book
 The edited book produced for the RESuME project is the result of a collaborative effort by researchers from a wide range of fields. The aim of the book is to describe and analyse the relationship between competitiveness and solidarity within the new European economic governance. It focuses on the new balance between the European Union, the Member States and the market, offering a critical analysis of macroeconomic policies, the development of monetary policy and the social dimension of EMU. The book is subject to peer review prior to publication.
@@ -46,13 +46,13 @@ To shed further light on the wide range of topics covered by the RESuME project,
 These ePapers are academic publications which are subject to peer review. 
 They are selected on the basis of a call for papers. [](doc/cahiers-resume-call-for-contributions-2-nov-2016)
 
-[Go to the RESuME papers](/#/publications/papers)
+[Go to the RESuME papers](/publications/papers)
 
 ### eInterviews
 An eInterview is an ePublication specifically structured around recorded interviews. The overriding aim of an eInterview is to create new primary sources for researchers specialising in European studies. These sources often represent a useful complement to other resources and archive material, and may even serve to shed new light on this material.
 The interviews produced for the RESuME project also constitute a precious legacy for present and future generations. These recorded accounts give researchers a dynamic, tangible window onto the key moments in the history of European integration, thereby providing new insights into the development of this process.
 
-[Go to the eInterviews](/#/publications/interviews)
+[Go to the eInterviews](/publications/interviews)
 
 ## Teaching eModules
 Teaching eModules are educational resources that offer access to enhanced sources on a given subject related to the European integration process and also to relevant additional teaching resources. The main aim of eModules is to improve the possibilities for teaching and training by providing support for teachers, lecturers and trainers for their preparation and teaching activities and for leading seminars and workshops. 
@@ -96,7 +96,7 @@ L’ePublication est une publication numérique scientifique qui propose une ana
 L’analyse est le fruit des travaux de l’équipe de chercheurs du projet RESuME ainsi que de collaborations externes avec des spécialistes renommés. Les ressources documentaires sélectionnées et traitées se distinguent par leur capacité à éclairer le sujet et à nourrir le débat scientifique. De types et de formats variés (législation, articles de presse, documents d’archives, photographies, dessins de presse, entretiens audiovisuels), ces ressources proviennent d’une sélection de sources multiples nationales et européennes.
 L’ePublication est soumise à un [processus d’évaluation par les pairs](voc/peer-evaluation). 
 
-[Accéder à l'ePublication](/#/publications/collection)
+[Accéder à l'ePublication](/publications/collection)
 
 ### Ouvrage collectif
 Fruit de la collaboration de chercheurs issus de multiples champs disciplinaires, l’ouvrage collectif produit dans le cadre du projet RESuME vise à décrire et à analyser la relation entre la compétitivité et la solidarité dans le cadre de la nouvelle gouvernance économique européenne. Il porte sur le nouvel équilibre entre l’Union européenne, les États membres et le marché en livrant un exposé critique des politiques macroéconomiques, du développement de la politique monétaire et de la dimension sociale de l’UEM. L’ouvrage est publié après [évaluation par les pairs](voc/peer-evaluation).
@@ -107,14 +107,14 @@ Afin d’éclairer les différents thèmes qu'il couvre, le projet RESuME crée 
 Les ePapers publiées au sein des Cahiers RESuME sont soumises à un [processus d’évaluation par les pairs](voc/peer-evaluation). 
 Les ePapers sont sélectionnés sur la base d’un appel à candidature. [](doc/cahiers-resume-appel-a-contribution-02-nov-2016)
 
-[Accéder à la collection d'ePapers](/#/publications/papers)
+[Accéder à la collection d'ePapers](/publications/papers)
 
 ### eInterviews
 Une eInterview est un type spécifique d’ePublication. Elle repose sur des entretiens audiovisuels. Sa production s’inscrit dans une optique scientifique, à savoir créer de nouvelles sources primaires pour les chercheurs spécialisés en études européennes. Ces sources complètent utilement d'autres ressources et documents d'archives ou leur donnent un nouvel éclairage.
 
 Les eInterviews produites dans le cadre du projet RESuME comportent également une dimension patrimoniale précieuse pour les générations présentes et futures. Ces témoignages permettent au chercheur d’avoir un accès « vivant » à des moments clés de l'histoire de la construction européenne pour mieux en comprendre l'évolution.
 
-[Accéder aux eInterviews](/#!/publications/interviews)
+[Accéder aux eInterviews](/publications/interviews)
 
 ### eModules d’enseignement
 Les eModules d’enseignement sont des ressources pédagogiques qui ouvrent l’accès à des sources documentaires enrichies sur un sujet donné concernant le processus d’intégration européenne ainsi que sur des ressources pédagogiques pertinentes. Le principal objectif des eModules est d’améliorer les activités d’enseignement et de formation en fournissant un soutien aux professeurs, enseignants, formateurs, etc. pour préparer et donner des cours, tenir des séminaires et des ateliers. 
