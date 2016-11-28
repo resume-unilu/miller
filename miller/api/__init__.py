@@ -6,6 +6,7 @@ from caption import CaptionViewSet
 from mention import MentionViewSet
 from document import DocumentViewSet
 from profile import ProfileViewSet
+from comment import CommentViewSet
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 

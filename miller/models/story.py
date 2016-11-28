@@ -72,7 +72,7 @@ class Story(models.Model):
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
-  status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT)
+  status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT, db_index=True)
 
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
   authors   = models.ManyToManyField(Author, related_name='authors', blank=True) # collaborators

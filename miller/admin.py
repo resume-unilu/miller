@@ -9,7 +9,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author
+from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment
 
 codemirror_json_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
   'fixedGutter': True, 
@@ -199,6 +199,32 @@ class TagAdmin(admin.ModelAdmin):
 
 
 
+class CommentAdminForm(forms.ModelForm):
+  def __init__(self, *args, **kwargs):
+    super(CommentAdminForm, self).__init__(*args, **kwargs)
+    self.fields['contents'].widget = codemirror_json_widget
+
+  def clean_contents(self):
+    try:
+      contents = json.loads(self.cleaned_data['contents'])
+    except ValueError as e:
+      raise forms.ValidationError(u'%s'%e)
+      # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
+    
+    return self.cleaned_data['contents']
+
+
+def make_accepted(modeladmin, request, queryset):
+    queryset.update(status=Comment.PRIVATE)
+
+make_accepted.short_description = "Mark selected comments as visible"
+
+
+class CommentAdmin(admin.ModelAdmin):
+  search_fields = ['contents', 'owner']
+  list_display = ['date', 'contents', 'owner', 'story', 'status']
+  actions = [make_accepted]
+  form = CommentAdminForm
 
 # Re-register UserAdmin
 admin.site.unregister(User)
@@ -209,3 +235,4 @@ admin.site.register(Story, StoryAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Caption, CaptionAdmin)
 admin.site.register(Mention)
+admin.site.register(Comment, CommentAdmin)

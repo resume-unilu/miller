@@ -43,6 +43,9 @@ def get_serializer(content_type):
   elif content_type.model == 'profile':
     from miller.api.serializers import ProfileSerializer
     serializer = ProfileSerializer
+  elif content_type.model == 'comment':
+    from miller.api.serializers import CommentSerializer
+    serializer = CommentSerializer
   if not serializer:
     # raise
     return None

@@ -6,3 +6,4 @@ from author import Author
 from story import Story
 from caption import Caption
 from mention import Mention
+from comment import Comment

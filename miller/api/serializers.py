@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author
+from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment
 from miller.api.fields import JsonField, HitField, OptionalFileField
 
 
@@ -22,11 +22,20 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
     fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
 
 
-
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ('username', 'first_name', 'last_name', 'is_staff')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+  contents = JsonField()
+  owner    = UserSerializer()
+  
+  class Meta:
+    model = Comment
+    fields = ('pk', 'owner', 'contents',)
+
 
 # serializer the authors.
 class AuthorSerializer(serializers.ModelSerializer):
@@ -80,7 +89,7 @@ class LiteMentionSerializer(serializers.ModelSerializer):
 
 
 # Story Serializer to use in lists
-class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
+class LiteStorySerializer(serializers.ModelSerializer):
   authors = AuthorSerializer(many=True)
   owner = UserSerializer()
   tags = TagSerializer(many=True)
@@ -89,7 +98,7 @@ class LiteStorySerializer(serializers.HyperlinkedModelSerializer):
 
   class Meta:
     model = Story
-    fields = ('id','url', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
 
 
 # retrieve a Story, full

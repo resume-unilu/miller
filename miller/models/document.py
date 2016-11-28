@@ -217,7 +217,7 @@ class Document(models.Model):
         super(Document, self).save(*args, **kwargs)
         pass
     else:
-      action.send(self.owner, verb='updated', target=self)
+      # action.send(self.owner, verb='updated', target=self)
         
       super(Document, self).save(*args, **kwargs)
 
