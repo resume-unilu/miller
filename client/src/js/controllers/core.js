@@ -186,7 +186,11 @@ angular.module('miller')
       // debugger
       $scope.state = state.name;
       
-      $rootScope.page = _.compact(state.name.split('.').concat([ 
+      $rootScope.page = _.compact(state.name
+        .split('.')
+        .filter(function(d){
+          return ['page', 'all'].indexOf(d) ==-1;
+        }).concat([ 
         $state.params.name, 
         $state.params.storyId,
         $state.params.postId 
