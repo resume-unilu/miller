@@ -560,19 +560,7 @@ ul.errorlist{
 /*
   view
 */
-.view{
-  position: relative;
-  text-align: justify;
-  margin-top: 240px;
-  margin-bottom: 50px;
-  /*padding: 0 40px;*/
-  transition: transform .27s ease-in-out;
-}
 
-.container{
-  padding-right: 30px;
-  padding-right: 30px;
-}
 
 .container.with-ToC .view{
   /*transform: translateX(200px);*/

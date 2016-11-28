@@ -2,7 +2,7 @@
 <!DOCTYPE html>
   <html ng-app='miller'>
   <head>
-    <title ng-bind="page +' - {{title}}'"> - {{title}}</title>
+    <title ng-bind="page +' - {{title}}'">{{title}}</title>
     <base href="/">
     <meta name="fragment" content="!">
     <meta name="description" content="{{description}}">
@@ -66,8 +66,8 @@
       }
 
       .navbar-default .navbar-toggle {
-        border: 2px solid #151515;
-        border-color: #151515;
+        border: 2px solid transparent;
+        border-color: transparent;
         width: 45px;
         height: 45px;
         border-radius: 45px;
@@ -101,15 +101,42 @@
         margin-left: 0px;
       }
 
+      #navbar.show-menu{
+        height: 270px;
+      }
+
+      #navbar .menu-wrapper{
+        position: absolute;
+        bottom: 0;
+        top: 68px;
+        background: white;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        /*border-top: 2px solid #d9d9d9;*/
+        /*display: none;*/
+      }
+
+      #navbar .menu-wrapper .inner{
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+        right: 20px;
+      }
+
+      #navbar.show-menu .menu-wrapper{
+        display:block;
+      }
+
       .navbar{
         font-family: 'Lato', sans-serif;
         height: 70px;
         padding: 0 50px 0 25px;
-
-        transform: translateY(140px);
-        -webkit-transform: translateY(140px);
-        -moz-transform: translateY(140px);
-        -ms-transform: translateY(140px);
+        transform: translateY(70px);
+        -webkit-transform: translateY(70px);
+        -moz-transform: translateY(70px);
+        -ms-transform: translateY(70px);
+        transition: height .3s ease-in-out;
       }
 
       .navbar.below-floating{
@@ -125,6 +152,20 @@
       .navbar-default .navbar-brand{
         height: 70px;
         line-height: 40px;
+      }
+
+      .view{
+        position: relative;
+        text-align: justify;
+        margin-top: 150px;
+        margin-bottom: 50px;
+        /*padding: 0 40px;*/
+        transition: transform .27s ease-in-out;
+      }
+
+      .container{
+        padding-right: 30px;
+        padding-right: 30px;
       }
 
       #footer ul.navbar-nav{
@@ -162,6 +203,10 @@
       .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus{
         border: 2px solid #4ECDC4;
         color: #4ECDC4;
+      }
+
+      .navbar-default .menu-wrapper .navbar-nav > li{
+        padding: 0;
       }
 
       
@@ -357,12 +402,38 @@
       #showreel{
         position: absolute;
         top: 0px;
-        height: 140px;
         background: #101010;
         left:0;
         width: 100%;
         z-index: 3;
       }
+
+      #unilu-logo-wrapper{
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-left: 2px solid white;
+      }
+
+      #unilu-logo{
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 380px;
+        background-color: #4ECDC4;
+        background-image: url(/static/images/DEIS_uni.lu.png);
+        z-index: 1;
+        background-size: contain;
+        /* border-top-left-radius: 5px; */
+        /* border-top-right-radius: 5px; */
+        background-position: left bottom;
+      }
+
+      #showreel, #showreel-inner, #unilu-logo-wrapper, #unilu-logo{
+        height: 70px;
+      }
+
+
 
       .breakingNews{
         float:left;
@@ -460,7 +531,32 @@
         margin: 0 20px;
       }
 
+      
+
       @media only screen and (min-width : 768px) {
+        #navbar.show-menu .menu-wrapper, #navbar .menu-wrapper{
+          display: none;
+        }
+        
+        #navbar.show-menu{
+          height: 70px;
+        }
+
+        #showreel, #showreel-inner, #unilu-logo-wrapper, #unilu-logo{
+          height: 140px;
+        }
+
+        .view{
+          margin-top: 240px;
+        }
+
+        .navbar{
+          transform: translateY(140px);
+          -webkit-transform: translateY(140px);
+          -moz-transform: translateY(140px);
+          -ms-transform: translateY(140px);
+        }
+
         .chapter {
             display: table;
             width: 100%
@@ -517,27 +613,7 @@
           width: 1100px;
         }
       }
-      #unilu-logo-wrapper{
-        position: relative;
-        height: 140px;
-        width: 100%;
-        overflow: hidden;
-        border-left: 2px solid white;
-      }
-
-      #unilu-logo{
-        position: absolute;
-        bottom: 0px;
-        left: 0px;
-        width: 380px;
-        height: 140px;
-        background-color: #4ECDC4;
-        background-image: url(/static/images/DEIS_uni.lu.png);
-        z-index: 1;
-        /* border-top-left-radius: 5px; */
-        /* border-top-right-radius: 5px; */
-        background-position: left bottom;
-      }
+      
 
       /*.view{
         margin-top: 210px;
@@ -551,7 +627,7 @@
     <div id='showreel'>
       <div class='container'>
         <div class="row" >
-          <div style='height: 140px'>
+          <div id='showreel-inner'>
             {% verbatim %}
             <div class="breakingNews">
               <div id='unilu-logo-wrapper'>
@@ -566,11 +642,11 @@
     </div>
     
     
-    <nav id="navbar" class='navbar navbar-default navbar-fixed-top' ng-controller='PulseCtrl'>
+    <nav id="navbar" class='navbar navbar-default navbar-fixed-top' ng-init='showMenu=false' ng-class='{"show-menu":showMenu}' ng-controller='PulseCtrl'>
       
-      <div class='container'> 
+      <div class='container' > 
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <button type="button" ng-click="showMenu=!showMenu" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span> 
@@ -661,6 +737,77 @@
             {% endverbatim %}
           </ul>
          
+        </div>
+
+        <div class="menu-wrapper">
+          <div class="inner">
+            <div class="row">
+              <div class="col-xs-6">
+                <ul class="nav navbar-nav">
+
+            
+                  
+                  <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
+                  <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
+                  <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
+                  <li ng-class="{active: (state.includes('publications') || state.includes('story') || state.includes('collection')) && !state.includes('me')}"><a href ui-sref='publications.all' translate="headline.publications"></a></li>
+                  <!-- <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li> -->
+                  <li ui-sref-active="active"><a ui-sref="blog.event" translate="headline.events"></a></li>
+                  <li ui-sref-active="active"><a ui-sref="blog.news" translate="headline.news"></a></li>
+
+                 <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
+                  --> 
+                  <!-- <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b style='color:#151515' translate="write"></b></a></li> -->
+                  <li id='search-wrapper'>
+                    <form role="form" ng-submit="search(searchquery)">
+                      <div class="input-group">
+                        <input type="text" class="form-control" ng-model="searchquery" placeholder="Search for...">
+                        <span class="input-group-btn">
+                          <button ng-click="search(searchquery)" class="btn btn-secondary" type="button"><div class='icon icon-magnifier'></div></button>
+                        </span>
+                      </div>
+
+                    </form>
+                  </li>
+                  
+
+                </ul>
+
+              </div>
+              <div class="col-xs-6">
+                <ul class="nav navbar-nav navbar-right">
+                  {% if user.is_authenticated %}
+                  <li class="dropdown">
+                  <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
+                    
+                    
+
+                    <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
+                      <li ui-sref-active="active"><a ui-sref="upload" translate='upload'></a></li>
+                      <li ui-sref-active="active"><a ui-sref="author.publications.all({username:user.username})">your writings</a></li>
+                      <li><a href='{% url "logout_view" %}'>log out</a></li> 
+                      {% if user.is_staff %}
+                      <li><a href='{% url "admin:index" %}'>admin</a></li>
+                      {% endif %}
+                    
+                    
+                  </li>
+                  {% else %}
+                  <li>
+                    <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}' translate="headline.login.or.signup">log in / sign up</a>
+                  </li>
+                  {% endif %}
+                  <li class='compact' ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
+                  <li class='compact' ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
+                  
+
+                </ul>
+
+              </div>
+            </div>
+            
+
+          </div>
         </div>
       </div>
     </nav>
@@ -835,11 +982,17 @@
             // 'inner-table-of-documents': $('#inner-table-of-documents'),
             // 'writing-tools': $('#writing-tools')
           },
-
-          _navbar_offset = 140,
+          _is_mobile = _windox.width() < 768,
+          _navbar_offset = _is_mobile? 70: 140,
           st,
-          floatinglimit = 140,
+          floatinglimit = _is_mobile? 70:140,
           isBelowFloating = false;
+
+      _windox.on('resize', function(){
+        _is_mobile = _windox.width() < 768;
+        floatinglimit = _is_mobile? 70:140,
+        evaluateFloating();
+      })
 
       function evaluateFloating(e){
           st = _windox.scrollTop();
