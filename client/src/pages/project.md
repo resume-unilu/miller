@@ -3,7 +3,7 @@
 
 The Resources on the European socio-economic model (RESuME) project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model.
 
-The projet is developed by the University of Luxembourg within the [Digital European Integration Studies unit](http://wwwen.uni.lu/research/digital_european_integration_studies) and coordinated by [Frédéric Allemand](/#!/people#frederic-allemand) as principal investigator.
+The projet is developed by the University of Luxembourg within the [Digital European Integration Studies unit](http://wwwen.uni.lu/research/digital_european_integration_studies) and coordinated by [Frédéric Allemand](/people#frederic-allemand) as principal investigator.
 
 The RESuME project is co-funded by the [Erasmus+](https://eacea.ec.europa.eu/sites/eacea-site/files/documents/eac-s11-13_jean-monnet-support-to-institutions-and-associations_en.pdf) Programme of the European Union.
 
