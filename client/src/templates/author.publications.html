@@ -8,14 +8,14 @@
       <a href ui-sref='author.publications.all' aria-controls="home" role="tab" data-toggle="tab" translate="state.publications.all.label"></a>
     </li>
     <li ng-repeat='link in urls' role="presentation" ui-sref-active="active">
-      <a href ui-sref='author.publications.{{link.slug}}({username: profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="{{link.name}}"></a>
+      <a href ui-sref='author.publications.{{link.slug}}({username: author.profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="{{link.name}}"></a>
     </li>
     
     <li ng-if='isMe' ui-sref-active="active">
-      <a href ui-sref='author.publications.drafts({username: profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="drafts"></a>
+      <a href ui-sref='author.publications.drafts({username: author.profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="drafts"></a>
     </li>
     <li ng-if='isMe' ui-sref-active="active">
-      <a href ui-sref='author.publications.bin({username: profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="bin"></a>
+      <a href ui-sref='author.publications.bin({username: author.profile.username})' aria-controls="home" role="tab" data-toggle="tab" translate="bin"></a>
     </li>
   </ul>
   
