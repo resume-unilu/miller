@@ -37,13 +37,6 @@ class CommentSerializer(serializers.ModelSerializer):
     fields = ('pk', 'owner', 'contents',)
 
 
-# serializer the authors.
-class AuthorSerializer(serializers.ModelSerializer):
-  user = UserSerializer()
-  metadata = JsonField()
-  class Meta:
-    model = Author
-    fields = ('id', 'user', 'fullname', 'affiliation', 'metadata')
 
 
 # tag represnetation in many to many
@@ -65,6 +58,33 @@ class ProfileSerializer(serializers.ModelSerializer):
     model = Profile
     lookup_field = 'user__username'
     fields = ('bio', 'picture', 'username', 'user')
+
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+  """
+  Serializer for an author with multiple aliases
+  (e;g. other authors corresponding to the user)
+  """
+  profile = ProfileSerializer(source='user.profile')
+  metadata = JsonField()
+  class Meta:
+    model = Author
+    fields = ('id', 'profile', 'fullname', 'affiliation', 'metadata')
+
+
+
+class AuthorWithAliasesSerializer(serializers.ModelSerializer):
+  """
+  Serializer for an author with multiple aliases
+  (e;g. other authors corresponding to the user)
+  """
+  aliases = AuthorSerializer(many=True)
+  profile = ProfileSerializer(source='user.profile')
+  metadata = JsonField()
+  class Meta:
+    model = Author
+    fields = ('id', 'profile', 'fullname', 'affiliation', 'metadata', 'aliases')
 
 
 # light document serializer (to be used in manytomany retrieve)
