@@ -47,48 +47,47 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 
-
-
-# story serializer for tags
 class ProfileSerializer(serializers.ModelSerializer):
+  """
+  Base serializer for Profile model instances.
+  """  
   user = UserSerializer()
   username    = serializers.ReadOnlyField(source='user.username')
   
   class Meta:
     model = Profile
     lookup_field = 'user__username'
-    fields = ('bio', 'picture', 'username', 'user')
+    fields = ('pk', 'bio', 'picture', 'username', 'user', 'newsletter')
 
 
 
-class AuthorSerializer(serializers.ModelSerializer):
+class LiteAuthorSerializer(serializers.ModelSerializer):
   """
-  Serializer for an author with multiple aliases
-  (e;g. other authors corresponding to the user)
+  lite Serializer for an author, i.e. without profile info.
   """
-  profile = ProfileSerializer(source='user.profile')
   metadata = JsonField()
   class Meta:
     model = Author
-    fields = ('id', 'profile', 'fullname', 'affiliation', 'metadata')
+    fields = ('id', 'fullname', 'affiliation', 'metadata', 'slug')
 
 
 
-class AuthorWithAliasesSerializer(serializers.ModelSerializer):
+class AuthorSerializer(LiteAuthorSerializer):
   """
-  Serializer for an author with multiple aliases
-  (e;g. other authors corresponding to the user)
+  Serializer for an author
   """
-  aliases = AuthorSerializer(many=True)
   profile = ProfileSerializer(source='user.profile')
-  metadata = JsonField()
+  
   class Meta:
     model = Author
-    fields = ('id', 'profile', 'fullname', 'affiliation', 'metadata', 'aliases')
+    fields = ('id', 'profile', 'fullname', 'affiliation', 'metadata', 'slug')
 
 
-# light document serializer (to be used in manytomany retrieve)
+
 class LiteDocumentSerializer(serializers.ModelSerializer):
+  """
+  # light document serializer (to be used in manytomany retrieve)
+  """
   metadata = JsonField(source='contents')
 
   class Meta:

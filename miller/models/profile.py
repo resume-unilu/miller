@@ -19,6 +19,16 @@ logger = logging.getLogger('miller')
 # THe picture is given as a remote url.
 # Cfr. admin.py
 class Profile(models.Model):
+  NEWSLETTER_WEEKLY  = 'W'
+  NEWSLETTER_MONTHLY = 'M'
+  NEWSLETTER_NEVER   = '0'
+
+  NEWSLETTER_CHOICES = (
+    (NEWSLETTER_WEEKLY,   'weekly'),
+    (NEWSLETTER_MONTHLY,  'monthly'),
+    (NEWSLETTER_NEVER,    'never'),
+  )
+
   user          = models.OneToOneField(User, on_delete=models.CASCADE)
   
   short_url     = models.CharField(max_length=22, default=helpers.create_short_url, unique=True)
@@ -28,6 +38,9 @@ class Profile(models.Model):
 
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
+
+  newsletter    = models.CharField(max_length=1, choices=NEWSLETTER_CHOICES, default=NEWSLETTER_WEEKLY, db_index=True)
+
 
   def __unicode__(self):
     return self.user.username

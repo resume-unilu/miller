@@ -74,7 +74,13 @@ angular.module('miller')
     });
   })
   .factory('ProfileFactory', function ($resource) {
-    return $resource('/api/profile/:username/', {},{
+    return $resource('/api/profile/:username/:related', {},{
+      authors: {
+        method: 'GET',
+        params: {
+          related: 'authors/'
+        }
+      },
       update: {
         method:'PUT'
       },
@@ -89,7 +95,7 @@ angular.module('miller')
   })
 
   .factory('AuthorFactory', function ($resource) {
-    return $resource('/api/author/:username/', {},{
+    return $resource('/api/author/:slug/', {},{
       update: {
         method:'PUT'
       },

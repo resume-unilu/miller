@@ -67,10 +67,10 @@ angular.module('miller')
 
     $scope.sync(items);
     
-    $scope.$watch('language', function(v){
-      if(v){
-        $scope.items =normalizeItems($scope.items);
-      }
-    })
+    // $scope.$watch('language', function(v){
+    //   if(v){
+    //     $scope.items =normalizeItems($scope.items);
+    //   }
+    // })
   });
   

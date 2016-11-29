@@ -1,37 +1,26 @@
 from rest_framework import serializers,viewsets
+from rest_framework.decorators import detail_route
 
-from miller.api.serializers import ProfileSerializer
-from miller.models import Profile
+from miller.api.serializers import ProfileSerializer, LiteAuthorSerializer
+from miller.models import Profile, Author
 
 # ViewSets define the view behavior. Filter by status
 class ProfileViewSet(viewsets.ModelViewSet):
   queryset = Profile.objects.all()
   serializer_class = ProfileSerializer
   lookup_field = 'user__username'
-  lookup_value_regex = '[0-9a-zA-Z\.-_]+'
-  # def list(self, request):
-  #   filters = self.request.query_params.get('filters', None)
-    
-  #   if filters is not None:
-  #     print filters
-  #     try:
-  #       filters = json.loads(filters)
-  #       # print "filters,",filters
-  #     except Exception, e:
-  #       # print e
-  #       filters = {}
-  #   else:
-  #     filters = {}
-  #   # print filters
-  #   # retrieve only good filters
-  #   if request.user.is_authenticated() and request.user.is_staff:
-  #     tags = Tag.objects.filter(**filters)
-  #   else:
-  #     tags = Tag.objects.filter(category__in='keyword').filter(**filters)
+  lookup_value_regex = '[0-9a-zA-Z\.\-_]+'
 
-  #   page    = self.paginate_queryset(tags)
+  @detail_route(methods=['get'])
+  def authors(self, request, *args, **kwargs):
+    print kwargs
+    authors = Author.objects.filter(user__username=kwargs['user__username'])
+    page    = self.paginate_queryset(authors)
+    serializer = LiteAuthorSerializer(authors, many=True, context={'request': request})
+    return self.get_paginated_response(serializer.data)
 
-  #   serializer = TagSerializer(tags, many=True,
-  #       context={'request': request}
-  #   )
-  #   return self.get_paginated_response(serializer.data)
+
+  @detail_route(methods=['get'])
+  def pulse(self, request, pk):
+    print 'here'
+    pass

@@ -128,7 +128,7 @@ angular
     //   absolute: true
     // })
     $urlRouterProvider
-      .otherwise("/");
+      .otherwise("/not-found");
 
     $stateProvider
       .state('notfound', {
@@ -241,21 +241,20 @@ angular
 
     /*
 
-      My stories, settings etc. (even drafts whenever available)
-      ---
+      Author routes.
     
     */
     $stateProvider
       .state('author', {
         abstract: true,
         reloadOnSearch : false,
-        url: '/author/{username:[0-9a-zA-Z\\.-_]+}',
+        url: '/author/{slug:[0-9a-zA-Z\\.\\-_]+}',
         controller: 'AuthorCtrl',
         templateUrl: RUNTIME.static + 'templates/author.html',
         resolve: {
           author: function(AuthorFactory, $stateParams){
             return AuthorFactory.get({
-              username: $stateParams.username
+              slug: $stateParams.slug
             }).$promise;
           }
         }
@@ -280,8 +279,7 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 status: 'draft',
-                // owner__username: profile.user.username,
-                authors__user__username: author.profile.username
+                authors__slug: author.slug
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -305,8 +303,7 @@ angular
             return StoryFactory.get({
               filters: JSON.stringify({
                 status: 'deleted',
-                // owner__username: profile.user.username,
-                authors__user__username:  author.profile.username
+                authors__slug: author.slug
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -329,8 +326,7 @@ angular
           items: function(StoryFactory, author) {
             return StoryFactory.get({
               filters: JSON.stringify({
-                // owner__username: profile.user.username,
-                authors__user__username: author.profile.username
+                authors__slug: author.slug
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -357,10 +353,10 @@ angular
                   filters: d.slug? JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
                     tags__slug: d.slug,
-                    authors__user__username: author.profile.username
+                    authors__slug: author.slug
                   }): JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
-                    authors__user__username: author.profile.username
+                    authors__slug: author.slug
                   }),
                   ordering: '-date,-date_last_modified'
                 }).$promise;
@@ -378,15 +374,38 @@ angular
 
     $stateProvider
       .state('modifyauthor', {
-        url: '/author/{username:[0-9a-zA-Z\\.-_]+}/edit',
+        url: '/author/{slug:[0-9a-zA-Z\\.\\-_]+}/edit',
         controller: 'AuthorEditCtrl',
         templateUrl: RUNTIME.static + 'templates/author.edit.html',
         resolve: {
-          author: function(AuthorFactory, $stateParams){
+          author: function(AuthorFactory, $stateParams){ 
             return AuthorFactory.get({
-              username: $stateParams.username
+              slug: $stateParams.slug
             }).$promise;
           }
+        }
+      });
+
+    /*
+      Profile. One profile per user, that's easier.
+    */
+    $stateProvider
+      .state('profile', {
+        url: '/profile/{username:[0-9a-zA-Z\\.\\-_]+}',
+        controller: 'ProfileCtrl',
+        templateUrl: RUNTIME.static + 'templates/profile.html',
+        reloadOnSearch : false,
+        resolve: {
+          profile: function(ProfileFactory, $stateParams){
+            return ProfileFactory.get({
+              username: $stateParams.username
+            }).$promise;
+          },
+          authors: function(ProfileFactory, $stateParams){
+            return ProfileFactory.authors({
+              username: $stateParams.username
+            }).$promise;
+          },
         }
       });
 

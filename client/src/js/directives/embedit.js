@@ -22,21 +22,25 @@ angular.module('miller')
           breaks:       true,
           linkify:      true,
         }, 
-        disable = ['image', 'heading']
+        disable = ['image', 'heading'];
 
         scope.render = function(language) {
           if(!scope.embedit)
             return;
           
           if(language && typeof scope.embedit == 'object') {
+            
             var altlanguage = scope.language.replace(/_[A-Z][A-Z]$/, ''),
                 contents = scope.embedit[language]||scope.embedit[altlanguage]||'';
+
 
             if(attrs.markdown){
               var md = new window.markdownit(options)
                 .disable(disable);
+
               contents = md.render(contents)
             }
+            
             if(scope.firstline)
               contents = contents.split(/<br\s?\/?>/).shift();
             
@@ -63,8 +67,11 @@ angular.module('miller')
           scope.render();
         }
 
-        if(attrs.watch)
-          scope.$watch('embedit', scope.render);
+        // if(attrs.watch)
+        //   scope.$watch('embedit', function(obj){
+        //     if(obj)
+        //       scope.render
+        //   });
       }
     }
   });

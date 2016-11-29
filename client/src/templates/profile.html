@@ -1,5 +1,7 @@
 <div class='container'>
   <div class='view'>
+    <div ng-repeat='author in authors' style="position:relative; border-bottom:1px solid #ccc">
+    
     <h2>{{author.fullname}}</h2>
     <div class='affiliation sans-serif' embedit='author.affiliation' language='language'></div>
     
@@ -12,6 +14,6 @@
         <button ui-sref='modifyauthor({slug: author.slug})' class='btn-line' translate="button.edit.author"></button>
       </div>
     </div>
-    
+
   </div>
 </div>

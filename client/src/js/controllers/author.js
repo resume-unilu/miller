@@ -10,9 +10,10 @@ angular.module('miller')
     $scope.isMe = $scope.user.username == author.profile.username;
     $log.log('AuthorCtrl ready, author:',author.fullname);
     $scope.author = author;
+
   })
   .controller('AuthorEditCtrl', function ($scope, $state, $log, AuthorFactory, author, EVENTS) {
-    $log.log('AuthorEditCtrl ready, author:', author.fullname);
+    $log.log('AuthorEditCtrl ready, author:', author, $scope.previousState);
     $scope.author = author;
     $scope.isSaving = false;
 
@@ -24,7 +25,7 @@ angular.module('miller')
       }
       $scope.isSaving = true;
       AuthorFactory.patch({
-        username: $scope.author.id,
+        slug: $scope.author.id, // let's use the standard id for patch. This way we shouldn't change the default viewset
       },{
         fullname: [$scope.author.metadata.firstname,$scope.author.metadata.lastname].join(' '),
         metadata:  JSON.stringify($scope.author.metadata),
@@ -33,7 +34,11 @@ angular.module('miller')
         // $log.log('ok:',res)
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.isSaving = false;
-        $state.go('author.publications.all', {username: $scope.author.profile.username})
+        
+        if($scope.previousState.from && $scope.previousState.from.name && $scope.previousState.from.name.length)
+          $state.go($scope.previousState.from.name, $scope.previousState.fromParams)
+        else
+          $state.go('author.publications.all', {slug: $scope.author.slug})
       }, function(err) {
         $log.error('error:', err.data);
         $scope.isSaving = false;

@@ -173,7 +173,7 @@ angular.module('miller')
     });
 
 
-    $rootScope.$on('$stateChangeSuccess', function (e, state) {
+    $rootScope.$on('$stateChangeSuccess', function (e, state, stateParams, from, fromParams) {
       var h =  $location.hash();
 
       // google
@@ -186,6 +186,11 @@ angular.module('miller')
       // debugger
       $scope.state = state.name;
       
+      $scope.previousState = {
+        from: from,
+        fromParams: fromParams
+      };
+
       $rootScope.page = _.compact(state.name
         .split('.')
         .filter(function(d){
@@ -222,6 +227,7 @@ angular.module('miller')
       $scope.language = key;
       $rootScope.language = key;
       localStorageService.set('lang', $scope.language);
+      $log.log('CoreCtrl -> changeLanguage language:', $scope.language)
       $translate.use(key);
     };
 
