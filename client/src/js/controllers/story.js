@@ -83,15 +83,17 @@ angular.module('miller')
     // guess if there's a document interview
     // cfr corectrl setDocuments function.
     $scope.setDocuments = function(items) {
-      $log.log('StoryCtrl > setDocuments items n.:', items.length, items);
+      $log.log('StoryCtrl > setDocuments items n.:', items.length);
       var documents = [];
 
+      $scope.sidedocuments = 0;
 
       documents = _(items)
         .map(function(d){
           // check if it is in the story.documents list
           for(var i=0;i<story.documents.length;i++){
             if(story.documents[i].slug == d.slug){
+              $scope.sidedocuments += !!d.citation.length;
               return angular.extend({
                 _type: d._type,
                 _index: d._index,
@@ -102,6 +104,7 @@ angular.module('miller')
 
           for(i=0;i<story.stories.length;i++){
             if(story.stories[i].slug == d.slug){
+              $scope.sidedocuments += !!d.citation.length;
               return angular.extend({
                 _type: d._type,
                 _index: d._index,
@@ -116,6 +119,8 @@ angular.module('miller')
           return d;
         }).value();
 
+      $log.log('StoryCtrl > setDocuments items n.:', items.length, '- documents n:', documents.length, '- sideDocuments:', $scope.sidedocuments );
+        
       // $rootScope.emit(documents = documents;
 
       $scope.$parent.setDocuments(documents);
