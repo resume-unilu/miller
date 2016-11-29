@@ -25,7 +25,9 @@ angular.module('miller')
         disable = ['image', 'heading']
 
         scope.render = function(language) {
-
+          if(!scope.embedit)
+            return;
+          
           if(language && typeof scope.embedit == 'object') {
             var altlanguage = scope.language.replace(/_[A-Z][A-Z]$/, ''),
                 contents = scope.embedit[language]||scope.embedit[altlanguage]||'';
