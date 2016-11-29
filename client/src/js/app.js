@@ -129,6 +129,16 @@ angular
     // })
     $urlRouterProvider
       .otherwise("/");
+
+    $stateProvider
+      .state('notfound', {
+        url: '/not-found',
+        controller: function($log){
+          $log.warn('requested page not found.')
+        },
+        templateUrl: RUNTIME.static + 'templates/index.html',
+      });
+
     $stateProvider
       .state('index', {
         url: '/',
@@ -221,7 +231,7 @@ angular
         url: '/writing/:storyId',
         reloadOnSearch : false,
         controller: 'WritingCtrl',
-        templateUrl: RUNTIME.static + 'templates/draft.html',
+        templateUrl: RUNTIME.static + 'templates/writings.html',
         resolve: {
           story: function(StoryFactory, $stateParams) {
             return StoryFactory.get({id: $stateParams.storyId}).$promise;
@@ -243,13 +253,14 @@ angular
         controller: 'AuthorCtrl',
         templateUrl: RUNTIME.static + 'templates/author.html',
         resolve: {
-          profile: function(ProfileFactory, $stateParams){
-            return ProfileFactory.get({
+          author: function(AuthorFactory, $stateParams){
+            return AuthorFactory.get({
               username: $stateParams.username
             }).$promise;
           }
         }
       })
+
       .state('author.publications', {
         url: '/publications',
         abstract:true,
@@ -265,12 +276,12 @@ angular
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
-          items: function(StoryFactory, profile) {
+          items: function(StoryFactory, author) {
             return StoryFactory.get({
               filters: JSON.stringify({
                 status: 'draft',
                 // owner__username: profile.user.username,
-                authors__user__username: profile.user.username
+                authors__user__username: author.profile.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -290,12 +301,12 @@ angular
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
-          items: function(StoryFactory, profile) {
+          items: function(StoryFactory, author) {
             return StoryFactory.get({
               filters: JSON.stringify({
                 status: 'deleted',
                 // owner__username: profile.user.username,
-                authors__user__username:  profile.user.username
+                authors__user__username:  author.profile.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -315,11 +326,11 @@ angular
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/items.html',
         resolve: {
-          items: function(StoryFactory, profile) {
+          items: function(StoryFactory, author) {
             return StoryFactory.get({
               filters: JSON.stringify({
                 // owner__username: profile.user.username,
-                authors__user__username: profile.user.username
+                authors__user__username: author.profile.username
               }),
               ordering: '-date,-date_last_modified'
             }).$promise;
@@ -341,15 +352,15 @@ angular
             controller: 'ItemsCtrl',
             templateUrl: RUNTIME.static + 'templates/items.html',
               resolve: {
-              items: function(StoryFactory, $stateParams, profile) {
+              items: function(StoryFactory, $stateParams, author) {
                 return StoryFactory.get({
                   filters: d.slug? JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
                     tags__slug: d.slug,
-                    authors__user__username: profile.user.username
+                    authors__user__username: author.profile.username
                   }): JSON.stringify({
                     tags__category__in: ['writing', 'blog'],
-                    authors__user__username: profile.user.username
+                    authors__user__username: author.profile.username
                   }),
                   ordering: '-date,-date_last_modified'
                 }).$promise;
@@ -363,6 +374,20 @@ angular
               }
             }
           });
+      });
+
+    $stateProvider
+      .state('modifyauthor', {
+        url: '/author/{username:[0-9a-zA-Z\\.-_]+}/edit',
+        controller: 'AuthorEditCtrl',
+        templateUrl: RUNTIME.static + 'templates/author.edit.html',
+        resolve: {
+          author: function(AuthorFactory, $stateParams){
+            return AuthorFactory.get({
+              username: $stateParams.username
+            }).$promise;
+          }
+        }
       });
 
     $stateProvider
@@ -423,36 +448,7 @@ angular
         }
       })
       
-      // .state('events', {
-      //   url: '/events',
-      //   abstract:true,
-      //   reloadOnSearch : false,
-      //   // controller: function(){},
-      //   templateUrl: RUNTIME.static + 'templates/events.html',
-        
-      // })
-
-      // .state('events.everything', {
-      //   url: '',
-      //   controller: 'ItemsCtrl',
-      //   reloadOnSearch : false,
-      //   templateUrl: RUNTIME.static + 'templates/items.html',
-      //   resolve: {
-      //     items: function(StoryFactory, $stateParams) {
-      //       return StoryFactory.get({
-      //         filters: JSON.stringify({
-      //           tags__category: 'event'
-      //         })
-      //       }).$promise;
-      //     },
-      //     model: function() {
-      //       return 'story';
-      //     },
-      //     factory: function(StoryFactory) {
-      //       return StoryFactory;
-      //     }
-      //   }
-      // })
+    
 
       /*
         Kind of story:writings publications
@@ -595,6 +591,10 @@ angular
           },
         }
       })
+
+    
+
+   
 
       /*
         All the rest are static pages and will download the md files directly

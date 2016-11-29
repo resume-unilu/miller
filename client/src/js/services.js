@@ -87,6 +87,17 @@ angular.module('miller')
   .factory('CollectionFactory', function ($resource) {
     return $resource('/api/collection/:id/', {}, {});
   })
+
+  .factory('AuthorFactory', function ($resource) {
+    return $resource('/api/author/:username/', {},{
+      update: {
+        method:'PUT'
+      },
+      patch: {
+        method:'PATCH'
+      }
+    });
+  })
   /*
     get a list of ralreeady saved document accessible by the user
   */
@@ -198,7 +209,9 @@ angular.module('miller')
     return function(value, language){
       var results,
           sections, // document sections.
-          md = new window.markdownit(),
+          md = new window.markdownit({
+            breaks:       true
+          }),
           linkIndex = 0;
 
       // set initial value for results

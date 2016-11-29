@@ -23,19 +23,21 @@ angular.module('miller')
       }
     }
 
-    // adapt automatically the field to the language
-    ['title', 'abstract'].forEach(function(d){
-      if($scope.language && !$scope.story.metadata[d][$scope.language]){
-        $scope.story.metadata[d][$scope.language] = story[d]
+    // if multilanguage fields do not exists for metadata
+    ['title', 'abstract'].forEach(function(field){
+      if($scope.language && !$scope.story.metadata[field][$scope.language]){
+        $scope.story.metadata[field][$scope.language] = story[field]
       }
     });
-    
 
-    $scope.id = story.id;
-    $scope.title = $scope.story.metadata.title[$scope.language];
+    $scope.id    = story.id;
+    
+    // form will be linked to current languages. Cfr watch language below.
+    $scope.title    = $scope.story.metadata.title[$scope.language];
     $scope.abstract = $scope.story.metadata.abstract[$scope.language];
     $scope.contents = story.contents;
-    $scope.date     = story.date;
+
+    // $scope.date     = story.date;
     $scope.keywords = _.filter(story.tags, {category: 'keyword'});
 
     
@@ -190,6 +192,7 @@ angular.module('miller')
       $log.debug('WritingCtrl -> attachTag() tag', arguments);
       $scope.isSaving = true;
       $scope.lock();
+      // partial update route
       return StoryFactory.patch({id: story.id}, {
         tags: _.compact(_.map($scope.displayedTags, 'id').concat(_.map($scope.keywords, 'id')))
       }).$promise.then(function(res) {
@@ -210,7 +213,7 @@ angular.module('miller')
       $log.debug('WritingCtrl -> detachTag() tag', arguments, $scope.displayedTags);
       $scope.isSaving = true;
       $scope.lock();
-      
+      // partial update route
       return StoryFactory.patch({id: story.id}, {
         tags: _.map($scope.displayedTags, 'id')
       }).$promise.then(function(res) {
@@ -256,13 +259,16 @@ angular.module('miller')
       }
       $scope.isSaving = true;
       
-      StoryFactory.update({id: story.id}, angular.extend({
+      var update = angular.extend({
         title: $scope.title,
         abstract: $scope.abstract,
         contents: $scope.contents,
         metadata: JSON.stringify($scope.story.metadata),
         date: $scope.date
-      }, $scope.metadata), function(res) {
+      }, $scope.metadata);
+
+      StoryFactory.update({id: story.id}, update, function(res) {
+        console.log(res)
         $log.debug('WritingCtrl @SAVE: success');
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.unlock();

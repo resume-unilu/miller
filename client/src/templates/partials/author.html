@@ -1,1 +1,1 @@
-<a ng-if='author.user' class='author' ui-sref='author.publications.all({username:author.user.username})'>{{author.fullname}}</a><span ng-if='!author.user' class='author'>{{author.fullname}}</span>{{$last? '':', '}}
+<a ng-if='author.profile' class='author' ui-sref='author.publications.all({username:author.profile.username})'>{{author.fullname}}</a><span ng-if='!author.profile' class='author'>{{author.fullname}}</span>{{$last? '':', '}}

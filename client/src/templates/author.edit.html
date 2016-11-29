@@ -1,0 +1,47 @@
+<div class='container'>
+  <div class='view'>
+    <h2>{{author.fullname}}</h2>
+<form ng-submit="save()">
+  <div class="row">
+    <div class="col-sm-6">
+    <p>
+    <label>
+      <span translate="field.label.firstname"></span>
+    </label>
+    <textarea class='elastic-textarea' rows="1" msd-elastic ng-model='author.metadata.firstname'  type='text'></textarea>
+    </p>
+    </div>
+    <div class="col-sm-6">
+    <p>
+    <label>
+      <span translate="field.label.lastname"></span>
+    </label>
+    <textarea class='elastic-textarea' rows="1" msd-elastic ng-model='author.metadata.lastname'  type='text'></textarea>
+    </p>
+    </div>
+  </div>
+  
+
+  <p>
+  <label>
+    <span translate="field.label.affiliation"></span>
+  </label>
+  <textarea class='elastic-textarea' rows="1" msd-elastic ng-model='author.affiliation'  type='text'></textarea>
+  </p>
+
+  <p>
+  <label>
+    <span translate="field.label.bio"></span>
+  </label>
+  <textarea class='elastic-textarea' rows="1" msd-elastic ng-model='author.metadata.biography'  type='text' placeholder='short biography'></textarea>
+  </p>
+
+  <div class="btn-line-group primary">
+  <button class="btn-line" type="submit">
+    <span ng-if='!isSaving' translate='button.save'></span>
+    <span ng-if='isSaving' translate='button.issaving'></span>
+  </button>
+  </div>
+</form>
+</div>
+</div>

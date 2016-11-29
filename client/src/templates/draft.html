@@ -1,114 +1,22 @@
 <div class='container'>
 <div class='view'>
-
-<!-- <span class='btn-line-group'><button class='btn-line active' ng-click='save()'>{{isSaving? "saving...":"save"}}</button></span> -->
-
-
-<div class="row">
-  <div ng-class='{"col-md-8": !isDraft && story.id}'>
+  <p>
     <label>
       <span translate="field.label.title"></span>
     </label>
     <textarea id='draft-title' class='elastic-textarea' rows="1" msd-elastic ng-model='title'   type='text' placeholder='Untitled'></textarea>
-    <label></label>
+  </p>
+  <p>
     <label>
       <span translate="field.label.abstract"></span>
     </label>
     <textarea id='draft-abstract' class='elastic-textarea' rows="1" msd-elastic ng-model='abstract' type='text' placeholder='abstract'></textarea>
-  
-  </div>
-  <div class="col-md-4" ng-if='!isDraft && story.id'>
-    
-    <div class='cover-preview-wrapper'>
-      <label translate="field.label.cover"></label>
-      <div class="cover-preview" ng-repeat="document in story.covers">
-        <div ng-if='document.metadata'>
-          <div ng-if='document.metadata.thumbnail_url' lazy-image src='document.metadata.thumbnail_url'></div>
+  </p>
 
-          <div ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-image src='document.metadata.urls.Preview'></div>
-
-          <div ng-if='!document.metadata.thumbnail_url && !document.metadata.urls.Preview' class='lazy-box'></div>
-
-          <div class='tile'>
-            <div class='title' embedit='document.metadata.title' language='language'></div>
-            <div class='copyright' embedit='document.metadata.copyright'></div>
-          </div>
-        </div>
-
-      </div>
-      <div class='btn-line-group'>
-        <button   class='btn-line' ng-click='openCoversModal()' translate="button.choosecover"></button>
-      </div>
+  <div class='actions'>
+    <div class='btn-line-group primary'>
+      <button ng-click='save()' class='btn-line'><span translate="button.create"></span></button>
     </div>
   </div>
-</div>
-
-
-<div class='actions'>
-  <!-- <div ng-if='metadata.owner.is_staff' class='btn-line-group'> -->
-  
-  <div class='btn-line-group' ng-if='!isDraft && id'>
-    <button ng-if='!isCollection' class='btn-line' ui-sref="story({postId: id})" translate="button.viewmode"></button>
-    <button ng-if='isCollection' class='btn-line' ui-sref="collection({collectionId: id})" translate="button.viewmode"></button>
-  </div>
-  <div class='btn-line-group primary'>
-    <button ng-click='save()' class='btn-line'><span ng-if='!isSaving' translate="button.save"></span><span ng-if='isSaving' translate="button.issaving"></span></button>
-    
-  </div>
-  <!-- </div> -->
-  
-</div>
-
-<div class='section' style='margin-bottom:20px'>
-  <div class="row">
-    <div ng-class='{"col-md-8": !isDraft}' ng-if='!isDraft'>
-      <label translate="drafts.keywords.placeholder"></label>
-  <tags-input class='tags-input' placeholder='{{"drafts.keywords.placeholder"| translate}}' on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="keywords" add-from-autocomplete-only="true">
-    <auto-complete source="suggestTags($query, {category:'keyword'})"></auto-complete>
-
-  </tags-input>
-    </div>
-
-    <div class="col-md-4" ng-if='!isDraft && user.is_staff'>
-      <label translate="staff.drafts.tags.placeholder"></label>
-      <tags-input class='tags-input'  on-tag-added='attachTag($tag)' on-tag-removed='detachTag($tag)' key-property='id' display-property='name' ng-model="displayedTags" add-from-autocomplete-only="true">
-        <auto-complete source="suggestTags($query, {category__in:['blog','writing', 'highlights']})" ></auto-complete>
-
-      </tags-input>
-    </div>
-  </div>
-
-</div>
-
-<!-- <div class='authors' ng-if='!isDraft'>
-by <a href>{{metadata.owner.username}}</a>
-</div>
-<div class='authors' ng-if='isDraft'>
-  <div ng-if='user.username'>
-    by <a href>{{user.username}}</a>
-  </div>
-  <div ng-if='!user.username'>
-    by <a href>anonymous</a>
-  </div>
-</div> -->
-
-<!-- <div ng-if='!isDraft'>
-  <form class="form-inline">
-    <div class="form-group">
-      <label translate='date'></label>
-      <input type="text" class="form-control" ng-model="date" name="date" data-max-date="today" timezone='UTC' bs-datepicker data-autoclose="1">{{date}}
-    </div>
-  </form>
-</div> -->
-
-<div id="draft-contents">
-  
-  <div style='min-height: 50px; position:relative'>
-      <!-- <medium-editor ng-model='contents' bind-options="mediumOptions"></medium-editor> -->
-      
-      <div mde='contents' language='language' setdocs='setDocuments(documents)' settoc='setToC(items)'></div>
-      
-  </div>
-</div>
 </div>
 </div>

@@ -189,7 +189,7 @@ angular.module('miller')
       $rootScope.page = _.compact(state.name
         .split('.')
         .filter(function(d){
-          return ['page', 'all'].indexOf(d) ==-1;
+          return ['page', 'all', 'story'].indexOf(d) ==-1;
         }).concat([ 
         $state.params.name, 
         $state.params.storyId,

@@ -18,23 +18,34 @@ angular.module('miller')
       },
       link: function(scope, element, attrs) {
         // console.log('::embedit @link, language:', scope.language, scope.embedit)
-
+        var options = {
+          breaks:       true,
+          linkify:      true,
+        }, 
+        disable = ['image', 'heading']
 
         scope.render = function(language) {
+
           if(language && typeof scope.embedit == 'object') {
             var altlanguage = scope.language.replace(/_[A-Z][A-Z]$/, ''),
                 contents = scope.embedit[language]||scope.embedit[altlanguage]||'';
 
             if(attrs.markdown){
-              var md = new window.markdownit();
+              var md = new window.markdownit(options)
+                .disable(disable);
               contents = md.render(contents)
             }
             if(scope.firstline)
               contents = contents.split(/<br\s?\/?>/).shift();
             
             element.html(contents);
+          } else if(attrs.markdown){
+            var md = new window.markdownit(options)
+              .disable(disable);
+            contents = md.render(scope.embedit)
+            element.html(contents);
           } else {
-            element.html(scope.embedit);
+            element.html(scope.embedit)
           }
 
           if(scope.stretch){
@@ -49,6 +60,9 @@ angular.module('miller')
         } else{
           scope.render();
         }
+
+        if(attrs.watch)
+          scope.$watch('embedit', scope.render);
       }
     }
   });

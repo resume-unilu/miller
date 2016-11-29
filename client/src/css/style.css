@@ -1577,6 +1577,11 @@ h4.modal-title{
   margin: 10px 0 0 0;
 }
 
+.affiliation{
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
 
 
 

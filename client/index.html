@@ -708,7 +708,8 @@
                 
                 <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
                 <li ui-sref-active="active"><a ui-sref="upload" translate='upload'></a></li>
-                <li ui-sref-active="active"><a ui-sref="author.publications.all({username:user.username})">your writings</a></li>
+                <li ui-sref-active="active"><a ui-sref="author.publications.all({username:user.username})" translate='headline.your.writings'></a></li>
+                <li ui-sref-active="active"><a ui-sref="modifyauthor({username:user.username})" translate='headline.edit.your.information'></a></li>
                 <li><a href='{% url "logout_view" %}'>log out</a></li> 
                 {% if user.is_staff %}
                 <li><a href='{% url "admin:index" %}'>admin</a></li>
