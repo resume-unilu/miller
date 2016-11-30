@@ -83,7 +83,7 @@ angular.module('miller')
     // guess if there's a document interview
     // cfr corectrl setDocuments function.
     $scope.setDocuments = function(items) {
-      $log.log('StoryCtrl > setDocuments items n.:', items.length);
+      $log.log('StoryCtrl > setDocuments items n.:', items.length, items);
       var documents = [];
 
       $scope.sidedocuments = 0;
@@ -112,8 +112,7 @@ angular.module('miller')
               }, story.stories[i]);
             }
           }
-
-          
+          $scope.sidedocuments++;
           // this is another story or a footnote or a missing document (weird)
           // will be lazily filled with stuffs later
           return d;
