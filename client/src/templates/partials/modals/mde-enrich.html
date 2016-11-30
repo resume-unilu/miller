@@ -12,14 +12,9 @@
         
         <!-- <input type='text' class="form-control" placeholder="search ..."> -->
         <ul class="nav nav-tabs" style='padding-left:15px; margin-bottom:0' role="tablist">
-          <li role="presentation" ng-class="tab.name == 'favourite'? 'active':''"><a ng-click='setTab("favourite")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.resources'></a></li>
-          <li role="presentation" ng-class='{"active": tab.name == "glossary"}'><a ng-click='setTab("glossary")' aria-controls="home" role="tab" data-toggle="tab" translate='enrich.publications'></a></li>
-          <li role="presentation" ng-class="tab.name == 'CVCE'? 'active':''"><a ng-click='setTab("CVCE")' aria-controls="profile" role="tab" data-toggle="tab">cvce archives</a></li>
-          
-          <li role="presentation" ng-class="tab.name == 'url'? 'active':''"><a ng-click='setTab("url")' aria-controls="messages" role="tab" data-toggle="tab" translate='enrich.fromUrl'></a></li>
-
-          <!-- <li role="presentation" ng-class="tab.name == 'bibtex'? 'active':''"><a ng-click='setTab("bibtex")' aria-controls="messages" role="tab" data-toggle="tab">new reference</a></li> -->
-          
+          <li role='presentation' ng-class='{"active": _tab.name == tab.name}' ng-repeat='_tab in tabs'>
+            <a ng-click='setTab(_tab.name)' translate='tab.{{_tab.name}}' aria-controls="home" role="tab" data-toggle="tab"></a>
+          </li>
         </ul>
 
         
@@ -133,12 +128,52 @@
               </div>
             </div>
             <div class='section padded last'>
+              
               <label translate='bibtex reference'></label>
               <div class='elastic-textarea-wrapper'>
                 <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='reference' type='text' placeholder='@{}'></textarea>
               </div>
               <div class='sans-serif description'>You can use <a href='http://truben.no/latex/bibtex/'>this web app</a> to easily build a bibtex reference</div>
               
+            </div>
+          </div>
+
+          <div ng-show="tab.name == 'upload'" class="tab-content">
+            <div class='section padded'>
+            
+              <div class='drop-box-form-wrapper'>
+                <form name="createForm" novalidate class="simple-form">
+                  <div ng-show='!uploadablefile.size'>
+                    <div ngf-drop ngf-select ng-model="uploadable" class="drop-box sans-serif" 
+        ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="true"
+        accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+        ngf-pattern="'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document'"><span translate="Drop docx or click to upload"></span></div>
+                  </div>
+                  <div ng-show='uploadablefile.size'>
+                    <span>{{uploadablefile.name}}</span>
+                    <span>{{uploadablefile.type}}</span>
+                    <span>{{uploadablefile.size}}</span>
+                    <div class='btn-line-group'><a class='btn-line' ng-click='undo()' translate='button.undo'></a></div>
+                    <div ng-if='selectedDocument' ng-init='document=selectedDocument' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div ngf-no-file-drop><span translate='feature.unsupported.dragdrop'></span></div>
+            </div>
+            <!-- @todo -->
+            <div class='section padded last'>
+              <label translate='bibtex reference'></label>
+              <div class='sans-serif description' translate='bibtex.howto'></div> 
+              <div class='elastic-textarea-wrapper'>
+                <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='reference' type='text' placeholder='@{}'></textarea>
+              </div>
+              
+            </div>
+            <div class='section padded'>
+              <div class="center">
+                <div class='btn-line-group primary'><button class='btn-line' ng-click='upload()' translate='button.upload'></button></div>
+              </div>
             </div>
           </div>
 

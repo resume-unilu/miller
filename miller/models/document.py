@@ -51,13 +51,7 @@ class Document(models.Model):
     (AV, 'audiovisual')
   )
 
-  type       = models.CharField(max_length=24, choices=TYPE_CHOICES)
-  short_url  = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True, blank=True)
-  
-  title      = models.CharField(max_length=500)
-  slug       = models.CharField(max_length=150, unique=True, blank=True, db_index=True)
-
-  contents   = models.TextField(null=True, blank=True, default=json.dumps({
+  DEFAULT_OEMBED = {
     'provider_name': '',
     'provider_url': '',
     'type': 'rich',
@@ -65,7 +59,15 @@ class Document(models.Model):
     'description': '',
     'html': '',
     'details':{}
-  }, indent=1)) # OEMBED (JSON) metadata field, in different languages if available.
+  }
+
+  type       = models.CharField(max_length=24, choices=TYPE_CHOICES)
+  short_url  = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True, blank=True)
+  
+  title      = models.CharField(max_length=500)
+  slug       = models.CharField(max_length=150, unique=True, blank=True, db_index=True)
+
+  contents   = models.TextField(null=True, blank=True, default=json.dumps(DEFAULT_OEMBED, indent=1)) # OEMBED (JSON) metadata field, in different languages if available.
   
 
   copyrights = models.TextField(null=True, blank=True,  default='')
@@ -150,6 +152,29 @@ class Document(models.Model):
           self.attachment.save(filename, files.File(lf))
 
 
+  def load_metadata(self):
+    r = {}
+    r.update(Document.DEFAULT_OEMBED)
+    try:
+      r = json.loads(self.contents)
+    except Exception, e:
+      logger.exception(e)
+      r['error'] = '%s'%e
+    return r
+
+
+  def fill_from_metadata(self):
+    metadata = self.load_metadata()
+    if 'error' in metadata:
+      # simply ignore filling from erroneous metadata.
+      return
+
+    print metadata
+    if 'bibtex' in metadata:
+      print metadata, 'bibtex'
+      # if not title, set title.
+
+
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):
     
@@ -185,42 +210,46 @@ class Document(models.Model):
           logger.debug('snapshot generated for {document:%s}, page %s' % (self.id, page))
 
   def save(self, *args, **kwargs):
-    if not self.pk and self.url:
-      #print 'verify the url:', self.url
-      try:
-        doc = Document.objects.get(url=self.url)
-        
-        self.pk          = doc.pk
-        self.title       = doc.title
-        self.slug        = doc.slug
-        self.type        = doc.type
-        self.short_url   = doc.short_url
-        self.copyrights  = doc.copyrights
-        self.url         = doc.url
-        self.owner       = doc.owner
-        self.attachment  = doc.attachment
-        self.snapshot    = doc.snapshot
-        self.mimetype    = doc.mimetype
 
-        # update contents only
-        if not doc.locked and self.contents != doc.contents:
-          print "updating the content", self.contents, doc.contents
-          super(Document, self).save(force_update=True, update_fields=['contents'])
-          # print "done, now:", self.contents
-        else:
-          print "do not update the content"
-          self.contents = doc.contents
-      except Document.DoesNotExist:
-        # create a new document!
-        action.send(self.owner, verb='created', target=self)
-        # print 'not exists, creating'
+    if not self.pk:
+      self.fill_from_metadata()
+
+      if self.url:
+        #print 'verify the url:', self.url
+        try:
+          doc = Document.objects.get(url=self.url)
+          
+          self.pk          = doc.pk
+          self.title       = doc.title
+          self.slug        = doc.slug
+          self.type        = doc.type
+          self.short_url   = doc.short_url
+          self.copyrights  = doc.copyrights
+          self.url         = doc.url
+          self.owner       = doc.owner
+          self.attachment  = doc.attachment
+          self.snapshot    = doc.snapshot
+          self.mimetype    = doc.mimetype
+
+          # update contents only
+          if not doc.locked and self.contents != doc.contents:
+            # print "updating the content", self.contents, doc.contents
+            super(Document, self).save(force_update=True, update_fields=['contents'])
+            # print "done, now:", self.contents
+          else:
+            # print "do not update the content"
+            self.contents = doc.contents
+        except Document.DoesNotExist:
+          super(Document, self).save(*args, **kwargs)
+          action.send(self.owner, verb='created', target=self)
+          
+      else:
         super(Document, self).save(*args, **kwargs)
-        pass
+        action.send(self.owner, verb='created', target=self)
+       
     else:
-      # action.send(self.owner, verb='updated', target=self)
-        
       super(Document, self).save(*args, **kwargs)
-
+      # action.send(self.owner, verb='updated', target=self)
 
 
 # store in whoosh

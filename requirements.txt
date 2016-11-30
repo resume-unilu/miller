@@ -29,11 +29,13 @@ GitPython==1.0.2
 greenlet==0.4.9
 incremental==16.10.1
 jsonfield==1.0.3
+latexcodec==1.0.4
 lxml==3.6.4
 Markdown==2.6.6
 msgpack-python==0.4.8
 oauthlib==1.0.3
 Pillow==3.4.2
+pybtex==0.20.1
 PyJWT==1.4.0
 pypandoc==1.2.0
 PyPDF2==1.25.1
@@ -41,6 +43,7 @@ python-docx==0.8.6
 python-openid==2.2.5
 python-social-auth==0.2.16
 pytz==2016.3
+PyYAML==3.12
 Pyzotero==1.1.19
 redis==2.10.5
 requests==2.2.1

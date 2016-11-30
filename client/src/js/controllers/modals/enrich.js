@@ -1,4 +1,4 @@
-angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scope, $log, QueryParamsService, DocumentFactory, StoryFactory, OembedSearchFactory, embedService) {
+angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scope, $log, QueryParamsService, DocumentFactory, StoryFactory, OembedSearchFactory, embedService, Upload) {
   
   $log.info('EnrichModalCtrl ready with crazy scope, language:', $scope.language);
 
@@ -132,7 +132,69 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
         this.suggest($scope.query || '');
       }
     },
+    upload: {
+      name: 'upload', 
+      items: [],
+      undo: function(){
+        $scope.uploadablefile = {};
+      },
+      // stands for upload, suggest is a placeholder here.
+      upload: function(){
+        var $s = this;
+        if(!$scope.uploadablefile){
+          // error
+          $log.warn('no file is selected');
+          return
+        }
+        debugger
+        // uploadable has value, name and size.
+        Upload.upload({
+          url: '/api/document/',
+          data: {
+            title: $scope.uploadablefile.name,
+            type: $scope.uploadablefile.type.split('/').shift(),
+            mimetype: $scope.uploadablefile.type,
+            metadata: JSON.stringify({
+              bibtex: $scope.reference
+            }),
+            attachment: $scope.uploadablefile.f
+          }
+        }).then(function (res) {
+          $log.debug('UploadCtrl -> upload() status:', res.status)
+          if(res.status == 201){
+            $log.debug('UploadCtrl -> upload() status:', 'success!', res.data)
+            // add document
+            $scope.selectDocument(res.data);
+          } else {
+            $log.error(res);
+            // error handling?
+          }
+
+        }, null, function (evt) {
+          $scope.uploadablefile.progressPercentage = parseInt(10000.0 *
+            evt.loaded / evt.total)/100;
+          $log.log('progress: ' + $scope.uploadablefile.progressPercentage + 
+              '% ' + evt.config.data, $scope.uploadablefile.name, evt);
+        });
+
+      },
+      init: function(){
+        $log.log('init', this);
+      }
+    }
   };
+  
+  $scope.uploadablefile = {}
+
+  $scope.$watch('uploadable', function (v) {
+    if(v){
+      $log.debug('::mde @uploadable', v)
+      $scope.uploadablefile.f = v;
+      $scope.uploadablefile.name = v.name;
+      $scope.uploadablefile.size = v.size;
+      $scope.uploadablefile.type = v.type;
+    }
+  });
 
   var timer_preview;
   $scope.previewUrl = function(url){
@@ -172,6 +234,17 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
     $scope.tab.suggest(query);
   }
 
+  $scope.upload = function(query){
+    $log.log('EnrichModalCtrl -> upload()');
+    $scope.tab.upload();
+  }
+
+  $scope.undo = function(){
+    $log.log('EnrichModalCtrl -> undo()');
+    $scope.tab.undo();
+  }
+
+
   $scope.more = function(query, tab){
     $log.log('EnrichModalCtrl -> more()');
     $scope.tab.suggest(query, true);
@@ -179,7 +252,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
 
 
   
-  $scope.setTab('glossary');
+  $scope.setTab('upload');
 
 
 });

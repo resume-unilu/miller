@@ -30,11 +30,22 @@ class DocumentTest(TestCase):
     self.assertEqual(self.doc.slug, 'the-happy-story-of-the-promo')
     self.assertEqual(self.doc.locked, False)
     
-  def _test_fill_metadata(self):
+  def _test_fill_from_url(self):
     self.doc.fill_from_url()
     self.assertEqual('application/pdf', self.doc.mimetype)
     self.doc.create_snapshot()
     self.assertTrue(os.path.exists(self.doc.attachment.path)) # and should have a valid attachment
+
+
+  def _test_fill_from_metadata(self):
+    _doc  = Document(
+        title=u'Bibtex parsing', 
+        owner=self.user,
+        contents=u'{"html": "new content here", "bibtex":"@ARTICLE {,\\n    author  = \\"Daniele Guido\\",\\n    title   = \\"Titolo\\",\\n    journal = \\"Journal\\",\\n    year    = \\"2016\\"\\n}"}'
+    )
+
+    _doc.save()
+    # since there is a bibtex field, fill_from_metadata() should e called correctly
     
 
   def _test_create_duplicated_url(self): 
@@ -79,8 +90,9 @@ class DocumentTest(TestCase):
    
     
   def test_suite(self):
-    self._test_create()
-    self._test_fill_metadata()
-    self._test_create_duplicated_url()
-    self._test_delete();
-    self._test_delete_user()
+    # self._test_create()
+    # self._test_fill_from_url()
+    self._test_fill_from_metadata()
+    # self._test_create_duplicated_url()
+    # self._test_delete();
+    # self._test_delete_user()

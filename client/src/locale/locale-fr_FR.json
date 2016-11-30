@@ -1,4 +1,5 @@
 {
+  "bibtex.howto": "You can use <a href='http://truben.no/latex/bibtex/' target='_blank'>this web app</a> to easily build a bibtex reference",
   "button.add": "add",
   "button.annotate": "tag",
   "button.agree": "agree",
@@ -14,6 +15,8 @@
   "button.previous": "previous",
   "button.loading": "loading ...",
   "button.choosecover": "choose cover",
+  "button.undo": "undo",
+  "button.upload": "télécharger sur la plateforme",
   "button.upload.story": "télécharger sur la plateforme",
   "button.edit.author": "modify bio, affiliation ...",
 
@@ -29,6 +32,8 @@
   "enrich.type.notsupported": "This document cannot be saved locally; we can only store the link to the original resource",
   "enrich.type.notitle": "Original title not found for this remote resource.",
 
+  "feature.unsupported.dragdrop": "File Drag/Drop is not supported for this browser",
+  
   "field.label.title": "titre",
   "field.label.abstract": "abstract",
   "field.label.cover": "image de couverture",

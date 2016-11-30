@@ -1190,6 +1190,9 @@ h4.modal-title{
       padding: 0px;
 }
 
+.modal-body .drop-box-form-wrapper{
+  margin-bottom: 10px;
+}
 /*
   Table of documents
 */

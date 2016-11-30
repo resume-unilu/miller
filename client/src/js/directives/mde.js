@@ -375,6 +375,8 @@ angular.module('miller')
             return;
           }
 
+          
+
           if(type=='glossary'){
             referenceModal.hide();
             SimpleMDE.drawLink(simplemde,{
