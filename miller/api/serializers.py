@@ -61,6 +61,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 
+
+
 class LiteAuthorSerializer(serializers.ModelSerializer):
   """
   lite Serializer for an author, i.e. without profile info.
@@ -81,6 +83,15 @@ class AuthorSerializer(LiteAuthorSerializer):
   class Meta:
     model = Author
     fields = ('id', 'profile', 'fullname', 'affiliation', 'metadata', 'slug')
+
+
+class HeavyProfileSerializer(ProfileSerializer):
+  authors = LiteAuthorSerializer(many=True, source='user.authorship')
+
+  class Meta:
+    model = Profile
+    lookup_field = 'user__username'
+    fields = ('pk', 'bio', 'picture', 'username', 'authors','newsletter')
 
 
 

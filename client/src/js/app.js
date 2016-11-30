@@ -391,6 +391,7 @@ angular
     */
     $stateProvider
       .state('profile', {
+        // abstract: true,
         url: '/profile/{username:[0-9a-zA-Z\\.\\-_]+}',
         controller: 'ProfileCtrl',
         templateUrl: RUNTIME.static + 'templates/profile.html',
@@ -407,7 +408,31 @@ angular
             }).$promise;
           },
         }
-      });
+      })
+        .state('profile.publications', {
+          url: '/publications',
+          reloadOnSearch : false,
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/items.html',
+          resolve: {
+            items: function(StoryFactory, profile, $location) {
+              var qs = $location.search()
+              
+              return StoryFactory.get({
+                filters: JSON.stringify({
+                  authors__user__username: profile.username
+                }),
+                ordering: '-date,-date_last_modified'
+              }).$promise;
+            },
+            model: function() {
+              return 'story';
+            },
+            factory: function(StoryFactory) {
+              return StoryFactory;
+            }
+          }
+        });
 
     $stateProvider
      .state('blog', {
