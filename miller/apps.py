@@ -9,5 +9,7 @@ class ActivityStreamConfig(AppConfig):
       registry.register(self.get_model('Story'))
       registry.register(self.get_model('Document'))
       registry.register(self.get_model('Profile'))
+      registry.register('auth.User')
+      
 
 
