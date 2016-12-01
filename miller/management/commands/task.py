@@ -13,12 +13,16 @@ logger = logging.getLogger('miller.commands')
 
 
 class Command(BaseCommand):
+  """
+  Usage sample: 
+  python manage.py task snapshot --pk=991
+  """
   help = 'Initialize the JSON field metadata for Story instances'
   
 
   available_tasks = (
-    'snapshot', # require document pk
-    'snapshots', # handle pdf snapshot
+    'snapshot', # require document pk, e.g python manage.py task snapshot --pk=991
+    'snapshots', # handle pdf snapshot, python manage.py task snapshots
     'cleanbin',
     'update_whoosh'
   )
