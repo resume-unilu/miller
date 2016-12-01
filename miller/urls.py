@@ -69,7 +69,7 @@ urlpatterns = [
 
   
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
-  url(r'^(?!favicon\.ico|signup).*$', views.home, name='app')
+  url(r'^(?!favicon\.ico|signup|media).*$', views.home, name='app')
 ]
 
 

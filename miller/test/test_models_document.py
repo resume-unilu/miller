@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
+import os, json
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import TestCase
 from miller import helpers
@@ -24,11 +24,12 @@ class DocumentTest(TestCase):
         title=u'The happy story of the Promo', 
         url='http://ec.europa.eu/health/files/eudralex/vol-1/reg_2016_161/reg_2016_161_en.pdf',
         owner=self.user,
-        contents='{"html": "original content here"}'
+        contents='{"html": "original content here"}',
+        locked = True
     )
     self.doc.save()
     self.assertEqual(self.doc.slug, 'the-happy-story-of-the-promo')
-    self.assertEqual(self.doc.locked, False)
+    self.assertEqual(self.doc.locked, True)
     
   def _test_fill_from_url(self):
     self.doc.fill_from_url()
@@ -41,10 +42,13 @@ class DocumentTest(TestCase):
     _doc  = Document(
         title=u'Bibtex parsing', 
         owner=self.user,
-        contents=u'{"html": "new content here", "bibtex":"@ARTICLE {,\\n    author  = \\"Daniele Guido\\",\\n    title   = \\"Titolo\\",\\n    journal = \\"Journal\\",\\n    year    = \\"2016\\"\\n}"}'
+        contents=u'{"html": "new content here", "bibtex":"@ARTICLE {article,\\n    author  = \\"Daniele Guido\\",\\n    title   = \\"Titolo\\",\\n    journal = \\"Journal\\",\\n    year    = \\"2016\\"\\n}"}'
     )
 
     _doc.save()
+    metadata = json.loads(_doc.contents)
+    self.assertEqual(metadata['title'], u'Bibtex parsing')
+    self.assertEqual(metadata['details']['bibtex']['author'], u'Daniele Guido')
     # since there is a bibtex field, fill_from_metadata() should e called correctly
     
 
@@ -90,9 +94,9 @@ class DocumentTest(TestCase):
    
     
   def test_suite(self):
-    # self._test_create()
-    # self._test_fill_from_url()
+    self._test_create()
+    self._test_fill_from_url()
     self._test_fill_from_metadata()
-    # self._test_create_duplicated_url()
-    # self._test_delete();
-    # self._test_delete_user()
+    self._test_create_duplicated_url()
+    self._test_delete();
+    self._test_delete_user()

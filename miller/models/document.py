@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2
+import os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2, bibtexparser
 
 from actstream import action
 
@@ -14,6 +14,7 @@ from django.utils.text import slugify
 
 from miller import helpers
 from wand.image import Image
+
 
 logger = logging.getLogger('miller.commands')
 
@@ -30,6 +31,8 @@ class Document(models.Model):
   BIBLIOGRAPHIC_REFERENCE = 'bibtex'
   VIDEO_COVER = 'video-cover'
   PICTURE = 'picture'
+  IMAGE   = 'image'
+  PHOTO   = 'photo'
   VIDEO   = 'video'
   AUDIO   = 'audio'
   TEXT    = 'text'
@@ -44,8 +47,8 @@ class Document(models.Model):
     (TEXT, 'text'),
     (PICTURE, 'picture'),
     (PDF, 'pdf'),
-    ("image", 'image'),
-    ("photo", 'photo'),
+    (IMAGE, 'image'),
+    (PHOTO, 'photo'),
     (RICH, 'rich'),
     (LINK, 'link'),
     (AV, 'audiovisual')
@@ -156,7 +159,7 @@ class Document(models.Model):
     r = {}
     r.update(Document.DEFAULT_OEMBED)
     try:
-      r = json.loads(self.contents)
+      r.update(json.loads(self.contents))
     except Exception, e:
       logger.exception(e)
       r['error'] = '%s'%e
@@ -165,22 +168,56 @@ class Document(models.Model):
 
   def fill_from_metadata(self):
     metadata = self.load_metadata()
-    if 'error' in metadata:
-      # simply ignore filling from erroneous metadata.
+    
+    if 'error' in metadata: # simply ignore filling from erroneous metadata.
       return
 
-    print metadata
     if 'bibtex' in metadata:
-      print metadata, 'bibtex'
+      try:
+        metadata['details']['bibtex'] = bibtexparser.loads(metadata['bibtex']).entries[0]
+      except Exception, e:
+        logger.exception(e)
+        return
+      if not self.title and 'title' in metadata['details']['bibtex']:
+        self.title = metadata['details']['bibtex']['title']
+
+    # complete metadata section with title
+    if not 'title' in metadata or not metadata['title']:
+      metadata['title'] = self.title
+
+    # complete with rough reference
+    if not 'reference' in metadata or not metadata['reference']:
+      metadata['reference'] = metadata['title']
+
+    # 
+
+    self.metadata = metadata
+    self.contents = json.dumps(metadata, indent=1)
+
+      #bd.to_string('markdown')
       # if not title, set title.
 
 
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):
-    
-    if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
+   if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
       logger.debug('snapshot can be generated for {document:%s}' % self.id)
       
+      # generate thumbnail
+      if self.type == Document.IMAGE or self.type == Document.PHOTO:
+        logger.debug('generating thumbnail for {document:%s}' % self.id)
+        with Image(filename=self.attachment.path) as img:
+          # width = img.width
+          # height = img.height
+          # print width, height
+          
+          # img.liquid_rescale(234, 234)
+          img.save(filename=self.attachment.path + '.234x234.png')
+          
+        with open(self.attachment.path + '.234x234.png') as f:
+          self.snapshot.save(os.path.basename(self.attachment.path) + '.234x234.png', files.images.ImageFile(f))
+
+
       # print mimetype
       if self.mimetype == 'application/pdf':
         logger.debug('generating snapshot for {document:%s}' % self.id)
@@ -209,10 +246,16 @@ class Document(models.Model):
         else:
           logger.debug('snapshot generated for {document:%s}, page %s' % (self.id, page))
 
+
   def save(self, *args, **kwargs):
 
     if not self.pk:
+      # get the missing fields from metadata bibtex if any.
       self.fill_from_metadata()
+
+      # get the slug from the title.
+      if not self.slug:
+        self.slug = helpers.get_unique_slug(self, self.title)
 
       if self.url:
         #print 'verify the url:', self.url
@@ -256,23 +299,3 @@ class Document(models.Model):
 @receiver(post_save, sender=Document)
 def store_working_md(sender, instance, created, **kwargs):
   instance.store()
-
-
-@receiver(pre_save, sender=Document)
-def create_slug(sender, instance, **kwargs):
-  if not instance.pk and not instance.slug:
-    slug = slugify(instance.title)
-    slug_exists = True
-    counter = 1
-    instance.slug = slug
-    while slug_exists:
-      try:
-        slug_exits = Document.objects.get(slug=slug)
-        if slug_exits:
-            slug = instance.slug + '-' + str(counter)
-            counter += 1
-      except Document.DoesNotExist:
-        instance.slug = slug
-        break
-
-

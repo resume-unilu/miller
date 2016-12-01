@@ -103,7 +103,7 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Document
-    fields = ('id', 'metadata', 'url', 'attachment', 'slug')
+    fields = ('id', 'metadata', 'url', 'attachment', 'snapshot', 'slug')
 
 
 class LiteMentionSerializer(serializers.ModelSerializer):
