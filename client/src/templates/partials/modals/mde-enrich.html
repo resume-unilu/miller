@@ -115,26 +115,29 @@
                 <div ng-if='embed.type == "link"'>
                   <div embedit='embed.description'></div>
                 </div>
-                <div ng-if='embed.type == "rich"'>
+                <div ng-if='embed.type == "rich" || embed.type == "video"'>
                   <div ng-if='embed.html' style='height: 200px; width: 100%' embedit='embed.html' stretch="true"></div>
                   <div ng-if='!embed.title' translate='enrich.type.notitle'></div>
                   <div>
                     
                   </div>
                 </div>
-                <div><span translate='remote.url'></span>: <a ng-href='{{embed.url}}' target='_blank' translate='remote.url.placeholder'></a></div>
-                <label translate='title'></label>
-                <input class='form-control' ng-model='embed.title'></input>
+                
+                
+              </div>
+            </div>
+            <div class='section padded'>
+              <label translate='title'></label>
+              <div class='elastic-textarea-wrapper'>
+                <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='embed.title' type='text' placeholder='untitled'></textarea>
               </div>
             </div>
             <div class='section padded last'>
-              
               <label translate='bibtex reference'></label>
               <div class='elastic-textarea-wrapper'>
-                <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='reference' type='text' placeholder='@{}'></textarea>
+                <textarea class="elastic-textarea bibtex" rows="3" msd-elastic ng-model='reference' type='text' placeholder='@{}'></textarea>
               </div>
-              <div class='sans-serif description'>You can use <a href='http://truben.no/latex/bibtex/'>this web app</a> to easily build a bibtex reference</div>
-              
+              <div class='sans-serif description'>You can copy/paste from Zotero or you can genarate bibtex with <a href='http://truben.no/latex/bibtex/'>Truben</a> to easily build a bibtex reference</div>
             </div>
           </div>
 

@@ -1196,6 +1196,9 @@ h4.modal-title{
 .modal-body .drop-box-form-wrapper{
   margin-bottom: 10px;
 }
+
+
+
 /*
   Table of documents
 */
@@ -1439,11 +1442,23 @@ h4.modal-title{
   display: none;
 }
 
+
+.bibtex{
+  font-family: monospace;
+  font-size: 10px;
+  line-height: 15px;
+}
+
 /*
   oembed tiny preview
 */
 .modal .section.padded {
   padding: 0 20px 20px 20px;
+}
+
+.modal .section .description {
+  font: 13px/18px 'Lato', sans-serif;
+  padding: 10px;
 }
 
 .doc blockquote{

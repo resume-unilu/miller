@@ -210,13 +210,12 @@ class Document(models.Model):
           # width = img.width
           # height = img.height
           # print width, height
-          
+
           # img.liquid_rescale(234, 234)
           img.save(filename=self.attachment.path + '.234x234.png')
           
         with open(self.attachment.path + '.234x234.png') as f:
           self.snapshot.save(os.path.basename(self.attachment.path) + '.234x234.png', files.images.ImageFile(f))
-
 
       # print mimetype
       if self.mimetype == 'application/pdf':

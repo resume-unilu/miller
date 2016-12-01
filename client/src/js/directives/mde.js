@@ -387,7 +387,7 @@ angular.module('miller')
           }
           // case it is an url
           if(type=='url'){
-            if(!embed.title){
+            if(!embed.title){ // should try again or wait a little
               referenceModal.hide();
               SimpleMDE.drawLink(simplemde,{
                 url: url
@@ -395,6 +395,10 @@ angular.module('miller')
               return;
             }
             slug = $filter('slugify')(embed.title).substr(0,100);
+            // check reference and add this to the document metadata
+            if(reference){
+              embed.bibtex = reference;
+            }
 
             DocumentFactory.save({
               title: embed.title,

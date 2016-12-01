@@ -1,7 +1,12 @@
-
-<div class='caption title' markdown='embed.title'></div>
-<div class='copyright'><a ng-href='embed.author_url'>{{embed.author_name}}</a></div>
-
-<div class='image-wrapper'>
-  <img lazy-img='{{embed.media_url}}' />
+<div style='margin: 0; background-color:#f0f0f0; padding: 15px 0' class='row'>
+  <div class='col-sm-5'>
+    <div class='image-wrapper' style='height: 150px'>
+      <div lazy-img='{{embed.media_url}}' class='cover' style='height: 150px'/>
+    </div>
+  </div>
+  <div class='col-sm-7'>
+    <div class='caption title' embedit='embed.title'></div>
+    <div class='copyright'><a ng-href='embed.author_url' target='_blank'>{{embed.author_name}}</a></div>
+    <span translate='remote.url'></span>: <a ng-href='{{embed.url}}' target='_blank' translate='remote.url.placeholder'></a>
+  </div>
 </div>

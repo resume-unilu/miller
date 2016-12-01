@@ -1,4 +1,4 @@
-angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scope, $log, QueryParamsService, DocumentFactory, StoryFactory, OembedSearchFactory, embedService, Upload) {
+angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scope, $log, QueryParamsService, DocumentFactory, StoryFactory, OembedSearchFactory, embedService, localStorageService, Upload) {
   
   $log.info('EnrichModalCtrl ready with crazy scope, language:', $scope.language);
 
@@ -33,6 +33,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       },
       init: function(){
         $log.log('init', this);
+        localStorageService.set('lasttabname', this.name)
         this.suggest($scope.query || '');
       }
     },
@@ -71,6 +72,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       },
       init: function(){
         $log.log('init', this);
+        localStorageService.set('lasttabname', this.name)
         this.suggest($scope.query || '');
       }
     },
@@ -82,6 +84,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       },
       init: function(){
         $log.log('init', this);
+        localStorageService.set('lasttabname', this.name)
         this.suggest($scope.url || '');
       }
     },
@@ -129,6 +132,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       },
       init: function(){
         $log.log('init', this);
+        localStorageService.set('lasttabname', this.name)
         this.suggest($scope.query || '');
       }
     },
@@ -180,6 +184,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       },
       init: function(){
         $log.log('init', this);
+        localStorageService.set('lasttabname', this.name)
       }
     }
   };
@@ -252,7 +257,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
 
 
   
-  $scope.setTab('upload');
+  $scope.setTab(localStorageService.get('lasttabname') || 'favourite');
 
 
 });
