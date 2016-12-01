@@ -4,6 +4,7 @@ import pypandoc, re, os, codecs, json, logging
 import django.dispatch
 
 from actstream import action
+from actstream.actions import follow
 
 from BeautifulSoup import BeautifulSoup
 
@@ -212,7 +213,7 @@ class Story(models.Model):
         '-V', 'geometry:top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm',
         '-V','footer=%s' % settings.MILLER_TITLE,
         '-V', 'title=%s' % self.title.replace('&', '\&'),
-        '-V','abstract=%s' % self.abstract.replace('&', '\&')
+        '-V','abstract=%s' % self.abstract.replace('&', '\&') if self.abstract else ''
       ])
     os.remove(tempoutputfile)
 
@@ -301,6 +302,8 @@ def dispatcher(sender, instance, created, **kwargs):
   
   if created:  
     action.send(instance.owner, verb='created', target=instance)
+    follow(instance.owner, instance)
+
   elif instance.status != Story.DRAFT and instance.has_diffs():
     # something changed in a NON DRAFT document.
     action.send(instance.owner, verb='updated', target=instance)
