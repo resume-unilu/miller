@@ -141,7 +141,7 @@ angular.module('miller')
         if(d.covers && d.covers.length){
           var cover = d.covers[0];
 
-          d.cover_url = _.get(cover, 'metadata.thumbnail_url') || _.get(cover, 'metadata.urls.Preview') || cover.url;
+          d.cover_url = _.get(cover, 'metadata.thumbnail_url') || _.get(cover, 'metadata.urls.Preview') || _.get(cover, 'snapshot') || cover.url;
           
         }
         return d;

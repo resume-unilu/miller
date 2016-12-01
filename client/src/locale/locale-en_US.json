@@ -138,6 +138,10 @@
   
   "tab.favourite": "your library",
   "tab.all": "all resources",
+  "tab.glossary": "other publications",
+  "tab.CVCE": "from CVCE",
+  "tab.url": "from url",
+  "tab.upload": "upload",
 
   "upload.title": "Upload your writing",
   "upload.description": "Four easy steps",

@@ -4,12 +4,13 @@
   
   <div class='wrapper'>
     <div ng-if='document.metadata'>
-      <div ng-if='document.metadata.thumbnail_url' lazy-image src='document.metadata.thumbnail_url'></div>
+      <div src='document.metadata.thumbnail_url || document.metadata.urls.Preview || document.snapshot' lazy-image></div>
+      <!-- <div ng-if='document.metadata.thumbnail_url' lazy-image src='document.metadata.thumbnail_url'></div>
 
       <div ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-image src='document.metadata.urls.Preview'></div>
 
       <div ng-if='!document.metadata.thumbnail_url && !document.metadata.urls.Preview' class='lazy-box'></div>
-
+ -->
       <div class='tile'>
         <div class='title' embedit='document.metadata.title' language='language'></div>
         <div class='copyright' embedit='document.metadata.copyright'></div>
