@@ -1,8 +1,9 @@
+from actstream.models import Action
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment
-from miller.api.fields import JsonField, HitField, OptionalFileField
-
+from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField
+from miller.api import utils
 
 
 class CaptionSerializer(serializers.HyperlinkedModelSerializer):
@@ -103,7 +104,7 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Document
-    fields = ('id', 'metadata', 'url', 'attachment', 'snapshot', 'slug')
+    fields = ('id', 'type', 'metadata', 'url', 'attachment', 'snapshot', 'slug')
 
 
 class LiteMentionSerializer(serializers.ModelSerializer):
@@ -116,7 +117,13 @@ class LiteMentionSerializer(serializers.ModelSerializer):
     fields = ('id', 'slug', 'metadata', 'covers', 'tags')
 
 
-
+# Story Serializer to use in action lists
+class IncrediblyLiteStorySerializer(serializers.ModelSerializer):
+  metadata = JsonField()
+  tags     = TagSerializer(many=True)
+  class Meta:
+    model = Story
+    fields = ('id', 'slug', 'metadata', 'tags')
 
 # Story Serializer to use in lists
 class LiteStorySerializer(serializers.ModelSerializer):
@@ -280,4 +287,35 @@ class MentionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Mention
     fields = ('id', 'to_story', 'from_story')
+
+
+
+class ActionSerializer(serializers.ModelSerializer):
+  """
+  Generic serializer
+  """
+  class IncredibleField(serializers.RelatedField):
+    def to_representation(self, value):
+      if isinstance(value, User):
+        serializer = UserSerializer(value)
+      elif isinstance(value, Document):
+        serializer = LiteDocumentSerializer(value)
+      elif isinstance(value, Story):
+        serializer = IncrediblyLiteStorySerializer(value)
+      elif isinstance(value, Profile):
+        serializer = ProfileSerializer(value)
+      elif isinstance(value, Comment):
+        serializer = CommentSerializer(value)
+      else:
+        raise Exception('Unexpected type of action object')
+      return serializer.data
+
+  actor  = IncredibleField(read_only=True)
+  target = IncredibleField(read_only=True)
+  target_content_type = ContentTypeField(source='target', read_only=True)
+
+  class Meta:
+    model = Action
+    fields = ('id', 'verb', 'description', 'timestamp', 'actor', 'target', 'target_content_type') #, 'actor', 'target')
+
 

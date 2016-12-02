@@ -1,5 +1,11 @@
 import json
+
+from django.contrib.contenttypes.models import ContentType
+
 from rest_framework import serializers
+
+
+
 
 class HitField(serializers.Field):
   def to_representation(self, obj):
@@ -30,3 +36,8 @@ class JsonField(serializers.Field):
         # }
         return obj
     return obj
+
+
+class ContentTypeField(serializers.Field):
+  def to_representation(self, obj):
+    return ContentType.objects.get_for_model(obj).model

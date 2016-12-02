@@ -90,6 +90,20 @@ angular.module('miller')
     });
   })
 
+  .factory('PulseFactory', function ($resource) {
+    return $resource('/api/pulse/:fn/', {}, {
+      activities: {
+        method: 'GET',
+      },
+      reset: {
+        method: 'POST',
+        params:{
+          fn: 'reset'
+        }
+      }
+    });
+  })
+
   .factory('CollectionFactory', function ($resource) {
     return $resource('/api/collection/:id/', {}, {});
   })

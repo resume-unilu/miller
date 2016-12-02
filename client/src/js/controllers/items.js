@@ -9,6 +9,8 @@ angular.module('miller')
   .controller('ItemsCtrl', function ($scope, $log, items, model, factory, QueryParamsService) {
     $log.log('ItemsCtrl ready, n.:', items.count, '- items:',items);
 
+    // model is used to get the correct item template
+    $scope.model = model;
     /*
       Get the firs n sentence until the number of words are covered.
       return an array
@@ -22,6 +24,8 @@ angular.module('miller')
     function normalizeItems(items) {
       return items
         .map(function(d){
+          if(!d.metadata || !d.metadata.abstract)
+            return d
           // if(d.tags && d.tags.length && _.find(d.tags, {slug: 'collection'})){
           //   d.isCollection = true
           // }

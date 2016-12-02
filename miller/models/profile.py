@@ -38,6 +38,7 @@ class Profile(models.Model):
 
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
+  date_last_notified = models.DateTimeField(auto_now_add=True)
 
   newsletter    = models.CharField(max_length=1, choices=NEWSLETTER_CHOICES, default=NEWSLETTER_WEEKLY, db_index=True)
 

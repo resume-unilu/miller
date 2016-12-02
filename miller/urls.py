@@ -37,6 +37,7 @@ router.register(r'profile', api.ProfileViewSet)
 router.register(r'tag', api.TagViewSet)
 router.register(r'comment', api.CommentViewSet)
 router.register(r'author', api.AuthorViewSet)
+router.register(r'pulse', api.PulseViewSet)
 
 from django.contrib.auth import views as auth_views
 #from registration.views import RegistrationView

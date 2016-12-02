@@ -637,7 +637,30 @@ angular
       })
 
     
+    $stateProvider
+      .state('notifications', {
+        abstract: true,
+        url: '/notifications',
+        controller: 'NotificationsCtrl',
+        templateUrl: RUNTIME.static + 'templates/notifications.html',
+      })
+        .state('notifications.activities', {
+          url: '/activities',
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/items.html',
+          resolve: {
+            items: function(PulseFactory) {
+              return PulseFactory.activities().$promise;
+            },
 
+            model: function() {
+              return 'action';
+            },
+            factory: function(PulseFactory) {
+              return PulseFactory;
+            }
+          }
+        });
    
 
       /*

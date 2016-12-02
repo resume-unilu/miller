@@ -13,7 +13,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
   @detail_route(methods=['get'])
   def authors(self, request, *args, **kwargs):
-    print kwargs
     authors = Author.objects.filter(user__username=kwargs['user__username'])
     page    = self.paginate_queryset(authors)
     serializer = LiteAuthorSerializer(authors, many=True, context={'request': request})

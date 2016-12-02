@@ -2183,3 +2183,20 @@ content: "\e07a";
 }
 
 
+/*
+  stream item
+*/
+.stream-item{
+  clear: both;
+}
+.stream-item .doc .switch{
+  height: 150px;
+  width: 150px;
+  float: left;
+}
+
+.stream-item .doc .metadata{
+  min-height: 150px;
+
+}
+
