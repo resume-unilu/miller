@@ -3,13 +3,14 @@
 import os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2, bibtexparser
 
 from actstream import action
+from actstream.actions import follow
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import files
 from django.db import models
 from django.db.models.signals import pre_delete, post_save, pre_save
-from django.dispatch import receiver
+from django.dispatch import receiver, Signal
 from django.utils.text import slugify
 
 from miller import helpers
@@ -18,6 +19,7 @@ from wand.image import Image
 
 logger = logging.getLogger('miller.commands')
 
+document_ready = Signal(providing_args=["instance", "created"])
 
 
 def attachment_file_name(instance, filename):
@@ -129,15 +131,15 @@ class Document(models.Model):
 
   # download remote pdfs allowing to produce snapshots. This should be followed by save() :)
   def fill_from_url(self):
-    logger.debug('on {document:%s}' %  self.url)
+    logger.debug('on document {pk:%s}' %  self.url)
         
     if self.url: 
-      logger.debug('url: %s for {document:%s}' % (self.url, self.id))
+      logger.debug('url: %s for document {pk:%s}' % (self.url, self.pk))
 
       res = requests.get(self.url,  timeout=5, stream=True)
       if res.status_code == requests.codes.ok:
         self.mimetype = res.headers['content-type'].split(';')[0]
-        logger.debug('mimetype found: %s for {document:%s}' % (self.mimetype, self.id))
+        logger.debug('mimetype found: %s for document {pk:%s}' % (self.mimetype, self.pk))
         if self.mimetype == 'application/pdf':
           # Create a temporary file
           filename = self.url.split('/')[-1]
@@ -150,49 +152,52 @@ class Document(models.Model):
               break
             lf.write(block) # Write image block to temporary file
             
-          logger.debug('saving attachment: %s for {document:%s}' % (filename, self.id))
+          logger.debug('saving attachment: %s for document {pk:%s}' % (filename, self.pk))
         
           self.attachment.save(filename, files.File(lf))
 
 
-  def load_metadata(self):
-    r = {}
-    r.update(Document.DEFAULT_OEMBED)
-    try:
-      r.update(json.loads(self.contents))
-    except Exception, e:
-      logger.exception(e)
-      r['error'] = '%s'%e
-    return r
+  def generate_metadata(self):
+    if getattr(self, '__metadata', None) is None:
+      r = {}
+      r.update(Document.DEFAULT_OEMBED)
+      try:
+        r.update(json.loads(self.contents))
+      except Exception, e:
+        logger.exception(e)
+        r['error'] = '%s'%e
+      self.__metadata = r
+      return r
+    else:
+      return self.__metadata
+
 
 
   def fill_from_metadata(self):
-    metadata = self.load_metadata()
+    self.generate_metadata()
     
-    if 'error' in metadata: # simply ignore filling from erroneous metadata.
+    if 'error' in self.__metadata: # simply ignore filling from erroneous self.__metadata.
       return
 
-    if 'bibtex' in metadata:
+    if 'bibtex' in self.__metadata:
       try:
-        metadata['details']['bibtex'] = bibtexparser.loads(metadata['bibtex']).entries[0]
+        self.__metadata['details']['bibtex'] = bibtexparser.loads(self.__metadata['bibtex']).entries[0]
       except Exception, e:
         logger.exception(e)
         return
-      if not self.title and 'title' in metadata['details']['bibtex']:
-        self.title = metadata['details']['bibtex']['title']
+      if not self.title and 'title' in self.__metadata['details']['bibtex']:
+        self.title = self.__metadata['details']['bibtex']['title']
 
-    # complete metadata section with title
-    if not 'title' in metadata or not metadata['title']:
-      metadata['title'] = self.title
+    # complete self.__metadata section with title
+    if not 'title' in self.__metadata or not self.__metadata['title']:
+      self.__metadata['title'] = self.title
 
     # complete with rough reference
-    if not 'reference' in metadata or not metadata['reference']:
-      metadata['reference'] = metadata['title']
+    if not 'reference' in self.__metadata or not self.__metadata['reference']:
+      self.__metadata['reference'] = self.__metadata['title']
 
-    # 
 
-    self.metadata = metadata
-    self.contents = json.dumps(metadata, indent=1)
+    self.contents = json.dumps(self.__metadata, indent=1)
 
       #bd.to_string('markdown')
       # if not title, set title.
@@ -200,12 +205,13 @@ class Document(models.Model):
 
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):
-   if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
-      logger.debug('snapshot can be generated for {document:%s}' % self.id)
+    logger.debug('document {pk:%s, mimetype:%s, type:%s} init snapshot' % (self.pk, self.mimetype, self.type))
       
+    if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
+      logger.debug('document {pk:%s, mimetype:%s, type:%s} snapshot can be generated' % (self.pk, self.mimetype, self.type))
       # generate thumbnail
-      if self.type == Document.IMAGE or self.type == Document.PHOTO:
-        logger.debug('generating thumbnail for {document:%s}' % self.id)
+      if self.mimetype == 'image/png' or self.mimetype == 'image/jpeg' or self.mimetype == 'image/gif' or self.type == Document.IMAGE or self.type == Document.PHOTO:
+        logger.debug('document {pk:%s, mimetype:%s, type:%s} generating IMAGE thumbnail...' % (self.pk, self.mimetype, self.type))
         with Image(filename=self.attachment.path) as img:
           # width = img.width
           # height = img.height
@@ -215,11 +221,15 @@ class Document(models.Model):
           img.save(filename=self.attachment.path + '.234x234.png')
           
         with open(self.attachment.path + '.234x234.png') as f:
-          self.snapshot.save(os.path.basename(self.attachment.path) + '.234x234.png', files.images.ImageFile(f))
+          # this save its parent... 
+          self.snapshot.save(os.path.basename(self.attachment.path) + '.234x234.png', files.images.ImageFile(f), save=False)
+          self._dirty = True
+          logger.debug('document {pk:%s, mimetype:%s, type:%s} IMAGE thumbnail done.' % (self.pk, self.mimetype, self.type))
+
 
       # print mimetype
-      if self.mimetype == 'application/pdf':
-        logger.debug('generating snapshot for {document:%s}' % self.id)
+      elif self.mimetype == 'application/pdf':
+        logger.debug('document {pk:%s, mimetype:%s, type:%s} generating PDF snapshot...' % (self.pk, self.mimetype, self.type))
       
         pdf_im = PyPDF2.PdfFileReader(self.attachment)
 
@@ -237,25 +247,52 @@ class Document(models.Model):
             img.save(filename=self.attachment.path + '.png')
 
           with open(self.attachment.path + '.png') as f:
-            self.snapshot.save(os.path.basename(self.attachment.path) + '.png', files.images.ImageFile(f))
+            self.snapshot.save(os.path.basename(self.attachment.path) + '.png', files.images.ImageFile(f), save=False)
+            self._dirty = True
+            logger.debug('document {pk:%s, type:%s} PDF snapshot done.' % (self.pk,self.type))
 
         except Exception as e:
           logger.exception(e)
-          print 'could not save snapshot of the required resource', self.id
+          print 'could not save snapshot of the required resource', self.pk
         else:
-          logger.debug('snapshot generated for {document:%s}, page %s' % (self.id, page))
+          logger.debug('snapshot generated for document {pk:%s}, page %s' % (self.pk, page))
+    else:
+      logger.debug('document {pk:%s} snapshot cannot be generated.' % self.pk)
+      
 
+  def create_oembed(self):
+    """
+    Create a rich oembed for uploaded document, if needed.
+    """
+    logger.debug('document {pk:%s, mimetype:%s} init oembed' % (self.pk, self.mimetype))
+    if self.mimetype == 'application/pdf' and self.attachment and hasattr(self.attachment, 'path'):
+      self.generate_metadata()
+      url = '%s%s' %(settings.MILLER_SETTINGS['host'], self.attachment.url)
+      self.__metadata['html'] = "<iframe src='https://drive.google.com/viewerng/viewer?url=%s&embedded=true' width='300' height='200' style='border: none;'></iframe>" % url
+      self.__metadata['type'] = 'rich'
+      self.type = Document.RICH # yep so that client can use the oembed correctly (rich, video, photo, image).
+      self.contents = json.dumps(self.__metadata, indent=1)
+      self._dirty=True
+      logger.debug('document {pk:%s} oembed done.' % self.pk)
+      
+    else:
+      logger.debug('document {pk:%s, mimetype:%s} cannot create oembed.' % (self.pk, self.mimetype))
+      
 
   def save(self, *args, **kwargs):
-
+    """
+    Override ortodox save method. Check for duplicates on OPTIONAL fields (url in this case)
+    """
+    if not hasattr(self, '_saved'):
+      self._saved = 1
+    else:
+      self._saved = self._saved + 1
+    logger.debug('document {pk:%s} init save, time=%s' % (self.pk, self._saved))
+    
     if not self.pk:
       # get the missing fields from metadata bibtex if any.
       self.fill_from_metadata()
-
-      # get the slug from the title.
-      if not self.slug:
-        self.slug = helpers.get_unique_slug(self, self.title)
-
+      
       if self.url:
         #print 'verify the url:', self.url
         try:
@@ -282,6 +319,7 @@ class Document(models.Model):
             # print "do not update the content"
             self.contents = doc.contents
         except Document.DoesNotExist:
+          logger.debug('document {pk:%s,url:%s} from url' % (self.pk, self.url[:10]))
           super(Document, self).save(*args, **kwargs)
           action.send(self.owner, verb='created', target=self)
           
@@ -291,10 +329,70 @@ class Document(models.Model):
        
     else:
       super(Document, self).save(*args, **kwargs)
-      # action.send(self.owner, verb='updated', target=self)
+
+
+@receiver(pre_save, sender=Document)
+def complete_instance(sender, instance, **kwargs):
+  logger.debug('document {pk:%s} @pre_save' % instance.pk)
+  if not instance.slug:
+    instance.slug = helpers.get_unique_slug(instance, instance.title, max_length=68)
+    logger.debug('document {pk:%s, slug:%s} @pre_save slug generated' % (instance.pk, instance.slug))
+
+
+@receiver(post_save, sender=Document)
+def dispatcher(sender, instance, created, **kwargs):
+  """
+  Generic post_save handler. Dispatch a document_ready signal.
+  If receiver need to update the instance, they just need to put the property `_dirty`
+  """
+  if getattr(instance, '_dispatched', None) is None:
+    instance._dispatched = True
+  else:
+    logger.debug('document@post_save  {pk:%s} dispatching already dispatched. Skipping.' % instance.pk)
+    # done already.
+    return
+  
+  logger.debug('document@post_save  {pk:%s} dispatching @document_ready...' % instance.pk)
+  
+  document_ready.send(sender=sender, instance=instance, created=created)
+  
+  if getattr(instance, '_dirty', None) is not None:
+    logger.debug('document@post_save  {pk:%s} dirty instance. Need to call instance.save()..' % instance.pk)
+    instance.save()
+  else:
+    logger.debug('document@post_save  {pk:%s} no need to save the instance again.' % instance.pk)
+  if created:  
+    follow(instance.owner, instance)
 
 
 # store in whoosh
-@receiver(post_save, sender=Document)
+@receiver(document_ready, sender=Document)
 def store_working_md(sender, instance, created, **kwargs):
+  logger.debug('document@document_ready {pk:%s}: storing in whoosh' % instance.pk)
   instance.store()
+
+
+@receiver(document_ready, sender=Document)
+def create_snapshot(sender, instance, created, **kwargs):
+  if created and instance.attachment and hasattr(instance.attachment, 'path'):
+    logger.debug('document@document_ready {pk:%s} need to create snapshot' % instance.pk)
+    instance.create_snapshot()
+  else:
+    logger.debug('document@document_ready {pk:%s} NO need to create snapshot.' % instance.pk)
+
+
+@receiver(document_ready, sender=Document)
+def create_oembed(sender, instance, created, **kwargs):
+  if created:
+    try:
+      logger.debug('document@document_ready {pk:%s}: need to create oembed' % instance.pk)
+      instance.create_oembed()
+    except Exception as e:
+      logger.exception(e)
+  else:
+    logger.debug('document@document_ready {pk:%s}: NO need to create oembed.' % instance.pk)
+
+
+
+
+

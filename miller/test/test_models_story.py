@@ -57,4 +57,4 @@ class StoryTest(TestCase):
     self._test_create()
     self._test_download_pdf()
     self._test_delete()
-    # self._test_delete_user()
+    self._test_delete_user()

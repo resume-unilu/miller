@@ -27,7 +27,7 @@ from simplemde.fields import SimpleMDEField
 
 
 
-logger = logging.getLogger('miller')
+logger = logging.getLogger('miller.commands')
 
 story_ready = django.dispatch.Signal(providing_args=["instance", "created"])
 
@@ -223,7 +223,7 @@ class Story(models.Model):
   # hook init so that during save we won't keep data
   def __init__(self, *args, **kwargs):
     super(Story, self).__init__(*args, **kwargs)
-    self.__original = (
+    self._original = (
       ('status', self.status),
       ('metadata', self.metadata),
       ('contents', self.contents),
@@ -233,7 +233,7 @@ class Story(models.Model):
 
   # check if the saveable instance differs from the original stored one. Cfr the overriding of __init__ function
   def has_diffs(self):
-    for field, value in self.__original:
+    for field, value in self._original:
       if getattr(self, field) != value:
         return True
     return False
@@ -241,6 +241,12 @@ class Story(models.Model):
 
   # save hook
   def save(self, *args, **kwargs):
+    if not hasattr(self, '_saved'):
+      self._saved = 1
+    else:
+      self._saved = self._saved + 1
+    logger.debug('story {pk:%s} init save, time=%s' % (self.pk, self._saved))
+    
     if not self.pk and not self.slug:
       slug = slugify(self.title)
       slug_exists = True
@@ -288,22 +294,29 @@ class Story(models.Model):
 # generic story_ready handlers ;) store in whoosh
 @receiver(post_save, sender=Story)
 def dispatcher(sender, instance, created, **kwargs):
-  if not hasattr(instance, '__dispatcher'):
-    instance.__dispatcher = True
+  """
+  Generic post_save handler. Dispatch a story_ready signal.
+  If receiver need to update the instance, they just need to put the property `_dirty`
+  """
+  if not hasattr(instance, '_dispatcher'):
+    instance._dispatcher = True
   else:
+    logger.debug('story@post_save {pk:%s} dispatching already dispatched. Skipping.' % instance.pk)
     return
   # dispatch (call). 
-  logger.debug('(story {pk:%s}) dispatch @story_ready' % instance.pk)
+  logger.debug('story@post_save {pk:%s} dispatching @story_ready...' % instance.pk)
+  
   story_ready.send_robust(sender=sender, instance=instance, created=created)
   
-  if hasattr(instance, '__dirty'):
+  if getattr(instance, '_dirty', None) is not None:
+    logger.debug('story@post_save {pk:%s} instance is dirty. Need to call instance.save()..' % instance.pk)
     instance.save()
-    logger.debug('(story {pk:%s}) saved.' % instance.pk)
+  else:
+    logger.debug('story@post_save  {pk:%s} no need to save the instance again.' % instance.pk)
   
   if created:  
     action.send(instance.owner, verb='created', target=instance)
     follow(instance.owner, instance)
-
   elif instance.status != Story.DRAFT and instance.has_diffs():
     # something changed in a NON DRAFT document.
     action.send(instance.owner, verb='updated', target=instance)
@@ -335,7 +348,7 @@ def transform_source(sender, instance, created, **kwargs):
   if bool(instance.source):
     logger.debug('(story {pk:%s}) @story_ready transform_source: converting...' % instance.pk)
     instance.convert()
-    instance.__dirty = True
+    instance._dirty = True
   else:
     logger.debug('(story {pk:%s}) @story_ready transform_source: skipping.' % instance.pk)
   
@@ -349,7 +362,7 @@ def transform_source(sender, instance, created, **kwargs):
 def create_first_author(sender, instance, created, **kwargs):
   if created:
     instance.authors.add(instance.owner.authorship.first())
-    instance.__dirty = True
+    instance._dirty = True
     logger.debug('(story {pk:%s}) @story_ready: {username:%s}" done.' % (instance.pk, instance.owner.username))
 
 

@@ -140,6 +140,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       name: 'upload', 
       items: [],
       undo: function(){
+        $scope.uploadable = null;
         $scope.uploadablefile = {};
       },
       // stands for upload, suggest is a placeholder here.
@@ -150,13 +151,19 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
           $log.warn('no file is selected');
           return
         }
-        debugger
+        
+        var types = {
+          'image/jpg': 'image',
+          'image/png': 'image',   
+          'application/pdf': 'pdf'
+        };
+
         // uploadable has value, name and size.
         Upload.upload({
           url: '/api/document/',
           data: {
             title: $scope.uploadablefile.name,
-            type: $scope.uploadablefile.type.split('/').shift(),
+            type: types[$scope.uploadablefile.type] || $scope.uploadablefile.type.split('/').shift(),
             mimetype: $scope.uploadablefile.type,
             metadata: JSON.stringify({
               bibtex: $scope.reference
@@ -184,6 +191,9 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       },
       init: function(){
         $log.log('init', this);
+        // forget previous upload
+        $scope.uploadable = null;
+        $scope.uploadablefile = {};
         localStorageService.set('lasttabname', this.name)
       }
     }
