@@ -104,7 +104,7 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Document
-    fields = ('id', 'type', 'metadata', 'url', 'attachment', 'snapshot', 'slug')
+    fields = ('id', 'type', 'metadata', 'url', 'attachment', 'snapshot', 'slug', 'mimetype')
 
 
 class LiteMentionSerializer(serializers.ModelSerializer):
@@ -250,7 +250,7 @@ class CreateDocumentSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Document
-    fields = ('id', 'owner', 'type','short_url', 'title', 'slug', 'metadata', 'copyrights', 'url', 'attachment', 'snapshot')
+    fields = ('id', 'owner', 'type','short_url', 'title', 'slug', 'metadata', 'copyrights', 'url', 'attachment', 'snapshot', 'mimetype')
   
 
   # def create(self, validated_data):
