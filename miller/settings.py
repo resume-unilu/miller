@@ -346,6 +346,7 @@ CSRF_COOKIE_NAME = 'Miller'
 
 MILLER_SETTINGS = {
   'wshost': MILLER_WS_HOST,
+  'host': 'http://', #check your local_settings.py file
   'debug': MILLER_DEBUG,
   'disqus': '',
   'socialtags': 'resume-unilu', # socila tags when sharing on twitter

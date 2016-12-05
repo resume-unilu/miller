@@ -43,7 +43,7 @@ STATIC_ROOT = '/var/www/miller/dist'
 
 # modify settings here
 MILLER_SETTINGS['debug'] = MILLER_DEBUG
-
+MILLER_SETTINGS['host'] = 'https://yourwebsite.miller'
 # e.g modify with your smtp info
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
