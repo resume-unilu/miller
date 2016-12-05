@@ -8,18 +8,18 @@ import shortuuid, os, json, logging
 
 logger = logging.getLogger('miller')
 
-"""
-Helpers.
 
-usage sample:
+def get_unique_slug(instance, trigger, max_length=140):
+  """
+  generate a slug that do not exists in db, incrementing the number. usage sample:
 
   import miller.helpers
 
-  print helpers.echo()
+  yom = YourModel()
+  print helpers.get_unique_slug(yom, yom.title)
 
-"""
-def get_unique_slug(instance, trigger):
-  slug = slugify(trigger)
+  """
+  slug = slugify(trigger)[:max_length]
   slug_exists = True
   counter = 1
   _slug = u'%s' % slug
