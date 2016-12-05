@@ -24,7 +24,8 @@
   "results.amount": "({{count}} results)",
 
   "document.preview": "(preview)",
-
+  "drop.to.upload": "drop one image or one pdf file, or click to select one from your computer",
+  
   "enrich.fromUrl": "depuis un url",
   "enrich.glossary": "add glossary term",
   "enrich.publications": "publication",

@@ -1840,7 +1840,14 @@ div.profile-others .profile-thumb{
 }
 
 .drop-box-form-wrapper .uploadable{
-  margin: 20px;
+  margin: 10px 0px 0px 0;
+}
+
+.drop-box-form-wrapper .uploadable .loading-bar{
+  height: 5px;
+  width: 5px;
+  background-color: #4ECDC4;
+  transition: width .36s ease-in-out;
 }
 
 .drop-box-form-wrapper label, .drop-box-form-wrapper .button-wrapper{

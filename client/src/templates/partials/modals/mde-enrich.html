@@ -150,13 +150,17 @@
                     <div ngf-drop ngf-select ng-model="uploadable" class="drop-box sans-serif" 
         ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="true"
         accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
-        ngf-pattern="'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document'"><span translate="Drop docx or click to upload"></span></div>
+        ngf-pattern="'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document'"><span translate="drop.to.upload"></span></div>
                   </div>
-                  <div ng-show='uploadablefile.size'>
-                    <span>{{uploadablefile.name}}</span>
-                    <span>{{uploadablefile.type}}</span>
-                    <span>{{uploadablefile.size}}</span>
-                    <div class='btn-line-group'><a class='btn-line' ng-click='undo()' translate='button.undo'></a></div>
+                  <div class="uploadable" ng-show='uploadablefile.size'>  
+                    <div>
+                      <span>{{uploadablefile.name}}</span>
+                      <span>{{uploadablefile.type}}</span>
+                      <span>{{uploadablefile.size}}</span>
+                      <div class='btn-line-group'><a class='btn-line' ng-click='undo()' translate='button.undo'></a></div>
+                    </div>
+                    <div class="loading-bar" style='width:{{uploadablefile.progressPercentage|| 0}}%'></div>
+                    
                     <div ng-if='selectedDocument' ng-init='document=selectedDocument' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'>
                     </div>
                   </div>
