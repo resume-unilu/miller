@@ -17,8 +17,8 @@
       <div class="main">
         <div class="box sidebar"></div>
         <div class="box content" ng-if='fullsized.type == "photo" || fullsized.type == "image" || fullsized.type == "rich" || fullsized.type == "video"'>
-          <div class='embedded' ng-if='fullsized.metadata.urls.Publishable'>
-            <div class='image' lazy-image size='contain' src='fullsized.metadata.urls.Publishable'></div>
+          <div class='embedded' ng-if='fullsized.metadata.urls.Publishable || fullsized.attachment'>
+            <div class='image' lazy-image size='contain' src='fullsized.metadata.urls.Publishable || fullsized.attachment'></div>
           </div>
           <div class='embedded' ng-if='!fullsized.metadata.urls.Publishable && fullsized.metadata.html' stretch='true' embedit='fullsized.metadata.html'></div>
           <div class='embedded' ng-if='!fullsized.metadata.urls.Publishable && fullsized.metadata.url && !fullsized.metadata.html'>

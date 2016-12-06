@@ -227,7 +227,7 @@ class DocumentSerializer(serializers.ModelSerializer):
   snapshot = OptionalFileField(read_only=True)
   class Meta:
     model = Document
-    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'snapshot', 'copyrights')
+    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'snapshot', 'copyrights', 'attachment')
 
 
 class MatchingDocumentSerializer(serializers.ModelSerializer):
