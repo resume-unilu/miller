@@ -187,9 +187,20 @@ class CreateStorySerializer(serializers.ModelSerializer):
   )
 
   class Meta:
-    model = Story
-    fields='__all__'
+    model  = Story
+    fields = '__all__'
 
+
+
+# Serializer when creating stories. It automatically add the owner as author
+class CreateCommentSerializer(serializers.ModelSerializer):
+  owner = serializers.HiddenField(
+    default=serializers.CurrentUserDefault()
+  )
+
+  class Meta:
+    model  = Comment
+    fields = '__all__'
 
 
 ##############

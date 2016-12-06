@@ -54,10 +54,10 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
         StoryFactory.get($s.next || {
           filters: JSON.stringify(query.length > 2? {
             contents__icontains: query,
-            tags__category: 'writing',
+            tags__category__in: ['writing', 'blog'],
             status: 'public'
           } : {
-            tags__category: 'writing',
+            tags__category__in: ['writing', 'blog'],
             status: 'public'
           })
         },function(res){

@@ -12,10 +12,10 @@ from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
-from miller.models import Story, Tag, Document, Caption
+from miller.models import Story, Tag, Document, Caption, Comment
 from miller.api.utils import filtersFromRequest, orderingFromRequest
 from miller.api.fields import OptionalFileField, JsonField
-from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer
+from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer
 
 
 # ViewSets define the view behavior. Filter by status
@@ -163,33 +163,16 @@ class StoryViewSet(viewsets.ModelViewSet):
     return Response(serializer.data)
 
 
-  # @list_route(methods=['post', 'patch'], parser_classes=(FormParser, MultiPartParser,))
-  # def upload_docx(self, request, pk=None):
-  #   queryset = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()))
+  @detail_route(methods=['get', 'post'])
+  def comments(self, request, pk=None):
+    if pk.isdigit():
+      sel = Q(story__pk=pk)
+    else:
+      sel = Q(story__slug=pk)
 
-  #   print request.FILES
-  #   docx = request.FILES.get('docx')
-
-  #   if not docx:
-  #     return Response(status=404)
-
-  #   print 'uploaded', docx
-    
-
-  #   # save, then return tagged items according to tagform
-  #   serializer = CreateStorySerializer(
-  #     context={'request': request},
-  #     data=request.data
-  #   )
-
-  #   if not serializer.is_valid():
-  #     print serializer.errors
-  #     return Response(status=400)
-    
-  #   serializer.save(source=docx)
-
-
-  #   return Response(serializer.data)
-  
+    coms = Comment.objects.filter(sel).filter(Q(owner=request.user))
+    page    = self.paginate_queryset(coms)
+    serializer = CommentSerializer(page, many=True, context={'request': request})
+    return self.get_paginated_response(serializer.data)
 
   
