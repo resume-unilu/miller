@@ -19,10 +19,10 @@ angular
     'LocalStorageModule',
     'pascalprecht.translate',
     // 'angular-embedly',
-    'ngDisqus',
+    // 'ngDisqus',
     'angular-embed',
     'angular-embed.handlers',
-
+    'angularLoad',
     'angularLazyImg',
     'ngFileUpload',
     '720kb.socialshare'
@@ -47,12 +47,12 @@ angular
   /*
     disqus configuration
   */
-  .config(function($disqusProvider, RUNTIME) {
-    if(RUNTIME.settings.disqus){
-      $disqusProvider.setShortname(RUNTIME.settings.disqus);
-    }
+  // .config(function($disqusProvider, RUNTIME) {
+  //   if(RUNTIME.settings.disqus){
+  //     $disqusProvider.setShortname(RUNTIME.settings.disqus);
+  //   }
 
-  })
+  // })
   /*
     prefix
   */

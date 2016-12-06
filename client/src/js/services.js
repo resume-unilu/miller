@@ -143,6 +143,12 @@ angular.module('miller')
     });
   })
   /*
+    Comments and other beasts
+  */
+  .factory('CommentFactory', function($resource) {
+    return $resource('/api/comment/:id/', {},{})
+  })
+  /*
     list tags
   */
   .factory('TagFactory', function ($resource) {

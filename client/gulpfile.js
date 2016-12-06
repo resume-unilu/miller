@@ -34,13 +34,13 @@ gulp.task('libs', function() {
     './src/js/lib/jquery-2.2.1.min.js',
     './src/js/lib/md5.js',
     './src/js/lib/lodash.custom.min.js',
-    './src/js/lib/marked.min.js',
+    // './src/js/lib/marked.min.js',
     './src/js/lib/markdown-it.min.js',
     './src/js/lib/markdown-it-footnote.min.js',
     './src/js/lib/markdown-it-container.min.js',
     './src/js/lib/markdown-it-attrs.min.js',
-    './src/js/lib/simplemde.min.js',
-    './src/js/lib/bibtexParse.js',
+    // './src/js/lib/simplemde.min.js',
+    // './src/js/lib/bibtexParse.js',
     './src/js/lib/reconnecting-websocket.min.js',
 
     './src/js/lib/angular.min.js', 
@@ -49,8 +49,9 @@ gulp.task('libs', function() {
     './src/js/lib/angular-cookies.min.js', 
     './src/js/lib/angular-sanitize.min.js', 
 
-    './src/js/lib/angular-disqus.min.js',
+    // './src/js/lib/angular-disqus.min.js',
     './src/js/lib/angular-debounce.js', 
+    './src/js/lib/angular-load.min.js',
     // './src/js/lib/angular-animate.min.js',
     './src/js/lib/angular-socialshare.min.js',
     './src/js/lib/angular-ui-router.min.js', 
@@ -69,7 +70,7 @@ gulp.task('libs', function() {
     './src/js/lib/angular-lazy-img.min.js'
   ])
     .pipe($.concat('scripts.lib.min.js'))
-    // .pipe($.uglify())
+    .pipe($.uglify())
     // Output files
     .pipe(gulp.dest('./src/js'))
     .pipe($.size({title: 'js'}))

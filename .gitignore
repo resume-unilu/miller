@@ -26,3 +26,4 @@ node_modules
 # docx and other temp files
 ~*.*
 *.rdb
+docs/
