@@ -25,6 +25,7 @@ logger = logging.getLogger('miller')
 def _share(request=None, extra={}):
   d = {
     'title': settings.MILLER_TITLE,
+    'description': settings.MILLER_DESCRIPTION,
     'debug': settings.MILLER_DEBUG,
     'settings': json.dumps(settings.MILLER_SETTINGS),
     'oembeds': json.dumps(settings.MILLER_OEMBEDS)
