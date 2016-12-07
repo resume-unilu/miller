@@ -143,7 +143,8 @@ class Document(models.Model):
         if self.mimetype == 'application/pdf':
           # Create a temporary file
           filename = self.url.split('/')[-1]
-          
+          filename = filename[:80]
+          print 'filename', filename
           lf = tempfile.NamedTemporaryFile()
 
           # Read the streamed image in sections
@@ -247,7 +248,7 @@ class Document(models.Model):
             img.save(filename=self.attachment.path + '.png')
 
           with open(self.attachment.path + '.png') as f:
-            self.snapshot.save(os.path.basename(self.attachment.path) + '.png', files.images.ImageFile(f), save=False)
+            self.snapshot.save(os.path.basename(self.attachment.path)[:100] + '.png', files.images.ImageFile(f), save=False)
             self._dirty = True
             logger.debug('document {pk:%s, type:%s} PDF snapshot done.' % (self.pk,self.type))
 
