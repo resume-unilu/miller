@@ -17,6 +17,13 @@ angular.module('miller')
         })
     }
   })
+  .filter('multilanguage', function($rootScope) {
+    return function(obj) {
+      if(typeof obj != 'object')
+        return obj;
+      return obj[$rootScope.language]
+    }
+  })
   /*
     Replace quotes
   */

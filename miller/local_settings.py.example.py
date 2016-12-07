@@ -26,6 +26,7 @@ AUTHENTICATION_BACKENDS = (
 # SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'XXXYYYZZ.apps.googleusercontent.com'
 # SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 
+# SOCIAL_AUTH_FACEBOOK_APPID = 'XXXXXXXX' # insert here your facebook APPID
 
 # """
 # DJANGO_SEO for hosted prerender.io
