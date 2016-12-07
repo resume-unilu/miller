@@ -4,7 +4,7 @@
   
   <div class='wrapper'>
     <div ng-if='document.metadata'>
-      <div src='document.metadata.thumbnail_url || document.metadata.urls.Preview || document.snapshot' lazy-image></div>
+      <div src='document.metadata.thumbnail_url || document.metadata.urls.Preview || document.snapshot || document.metadata.url' lazy-image></div>
       <!-- <div ng-if='document.metadata.thumbnail_url' lazy-image src='document.metadata.thumbnail_url'></div>
 
       <div ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-image src='document.metadata.urls.Preview'></div>
