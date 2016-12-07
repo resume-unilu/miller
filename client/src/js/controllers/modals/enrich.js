@@ -162,11 +162,12 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
         Upload.upload({
           url: '/api/document/',
           data: {
-            title: $scope.uploadablefile.name,
+            title: $scope.uploadablefile.title || $scope.uploadablefile.name,
             type: types[$scope.uploadablefile.type] || $scope.uploadablefile.type.split('/').shift(),
             mimetype: $scope.uploadablefile.type,
             metadata: JSON.stringify({
-              bibtex: $scope.reference
+              bibtex: $scope.reference,
+              copyright: $scope.uploadablefile.copyright
             }),
             attachment: $scope.uploadablefile.f
           }
@@ -175,7 +176,8 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
           if(res.status == 201){
             $log.debug('UploadCtrl -> upload() status:', 'success!', res.data)
             // add document
-            $scope.selectDocument(res.data);
+            $scope.uploadablefile.document = res.data;
+            $scope.selectDocument($scope.uploadablefile.document);
           } else {
             $log.error(res);
             // error handling?

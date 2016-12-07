@@ -1080,7 +1080,9 @@ ul.errorlist{
 .tags-input .autocomplete .suggestion-item em{font:normal bold 16px "Lato",sans-serif;color:#000;background-color:#fff}
 
 
-
+.mde{
+  margin-top: 50px;
+}
 .mde .wand{
   position: absolute;
   left: -30px;
@@ -1453,7 +1455,11 @@ h4.modal-title{
   oembed tiny preview
 */
 .modal .section.padded {
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 0px 20px;
+}
+
+.modal .section.padded.last{
+  padding-bottom: 10px;
 }
 
 .modal .section .description {

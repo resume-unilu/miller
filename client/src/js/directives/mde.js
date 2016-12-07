@@ -24,6 +24,8 @@ angular.module('miller')
           // active tab
           scope.activeStates = [];
 
+          // toggle mde directive display to block.
+          scope.isReady = true; 
           // preview enabled or disabled
           scope.isPreviewEnabled = false;
 
@@ -507,7 +509,7 @@ angular.module('miller')
           };
           
           // take into account custom font-face rendering.
-          $timeout(init, 500);
+          $timeout(init, 50);
           return;
 
         })
