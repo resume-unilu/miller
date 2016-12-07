@@ -1849,6 +1849,16 @@ div.profile-others .profile-thumb{
   margin: 10px 0px 0px 0;
 }
 
+.drop-box-form-wrapper .uploadable .doc-uploaded .title{
+  padding: 10px 0;
+  font-weight: bold;
+}
+
+.drop-box-form-wrapper .uploadable .doc-uploaded .copyright{
+  font-size: 11px;
+  line-height: 18px;
+}
+
 .drop-box-form-wrapper .uploadable .loading-bar{
   height: 5px;
   width: 5px;

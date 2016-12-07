@@ -158,32 +158,42 @@
                       <span>{{uploadablefile.type}}</span>
                       <span>{{uploadablefile.size}}</span>
                       <div class='btn-line-group'><a class='btn-line' ng-click='undo()' translate='button.undo'></a></div>
-                      <div class='btn-line-group primary'>
-                        <button class='btn-line' ng-click='upload()' translate='button.upload'></button>
-                      </div>
+                      
                     </div>
                     <div class="loading-bar" style='width:{{uploadablefile.progressPercentage|| 0}}%'></div>
                     
-                    <div ng-if='uploadablefile.document' ng-init='document=uploadablefile.document' ng-include='"templates/partials/embeds/document.html"|prefixTemplate'></div>
+                    <div class='doc-uploaded' ng-if='uploadablefile.document' ng-init='document=uploadablefile.document'>
+                      <div class="row">
+                        <div class="col-sm-5">
+                          <div class="cover" style='height: 180px;' lazy-img='{{document.snapshot}}'></div>
+                        </div>
+                        <div class="col-sm-7">
+                          <div class='title sans-serif' embedit='document.metadata.title'></div>
+                          <div class='copyright' embedit='document.metadata.copyright'></div>
+                        </div>
+                      </div>
+
+                    </div>
                   </div>
                 </form>
               </div>
               <div ngf-no-file-drop><span translate='feature.unsupported.dragdrop'></span></div>
             </div>
             <!-- @todo -->
-            <div class='section padded'>
+            <div class='section padded' ng-show='!uploadablefile.document'>
+
               <label translate='title'></label>
               <div class='elastic-textarea-wrapper'>
                 <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='uploadablefile.title' type='text' placeholder='untitled'></textarea>
               </div>
             </div>
-            <div class='section padded'>
+            <div class='section padded' ng-show='!uploadablefile.document'>
               <label translate='copyright'></label>
               <div class='elastic-textarea-wrapper'>
                 <textarea class="elastic-textarea" rows="3" msd-elastic ng-model='uploadablefile.copyright' type='text' placeholder='untitled'></textarea>
               </div>
             </div>
-            <div class='section padded last'>
+            <div class='section padded last' ng-show='!uploadablefile.document'>
               <label translate='bibtex reference'></label>
               <div class='sans-serif description' translate='bibtex.howto'></div> 
               <div class='elastic-textarea-wrapper'>
@@ -191,7 +201,11 @@
               </div>
               
             </div>
-            
+            <div class='section padded last center' ng-show='!uploadablefile.document'>
+              <div class='btn-line-group' ng-class='{"primary":uploadablefile.size}'>
+                <button class='btn-line' ng-click='upload()' translate='button.upload'></button>
+              </div>
+            </div>
           </div>
 
           <div ng-show="tab.name == 'iframe'" class="tab-content">
@@ -210,7 +224,8 @@
 
       </div>
       <div class="modal-footer">
-        <span class='btn-line-group'><button type="button" class="btn-line {{isSomethingSelected?'active':''}}" ng-click="addDocument(tab.name, contents, reference, url, embed)" translate='button.add'></button>
+        <span class='btn-line-group' ng-class='{"primary": isSomethingSelected}'>
+          <button type="button" class="btn-line" ng-class='{"active": isSomethingSelected}' ng-click="addDocument(tab.name, contents, reference, url, embed)" translate='button.add'></button>
         </span>
         <span class='btn-line-group'>
         <button type="button" class="btn-line" ng-click="$hide()">Close</button>

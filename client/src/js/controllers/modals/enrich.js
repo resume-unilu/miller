@@ -157,7 +157,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
           'image/png': 'image',   
           'application/pdf': 'pdf'
         };
-
+        debugger
         // uploadable has value, name and size.
         Upload.upload({
           url: '/api/document/',
@@ -176,6 +176,7 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
           if(res.status == 201){
             $log.debug('UploadCtrl -> upload() status:', 'success!', res.data)
             // add document
+            $scope.uploadablefile.progressPercentage = 0;
             $scope.uploadablefile.document = res.data;
             $scope.selectDocument($scope.uploadablefile.document);
           } else {
