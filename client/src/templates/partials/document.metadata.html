@@ -1,10 +1,11 @@
 <div class='metadata {{document.type}}'>
-  <div ng-if='!document.metadata.details'>
+  <div ng-if='!document.metadata.details.title'>
     <button class='btn btn-line' ng-if='document._type == "doc"||document._type == "voc"' ng-click='alignTo(document._index, $event)'>
       <span class='icon icon-type-{{document.type||document._type}}'></span><span class='type {{document.type}}'></span>
     </button>
     <span ng-if='document.type!="link"' class='title' embedit='document.metadata.title' language='language'></span>
-    <a  ng-if='document.type=="link"' target='_blank' ng-href='{{document.metadata.url}}'><span class='title' embedit='document.metadata.title' language='language'></span></a>
+
+    <a ng-if='document.type=="link"' target='_blank' ng-href='{{document.metadata.url}}'><span class='title' embedit='document.metadata.title' language='language'></span></a>
     
     <div ng-if='document.metadata.abstract'  class='abstract'>
       <span embedit='document.metadata.abstract' language='language'></span>
@@ -25,7 +26,7 @@
   </div>
   
   <!-- having details -->
-  <div ng-if='document.metadata.details'>
+  <div ng-if='document.metadata.details.title'>
     <button class='btn btn-line' ng-if='document._type == "doc"||document._type == "voc"' ng-click='alignTo(document._index, $event)'>
       <span class='icon icon-type-{{document.type||document._type}}'></span>
     </button>

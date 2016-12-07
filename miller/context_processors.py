@@ -11,6 +11,7 @@ def default(request):
   context_settings = {
     'title': settings.MILLER_TITLE,
     'debug': settings.MILLER_DEBUG,
+    'host': settings.MILLER_SETTINGS['host'], # get_host() fails behind proxy. we do it manually in settings.
     'settings': json.dumps(settings.MILLER_SETTINGS),
     'oembeds': json.dumps(settings.MILLER_OEMBEDS),
     'profile': json.dumps( profile )
