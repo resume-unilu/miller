@@ -7,7 +7,9 @@
 angular.module('miller')
   .controller('IndexCtrl', function ($scope, $log, writings, news) {
     $log.debug('IndexCtrl welcome', writings, news);
-
+    $scope.setOG({
+      type: 'platform'
+    });
     /*
       Get the firs n sentence until the number of words are covered.
       return an array

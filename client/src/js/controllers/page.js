@@ -12,7 +12,7 @@ angular.module('miller')
     $scope.md = page.data;
 
     // colllect media
-    
+    $scope.setOG();
     // collect h1, h2, h3
   });
   

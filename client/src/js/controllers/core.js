@@ -201,7 +201,7 @@ angular.module('miller')
         $state.params.postId 
       ])).join(' - ');
 
-      $scope.absoluteUrl = $state.href($state.current.name, $state.params, {
+      $scope.absoluteUrl = $rootScope.absoluteUrl = $state.href($state.current.name, $state.params, {
         absolute: true
       });
 
@@ -291,6 +291,37 @@ angular.module('miller')
         }
         return message;
       }
+    };
+
+
+    /*
+      Seo open graph for facebook and other social media
+      Verify that OG are present for every route.
+      E.g of input
+      {
+        type: "article",
+        title: "When Great Minds Don’t Think Alike",
+        description: "How much does culture influence creative thinking?"
+        image: "http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg"
+      }
+
+      E.g. of output in html page:
+      <meta property="og:url"                content="http://www.nytimes.com/2015/02/19/arts/international/when-great-minds-dont-think-alike.html" />
+      <meta property="og:type"               content="article" />
+      <meta property="og:title"              content="When Great Minds Don’t Think Alike" />
+      <meta property="og:description"        content="How much does culture influence creative thinking?" />
+      <meta property="og:image"              content="http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg" />
+      
+      There is no need to add the og:url, miller uses the current route with all params.
+      @param OG is a dictionary of openGraph metadata ({key: "value"})
+    */
+    $scope.setOG = function(OG) {
+      $log.debug('CoreCtrl -> setOG', OG);
+      $rootScope.OG = angular.extend({
+        title: '',
+        description: '',
+        image: '',
+      }, OG || {});
     };
 
     /*
