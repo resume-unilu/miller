@@ -5,9 +5,9 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8 col-sm-offset-2">
-    <h3>Sign up {{title}}</h3>
+    <h3>Sign up to {{title}}</h3>
       {% if form.errors %}
-        <p>please correct the errors below before proceeding</p>
+        <p>Please correct the errors below before proceeding.</p>
       {% endif %}
       <form role="form" method="POST" action="">
         <div class="row">
@@ -36,7 +36,7 @@
         <div class="form-group {% if form.errors.email %}has-error{% endif %}">
           <label for="id_signup_email">email*</label>
           
-          <input type="text" value='{{ form.email.value|default_if_none:"" }}' class="form-control" id="id_signup_email"  name="email" placeholder="your email" >
+          <input type="text" value='{{ form.email.value|default_if_none:"" }}' class="form-control" id="id_signup_email"  name="email">
           {% if form.errors.email %}
             <span class='icon icon-arrow-up-circle' style='float: left; margin-right: 5px; line-height: 25px'></span> {{form.errors.email}}
           {% endif %}
@@ -44,7 +44,7 @@
 
         <div class="form-group {% if form.errors.username %}has-error{% endif %}">
           <label for="id_signup_username">desired username*</label>
-          <input type="text" value='{{ form.username.value|default_if_none:"" }}' class="form-control" id="id_signup_username"  name="username" placeholder="username" >
+          <input type="text" value='{{ form.username.value|default_if_none:"" }}' class="form-control" id="id_signup_username"  name="username">
           {% if form.errors.username %}
           <span class='icon icon-arrow-up-circle' style='float: left; margin-right: 5px; line-height: 25px'></span> {{form.errors.username}}
           {% endif %}
@@ -55,7 +55,7 @@
             <div class="form-group {% if form.errors.password1 %}has-error{% endif %}">
               <label for="id_signup_password1">password*</label>
               
-              <input type="password"  class="form-control" value='{{ form.password1.value|default_if_none:"" }}' id="id_signup_password1" placeholder="Password" name="password1">
+              <input type="password"  class="form-control" value='{{ form.password1.value|default_if_none:"" }}' id="id_signup_password1" name="password1">
               {% if form.errors.password1 %}
               <span class='icon icon-arrow-up-circle' style='float: left; margin-right: 5px; line-height: 25px'></span> {{form.errors.password1}}
               {% endif %}
@@ -63,9 +63,9 @@
           </div>
           <div class="col-sm-6">
             <div class="form-group  {% if form.errors.password2 %}has-error{% endif %}">
-              <label for="id_signup_password2">password confirmation*</label>
+              <label for="id_signup_password2">confirm password*</label>
               
-              <input type="password" value='{{ form.password2.value|default_if_none:"" }}' class="form-control" id="id_signup_password2" placeholder="Password" name="password2">
+              <input type="password" value='{{ form.password2.value|default_if_none:"" }}' class="form-control" id="id_signup_password2" name="password2">
               {% if form.errors.password2 %}
               <span class='icon icon-arrow-up-circle' style='float: left; margin-right: 5px; line-height: 25px'></span> {{form.errors.password2}}
               {% endif %}
@@ -74,8 +74,8 @@
         </div>
 
         <div class="form-group {% if form.errors.affiliation %}has-error{% endif %}">
-          <label for="id_signup_affiliation">affiliation</label>
-          <input type="text" value='{{ form.affiliation.value|default_if_none:"" }}' class="form-control" id="id_signup_affiliation"  name="affiliation" placeholder="University, Contry ..." >
+          <label for="id_signup_affiliation">Home institution</label>
+          <input type="text" value='{{ form.affiliation.value|default_if_none:"" }}' class="form-control" id="id_signup_affiliation"  name="affiliation" placeholder="university, country ..." >
         </div>
         
         <div class="form-group {% if form.errors.tos %}has-error{% endif %}">
@@ -88,6 +88,7 @@
         </div>
 
         <div class="form-group {% if form.errors.captcha %}has-error{% endif %}">
+          <label for="id_signup_captcha">Please copy the letters into the box below</label>
         {{form.captcha}}
         {% if form.errors.captcha %}
         <span class='icon icon-arrow-right-circle' style='float: left; margin-right: 5px; line-height: 25px'></span> {{form.errors.captcha}}
