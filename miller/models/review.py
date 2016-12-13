@@ -68,7 +68,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   ) # Le tapuscrit se rattache-t-il aux thèmes abordés par le projet de recherche RESuME?
@@ -77,7 +77,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   ) # Le tapuscrit présente-t-il un intérêt pour la communauté-cible du projet RESuME?
@@ -86,7 +86,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   ) # Le sujet du tapuscrit se distingue-t-il par son innovation et son originalité?
@@ -95,7 +95,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   ) # Le tapuscrit apporte-t-il des éléments d’interprétation ou de compréhension nouveaux du sujet abordé?
@@ -104,7 +104,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   )# Le tapuscrit se distingue-t-il par son caractère interdisciplinaire?
@@ -113,7 +113,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   )# La méthodologie appliquée par l’auteur est-elle appropriée et justifiée au regard du sujet traité?
@@ -122,7 +122,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   ) # La problématique et les objectifs de recherche/d’analyse du tapuscrit sont-ils clairement exposés?
@@ -131,7 +131,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   ) # L’argumentation développée dans le tapuscrit est-elle convaincante au regard de la problématique retenue?
@@ -140,7 +140,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   )# La structure du tapuscrit, l’intitulé des différentes sections sont-ils signifiants?
@@ -149,7 +149,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   )#Les références citées en notes de bas de page sont-elles justifiées, pertinentes, actualisées?
@@ -158,7 +158,7 @@ class Review(models.Model):
     null=True,
     blank=True,
     validators=[
-      MaxValueValidator(10),
+      MaxValueValidator(5),
       MinValueValidator(1)
     ]
   )# Les ressources documentaires sélectionnées contribuent-elles utilement à l’argumentation?

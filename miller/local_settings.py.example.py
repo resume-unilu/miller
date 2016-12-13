@@ -84,4 +84,5 @@ RSS_DESCRIPTION = '''
 # """
 # GOOGLE identification for SEO
 # """
+# Feel free to uncomment this ;)
 GOOGLE_IDENTIFICATION = 'googleXxYyZz.html'

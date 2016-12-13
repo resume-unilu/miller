@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.views.generic import TemplateView
 
 from rest_framework import routers
 
@@ -68,8 +69,15 @@ urlpatterns = [
   url(r'^accounts/', include('registration.backends.hmac.urls')),
 
   url(r'^', include('templated_email.urls', namespace='templated_email')),
+]
 
-  
+if hasattr(settings, 'GOOGLE_IDENTIFICATION'):
+  urlpatterns = urlpatterns + [
+    url(r'^'+ settings.GOOGLE_IDENTIFICATION + r'$', TemplateView.as_view(template_name=settings.GOOGLE_IDENTIFICATION)),
+  ]
+
+# redirect everything here
+urlpatterns = urlpatterns + [
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
   url(r'^(?!favicon\.ico|signup|media).*$', views.home, name='app')
 ]
