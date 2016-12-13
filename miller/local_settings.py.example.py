@@ -5,8 +5,6 @@ MILLER_DESCRIPTION = 'Your miller http meta description.'
 MILLER_DEBUG = False
 
 
-
-
 # """
 # AUTH & DJANGO_SOCIAL_AUTH
 # Put different parameters here according to the AUTHENTICATION_BACKENDS used.
@@ -75,10 +73,15 @@ EMAIL_ACTIVATION_ACCOUNT = "info@miller.miller"
 REGISTRATION_SALT = 'your registration salt'
 
 # """
-# DJANGO_SEO for hosted prerender.io
-# more information at https://github.com/skoczen/django-seo-js
+# RSS feed
 # """
 RSS_TITLE = 'RSS Miller - an rss feed'
 RSS_DESCRIPTION = '''
   here below the rss description
 '''
+
+
+# """
+# GOOGLE identification for SEO
+# """
+GOOGLE_IDENTIFICATION = 'googleXxYyZz.html'
