@@ -37,9 +37,10 @@ class Review(models.Model):
   PUBLIC    = 'public'
 
   STATUS_CHOICES = (
-    (DRAFT,   'draft'),
-    (PRIVATE, 'private'),
-    (PUBLIC,  'public')
+    (INITIAL,   'initial'),
+    (DRAFT,     'draft'),
+    (PRIVATE,   'private'),
+    (PUBLIC,    'public')
   )
 
   story    = models.ForeignKey('miller.Story', related_name='reviews')
@@ -165,4 +166,5 @@ class Review(models.Model):
   def __unicode__(self):
     return '%s:%s - reviewer:%s' % (self.category, self.story.title, self.assignee.username)
 
-
+  # send email on save
+  # def 
