@@ -1,7 +1,7 @@
 from actstream.models import Action
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment
+from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review
 from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField
 from miller.api import utils
 
@@ -125,6 +125,7 @@ class IncrediblyLiteStorySerializer(serializers.ModelSerializer):
     model = Story
     fields = ('id', 'slug', 'metadata', 'tags')
 
+
 # Story Serializer to use in lists
 class LiteStorySerializer(serializers.ModelSerializer):
   authors = AuthorSerializer(many=True)
@@ -138,10 +139,48 @@ class LiteStorySerializer(serializers.ModelSerializer):
     fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
 
 
+# Story Serializer to use in lists
+class AnonymousLiteStorySerializer(serializers.ModelSerializer):
+  tags = TagSerializer(many=True)
+  covers = LiteDocumentSerializer(many=True)
+  metadata = JsonField()
+
+  class Meta:
+    model = Story
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata')
+
+
+
+
 # retrieve a Story, full
 class StorySerializer(serializers.HyperlinkedModelSerializer):
   authors = AuthorSerializer(many=True)
   owner = UserSerializer()
+  tags = TagSerializer(many=True)
+  documents = CaptionSerializer(source='caption_set', many=True)
+  covers = LiteDocumentSerializer(many=True)
+  stories = LiteMentionSerializer(many=True)
+  metadata = JsonField()
+
+  class Meta:
+    model = Story
+    fields = (
+      'id','url','slug','short_url',
+      'title', 'abstract',
+      'documents', 'tags', 'covers', 'stories',
+      'metadata',
+      'contents',
+      'date', 'date_created', 
+      'status', 
+      'authors','owner'
+    )
+
+
+
+class AnonymousStorySerializer(serializers.HyperlinkedModelSerializer):
+  """
+  Retrive a full stry instance, but anonymous
+  """
   tags = TagSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
   covers = LiteDocumentSerializer(many=True)
@@ -298,6 +337,30 @@ class MentionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Mention
     fields = ('id', 'to_story', 'from_story')
+
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+  """
+  Single review. It ships the related story with full serializer.
+  """
+  assignee = UserSerializer()
+  story = AnonymousStorySerializer()
+  class Meta:
+    model = Review
+    fields = ('id', 'category', 'status', 'assignee', 'due_date', 'story')
+
+
+
+class LiteReviewSerializer(serializers.ModelSerializer):
+  """
+  list of currernt reviews and their status
+  """
+  assignee = UserSerializer()
+  story = AnonymousLiteStorySerializer()
+  class Meta:
+    model = Review
+    fields = ('id', 'category', 'status', 'assignee', 'due_date', 'story')
 
 
 

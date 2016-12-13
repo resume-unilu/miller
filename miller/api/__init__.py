@@ -1,5 +1,6 @@
 import json
 from author import AuthorViewSet
+from review import ReviewViewSet
 from collection import CollectionViewSet
 from story import StoryViewSet
 from tag import TagViewSet

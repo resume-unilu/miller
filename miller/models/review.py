@@ -21,14 +21,25 @@ class Review(models.Model):
   """
   Due by
   """
-  EDITING = 'editing'
-  BLIND   = 'blind'
+  EDITING      = 'editing'
+  BLIND        = 'blind'
   DOUBLE_BLIND = 'double'
 
   CATEGORY_CHOICES = (
-    (EDITING, 'editing'),
-    (BLIND, 'blind'), # show story's author
+    (EDITING,      'editing'),
+    (BLIND,        'blind'), # show story's author
     (DOUBLE_BLIND, 'double blind')
+  )
+
+  INITIAL   = 'initial'
+  DRAFT     = 'draft'
+  PRIVATE   = 'private'
+  PUBLIC    = 'public'
+
+  STATUS_CHOICES = (
+    (DRAFT,   'draft'),
+    (PRIVATE, 'private'),
+    (PUBLIC,  'public')
   )
 
   story    = models.ForeignKey('miller.Story', related_name='reviews')
@@ -36,6 +47,8 @@ class Review(models.Model):
   
   category = models.CharField(max_length=8, choices=CATEGORY_CHOICES, default=EDITING) # e.g. 'actor' or 'institution'
   
+  status = models.CharField(max_length=8, choices=STATUS_CHOICES, default=INITIAL)
+
   due_date           = models.DateTimeField(null=True, blank=True)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
@@ -45,82 +58,111 @@ class Review(models.Model):
     'content': ''
   }, indent=1),blank=True) # generic contents for the generic introduction? Is it ok?
   
-  thematic = models.TextField(null=True)
-  thematic_score = models.PositiveIntegerField(
+  # List of fields
+  FIELDS = ('thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdiciplinarity', 'interdiciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
+      'structure_score','structure', 'references', 'references_score', 'pertincence','pertincence_score',)
+
+  thematic = models.TextField(null=True, blank=True)
+  thematic_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   ) # Le tapuscrit se rattache-t-il aux thèmes abordés par le projet de recherche RESuME?
-  interest = models.TextField()
-  interest_score = models.PositiveIntegerField(
+  interest = models.TextField(null=True, blank=True)
+  interest_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   ) # Le tapuscrit présente-t-il un intérêt pour la communauté-cible du projet RESuME?
-  originality = models.TextField()
-  originality_score = models.PositiveIntegerField(
+  originality = models.TextField(null=True, blank=True)
+  originality_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   ) # Le sujet du tapuscrit se distingue-t-il par son innovation et son originalité?
-  innovation = models.TextField()
-  innovation_score = models.PositiveIntegerField(
+  innovation = models.TextField(null=True, blank=True)
+  innovation_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   ) # Le tapuscrit apporte-t-il des éléments d’interprétation ou de compréhension nouveaux du sujet abordé?
-  interdiciplinarity = models.TextField()
-  interdiciplinarity_score = models.PositiveIntegerField(
+  interdiciplinarity = models.TextField(null=True, blank=True)
+  interdiciplinarity_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   )# Le tapuscrit se distingue-t-il par son caractère interdisciplinaire?
-  methodology = models.TextField()
-  methodology_score = models.PositiveIntegerField(
+  methodology = models.TextField(null=True, blank=True)
+  methodology_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   )# La méthodologie appliquée par l’auteur est-elle appropriée et justifiée au regard du sujet traité?
-  clarity = models.TextField()
-  clarity_score = models.PositiveIntegerField(
+  clarity = models.TextField(null=True, blank=True)
+  clarity_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   ) # La problématique et les objectifs de recherche/d’analyse du tapuscrit sont-ils clairement exposés?
-  argumentation = models.TextField()
-  argumentation_score = models.PositiveIntegerField(
+  argumentation = models.TextField(null=True, blank=True)
+  argumentation_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   ) # L’argumentation développée dans le tapuscrit est-elle convaincante au regard de la problématique retenue?
-  structure = models.TextField()
-  structure_score = models.PositiveIntegerField(
+  structure = models.TextField(null=True, blank=True)
+  structure_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   )# La structure du tapuscrit, l’intitulé des différentes sections sont-ils signifiants?
-  references = models.TextField()
-  references_score = models.PositiveIntegerField(
+  references = models.TextField(null=True, blank=True)
+  references_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   )#Les références citées en notes de bas de page sont-elles justifiées, pertinentes, actualisées?
-  pertincence = models.TextField()
-  pertincence_score = models.PositiveIntegerField(
+  pertincence = models.TextField(null=True, blank=True)
+  pertincence_score = models.IntegerField(
+    null=True,
+    blank=True,
     validators=[
       MaxValueValidator(10),
       MinValueValidator(1)
     ]
   )# Les ressources documentaires sélectionnées contribuent-elles utilement à l’argumentation?
+
+  def __unicode__(self):
+    return '%s:%s - reviewer:%s' % (self.category, self.story.title, self.assignee.username)
 
 
