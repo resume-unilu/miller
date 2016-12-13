@@ -16,11 +16,13 @@ class Comment(models.Model):
   PENDING  = 'pending' # visible just for you
   PUBLIC   = 'public' # everyone can see this.
   PRIVATE  = 'private' # only staff, story authors and comment owner can see this
+  ONREVIEW = 'on review' # only staff, story authors and comment owner can see this
   DELETED  = 'deleted'
 
   STATUS_CHOICES = (
     (PENDING,   'pending acceptation'),
     (PRIVATE,  'accepted, privately visible'),
+    (ONREVIEW, 'from reviewer'),
     (PUBLIC,  'accepted, publicly visible'), # accepted paper.
     (DELETED, 'deleted'), # deleted comments, marked to be removed forever.
   )

@@ -17,6 +17,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 
 # from jsonfield import JSONField
+from git import Repo, Commit, Actor, Tree
 
 from markdown import markdown
 
@@ -76,10 +77,16 @@ class Story(models.Model):
   status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT, db_index=True)
 
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
+  
   authors   = models.ManyToManyField(Author, related_name='authors', blank=True) # collaborators
-  watchers  = models.ManyToManyField(User, related_name='watchers', blank=True) # collaborators
   documents = models.ManyToManyField(Document, related_name='documents', through='Caption', blank=True)
+
   stories   = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_to')
+
+  # 1.x versions for DRAFT mode
+  # 2.x versions for EDITING mode
+  # 2.0 once version has been REVIEWED
+  version   = models.CharField(max_length=22, default='0.1')
 
   # the leading document(s), e.g. an interview
   covers = models.ManyToManyField(Document, related_name='covers', blank=True)
@@ -180,6 +187,43 @@ class Story(models.Model):
     self.contents = re.sub(r'#(#+)', r'\1', contents) 
 
 
+  def gitTag(self, tag):
+    """
+    Convenient function to handle GIT tagging
+    """
+    repo = Repo.init(settings.GIT_ROOT)
+    repo.tag(tag)
+
+
+  def gitCommit(self):
+    """
+    convenient function to commit the story
+    """
+    logger.debug('story {pk:%s} init git commit...' % self.pk)
+  
+    path = self.get_path()
+    
+    f = codecs.open(path, encoding='utf-8', mode='w+')
+    f.write(self.contents)
+    f.seek(0)
+    f.close()
+
+    
+    author = Actor(self.owner.username, self.owner.email)
+    committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
+
+    # commit if there are any differences
+    repo = Repo.init(settings.GIT_ROOT)
+
+    # add and commit JUST THIS FILE
+    #tree = Tree(repo=repo, path=self.owner.profile.get_path())
+    repo.index.add([self.owner.profile.get_path()])
+    c = repo.index.commit(message=u"saving %s" % self.title, author=author, committer=committer)
+
+
+    logger.debug('story {pk:%s} git commit done.' % self.pk)
+
+
   # convert the last saved content (markdown file) to a specific format (default: docx)
   # the media will be in the user MEDIA folder...
   def download(self, outputFormat='docx', language=None, extension=None):
@@ -232,8 +276,10 @@ class Story(models.Model):
 
 
   # check if the saveable instance differs from the original stored one. Cfr the overriding of __init__ function
-  def has_diffs(self):
+  def has_diffs(self, exclude=None):
     for field, value in self._original:
+      if exclude is not None and field == exclude:
+        continue
       if getattr(self, field) != value:
         return True
     return False
@@ -317,7 +363,7 @@ def dispatcher(sender, instance, created, **kwargs):
   if created:  
     action.send(instance.owner, verb='created', target=instance)
     follow(instance.owner, instance)
-  elif instance.status != Story.DRAFT and instance.has_diffs():
+  elif instance.status != Story.DRAFT and instance.has_diffs(exclude='status'):
     # something changed in a NON DRAFT document.
     action.send(instance.owner, verb='updated', target=instance)
 
@@ -370,7 +416,7 @@ def create_first_author(sender, instance, created, **kwargs):
 @receiver(story_ready, sender=Story)
 def create_working_md(sender, instance, created, **kwargs):
   logger.debug('(story {pk:%s}) @story_ready: git...' % instance.pk)
-  
+  instance.gitCommit()
   path = instance.get_path()
   
   f = codecs.open(path, encoding='utf-8', mode='w+')
@@ -389,9 +435,32 @@ def create_working_md(sender, instance, created, **kwargs):
   # add and commit JUST THIS FILE
   #tree = Tree(repo=repo, path=instance.owner.profile.get_path())
   repo.index.add([instance.owner.profile.get_path()])
-  repo.index.commit(message=u"saving %s" % instance.title, author=author, committer=committer)
+  c = repo.index.commit(message=u"saving %s" % instance.title, author=author, committer=committer)
+
+
   logger.debug('(story {pk:%s}) @story_ready: done.' % instance.pk)
 
+
+@receiver(story_ready, sender=Story)
+def if_status_changed(sender, instance, created, **kwargs):
+  """
+  this function enable actions for status change activity:e.g. from draft to editing
+  for editing to Review.
+  """
+  logger.debug('(story {pk:%s, status:%s}) @story_ready check if_status_changed' % (instance.pk, instance.status))
+
+  if hasattr(instance, '_original') and instance.status != instance._original[0][1]:
+    logger.debug('(story {pk:%s, status:%s}) @story_ready if_status_changed from %s' % (instance.pk, instance.status, instance._original[0][1]))
+    if instance.status == Story.PUBLIC:
+      # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
+      action.send(instance.owner, verb='got_published', target=instance)
+      pass
+    if instance.status == Story.EDITING:
+      # send email.
+      action.send(instance.owner, verb='ask_for_editing', target=instance)
+    if instance.status == Story.REVIEW:
+      # send email.
+      action.send(instance.owner, verb='ask_for_review', target=instance)
 
 
 # clean makdown version and commit

@@ -9,7 +9,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment
+from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment, Review
 
 codemirror_json_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
   'fixedGutter': True, 
@@ -226,7 +226,21 @@ class CommentAdmin(admin.ModelAdmin):
   actions = [make_accepted]
   form = CommentAdminForm
 
-# Re-register UserAdmin
+
+class ReviewAdmin(admin.ModelAdmin):
+  search_fields = ['contents', 'assignee']
+  # list_filter = ('category',)
+  #list_display = ['date', 'contents', 'owner', 'story', 'status']
+
+  def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    if db_field.name == "story":
+      kwargs["queryset"] = Story.objects.filter(status__in=[Story.EDITING, Story.REVIEW])
+    elif db_field.name == "assignee":
+      kwargs["queryset"] = User.objects.filter(groups__name__in=['reviewers', 'editors'])
+    return super(ReviewAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+# # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Author, AuthorAdmin)
@@ -236,3 +250,4 @@ admin.site.register(Document, DocumentAdmin)
 admin.site.register(Caption, CaptionAdmin)
 admin.site.register(Mention)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Review, ReviewAdmin)

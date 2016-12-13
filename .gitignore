@@ -27,3 +27,6 @@ node_modules
 ~*.*
 *.rdb
 docs/
+
+# google verification file
+google*.html
