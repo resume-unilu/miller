@@ -12,6 +12,7 @@ angular.module('miller')
     // is the story editable by the current user?
     $scope.story.isWritable = $scope.hasWritingPermission($scope.user, $scope.story);
 
+    $scope.story.isUnderReview = story.status == 'review' || story.status == 'editing';
     // is the layout table or other?
     $scope.layout = 'inline';
 

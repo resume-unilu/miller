@@ -705,6 +705,7 @@
 
           <ul style='margin-left: 10px' class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
+
             <li class="dropdown">
             <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
               
@@ -720,6 +721,9 @@
                 <li ui-sref-active="active" ng-repeat='author in user.profile.authors'>
                   <a ui-sref='author.publications.all({slug:author.slug})' translate='headline.your.writings'></a>
                 </li>
+                <li ui-sref-active="active" ng-if='user.is_reviewer'><a ui-sref='reviews.all'><b translate='headline.your.reviews'></b></a></li>
+                
+                
                 <!-- <li ui-sref-active="active"><a ui-sref="notifications.activities" translate='notifications'></a></li> -->
                 <!-- <li ui-sref-active="active"><a ui-sref="profile({username:user.username})" translate='headline.edit.your.information'></a></li> -->
                 <li><a href='{% url "logout_view" %}'>log out</a></li> 
@@ -949,6 +953,7 @@
     <script src='{% static "js/controllers/page.js" %}'></script>
     <script src='{% static "js/controllers/profile.js" %}'></script>
     <script src='{% static "js/controllers/pulse.js" %}'></script>
+    <script src='{% static "js/controllers/review.js" %}'></script>
     <script src='{% static "js/controllers/search.js" %}'></script>
     <script src='{% static "js/controllers/upload.js" %}'></script>
     <script src='{% static "js/controllers/uploaded.js" %}'></script>

@@ -1,5 +1,5 @@
 from actstream.models import Action
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review
 from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField
@@ -28,6 +28,10 @@ class UserSerializer(serializers.ModelSerializer):
     model = User
     fields = ('username', 'first_name', 'last_name', 'is_staff')
 
+class UserGroupSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Group
+    fields = ('id', 'name')
 
 class CommentSerializer(serializers.ModelSerializer):
   contents = JsonField()
@@ -87,12 +91,17 @@ class AuthorSerializer(LiteAuthorSerializer):
 
 
 class HeavyProfileSerializer(ProfileSerializer):
+  """
+  This serializer is used in miller.context_processors !!!
+  Double check when modify this.
+  """
   authors = LiteAuthorSerializer(many=True, source='user.authorship')
+  groups = UserGroupSerializer(many=True, source= 'user.groups')
 
   class Meta:
     model = Profile
     lookup_field = 'user__username'
-    fields = ('pk', 'bio', 'picture', 'username', 'authors','newsletter')
+    fields = ('pk', 'bio', 'picture', 'username', 'authors', 'groups', 'newsletter')
 
 
 
@@ -348,7 +357,8 @@ class ReviewSerializer(serializers.ModelSerializer):
   story = AnonymousStorySerializer()
   class Meta:
     model = Review
-    fields = ('id', 'category', 'status', 'assignee', 'due_date', 'story')
+    fields = ('id', 'category', 'status', 'assignee', 'due_date', 'story', 'thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdiciplinarity', 'interdiciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
+      'structure_score','structure', 'references', 'references_score', 'pertincence','pertincence_score')
 
 
 

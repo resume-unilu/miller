@@ -4,6 +4,7 @@
   "button.annotate": "tag",
   "button.agree": "agree",
   "button.back": "back",
+  "button.backtoreviews": "back to your reviews",
   "button.create": "create",
   "button.viewmode": "back to reading mode",
   "button.save": "save",
@@ -15,6 +16,7 @@
   "button.previous": "previous",
   "button.loading": "loading ...",
   "button.choosecover": "choose cover",
+  "button.savedraft": "{{isSaving?'saving':'save draft'}}",
   "button.undo": "undo",
   "button.upload": "télécharger sur la plateforme",
   "button.upload.story": "upload my writing",
@@ -61,7 +63,7 @@
   "headline.blogs": "blogs",
   "headline.events": "events",
   "headline.news": "news",
-
+  "headline.your.reviews": "your reviews",
   "headline.blog": "blog",
   "headline.blog.title": "Events",
   "headline.blog.abstract": "",
@@ -150,5 +152,11 @@
   "upload.success.title": "Your content has been submitted",
   "upload.success.description": "You can find your submitted content here",
 
-  "written.by": "written by"
+  "written.by": "written by",
+
+  "headline.reviews":   "reviews assigned to you",  
+  "headline.reviews.abstract" : "",
+  "state.reviews.all":   "view all",   
+  "state.reviews.pending":  "pending"
+
 }

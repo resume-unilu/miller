@@ -148,6 +148,14 @@ angular.module('miller')
   .factory('CommentFactory', function($resource) {
     return $resource('/api/comment/:id/', {},{})
   })
+  .factory('ReviewFactory', function($resource) {
+    return $resource('/api/review/:id/', {},{
+      patch: {
+        method:'PATCH'
+      }
+    })
+  })
+  /*
   /*
     list tags
   */

@@ -4,6 +4,7 @@
   "button.annotate": "tag",
   "button.agree": "agree",
   "button.back": "back",
+  "button.backtoreviews": "back to your reviews",
   "button.create": "create",
   "button.viewmode": "mode lecture",
   "button.save": "save",
@@ -16,6 +17,7 @@
   "button.loading": "loading ...",
   "button.choosecover": "choose cover",
   "button.undo": "undo",
+  "button.savedraft": "{{isSaving?'saving':'save draft'}}",
   "button.upload": "télécharger sur la plateforme",
   "button.upload.story": "télécharger sur la plateforme",
   "button.edit.author": "modify bio, affiliation ...",
@@ -48,6 +50,9 @@
   "field.label.affiliation": "affiliation",
   "field.label.bio": "short biography",
 
+  "field.label.interest": "interest",
+  "field.label.interest.description":"",
+
   "footer.home": "index",
   "footer.termsofservice": "terms of service",
   "footer.guideforauthors": "Indications éditoriales",
@@ -69,6 +74,7 @@
   "headline.write": "écrire",
   "headline.you": "(moi)",
   "headline.your.writings": "your writings",
+  "headline.your.reviews": "your reviews",
   "headline.edit.your.information": "modify profile",
 
   "items.empty": " Sorry, no items matched your search",
@@ -150,5 +156,11 @@
 
 
 
-  "written.by": "written by"
+  "written.by": "written by",
+
+  "headline.reviews":   "reviews assigned to you",  
+  "headline.reviews.abstract" : "",
+  "state.reviews.all":   "view all",   
+  "state.reviews.pending":  "pending"
+
 }

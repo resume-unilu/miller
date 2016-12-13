@@ -10,6 +10,8 @@ angular.module('miller')
     $log.log('CoreCtrl ready, user:', RUNTIME.user.username, RUNTIME);
 
     $scope.user = $rootScope.user = RUNTIME.user;
+    $scope.user.is_reviewer = _.map(RUNTIME.user.profile.groups, 'name').indexOf('reviewers') != -1;
+
     $scope.settings = RUNTIME.settings;
 
     $rootScope.page = 'index';
@@ -383,6 +385,22 @@ angular.module('miller')
         $scope.message = null;
       }, 2000);
     });
+
+
+    /*
+      CTRL + S listener
+    */
+    angular.element($window).bind("keydown", function(event) {
+      if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+        case 's':
+            event.preventDefault();
+            $scope.save();
+            break;
+        }
+      }
+
+    })
     /*
       First load
     */

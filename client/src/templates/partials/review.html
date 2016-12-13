@@ -1,0 +1,36 @@
+<div class="review stream">
+  <div class="row">
+    <div class='col-xs-4 col-sm-4 col-md-3'>
+      <table class="table">
+        <tr>
+          <th><span>type</span></th>
+          <td><span>{{review.category}}</span></td>
+        </tr>
+        <tr>
+          <th><span>status</span></th>
+          <td><span>{{review.status}}</span></td>
+        </tr>
+        <tr>
+          <th><span>due date</span></th>
+          <td><span>{{review.due_date|date:'mediumDate'}}</span></td>
+        </tr>
+      </table>
+    </div>
+    <div class='col-xs-8 col-sm-6 col-md-5'>
+      <div class="date">{{review.story.date|date:'mediumDate'}}</div>
+
+      <h3 class="title">
+        <a ui-sref="review.story({id: review.id})"><span embedit='review.story.metadata.title' language='language'></span></a>
+      </h3>  
+    
+      <blockquote ng-if='review.story.metadata.abstract' embedit='review.story.metadata.abstract' language='language'></blockquote>
+    </div>
+
+    <div class='col-sm-2 col-md-4'>
+      <div class='btn-line-group primary'>
+        <button class='btn-line' ui-sref='review({id: review.id})' translate='button.completereview'></button>
+      </div>
+
+    </div>
+  </div>
+</div>

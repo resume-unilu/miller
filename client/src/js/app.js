@@ -435,6 +435,76 @@ angular
         });
 
     $stateProvider
+      .state('reviews', {
+        abstract: true,
+        url: '/reviews',
+        controller: function(){},
+        templateUrl: RUNTIME.static + 'templates/reviews.html',
+        reloadOnSearch : false,
+      })
+      .state('reviews.all', {
+        url: '/all',
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/items.html',
+          resolve: {
+          items: function(ReviewFactory, $stateParams) {
+            return ReviewFactory.get().$promise;
+          },
+          model: function() {
+            return 'review';
+          },
+          factory: function(ReviewFactory) {
+            return ReviewFactory;
+          }
+        }
+      })
+      .state('reviews.pending', {
+          url: '',
+          controller: 'ItemsCtrl',
+          templateUrl: RUNTIME.static + 'templates/items.html',
+            resolve: {
+            items: function(ReviewFactory, $stateParams) {
+              return ReviewFactory.get({
+                filters: JSON.stringify({
+                  status__in: ['initial', 'draft']
+                })
+              }).$promise;
+            },
+
+            model: function() {
+              return 'review';
+            },
+            factory: function(ReviewFactory) {
+              return ReviewFactory;
+            }
+          }
+        });
+
+    $stateProvider
+      .state('review', {
+        url: '/review/{id:[0-9]+}',
+        controller: 'ReviewCtrl',
+        templateUrl: RUNTIME.static + 'templates/review.html',
+        resolve: {
+          review: function(ReviewFactory, $stateParams) {
+            return ReviewFactory.get({
+              id: $stateParams.id
+            }).$promise;
+          }
+        }
+      })
+      .state('review.story', {
+        url: '/story',
+        controller: 'StoryCtrl',
+        templateUrl: RUNTIME.static + 'templates/story.html',
+        resolve: {
+          story: function(review) {
+            return review.story;
+          },
+        }
+      });
+
+    $stateProvider
      .state('blog', {
         url: '/blog',
         reloadOnSearch : false,
@@ -598,6 +668,8 @@ angular
           },
         }
       });
+
+    
 
     $stateProvider
       .state('story', {

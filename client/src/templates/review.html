@@ -1,0 +1,47 @@
+
+<div ui-view>
+  <div class='container'>
+  <div class='view review'>
+    <div class="actions" >
+      <div class='btn-line-group'>
+        <button class='btn-line' ui-sref="reviews.pending" translate="button.backtoreviews"></button>
+      </div>
+      <div class='btn-line-group primary'>
+        <button class='btn-line' ui-sref="review.story({id:review.id})" translate="button.viewmode"></button>
+      </div>
+    </div>
+
+    <h1><span translate="headline.review.of"></span></h1>
+    <div class='reviewed'>
+    <h2><a ui-sref='review.story({id:review.id})' embedit='review.story.metadata.title' language='language'></a></h2>
+    <div class="date">{{review.story.date|date:'mediumDate'}}</div>
+    <blockquote ng-if='review.story.metadata.abstract' embedit='review.story.metadata.abstract' language='language'></blockquote>
+    </div>
+
+    <form class='generic-form-wrapper' name="createForm" novalidate>
+      <div ng-repeat='field in fields'>
+        <label>
+          <span class="number" ng-class='{"active": createForm[field].$valid, "error": createForm[field].$dirty && !createForm[field].$valid}'>{{$index+1}}</span>
+            <span translate="field.label.{{field}}"></span>
+        </label>
+        <p translate="field.label.{{field}}.description"></p>
+        <div class='elastic-textarea-wrapper'>
+          <textarea required class='elastic-textarea' msd-elastic ng-model='review[field]' name='{{field}}' ng-model-options="{ debounce: 200 }"></textarea>
+        </div>
+      </div>
+
+
+      <div class='center'>
+        <div class='btn-line-group primary' ng-class='{"primary": createForm.$valid}'>
+          <button class='btn-line'>I completed the review</button>
+        </div>
+        <div class='btn-line-group'>
+          <button class='btn-line' ng-click='save()'><span translate='button.savedraft' translate-values='{isSaving: isSaving}'></span>
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+</div>

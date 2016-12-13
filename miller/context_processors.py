@@ -5,7 +5,8 @@ from miller.api.serializers import HeavyProfileSerializer
 # inject some miller specific settings used by angular
 def default(request):
   profile = HeavyProfileSerializer(request.user.profile).data if hasattr(request.user, 'profile') else {
-    'authors': []
+    'authors': [],
+    'groups': []
   }
 
   context_settings = {

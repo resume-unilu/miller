@@ -44,12 +44,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
     super(ReviewViewSet, self).create(self, request, *args, **kwargs)
 
 
-  #@permission_classes(IsAuthenticated)
-  def partial_update(self, request, pk, *args, **kwargs):
+  def partial_update(self, request, *args, **kwargs):
     """
-    Request user can partial update reviews
+    Request user can partial update reviews they have been assigned
     """
-    pass
+    review = get_object_or_404(self.queryset.filter(assignee=request.user), pk=kwargs['pk'])
+    return super(ReviewViewSet, self).partial_update(request, *args, **kwargs)
 
   
   def list(self, request, *args, **kwargs):

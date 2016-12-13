@@ -2,18 +2,28 @@
   <div class='container'>
     <div class="view">
       <div class="actions" >
+        <div ng-if='review' class='btn-line-group'>
+          <button class='btn-line' ui-sref="reviews.pending" translate="button.backtoreviews"></button>
+        </div>
+        <div ng-if='review' class='btn-line-group primary'>
+          <button class='btn-line' ui-sref="review({id:review.id})" translate='button.completereview'></button>
+        </div>
         <div class='btn-line-group primary'>
           <a  class='btn-line' ng-href="/api/story/{{story.id}}/download/" _target="blank">PDF <span class='icon icon-cloud-download'></span></a>
         </div>
-        <div ng-if='story.isWritable' class='btn-line-group primary'>
+        <div ng-if='story.isWritable && !story.isUnderReview' class='btn-line-group primary'>
           <button  class='btn-line' nref ui-sref='writing({storyId:story.slug})' translate='edit'></button>
         </div>
-        <div ng-if='story.isWritable' class='btn-line-group primary'>
+        
+
+        <div ng-if='story.isWritable && !story.isUnderReview' class='btn-line-group primary'>
           <button  class='btn-line' ng-if='story.status!="deleted"' ng-click='setStatus("deleted")' translate='remove'><span class='icon icon-bin'></span></button>
           <button  class='btn-line' ng-if='story.status=="deleted"' ng-click='setStatus("draft")' translate='recover'><span class='icon icon-bin'></span></button>
         </div>
+        
+        
 
-        <div ng-if='user.is_staff' class='btn-line-group'>
+        <div ng-if='user.is_staff && !story.isUnderReview' class='btn-line-group'>
           <button class='btn-line' ng-click='setStatus("draft")' ng-class='{"active warning": story.status=="draft"}' translate="story.status.draft"></button>
           <button class='btn-line' ng-click='setStatus("public")' ng-class='{"active": story.status=="public"}' translate="story.status.public"></button>
         </div>
@@ -31,6 +41,7 @@
             <span ng-if="story.tags.length" class='tag sans-serif' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
             
           </div>
+
           <div class='authors' ng-if="story.authors.length">
             by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
           </div>
@@ -43,7 +54,7 @@
         <div class='col-md-12'>
           <h1 embedit='story.metadata.title' language='language'></h1>
           <div embedit='story.metadata.reference' ng-if='story.metadata.reference' markdown='true' language='language'></div>
-          <div class="share">
+          <div class="share" ng-if='story.status == "public"'>
             <span translate='share'></span>
             <a socialshare socialshare-provider="twitter" socialshare-text="{{document.title}}" socialshare-hashtags="{{settings.socialtags}}" socialshare-url="{{absoluteUrl}}"><span class='icon icon-social-twitter'></span></a>
 
