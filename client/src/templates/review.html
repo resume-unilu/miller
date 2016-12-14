@@ -25,14 +25,14 @@
 
           <span class="number" ng-class='{"active": createForm[field].$valid, "error": createForm[field].$dirty && !createForm[field].$valid}'>{{$index+1}}</span>
             <span translate="field.label.{{field}}"></span>
-          <p class='description' translate="field.label.{{field}}.description"></p>
+          <!-- <p class='description' translate="field.label.{{field}}.description"></p> -->
         </label>
-        
+        <div rating ng-model='review[field + "_score"]'></div>
         <div class='elastic-textarea-wrapper'>
-          <textarea required class='elastic-textarea' msd-elastic ng-model='review[field]' name='{{field}}' ng-model-options="{ debounce: 200 }"></textarea>
+          <textarea placeholder='{{"field.label.placeholder.review" | translate}}' required class='elastic-textarea' msd-elastic ng-model='review[field]' name='{{field}}' ng-model-options="{ debounce: 200 }"></textarea>
 
         </div>
-        <div rating ng-model='review[field + "_score"]'></div>
+        
       </div>
 
       <div style='margin: 10px 0 20px 0px'>
@@ -44,7 +44,7 @@
         </label>
         
         <div class='elastic-textarea-wrapper'>
-          <textarea rows="5" required class='elastic-textarea' msd-elastic ng-model='review.contents.text' name='reviewcontentstext' ng-model-options="{ debounce: 200 }"></textarea>
+          <textarea rows="5" placeholder='{{"field.label.placeholder.review" | translate}}' required class='elastic-textarea' msd-elastic ng-model='review.contents.text' name='reviewcontentstext' ng-model-options="{ debounce: 200 }"></textarea>
 
         </div>
       </div>

@@ -195,7 +195,8 @@ ul.errorlist{
 */
 .elastic-textarea-wrapper{
   padding: 10px;
-  background: #f0f0f0
+  background: #f0f0f0;
+  box-shadow: #d0d0d0 1px 0px 4px inset;
 }
 
 .elastic-textarea{
@@ -2293,7 +2294,7 @@ content: "\e07a";
   height: 20px;
   clear: both;
   list-style-type: none;
-  margin: 10px 0;
+      margin: 0px 0 10px 15px;
 }
 .star-rating li{
   display: block;
