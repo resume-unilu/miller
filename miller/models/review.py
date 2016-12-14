@@ -153,8 +153,8 @@ class Review(models.Model):
       MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   )#Les références citées en notes de bas de page sont-elles justifiées, pertinentes, actualisées?
-  pertincence = models.TextField(null=True, blank=True)
-  pertincence_score = models.IntegerField(
+  pertinence = models.TextField(null=True, blank=True)
+  pertinence_score = models.IntegerField(
     null=True,
     blank=True,
     validators=[

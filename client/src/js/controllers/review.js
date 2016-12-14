@@ -13,7 +13,7 @@ angular.module('miller')
     $scope.review = review;
 
     $scope.fields = [
-      'thematic','interest', 'originality', 'innovation', 'interdiciplinarity', 'methodology', 'clarity', 'argumentation','structure', 'references', 'pertincence'];
+      'thematic','interest', 'originality', 'innovation', 'interdiciplinarity', 'methodology', 'clarity', 'argumentation','structure', 'references', 'pertinence'];
 
 
     $scope.save = function(){
@@ -33,6 +33,9 @@ angular.module('miller')
         answers[field] = $scope.review[field]
         answers[field + '_score'] = $scope.review[field + '_score'] || 0
       }
+
+      answers.contents = JSON.stringify($scope.review.contents);
+      answers.status= 'draft';
       
       ReviewFactory.patch({
         id: review.id
@@ -50,6 +53,13 @@ angular.module('miller')
         $scope.isSaving = false;
       })
     };
+
+    // calculate final score based on fields.
+    $scope.watch('review', function(r){
+      if(r){
+        // $scope.finalscore = _.map()
+      }
+    })
 
     $scope.$on(EVENTS.SAVE, $scope.save);
   }); 

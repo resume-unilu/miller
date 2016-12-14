@@ -611,6 +611,7 @@ ul.errorlist{
   font-weight: bold;
   font-family: 'Lato', sans-serif;
   text-transform: uppercase;
+  font-size: 12px;
 }
 
 .divider {
@@ -2236,7 +2237,9 @@ content: "\e07a";
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{
   line-height: 25px;
   border: 0px;
+  border-bottom: 2px solid #d0d0d0;
 }
+
 .table th{
   color: #151515;
   font-family: 'Lato', sans-serif;
@@ -2255,6 +2258,7 @@ content: "\e07a";
 
 .stream .table{
   margin-bottom: 0px;
+  margin: 5px;
 }
 
 /*
@@ -2266,12 +2270,20 @@ content: "\e07a";
 }
 
 .reviewed h2{
-  margin-top: 5px;
+  margin-top: 0px;
 }    
+.reviewed .date{
+  margin-top: 5px;
+}
 
+.reviewed h2 a {
+  color: #151515;
+  /*text-decoration:underline;*/
+}
 .reviewed blockquote{
-      margin: 0 0 5px 0;
-    font-size: 15px;
+  margin: 5px 0 5px;
+  font-size: 13px;
+  line-height: 21px;
 }
 
 /*
