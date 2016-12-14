@@ -180,6 +180,7 @@ class Review(models.Model):
     recipient = self.assignee.email
     if recipient:
       logger.debug('review {pk:%s} sending email to user {pk:%s}...' % (self.pk, self.assignee.pk))
+      from templated_email import send_templated_mail
       send_templated_mail(template_name=template_name, recipient_list=[self.assignee.email], context={
         username: self.assignee.username,
         site_name: settings.MILLER_TITLE,
