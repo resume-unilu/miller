@@ -184,7 +184,7 @@ class Review(models.Model):
       send_templated_mail(template_name=template_name, recipient_list=[self.assignee.email], context={
         'username': self.assignee.username,
         'site_name': settings.MILLER_TITLE,
-        'reviews_url': MILLER_SETTINGS['host'] + '/reviews'
+        'reviews_url': settings.MILLER_SETTINGS['host'] + '/reviews'
       })
         # from_email=settings.DEFAULT_FROM_EMAIL, 
     else:
