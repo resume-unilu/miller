@@ -43,9 +43,10 @@ class Review(models.Model):
     (PUBLIC,    'public')
   )
 
-  story    = models.ForeignKey('miller.Story', related_name='reviews')
-  assignee = models.ForeignKey('auth.User'); # at least the first author, the one who owns the file.
-  
+  story       = models.ForeignKey('miller.Story', related_name='reviews', help_text="This shows only stories having status 'review' or 'editing'")
+  assignee    = models.ForeignKey('auth.User', related_name='assigned_reviews', help_text="To include users in this list, add them to the groups 'editors' or 'reviewers'") # at least the first author, the one who owns the file.
+  assigned_by = models.ForeignKey('auth.User', blank=True, null=True, related_name='dispatched_reviews', help_text="This has been automatically assigned.") # should be request.user in case of admin.
+
   category = models.CharField(max_length=8, choices=CATEGORY_CHOICES, default=EDITING) # e.g. 'actor' or 'institution'
   
   status = models.CharField(max_length=8, choices=STATUS_CHOICES, default=INITIAL)
@@ -61,7 +62,7 @@ class Review(models.Model):
   
   # List of fields
   FIELDS = ('thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdiciplinarity', 'interdiciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
-      'structure_score','structure', 'references', 'references_score', 'pertincence','pertincence_score',)
+      'structure_score','structure', 'references', 'references_score', 'pertinence','pertinence_score',)
 
   thematic = models.TextField(null=True, blank=True)
   thematic_score = models.IntegerField(
@@ -166,5 +167,35 @@ class Review(models.Model):
   def __unicode__(self):
     return '%s:%s - reviewer:%s' % (self.category, self.story.title, self.assignee.username)
 
+  def __init__(self, *args, **kwargs):
+    super(Review, self).__init__(*args, **kwargs)
+    if self.pk:
+      self._original = (
+        ('assignee', self.assignee),
+        ('status', self.status),
+      )
   # send email on save
   # def 
+  def send_email_to_assignee(self, template_name):
+    recipient = self.assignee.email
+    if recipient:
+      logger.debug('review {pk:%s} sending email to user {pk:%s}...' % (self.pk, self.assignee.pk))
+      send_templated_mail(template_name=template_name, recipient_list=[self.assignee.email], context={
+        username: self.assignee.username,
+        site_name: settings.MILLER_TITLE,
+        reviews_url: MILLER_SETTINGS['host'] + '/reviews'
+      })
+        # from_email=settings.DEFAULT_FROM_EMAIL, 
+    else:
+      logger.debug('review {pk:%s} cannot send email to assignee, user {pk:%s} email not found!' % (self.pk, self.assignee.pk))
+      
+
+
+@receiver(post_save, sender=Review)
+def dispatcher(sender, instance, created, **kwargs):
+  if created:
+    if settings.EMAIL_HOST:
+      logger.debug('review {pk:%s, category:%s} sending email to user {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+      instance.send_email_to_assignee(template_name='assignee_%s'%instance.category)
+    else:
+      logger.debug('review {pk:%s, category:%s} cannot send email to assignee, no settings.EMAIL_HOST present in loca_settings ...' %(instance.category, instance.pk))

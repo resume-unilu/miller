@@ -1,0 +1,21 @@
+{% block subject %}A new editing task has been assigned to you{% endblock %}
+{% block plain %}
+Dear {{username}}, 
+
+A new **editing task** has been assigned to you.
+Please find the list of the reviews here:
+[{{reviews_url}}]({{reviews_url}})
+
+Merci et bonne navigation ! 
+
+{% endblock %}
+
+{% block html %}
+  <p>Dear {{username}},</p>
+
+  <p>A new **editing task** has been assigned to you.</p>
+
+  <p>Please find the list of the reviews at <a href="{{reviews_url}}">{{reviews_url}}</a></p>
+  
+  <p>Merci et bonne navigation ! </p>
+{% endblock %}

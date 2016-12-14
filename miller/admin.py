@@ -173,7 +173,7 @@ class StoryAdmin(admin.ModelAdmin):
   # inlines = (CaptionInline,)
   exclude=['cover', 'cover_copyright', 'watchers', 'stories']
   search_fields = ['title']
-  list_filter = (WritingTagsListFilter, BlogTagsListFilter)
+  list_filter = ('status', WritingTagsListFilter, BlogTagsListFilter)
   form = StoryAdminForm
 
 
@@ -240,13 +240,17 @@ class ReviewAdmin(admin.ModelAdmin):
     return super(ReviewAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
   def add_view(self,request,extra_content=None):
-    self.exclude = Review.FIELDS + ('contents',)
+    self.exclude = Review.FIELDS + ('contents','assigned_by')
     return super(ReviewAdmin,self).add_view(request)
 
   def change_view(self,request,object_id,extra_content=None):
     self.exclude = []
     return super(ReviewAdmin,self).change_view(request,object_id)
 
+  def save_model(self, request, obj, form, change):
+    if not change:
+      obj.assigned_by = request.user
+    obj.save()
 
 # # Re-register UserAdmin
 admin.site.unregister(User)
