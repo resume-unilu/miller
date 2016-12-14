@@ -182,9 +182,9 @@ class Review(models.Model):
       logger.debug('review {pk:%s} sending email to user {pk:%s}...' % (self.pk, self.assignee.pk))
       from templated_email import send_templated_mail
       send_templated_mail(template_name=template_name, recipient_list=[self.assignee.email], context={
-        username: self.assignee.username,
-        site_name: settings.MILLER_TITLE,
-        reviews_url: MILLER_SETTINGS['host'] + '/reviews'
+        'username': self.assignee.username,
+        'site_name': settings.MILLER_TITLE,
+        'reviews_url': MILLER_SETTINGS['host'] + '/reviews'
       })
         # from_email=settings.DEFAULT_FROM_EMAIL, 
     else:
