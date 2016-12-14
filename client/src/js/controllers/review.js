@@ -55,7 +55,7 @@ angular.module('miller')
     };
 
     // calculate final score based on fields.
-    $scope.watch('review', function(r){
+    $scope.$watch('review', function(r){
       if(r){
         // $scope.finalscore = _.map()
       }
