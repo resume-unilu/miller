@@ -141,7 +141,8 @@ LANGUAGE_CODE = 'en-us'
 LANGUAGES = [
     ('fr-fr', _('French'), 'fr_FR'),
     ('de-de', _('German'), 'de_DE'),
-    ('en-us', _('English'), 'en_US'),
+    ('en-us', _('US English'), 'en_US'),
+    ('en-gb', _('British English'), 'en_GB'),
 ]
 
 
@@ -342,7 +343,7 @@ MILLER_DEBUG = True
 MILLER_TITLE = 'RESuME'
 MILLER_DESCRIPTION = 'Developed by the University of Luxembourg, RESuME project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model.'
 
-MILLER_LOCALISATION_TABLE = os.path.join(BASE_DIR, 'client/locale-all.csv')
+MILLER_LOCALISATION_TABLE = os.path.join(BASE_DIR, 'client/src/locale/locale-all.csv')
 
 MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 # feel free to add your own oembed service in localsettings.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Tasks on models
-import logging, json
+import os, logging, json
 
 from miller.helpers import get_whoosh_index
 from miller.models import Document, Story
@@ -24,7 +24,8 @@ class Command(BaseCommand):
     'snapshot', # require document pk, e.g python manage.py task snapshot --pk=991
     'snapshots', # handle pdf snapshot, python manage.py task snapshots
     'cleanbin',
-    'update_whoosh'
+    'update_whoosh',
+    'update_localisation'
   )
 
 
@@ -41,9 +42,40 @@ class Command(BaseCommand):
   def handle(self, *args, **options):
     if options['taskname'] in self.available_tasks:
       getattr(self, options['taskname'])(**options)
-
+    else:
+      logger.debug('command NOT FOUND, tasks availables: ["%s"]' % '","'.join(self.available_tasks))
     logger.debug('command finished.')
   
+
+  def update_localisation(self,  **options):
+    """ 
+    load the csv specified in MILLER_LOCALISATION_TABLE
+    """
+    logger.debug('looking for the csv file at settings.MILLER_LOCALISATION_TABLE: %s'%settings.MILLER_LOCALISATION_TABLE)
+    import unicodecsv as csv
+    
+    with open(settings.MILLER_LOCALISATION_TABLE) as f:
+      rows = csv.DictReader(f, encoding='utf-8')
+      translations = {}
+      for row in rows:
+        for lang, t, language_code in settings.LANGUAGES:
+          if not language_code in translations:
+            translations[language_code] = {}
+          
+          translations[language_code].update({
+            row[u'KEY']: row[u'en_US'] if not row[language_code] else row[language_code]
+          })
+      #print translations
+      for language_code, value in translations.iteritems():
+        print language_code
+        localename = os.path.join(os.path.dirname(settings.MILLER_LOCALISATION_TABLE), 'locale-%s.json' % language_code)
+          
+        with open(localename, "w") as wtf:
+          logger.debug('creating: %s'%localename)
+          wtf.write(json.dumps(translations[language_code],indent=2))
+
+            #print row
+    pass
 
   def update_whoosh(self,  **options):
     logger.debug('looking for a whoosh index')
