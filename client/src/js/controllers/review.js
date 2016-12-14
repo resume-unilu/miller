@@ -31,6 +31,7 @@ angular.module('miller')
       for(s in $scope.fields){
         var field = $scope.fields[s];
         answers[field] = $scope.review[field]
+        answers[field + '_score'] = $scope.review[field + '_score'] || 0
       }
       
       ReviewFactory.patch({

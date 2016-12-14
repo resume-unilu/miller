@@ -43,8 +43,8 @@ angular.module('miller')
         if(res.status == 201){
           $log.debug('UploadCtrl -> upload() status:', 'success!', res.data)
           // location redirect.
-          $state.go('uploaded', {
-            storyId: res.data.slug
+          $state.go('story', {
+            postId: res.data.slug
           });
         } else {
           // error handling?

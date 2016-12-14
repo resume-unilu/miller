@@ -342,6 +342,8 @@ MILLER_DEBUG = True
 MILLER_TITLE = 'RESuME'
 MILLER_DESCRIPTION = 'Developed by the University of Luxembourg, RESuME project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model.'
 
+MILLER_LOCALISATION_TABLE = os.path.join(BASE_DIR, 'client/locale-all.csv')
+
 MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 # feel free to add your own oembed service in localsettings.
 MILLER_OEMBEDS = {

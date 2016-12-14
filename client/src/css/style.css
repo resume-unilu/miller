@@ -157,6 +157,11 @@ label{
   margin-top: 20px;
 }
 
+label .description {
+  font: 13px/18px 'Lato', sans-serif;
+  padding: 0 0 10px 0;
+  color: #858585;
+}
 
 ul.errorlist{
   font-size: 11px;
@@ -1913,6 +1918,7 @@ div.profile-others .profile-thumb{
   width: 100%
 }
 
+
 /*
   Sliding-staps directive
 */
@@ -2266,4 +2272,29 @@ content: "\e07a";
 .reviewed blockquote{
       margin: 0 0 5px 0;
     font-size: 15px;
+}
+
+/*
+  Rating star
+*/
+.star-rating{
+  height: 20px;
+  clear: both;
+  list-style-type: none;
+  margin: 10px 0;
+}
+.star-rating li{
+  display: block;
+  float: left;
+  height: 20px;
+  width: 20px;
+  background: #f0f0f0;
+  margin-left: 5px;
+  border-radius: 20px;
+  text-align: center;
+  line-height: 20px;
+}
+.star-rating li.filled{
+  background: #4ECDC4;
+  color: white;
 }

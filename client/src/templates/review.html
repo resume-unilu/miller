@@ -19,19 +19,23 @@
     </div>
 
     <form class='generic-form-wrapper' name="createForm" novalidate>
-      <div ng-repeat='field in fields'>
-        <label>
+      <div ng-repeat='field in fields' style='margin: 10px 0 20px 0px'>
+        <label style='margin-left:60px'>
+
           <span class="number" ng-class='{"active": createForm[field].$valid, "error": createForm[field].$dirty && !createForm[field].$valid}'>{{$index+1}}</span>
             <span translate="field.label.{{field}}"></span>
+          <p class='description' translate="field.label.{{field}}.description"></p>
         </label>
-        <p translate="field.label.{{field}}.description"></p>
+        
         <div class='elastic-textarea-wrapper'>
           <textarea required class='elastic-textarea' msd-elastic ng-model='review[field]' name='{{field}}' ng-model-options="{ debounce: 200 }"></textarea>
+
         </div>
+        <div rating ng-model='review[field + "_score"]'></div>
       </div>
 
 
-      <div class='center'>
+      <div class='center' style='margin: 20px 0'>
         <div class='btn-line-group primary' ng-class='{"primary": createForm.$valid}'>
           <button class='btn-line'>I completed the review</button>
         </div>

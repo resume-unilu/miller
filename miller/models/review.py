@@ -69,7 +69,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   ) # Le tapuscrit se rattache-t-il aux thèmes abordés par le projet de recherche RESuME?
   interest = models.TextField(null=True, blank=True)
@@ -78,7 +78,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   ) # Le tapuscrit présente-t-il un intérêt pour la communauté-cible du projet RESuME?
   originality = models.TextField(null=True, blank=True)
@@ -87,7 +87,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   ) # Le sujet du tapuscrit se distingue-t-il par son innovation et son originalité?
   innovation = models.TextField(null=True, blank=True)
@@ -96,7 +96,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   ) # Le tapuscrit apporte-t-il des éléments d’interprétation ou de compréhension nouveaux du sujet abordé?
   interdiciplinarity = models.TextField(null=True, blank=True)
@@ -105,7 +105,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   )# Le tapuscrit se distingue-t-il par son caractère interdisciplinaire?
   methodology = models.TextField(null=True, blank=True)
@@ -114,7 +114,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   )# La méthodologie appliquée par l’auteur est-elle appropriée et justifiée au regard du sujet traité?
   clarity = models.TextField(null=True, blank=True)
@@ -123,7 +123,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   ) # La problématique et les objectifs de recherche/d’analyse du tapuscrit sont-ils clairement exposés?
   argumentation = models.TextField(null=True, blank=True)
@@ -132,7 +132,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   ) # L’argumentation développée dans le tapuscrit est-elle convaincante au regard de la problématique retenue?
   structure = models.TextField(null=True, blank=True)
@@ -141,7 +141,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   )# La structure du tapuscrit, l’intitulé des différentes sections sont-ils signifiants?
   references = models.TextField(null=True, blank=True)
@@ -150,7 +150,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   )#Les références citées en notes de bas de page sont-elles justifiées, pertinentes, actualisées?
   pertincence = models.TextField(null=True, blank=True)
@@ -159,7 +159,7 @@ class Review(models.Model):
     blank=True,
     validators=[
       MaxValueValidator(5),
-      MinValueValidator(1)
+      MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   )# Les ressources documentaires sélectionnées contribuent-elles utilement à l’argumentation?
 

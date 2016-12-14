@@ -244,7 +244,7 @@ angular.module('miller')
       var results,
           sections, // document sections.
           md = new window.markdownit({
-            breaks:       true
+            // breaks:       true
           }),
           linkIndex = 0;
 

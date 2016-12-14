@@ -25,20 +25,28 @@ angular.module('miller')
         if (scope.max == undefined) {
           scope.max = 5;
         }
+
         function updateStars() {
           scope.stars = [];
           for (var i = 0; i < scope.max; i++) {
             scope.stars.push({
-              filled: i < scope.ratingValue
+              filled: i < (scope.ratingValue || 0)
             });
           }
         };
         scope.toggle = function(index) {
           if (scope.readonly == undefined || scope.readonly === false){
             scope.ratingValue = index + 1;
-            scope.onRatingSelect({
+            typeof scope.onRatingSelect == 'function' && scope.onRatingSelect({
               rating: index + 1
             });
+            // fill till index
+            for(var i in scope.stars){
+              if(i < scope.ratingValue)
+                scope.stars[i].filled = true;
+              else
+                break;
+            }
           }
         };
         scope.$watch('ratingValue', function(oldValue, newValue) {
@@ -46,6 +54,7 @@ angular.module('miller')
             updateStars();
           }
         });
+        updateStars();
       }
     };
   })
