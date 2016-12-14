@@ -21,16 +21,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
   serializer_class = ReviewSerializer
   permission_classes = (IsAuthenticated,)
 
-  def _getUserAuthorizations(self, request):
-    if request.user.is_staff:
-      q = self.queryset.all()
-    elif request.user.is_authenticated():
-      q = self.queryset.filter(assignee=request.user).distinct()
-    else:
-      raise Exception('user should be authenticated')
-    return q
-
-
   #@permission_classes(IsAdminUser)
   def create(self, request, *args, **kwargs):
     """
@@ -56,8 +46,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     This is the list of your reviews. Access to the uncompleted list via todo
     """
-    page    = self.paginate_queryset(self.queryset.filter(assignee=request.user))
-    serializer = LiteReviewSerializer(self.queryset, many=True, context={'request': request})
+    qs = self.queryset.filter(assignee=request.user)
+    page    = self.paginate_queryset(qs)
+    serializer = LiteReviewSerializer(qs, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
 
   
