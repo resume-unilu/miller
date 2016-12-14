@@ -751,7 +751,7 @@ angular
       });
   })
   .run(function($window, $log, RUNTIME){
-    $log.log('☕ app run, version: Healthy Panda; analytics:', RUNTIME.settings.analytics? 'enabled': 'disabled');
+    $log.log('☕ app run, version: Happy Crocodile; analytics:', RUNTIME.settings.analytics? 'enabled': 'disabled');
     if(RUNTIME.settings.analytics)
       $window.ga('create', RUNTIME.settings.analytics || 'UA-XXXXXXXX-X', 'auto');
   })
