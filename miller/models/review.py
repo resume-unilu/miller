@@ -170,10 +170,11 @@ class Review(models.Model):
   def __init__(self, *args, **kwargs):
     super(Review, self).__init__(*args, **kwargs)
     if self.pk:
-      self._original = (
-        ('assignee', self.assignee),
-        ('status', self.status),
-      )
+      self._original = {
+        'assignee__pk': self.assignee.pk,
+        'status': self.status
+      }
+  
   # send email on save
   # def 
   def send_email_to_assignee(self, template_name):
@@ -194,7 +195,7 @@ class Review(models.Model):
 
 @receiver(post_save, sender=Review)
 def dispatcher(sender, instance, created, **kwargs):
-  if created:
+  if created or instance._original['assignee__pk'] != instance.assignee.pk:
     if settings.EMAIL_HOST:
       logger.debug('review {pk:%s, category:%s} sending email to user {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
       instance.send_email_to_assignee(template_name='assignee_%s'%instance.category)
