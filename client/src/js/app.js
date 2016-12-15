@@ -131,7 +131,7 @@ angular
     //   absolute: true
     // })
     $urlRouterProvider
-      .otherwise("/not-found");
+      .otherwise("/");
 
     $stateProvider
       .state('notfound', {

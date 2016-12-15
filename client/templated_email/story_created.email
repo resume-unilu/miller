@@ -21,10 +21,10 @@ Merci et bonne navigation !
   <p>A new <b>publication</b> has been created:</p>
 
   <h3>{{title}}</h3>
-  by <a href='{{site_url}}/author/{{first_author.slug}}/publications'>{{first_author.fullname}}</a>
+  by <a href='{{site_url}}/author/{{first_author.slug}}/publications/'>{{first_author.fullname}}</a>
 
   <p><em>{{abstract}}</em></p>
-  
+
   <p><a href='{{site_url}}/story/{{slug}}'>View the publication</a></p>
   
   <p>Merci et bonne navigation ! </p>
