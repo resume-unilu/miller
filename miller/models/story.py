@@ -275,7 +275,7 @@ class Story(models.Model):
         'title':    self.title,
         'abstract': self.abstract,
         'slug':     self.slug,
-        'author':   self.authors.values('slug', 'fullname'),
+        'first_author': self.owner.authorship.first(),
         'username': 'staff member',
         'site_name': settings.MILLER_TITLE,
         'site_url':  settings.MILLER_SETTINGS['host']
