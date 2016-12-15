@@ -34,13 +34,19 @@ class Review(models.Model):
   INITIAL   = 'initial'
   DRAFT     = 'draft'
   PRIVATE   = 'private'
+  REFUSAL   = 'refusal'
+  COMPLETED    = 'complete'
+  BOUNCE    = 'bounce'
   PUBLIC    = 'public'
 
   STATUS_CHOICES = (
     (INITIAL,   'initial'),
     (DRAFT,     'draft'),
     (PRIVATE,   'private'),
-    (PUBLIC,    'public')
+    (PUBLIC,    'public'),
+    (REFUSAL,   'refusal'),
+    (BOUNCE,    'bounce'),
+    (COMPLETED, 'complete')
   )
 
   story       = models.ForeignKey('miller.Story', related_name='reviews', help_text="This shows only stories having status 'review' or 'editing'")
@@ -61,7 +67,7 @@ class Review(models.Model):
   }, indent=1),blank=True) # generic contents for the generic introduction? Is it ok?
   
   # List of fields
-  FIELDS = ('thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdiciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
+  FIELDS = ('thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdisciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
       'structure_score','structure', 'references', 'references_score', 'pertinence','pertinence_score',)
 
   thematic = models.TextField(null=True, blank=True)

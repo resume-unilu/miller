@@ -231,6 +231,7 @@ class ReviewAdmin(admin.ModelAdmin):
   search_fields = ['contents', 'assignee']
   # list_filter = ('category',)
   #list_display = ['date', 'contents', 'owner', 'story', 'status']
+  list_filter = ('status', 'category')
 
   def formfield_for_foreignkey(self, db_field, request, **kwargs):
     if db_field.name == "story":
@@ -239,12 +240,18 @@ class ReviewAdmin(admin.ModelAdmin):
       kwargs["queryset"] = User.objects.filter(groups__name__in=['reviewers', 'editors'])
     return super(ReviewAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
+
   def add_view(self,request,extra_content=None):
     self.exclude = Review.FIELDS + ('contents','assigned_by')
     return super(ReviewAdmin,self).add_view(request)
 
+
   def change_view(self,request,object_id,extra_content=None):
-    self.exclude = []
+    obj = Review.objects.get(pk=object_id)
+    if obj.category == Review.EDITING:
+      self.exclude = Review.FIELDS
+    else:
+      self.exclude = []
     return super(ReviewAdmin,self).change_view(request,object_id)
 
   def save_model(self, request, obj, form, change):

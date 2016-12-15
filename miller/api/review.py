@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers,viewsets
 from rest_framework.exceptions import NotAuthenticated
-from rest_framework.decorators import detail_route, permission_classes
+from rest_framework.decorators import detail_route, permission_classes, list_route, detail_route
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
@@ -52,13 +52,36 @@ class ReviewViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
   
-  def retrieve(self, request, *args, **kwargs):
+  def get(self, request, pk, *args, **kwargs):
     """
     List the reviews assigned to the request user. It requires an authentified user.
     """
-    review = get_object_or_404(self.queryset.filter(assignee=request.user), pk=kwargs['pk'])
+    review = get_object_or_404(self.queryset.filter(assignee=request.user), pk=pk)
     
     serializer = ReviewSerializer(review,
         context={'request': request},
     )
     return Response(serializer.data)
+
+
+  @detail_route(methods=['get'])
+  def report(self, request, *args, **kwargs):
+    """
+    Only authors can access review report ;-)
+    """
+    review = get_object_or_404(self.queryset.filter(story__authors__user=request.user), pk=kwargs['pk'])
+    serializer = ReviewSerializer(review,
+      context={'request': request},
+    )
+    return Response(serializer.data)
+
+
+  @list_route(methods=['get'])
+  def reports(self, request):
+    """
+    Only authors can see reviews reports ;-)
+    """
+    qs = self.queryset.filter(story__authors__user=request.user)
+    page    = self.paginate_queryset(qs)
+    serializer = LiteReviewSerializer(qs, many=True, context={'request': request})
+    return self.get_paginated_response(serializer.data)
