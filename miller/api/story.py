@@ -59,6 +59,9 @@ class StoryViewSet(viewsets.ModelViewSet):
     stories = self._getUserAuthorizations(request)
     stories = stories.filter(**filters).distinct()
 
+    if 'status' not in filters:
+      stories = stories.exclude(status=Story.DELETED)
+
     if ordering is not None:
       stories = stories.order_by(*ordering)
     # add orderby
@@ -70,7 +73,7 @@ class StoryViewSet(viewsets.ModelViewSet):
       serializer = LiteStorySerializer(page, many=True, context={'request': request})
       return self.get_paginated_response(serializer.data)
 
-    serializer = LiteStorySerializer(queryset, many=True, context={'request': request})
+    serializer = LiteStorySerializer(page, many=True, context={'request': request})
     return Response(serializer.data)
 
 
