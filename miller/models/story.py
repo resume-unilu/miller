@@ -263,6 +263,26 @@ class Story(models.Model):
 
     return outputfile
 
+  def send_email_to_staff(self, template_name):
+    """
+    Send email to staff, to the settings.DEFAULT_FROM_EMAIL address.
+    """
+    recipient = settings.DEFAULT_FROM_EMAIL
+    if recipient:
+      logger.debug('story {pk:%s} sending email to DEFAULT_FROM_EMAIL {email:%s}...' % (self.pk, settings.DEFAULT_FROM_EMAIL))
+      from templated_email import send_templated_mail
+      send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context={
+        'title':    self.title,
+        'abstract': self.abstract,
+        'slug':     self.slug,
+        'author':   self.authors.values('slug', 'fullname'),
+        'username': 'staff member',
+        'site_name': settings.MILLER_TITLE,
+        'site_url':  settings.MILLER_SETTINGS['host']
+      })
+    else:
+      logger.debug('story {pk:%s} cannot send email to recipient, settings.DEFAULT_FROM_EMAIL not found!' % (self.pk))
+      
 
   # hook init so that during save we won't keep data
   def __init__(self, *args, **kwargs):
@@ -448,7 +468,9 @@ def if_status_changed(sender, instance, created, **kwargs):
   for editing to Review.
   """
   logger.debug('(story {pk:%s, status:%s}) @story_ready check if_status_changed' % (instance.pk, instance.status))
-    
+
+  if created:
+    instance.send_email_to_staff(template_name='story_created')
 
   if hasattr(instance, '_original') and instance.status != instance._original[0][1]:
     logger.debug('(story {pk:%s, status:%s}) @story_ready if_status_changed from %s' % (instance.pk, instance.status, instance._original[0][1]))

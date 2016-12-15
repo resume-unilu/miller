@@ -1,0 +1,31 @@
+{% block subject %}A new publication has been created on {{site_name}}{% endblock %}
+{% block plain %}
+Dear {{username}}, 
+
+A new **publication** has been created:
+
+## {{title}}
+{{abstract}}
+
+
+View the publication here:
+[{{site_url}}/story/{{slug}}]({{site_url}}/story/{{slug}})
+
+Merci et bonne navigation ! 
+
+{% endblock %}
+
+{% block html %}
+  <p>Dear {{username}},</p>
+
+  <p>A new <b>publication</b> has been created:</p>
+
+  <h3>{{title}}</h3>
+  {% for aut in authors %}
+  by <a href='{{site_url}}/author/{{aut.slug}}/publications'>{{aut.fullname}}</a>
+  {% endfor %}
+  <blockquote>{{abstract}}</blockquote>
+  <p><a href='{{site_url}}/story/{{slug}}'>View the publication</a></p>
+  
+  <p>Merci et bonne navigation ! </p>
+{% endblock %}
