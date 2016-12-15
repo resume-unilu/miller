@@ -448,6 +448,7 @@ def if_status_changed(sender, instance, created, **kwargs):
   for editing to Review.
   """
   logger.debug('(story {pk:%s, status:%s}) @story_ready check if_status_changed' % (instance.pk, instance.status))
+    
 
   if hasattr(instance, '_original') and instance.status != instance._original[0][1]:
     logger.debug('(story {pk:%s, status:%s}) @story_ready if_status_changed from %s' % (instance.pk, instance.status, instance._original[0][1]))
