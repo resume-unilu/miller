@@ -13,7 +13,7 @@ angular.module('miller')
     $scope.review = review;
 
     $scope.fields = [
-      'thematic','interest', 'originality', 'innovation', 'interdiciplinarity', 'methodology', 'clarity', 'argumentation','structure', 'references', 'pertinence'];
+      'thematic','interest', 'originality', 'innovation', 'interdisciplinarity', 'methodology', 'clarity', 'argumentation','structure', 'references', 'pertinence'];
 
 
     $scope.save = function(){
@@ -57,9 +57,17 @@ angular.module('miller')
     // calculate final score based on fields.
     $scope.$watch('review', function(r){
       if(r){
-        // $scope.finalscore = _.map()
+        // min points: 
+        // var minpoints =  $scope.fields.length,
+        $scope.points = _.filter(r, function(d, k){
+          return k.indexOf('_score') != -1
+        }).reduce(function(a,b){
+          return a + b;
+        });
+        $scope.is_valid = $scope.points >= $scope.fields.length;
+        
       }
-    })
+    }, true)
 
     $scope.$on(EVENTS.SAVE, $scope.save);
   }); 

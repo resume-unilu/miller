@@ -61,7 +61,7 @@ class Review(models.Model):
   }, indent=1),blank=True) # generic contents for the generic introduction? Is it ok?
   
   # List of fields
-  FIELDS = ('thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdiciplinarity', 'interdiciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
+  FIELDS = ('thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdiciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
       'structure_score','structure', 'references', 'references_score', 'pertinence','pertinence_score',)
 
   thematic = models.TextField(null=True, blank=True)
@@ -100,8 +100,8 @@ class Review(models.Model):
       MinValueValidator(0) # valid valus will then go from 1 to 5
     ]
   ) # Le tapuscrit apporte-t-il des éléments d’interprétation ou de compréhension nouveaux du sujet abordé?
-  interdiciplinarity = models.TextField(null=True, blank=True)
-  interdiciplinarity_score = models.IntegerField(
+  interdisciplinarity = models.TextField(null=True, blank=True)
+  interdisciplinarity_score = models.IntegerField(
     null=True,
     blank=True,
     validators=[
