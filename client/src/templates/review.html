@@ -50,11 +50,27 @@
       </div>
 
 
-      <div class='center' style='margin: 20px 0'>
-        <h2><span translate='field.label.review.score'> <span>{{points}} / {{fields.length * 5}}</span></h2>
-        <div class='btn-line-group primary' ng-class='{"primary": createForm.$valid}'>
-          <button class='btn-line'><span translate='button.reviewcompleted' translate-values='{is_valid: is_valid}'></span> </button>
+      <div style='margin: 20px 0'>
+        <h2 class='center' ><span translate='field.label.review.score'></span> <span ng-class='{"error": !is_valid}'>{{points}}</span> / {{fields.length * 5}}</span></h2>
+        <div ng-if='is_valid'>
+          <p translate='field.label.review.final.decision'></p>
+          <div class="radio" ng-repeat='status in availableStatuses'>
+            <label>
+              <input type="radio"
+                ng-model="review.status"
+                ng-value="review.status"
+                name="reviewstatus">
+              <span translate='field.label.review.status.{{status}}'></span>
+            </label>
+          </div>
         </div>
+      </div>
+
+      <div class='center' style='margin: 20px 0'>
+        <div class='btn-line-group primary' ng-class='{"primary": createForm.$valid}'>
+          <button class='btn-line'><span translate='button.reviewcompleted' translate-values='{is_valid: is_valid}'></span></button>
+        </div>
+
         <div class='btn-line-group'>
           <button class='btn-line' ng-click='save()'><span translate='button.savedraft' translate-values='{isSaving: isSaving}'></span>
           </button>

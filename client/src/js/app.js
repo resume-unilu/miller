@@ -197,7 +197,7 @@ angular
             return 'profile';
           },
           factory: function(ProfileFactory) {
-            return ProfileFactory;
+            return ProfileFactory.get;
           }
         }
       })
@@ -292,7 +292,7 @@ angular
             return 'story';
           },
           factory: function(StoryFactory) {
-            return StoryFactory;
+            return StoryFactory.get;
           }
         }
       })
@@ -316,7 +316,7 @@ angular
             return 'story';
           },
           factory: function(StoryFactory) {
-            return StoryFactory;
+            return StoryFactory.get;
           }
         }
       })
@@ -339,7 +339,7 @@ angular
             return 'story';
           },
           factory: function(StoryFactory) {
-            return StoryFactory;
+            return StoryFactory.get;
           }
         }
       });
@@ -369,7 +369,7 @@ angular
                 return 'story';
               },
               factory: function(StoryFactory) {
-                return StoryFactory;
+                return StoryFactory.get;
               }
             }
           });
@@ -432,7 +432,7 @@ angular
               return 'story';
             },
             factory: function(StoryFactory) {
-              return StoryFactory;
+              return StoryFactory.get;
             }
           }
         });
@@ -446,7 +446,7 @@ angular
         reloadOnSearch : false,
       })
       .state('reviews.all', {
-        url: '/all',
+        url: '',
         controller: 'ItemsCtrl',
         templateUrl: RUNTIME.static + 'templates/items.html',
           resolve: {
@@ -457,12 +457,12 @@ angular
             return 'review';
           },
           factory: function(ReviewFactory) {
-            return ReviewFactory;
+            return ReviewFactory.get;
           }
         }
       })
       .state('reviews.pending', {
-          url: '',
+          url: '/pending',
           controller: 'ItemsCtrl',
           templateUrl: RUNTIME.static + 'templates/items.html',
             resolve: {
@@ -478,10 +478,26 @@ angular
               return 'review';
             },
             factory: function(ReviewFactory) {
-              return ReviewFactory;
+              return ReviewFactory.get;
             }
           }
-        });
+        })
+      .state('reviews.reports', {
+        url: '/reports',
+        controller: 'ItemsCtrl',
+        templateUrl: RUNTIME.static + 'templates/items.html',
+          resolve: {
+          items: function(ReviewFactory, $stateParams) {
+            return ReviewFactory.reports().$promise;
+          },
+          model: function() {
+            return 'report';
+          },
+          factory: function(ReviewFactory) { // get items
+            return ReviewFactory.reports;
+          }
+        }
+      });
 
     $stateProvider
       .state('review', {
@@ -537,7 +553,7 @@ angular
             return 'story';
           },
           factory: function(StoryFactory) {
-            return StoryFactory;
+            return StoryFactory.get;
           }
         }
       })
@@ -560,7 +576,7 @@ angular
             return 'story';
           },
           factory: function(StoryFactory) {
-            return StoryFactory;
+            return StoryFactory.get;
           }
         }
       })
@@ -601,7 +617,7 @@ angular
               return 'story';
             },
             factory: function(StoryFactory) {
-              return StoryFactory;
+              return StoryFactory.get;
             }
           }
         })
@@ -623,7 +639,7 @@ angular
               return 'story';
             },
             factory: function(StoryFactory) {
-              return StoryFactory;
+              return StoryFactory.get;
             }
           }
         });
@@ -651,7 +667,7 @@ angular
                 return 'story';
               },
               factory: function(StoryFactory) {
-                return StoryFactory;
+                return StoryFactory.get;
               }
             }
           });
@@ -732,7 +748,7 @@ angular
               return 'action';
             },
             factory: function(PulseFactory) {
-              return PulseFactory;
+              return PulseFactory.get;
             }
           }
         });

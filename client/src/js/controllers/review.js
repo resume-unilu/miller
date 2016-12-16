@@ -10,10 +10,13 @@ angular.module('miller')
   .controller('ReviewCtrl', function ($scope, $log, review, ReviewFactory, RUNTIME, EVENTS) {
     $log.log('⏱ ReviewCtrl ready');
 
-    $scope.review = review;
-
+    
     $scope.fields = [
       'thematic','interest', 'originality', 'innovation', 'interdisciplinarity', 'methodology', 'clarity', 'argumentation','structure', 'references', 'pertinence'];
+
+    $scope.availableStatuses = [
+      'draft', 'completed', 'refusal', 'bounce'
+    ];
 
 
     $scope.save = function(){
@@ -35,7 +38,8 @@ angular.module('miller')
       }
 
       answers.contents = JSON.stringify($scope.review.contents);
-      answers.status= 'draft';
+      
+      answers.status = 'draft';
       
       ReviewFactory.patch({
         id: review.id
@@ -45,7 +49,7 @@ angular.module('miller')
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.unlock();
         $scope.isSaving = false;
-
+        $scope.toggleStopStateChangeStart(false);
       }, function(err){
         $log.warn('WritingCtrl @SAVE: error', err);
         $scope.$emit(EVENTS.MESSAGE, 'error!');
@@ -54,9 +58,38 @@ angular.module('miller')
       })
     };
 
+
+    $scope.finalize = function(status){
+      $log.debug('WritingCtrl @SAVE');
+      $scope.$emit(EVENTS.MESSAGE, 'closing the review');
+      $scope.lock();
+      if($scope.isSaving){
+        $log.warn('wait, try again in. Is still saving.')
+        return;
+      }
+      $scope.isSaving = true;
+
+      ReviewFactory.patch({
+        id: review.id
+      }, {
+        status: status // the final status!!!
+      }, function(){
+        $log.debug('WritingCtrl @SAVE: success');
+        
+        $scope.unlock();
+        $scope.isSaving = false;
+      }, function(err){
+        $log.warn('WritingCtrl @SAVE: error', err);
+        $scope.$emit(EVENTS.MESSAGE, 'Your request cannot be resolved. Is the review submitted already?');
+        $scope.unlock();
+        $scope.isSaving = false;
+      })
+    }
+
     // calculate final score based on fields.
-    $scope.$watch('review', function(r){
+    $scope.$watch('review', function(r, p){
       if(r){
+        debugger
         // min points: 
         // var minpoints =  $scope.fields.length,
         $scope.points = _.filter(r, function(d, k){
@@ -66,9 +99,11 @@ angular.module('miller')
         });
         $scope.is_valid = $scope.points >= $scope.fields.length;
         
+        // autosave draft
       }
     }, true)
 
+    $scope.review = review;
     $scope.$on(EVENTS.SAVE, $scope.save);
   }); 
   

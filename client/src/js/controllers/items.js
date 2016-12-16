@@ -66,7 +66,7 @@ angular.module('miller')
         return;
       }
       $scope.isLoadingNextItems = true;
-      factory.get(next, $scope.sync);
+      factory(next, $scope.sync);
     }
 
     $scope.sync(items);

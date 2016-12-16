@@ -151,6 +151,7 @@
   "field.label.innovation.description": "", 
   "upload.missing.steps": "Almost there! ... {{steps}} {{steps > 1? 'more steps'; 'one last step'}} before uploading", 
   "upload.title": "Upload your contribution", 
+  "state.reviews.reports": "your reports", 
   "state.publications.papers.title": "ePapers", 
   "button.upload": "upload", 
   "field.label.clarity.description": "", 

@@ -149,9 +149,21 @@ angular.module('miller')
     return $resource('/api/comment/:id/', {},{})
   })
   .factory('ReviewFactory', function($resource) {
-    return $resource('/api/review/:id/', {},{
+    return $resource('/api/review/:id/:fn', {},{
       patch: {
         method:'PATCH'
+      },
+      report:{
+        method:'GET',
+        params:{
+          fn: 'report/'
+        }
+      },
+      reports:{
+        method:'GET',
+        params:{
+          fn: 'reports/'
+        }
       }
     })
   })

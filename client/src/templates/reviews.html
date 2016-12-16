@@ -5,12 +5,16 @@
   
     <!-- Nav tabs -->
     <ul class='nav nav-tabs'>
-      <li role="presentation" ui-sref-active="active" >
+      <li ng-if='user.is_reviewer' role="presentation" ui-sref-active="active" >
         <a href ui-sref='reviews.all' aria-controls="home" role="tab" data-toggle="tab" translate="state.reviews.all"></a>
       </li>
       
-      <li role="presentation" ui-sref-active="active" >
+      <li ng-if='user.is_reviewer' role="presentation" ui-sref-active="active" >
         <a href ui-sref='reviews.pending' aria-controls="home" role="tab" data-toggle="tab" translate="state.reviews.pending"></a>
+      </li>
+
+      <li role="presentation" ui-sref-active="active" >
+        <a href ui-sref='reviews.reports' aria-controls="home" role="tab" data-toggle="tab" translate="state.reviews.reports"></a>
       </li>
     </ul>
 
