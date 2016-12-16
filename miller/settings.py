@@ -193,6 +193,7 @@ GIT_COMMITTER = {
 }
 
 PROFILE_PATH_ROOT = os.path.join(GIT_ROOT, 'users')
+REVIEWS_PATH_ROOT = os.path.join(GIT_ROOT, 'reviews')
 
 PAGES_ROOT = os.path.join(BASE_DIR, 'client', 'pages')
 

@@ -52,7 +52,7 @@ class Profile(models.Model):
 
   # get profile path UNDER GIT based on random generated shorten url. This does not apply for user uploaded contents.
   def get_path(self):
-    return os.path.join(settings.PROFILE_PATH_ROOT, self.short_url)
+    return os.path.join(settings.PROFILE_PATH_ROOT, self.short_url if not settings.TESTING else 'test_%s' % self.user.username)
 
 
 # Create a folder to store user contents: stories, files etc..

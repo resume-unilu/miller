@@ -125,9 +125,11 @@ class Story(models.Model):
     return '%s - by %s' % (self.title, self.owner.username)
 
   # store into the whoosh index
-  def store(self, ix=None):
+  def store(self, ix=None, receiver=None):
+    logger.debug('story {pk:%s} whoosh init %s' % (self.pk, receiver))
+      
     if settings.TESTING:
-      logger.debug('mock storing data during test')
+      logger.debug('story {pk:%s} whoosh skipped, jus testing! %s' % (self.pk, receiver))
       return
 
     if ix is None:
@@ -159,7 +161,7 @@ class Story(models.Model):
       classname = u"story")
     # print "saving",  u",".join([u'%s' % t.slug for t in self.tags.all()])
     writer.commit()
-
+    logger.debug('story {pk:%s} whoosh completed %s' % (self.pk, receiver))
 
   # unstore (usually when deleted)
   def unstore(self, ix=None):
@@ -199,7 +201,7 @@ class Story(models.Model):
     """
     convenient function to commit the story
     """
-    logger.debug('story {pk:%s} init git commit...' % self.pk)
+    logger.debug('story {pk:%s} gitCommit...' % self.pk)
   
     path = self.get_path()
     
@@ -208,6 +210,9 @@ class Story(models.Model):
     f.seek(0)
     f.close()
 
+    if settings.TESTING:
+      logger.debug('story {pk:%s} gitCommit skipped, just testing!' % self.pk)
+      return
     
     author = Actor(self.owner.username, self.owner.email)
     committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
@@ -221,7 +226,7 @@ class Story(models.Model):
     c = repo.index.commit(message=u"saving %s" % self.title, author=author, committer=committer)
 
 
-    logger.debug('story {pk:%s} git commit done.' % self.pk)
+    logger.debug('story {pk:%s} gitCommit done.' % self.pk)
 
 
   # convert the last saved content (markdown file) to a specific format (default: docx)
@@ -311,7 +316,7 @@ class Story(models.Model):
       self._saved = 1
     else:
       self._saved = self._saved + 1
-    logger.debug('story {pk:%s} init save, time=%s' % (self.pk, self._saved))
+    logger.debug('story@save  {pk:%s} init save, time=%s' % (self.pk, self._saved))
     
     if not self.pk and not self.slug:
       slug = slugify(self.title)
@@ -329,7 +334,7 @@ class Story(models.Model):
           break
 
     if self.date is None:
-      logger.debug('(story {slug:%s,pk:%s}) @save not having a default date. Fixing...' % (self.slug, self.pk))
+      logger.debug('story@save {slug:%s,pk:%s} not having a default date. Fixing...' % (self.slug, self.pk))
       self.date = self.date_last_modified
     if not hasattr(self, 'filling_metadata'):
       self.filling_metadata = True
@@ -354,6 +359,7 @@ class Story(models.Model):
       except Exception as e:
         logger.exception(e)
 
+    logger.debug('story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
 
 
@@ -392,7 +398,7 @@ def dispatcher(sender, instance, created, **kwargs):
 @receiver(story_ready, sender=Story)
 def store_working_md(sender, instance, created, **kwargs):
   instance.store()
-  logger.debug('(story {pk:%s}) @story_ready store_working_md: done' % instance.pk)
+  logger.debug('story@story_ready {pk:%s} store_working_md: done' % instance.pk)
 
 
 
@@ -400,7 +406,7 @@ def store_working_md(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Story)
 def unstore_working_md(sender, instance, **kwargs):
   instance.unstore()
-  logger.debug('(story {pk:%s}) @pre_delete unstore_working_md: done' % instance.pk)
+  logger.debug('story@pre_delete {pk:%s} unstore_working_md: done' % instance.pk)
 
 
 
@@ -412,14 +418,14 @@ def transform_source(sender, instance, created, **kwargs):
   if not created:
     return
   if bool(instance.source):
-    logger.debug('(story {pk:%s}) @story_ready transform_source: converting...' % instance.pk)
+    logger.debug('story@story_ready {pk:%s} transform_source: converting...' % instance.pk)
     instance.convert()
     instance._dirty = True
   else:
-    logger.debug('(story {pk:%s}) @story_ready transform_source: skipping.' % instance.pk)
+    logger.debug('story@story_ready {pk:%s} transform_source: skipping.' % instance.pk)
   
   
-  logger.debug('(story {pk:%s}) @story_ready transform_source: done' % instance.pk)
+  logger.debug('story@story_ready {pk:%s} transform_source: done' % instance.pk)
   
 
 
@@ -429,36 +435,15 @@ def create_first_author(sender, instance, created, **kwargs):
   if created:
     instance.authors.add(instance.owner.authorship.first())
     instance._dirty = True
-    logger.debug('(story {pk:%s}) @story_ready: {username:%s}" done.' % (instance.pk, instance.owner.username))
+    logger.debug('story@story_ready {pk:%s} create author {username:%s}" done.' % (instance.pk, instance.owner.username))
 
 
 # create story file if it is not exists; if the story eists already, cfr the followinf story_ready
 @receiver(story_ready, sender=Story)
 def create_working_md(sender, instance, created, **kwargs):
-  logger.debug('(story {pk:%s}) @story_ready: git...' % instance.pk)
+  logger.debug('story@story_ready {pk:%s}: create_working_md...' % instance.pk)
   instance.gitCommit()
-  path = instance.get_path()
-  
-  f = codecs.open(path, encoding='utf-8', mode='w+')
-  f.write(instance.contents)
-  f.seek(0)
-  f.close()
-
-  from git import Repo, Commit, Actor, Tree
-
-  author = Actor(instance.owner.username, instance.owner.email)
-  committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
-
-  # commit if there are any differences
-  repo = Repo.init(settings.GIT_ROOT)
-
-  # add and commit JUST THIS FILE
-  #tree = Tree(repo=repo, path=instance.owner.profile.get_path())
-  repo.index.add([instance.owner.profile.get_path()])
-  c = repo.index.commit(message=u"saving %s" % instance.title, author=author, committer=committer)
-
-
-  logger.debug('(story {pk:%s}) @story_ready: done.' % instance.pk)
+  logger.debug('story@story_ready {pk:%s}: create_working_md done.' % instance.pk)
 
 
 @receiver(story_ready, sender=Story)
@@ -467,13 +452,13 @@ def if_status_changed(sender, instance, created, **kwargs):
   this function enable actions for status change activity:e.g. from draft to editing
   for editing to Review.
   """
-  logger.debug('(story {pk:%s, status:%s}) @story_ready check if_status_changed' % (instance.pk, instance.status))
+  logger.debug('story@story_ready {pk:%s, status:%s} check if_status_changed' % (instance.pk, instance.status))
 
   if created:
     instance.send_email_to_staff(template_name='story_created')
 
   if hasattr(instance, '_original') and instance.status != instance._original[0][1]:
-    logger.debug('(story {pk:%s, status:%s}) @story_ready if_status_changed from %s' % (instance.pk, instance.status, instance._original[0][1]))
+    logger.debug('(story@story_ready {pk:%s, status:%s} @story_ready if_status_changed from %s' % (instance.pk, instance.status, instance._original[0][1]))
     if instance.status == Story.PUBLIC:
       # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
       action.send(instance.owner, verb='got_published', target=instance)
@@ -489,7 +474,7 @@ def if_status_changed(sender, instance, created, **kwargs):
 # clean makdown version and commit
 @receiver(pre_delete, sender=Story)
 def delete_working_md(sender, instance, **kwargs):
-  logger.debug('(story {pk:%s}) @pre_delete: %s' % (instance.pk, instance.get_path()))
+  logger.debug('story@pre_delete {pk:%s} delete file: %s' % (instance.pk, instance.get_path()))
   
   path = instance.get_path()
   
@@ -503,7 +488,7 @@ def delete_working_md(sender, instance, **kwargs):
   os.remove(path);
   # keep exports in .gitignore
 
-  logger.debug('(story {pk:%s}) @story_ready: markdown removed.' % instance.pk)
+  logger.debug('story@pre_delete {pk:%s} markdown removed.' % instance.pk)
 
   # commit if there are any differences
   repo = Repo.init(settings.GIT_ROOT)
@@ -514,17 +499,17 @@ def delete_working_md(sender, instance, **kwargs):
   repo.index.commit(message=u"deleting %s" % instance.title, author=author, committer=committer)
 
 
-  logger.debug('(story {pk:%s}) @story_ready: done.' % instance.pk)
+  logger.debug('story@pre_delete {pk:%s} removed from git.' % instance.pk)
 
 
 @receiver(m2m_changed, sender=Story.tags.through)
 def store_tags(sender, instance, **kwargs):
   if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
-    instance.store()
+    instance.store(receiver='m2m_changed tags')
 
 @receiver(m2m_changed, sender=Story.authors.through)
 def store_authors(sender, instance, **kwargs):
   if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
-    instance.store()
+    instance.store(receiver='m2m_changed authors')
 
 

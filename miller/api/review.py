@@ -37,9 +37,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
   def partial_update(self, request, *args, **kwargs):
     """
-    Request user can partial update reviews they have been assigned
+    Request user can partial update reviews they have been assigned.
+    Once the review status has been changed to COMPLETED/REJECTED/BOUNCE this method is no more available (a not found error is thrown) 
     """
-    review = get_object_or_404(self.queryset.filter(assignee=request.user), pk=kwargs['pk'])
+    review = get_object_or_404(self.queryset.filter(status__in=[Review.INITIAL, Review.DRAFT], assignee=request.user), pk=kwargs['pk'])
     return super(ReviewViewSet, self).partial_update(request, *args, **kwargs)
 
   
