@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 
@@ -69,7 +70,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     Only authors can access review report ;-)
     """
-    review = get_object_or_404(self.queryset.filter(story__authors__user=request.user), pk=kwargs['pk'])
+    review = get_object_or_404(self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user) | Q(assignee=request.user)), pk=kwargs['pk'])
     serializer = ReviewSerializer(review,
       context={'request': request},
     )
@@ -81,7 +82,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     Only authors can see reviews reports ;-)
     """
-    qs = self.queryset.filter(story__authors__user=request.user)
+    qs = self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user) | Q(assignee=request.user))
     page    = self.paginate_queryset(qs)
     serializer = LiteReviewSerializer(qs, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
