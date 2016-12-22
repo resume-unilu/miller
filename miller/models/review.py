@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 
 
 
-logger = logging.getLogger('miller')
+logger = logging.getLogger('miller.commands')
 
 class Review(models.Model):
   """
@@ -247,7 +247,7 @@ class Review(models.Model):
       u'score details:'
     ]
 
-    for f in FIELDS:
+    for f in Review.FIELDS:
       chunks.append(u'- %s: %s' % (f, getattr(self, f)))
     
     chunks = chunks + [
@@ -267,19 +267,22 @@ def calculate_score(sender, instance, **kwargs):
   Precalculate score according to SCORE_FIELD integer fields
   """
   if instance.pk:
-    instance.score = reduce(getattr(instance, f) for f in FIELDS_FOR_SCORE)
+    print [getattr(instance, f) for f in Review.FIELDS_FOR_SCORE]
+    instance.score = reduce(lambda x,y: (x if x is not None else 0)+(y if y is not None else 0), [getattr(instance, f) for f in Review.FIELDS_FOR_SCORE])
     logger.debug('review {pk:%s} @pre_save, total score: %s' % (instance.pk, instance.score))
     
 
 
 @receiver(post_save, sender=Review)
 def dispatcher(sender, instance, created, **kwargs):
-  if created or instance._original['assignee__pk'] != instance.assignee.pk:
-    if settings.EMAIL_HOST:
-      logger.debug('review {pk:%s, category:%s} sending email to user {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+  if created or (hasattr(instance, '_original') and instance._original['assignee__pk'] != instance.assignee.pk):
+    logger.debug('review {pk:%s, category:%s} sending email to user {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+    try:
       instance.send_email_to_assignee(template_name='assignee_%s'%instance.category)
-    else:
-      logger.debug('review {pk:%s, category:%s} cannot send email to assignee, no settings.EMAIL_HOST present in loca_settings ...' %(instance.category, instance.pk))
+    except Exception as e:
+      logger.exception(e)
+    # else:
+    #   logger.debug('review {pk:%s, category:%s} cannot send email to assignee, no settings.EMAIL_HOST present in loca_settings ...' %(instance.category, instance.pk))
 
 
 

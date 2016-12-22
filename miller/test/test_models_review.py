@@ -57,13 +57,32 @@ class ReviewTest(TestCase):
     path = self.dantealighieri.profile.get_path()
     self.assertTrue(os.path.exists(path))
     
-    # # Test that one message has been sent.
-    # self.assertEqual(len(mail.outbox), 1)
+    review = Review.objects.create(story=self.story, assignee=self.assignee, assigned_by=self.assigned_by)
+    # default: editing request.
+    self.assertEqual(review.category, Review.EDITING)
+    self.assertEqual(len(mail.outbox), 2)
+    self.assertEqual(mail.outbox[1].subject, u'A new editing task has been assigned to you')
+
+    review_dblind = Review.objects.create(story=self.story, assignee=self.assignee, assigned_by=self.assigned_by, category=Review.DOUBLE_BLIND)
+
+    # autocalculate score oes not make sense now!
+    self.assertEqual(review_dblind.score, None)
+
+    # Test that one message has been sent.
+    self.assertEqual(len(mail.outbox), 3)
 
     # # Verify that the subject of the first message is correct.
-    # self.assertEqual(mail.outbox[0].subject, 'Subject here')
-
+    # print mail.outbox[1].subject, mail.outbox[1]
+    self.assertEqual(mail.outbox[2].subject, u'A new review has been assigned to you')
     # check that the user has been deleted
+    # .. set review...
+    review_dblind.status = Review.DRAFT
+    review_dblind.structure_score = 4
+    review_dblind.save()
+
+    # Now score should have been calculated.
+    self.assertEqual(review_dblind.score, 4)
+
 
   def remove_story(self):
     self.story.delete()
