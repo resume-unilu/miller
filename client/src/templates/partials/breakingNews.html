@@ -3,6 +3,6 @@
     <div class="type">
       <span ng-repeat='tag in news.tags | filter:{ category: "writing" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
     </div>
-    <h3><a ui-sref="story({postId: news.slug})" embedit='news.metadata.title' language='language'></a></h3>  
+    <h3><a ng-if='!news.isCollection' ui-sref="story({postId: news.slug})" embedit='news.metadata.title' language='language'></a><a ng-if='news.isCollection' ui-sref="collection({collectionId: news.slug})" embedit='news.metadata.title' language='language'></a></h3>  
   </div>
 </div>

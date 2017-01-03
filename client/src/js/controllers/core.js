@@ -146,6 +146,7 @@ angular.module('miller')
           d.cover_url = _.get(cover, 'metadata.thumbnail_url') || _.get(cover, 'metadata.urls.Preview') || _.get(cover, 'snapshot') || cover.url;
           
         }
+        d.isCollection = _.filter(d.tags, {slug: 'collection'}).length > 0;
         return d;
       });
     };
