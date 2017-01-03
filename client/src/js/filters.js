@@ -25,6 +25,15 @@ angular.module('miller')
     }
   })
   /*
+    Replace state name point with spaces, e.g. to get collection 
+  */
+  .filter('statetoclass', function(){
+    return function(text){
+      return (text || '')
+        .replace('.', ' ')
+    }
+  })
+  /*
     Replace quotes
   */
   .filter('quotes', function(){
