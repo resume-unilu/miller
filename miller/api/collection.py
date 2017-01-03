@@ -18,7 +18,7 @@ class CollectionViewSet(viewsets.ModelViewSet):
   # retrieve method
   def retrieve(self, request, *args, **kwargs):
     if request.user.is_authenticated():
-      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors=request.user) | Q(status=Story.PUBLIC)).distinct()
+      queryset = self.queryset.filter(Q(owner=request.user) | Q(authors__user=request.user) | Q(status=Story.PUBLIC)).distinct()
     else:
       queryset = self.queryset.filter(status=Story.PUBLIC).distinct()
 
