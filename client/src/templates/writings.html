@@ -46,7 +46,7 @@
   
   <div class='btn-line-group' ng-if='!isDraft && id'>
     <button ng-if='!isCollection' class='btn-line' ui-sref="story({postId: story.slug})" translate="button.viewmode"></button>
-    <button ng-if='isCollection' class='btn-line' ui-sref="collection({collectionId: id})" translate="button.viewmode"></button>
+    <button ng-if='isCollection' class='btn-line' ui-sref="collection({collectionId: story.slug})" translate="button.viewmode"></button>
   </div>
   
   <div class='btn-line-group primary'>

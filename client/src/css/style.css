@@ -310,6 +310,13 @@ ul.errorlist{
 .collection{
   /*background-color: #f0f0f0;*/
 }
+.collection h1.collection-title{
+  font-size: 30px;
+  line-height: 45px;
+  margin: 5px 0;
+  font-weight: normal;
+}
+
 .collection .chapter{
   background-color: white; 
   min-height: 200px;
@@ -395,7 +402,13 @@ ul.errorlist{
 */
 .pagination{
   border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 2px;
+  padding-bottom: 5px;
+  border-radius: 0;
+  margin: 5px 0;
+}
+.pagination > li.special > a{
+  width: auto;
+  padding: 0 10px;
 }
 
 .pagination > li > a, .pagination > li > span{
@@ -414,11 +427,12 @@ ul.errorlist{
   font-family: 'Lato';
   font-size: 13px;
   transition: border-color .36s ease-in-out;
+  background: transparent;
 }
 
 .pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus{
   border: 2px solid transparent;
-  border-bottom: 2px solid #4ECDC4;
+  border: 2px solid #4ECDC4;
   color: #4ECDC4;
   background: transparent;
 }
@@ -430,7 +444,7 @@ ul.errorlist{
 .pagination > .active > a:focus, 
 .pagination > .active > span:focus{
   border: 2px solid transparent;
-  border-bottom: 2px solid #FF6B6B;
+  border: 2px solid #FF6B6B;
   color: #FF6B6B;
   background: transparent;
 }

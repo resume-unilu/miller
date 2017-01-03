@@ -39,10 +39,13 @@ angular.module('miller')
     var links = markdownItChaptersService(collection.contents, $scope.language);
     var stories = _.keyBy(collection.stories, 'slug');
     
+    // filter chapters from links
     $scope.chapters = links.map(function(d){
-      if(stories[d.slug])
+      if(stories[d.slug]){
         return stories[d.slug]
+      }
       return d;
     })
 
+    
   })
