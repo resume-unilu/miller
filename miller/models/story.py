@@ -145,8 +145,8 @@ class Story(models.Model):
       return
 
     # multilingual abstract, reduced
-    abstracts = u"\n".join(filter(None,list(set([metadata['abstract'][language_code] for dlc, l, language_code in settings.LANGUAGES]))))
-    titles    = u"\n".join(filter(None,list(set([metadata['title'][language_code] for dlc, l, language_code in settings.LANGUAGES]))))
+    abstracts = u"\n".join(filter(None,list(set([metadata['abstract'][language_code] if language_code in metadata['abstract'] else None for dlc, l, language_code in settings.LANGUAGES]))))
+    titles    = u"\n".join(filter(None,list(set([metadata['title'][language_code] if language_code in metadata['title'] else None for dlc, l, language_code in settings.LANGUAGES]))))
 
     writer.update_document(
       title     = titles,
