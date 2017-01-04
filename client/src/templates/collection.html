@@ -70,7 +70,7 @@
   <div ui-view>
     <div class='container'>
     <div class="cover-wrapper" ng-if='collection.cover'>
-      <div class='image-wrapper cover' lazy-img='{{collection.cover.attachment|| collection.cover.metadata.urls.Preview}}'></div>
+      <div class='image-wrapper cover' lazy-img='{{collection.cover.attachment || collection.cover.metadata.preview || collection.cover.metadata.urls.Preview || collection.cover.metadata.thumbnail_url }}'></div>
     </div>
     </div>
   
