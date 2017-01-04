@@ -9,9 +9,7 @@
 
       <div class='row'>
         <div class='col-md-12'>
-          <div class='authors' ng-if="story.authors.length">
-            by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-          </div>
+
           <h1><span class="" embedit='story.metadata.title' language='language'></span></h1>
           
           <!-- story reference and cite as buttons -->
@@ -22,7 +20,9 @@
 
           
           <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
-          
+          <div class='authors' ng-if="story.authors.length">
+            by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+          </div>
 
 
         </div>
@@ -38,6 +38,7 @@
           
           <!-- <div class='col-md-4'> -->
           <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
+          
           <!-- </div> -->
         <!-- </div> -->
         </div>
