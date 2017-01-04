@@ -1,4 +1,4 @@
-<div class="review stream">
+<div class="review stream {{review.status}}">
   <div class="row">
     <div class='col-xs-4 col-sm-4 col-md-3'>
       <table class="table">
@@ -8,7 +8,7 @@
         </tr>
         <tr>
           <th><span>status</span></th>
-          <td><span>{{review.status}}</span></td>
+          <td><span class='status'>{{review.status}}</span></td>
         </tr>
         <tr>
           <th><span>due date</span></th>
@@ -29,7 +29,7 @@
     </div>
 
     <div class='col-sm-2 col-md-4'>
-      <div class='center'  style='    margin-top: 35px;'>
+      <div ng-if='review.status == "initial" || review.status == "draft"' class='center'  style='    margin-top: 35px;'>
         <div class='btn-line-group primary'>
           <button class='btn-line' ui-sref='review({id: review.id})' translate='button.completereview'></button>
         </div>

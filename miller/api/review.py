@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from miller.api.serializers import ReviewSerializer, LiteReviewSerializer
+from miller.api.utils import filtersFromRequest, orderingFromRequest
+
 from miller.models import Review, Author
 
 
@@ -45,10 +47,15 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
   
   def list(self, request, *args, **kwargs):
+    filters = filtersFromRequest(request=self.request)
+    ordering = orderingFromRequest(request=self.request)
     """
     This is the list of your reviews. Access to the uncompleted list via todo
     """
-    qs = self.queryset.filter(assignee=request.user)
+    qs = self.queryset.filter(assignee=request.user).filter(**filters)
+    if ordering is not None:
+      qs = qs.order_by(*ordering)
+
     page    = self.paginate_queryset(qs)
     serializer = LiteReviewSerializer(qs, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)

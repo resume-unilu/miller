@@ -106,8 +106,10 @@ angular
           // emit on 400 error (bad request, mostly form errors)
           if(rejection.status == 400){
             $rootScope.$emit(EVENTS.BAD_REQUEST, rejection);
+            debugger
           } else if(rejection.status == 403){
             $rootScope.$emit(EVENTS.PERMISSION_DENIED, rejection);
+            debugger
           }
           return $q.reject(rejection);
         }

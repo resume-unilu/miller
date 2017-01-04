@@ -18,9 +18,11 @@ angular.module('miller')
       'draft', 'completed', 'refusal', 'bounce'
     ];
 
+    // initial status
+    $scope.reviewStatus = ''+review.status;
 
     $scope.save = function(){
-      $log.debug('WritingCtrl @SAVE');
+      $log.debug('⏱ ReviewCtrl @SAVE');
       $scope.$emit(EVENTS.MESSAGE, 'saving');
       $scope.lock();
       if($scope.isSaving){
@@ -45,13 +47,13 @@ angular.module('miller')
         id: review.id
       }, answers, function(review){
         $scope.review = review;
-        $log.debug('WritingCtrl @SAVE: success');
+        $log.debug('⏱ ReviewCtrl @SAVE: success');
         $scope.$emit(EVENTS.MESSAGE, 'saved');
         $scope.unlock();
         $scope.isSaving = false;
         $scope.toggleStopStateChangeStart(false);
       }, function(err){
-        $log.warn('WritingCtrl @SAVE: error', err);
+        $log.warn('⏱ ReviewCtrl @SAVE: error', err);
         $scope.$emit(EVENTS.MESSAGE, 'error!');
         $scope.unlock();
         $scope.isSaving = false;
@@ -60,7 +62,7 @@ angular.module('miller')
 
 
     $scope.finalize = function(status){
-      $log.debug('WritingCtrl @SAVE');
+      $log.debug('⏱ ReviewCtrl @SAVE');
       $scope.$emit(EVENTS.MESSAGE, 'closing the review');
       $scope.lock();
       if($scope.isSaving){
@@ -74,12 +76,12 @@ angular.module('miller')
       }, {
         status: status // the final status!!!
       }, function(){
-        $log.debug('WritingCtrl @SAVE: success');
+        $log.debug('⏱ ReviewCtrl @SAVE: success');
         
         $scope.unlock();
         $scope.isSaving = false;
       }, function(err){
-        $log.warn('WritingCtrl @SAVE: error', err);
+        $log.warn('⏱ ReviewCtrl @SAVE: error', err);
         $scope.$emit(EVENTS.MESSAGE, 'Your request cannot be resolved. Is the review submitted already?');
         $scope.unlock();
         $scope.isSaving = false;
@@ -89,16 +91,13 @@ angular.module('miller')
     // calculate final score based on fields.
     $scope.$watch('review', function(r, p){
       if(r){
-        debugger
-        // min points: 
-        // var minpoints =  $scope.fields.length,
         $scope.points = _.filter(r, function(d, k){
           return k.indexOf('_score') != -1
         }).reduce(function(a,b){
           return a + b;
         });
         $scope.is_valid = $scope.points >= $scope.fields.length;
-        
+        $log.log('⏱ ReviewCtrl @review - points:', $scope.points, '- can be submitted:',$scope.is_valid);
         // autosave draft
       }
     }, true)

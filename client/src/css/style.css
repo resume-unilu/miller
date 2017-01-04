@@ -2337,6 +2337,21 @@ content: "\e07a";
 /*
   reviewed
 */
+.review table .status{
+  font-family: 'Lato';
+  text-transform: uppercase;
+  font-size: 0.8em;
+  padding: 0 5px;
+}
+.stream.review.refusal table .status{
+  background: #FF6B6B;
+  color: white;
+
+}
+.stream.review.draft table .status{
+  background: gold;
+
+}
 .reviewed{
   background: #f0f0f0;
   padding: 5px 15px; 

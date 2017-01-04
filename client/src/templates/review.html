@@ -57,10 +57,10 @@
           <div class="radio" ng-repeat='status in availableStatuses'>
             <label>
               <input type="radio"
-                ng-model="review.status"
-                ng-value="review.status"
+                ng-model="$parent.$parent.reviewStatus"
+                value="{{status}}"
                 name="reviewstatus">
-              <span translate='field.label.review.status.{{status}}'></span>
+              <span translate='field.label.review.status.{{status}}'></span> {{status}}
             </label>
           </div>
         </div>
@@ -68,12 +68,12 @@
 
       <div class='center' style='margin: 20px 0'>
         <div class='btn-line-group primary' ng-class='{"primary": createForm.$valid}'>
-          <button class='btn-line'><span translate='button.reviewcompleted' translate-values='{is_valid: is_valid}'></span></button>
+          <button class='btn-line' ng-click='finalize(reviewStatus)'><span translate='button.reviewcompleted' translate-values='{is_valid: is_valid}'></span></button>
         </div>
 
         <div class='btn-line-group'>
           <button class='btn-line' ng-click='save()'><span translate='button.savedraft' translate-values='{isSaving: isSaving}'></span>
-          </button>
+          reviewStatus:{{reviewStatus}}</button>
         </div>
       </div>
     </form>
