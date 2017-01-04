@@ -67,10 +67,11 @@
     </div>
   </div>
 
-  <div ui-view>
+  <div ui-view >
     <div class='container'>
     <div class="cover-wrapper" ng-if='collection.cover'>
       <div class='image-wrapper cover' lazy-img='{{collection.cover.attachment || collection.cover.metadata.preview || collection.cover.metadata.urls.Preview || collection.cover.metadata.thumbnail_url }}'></div>
+      <div class='metadata-wrapper' ng-init='document=collection.cover' ng-include='"templates/partials/document.metadata.linear.html"|prefixTemplate''></div>
     </div>
     </div>
   
@@ -85,7 +86,7 @@
               <div class="tags" ng-if="story.tags.length">
                 <span class="tag" ng-repeat='tag in story.tags|filter:{ category: "writing", status:"public" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
               </div>
-              <h2 embedit='story.metadata.title' language='language'></h2>
+              <h2><a ui-sref='collection.story({storyId:story.slug})' embedit='story.metadata.title' language='language'></a></h2>
               <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
             </div>
           </div>

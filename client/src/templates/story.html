@@ -53,13 +53,13 @@
       <div class='row'>
         <div class='col-md-12'>
           <h1 embedit='story.metadata.title' language='language'></h1>
+          
+          <!-- story reference and cite as buttons -->
           <div embedit='story.metadata.reference' ng-if='story.metadata.reference' markdown='true' language='language'></div>
-          <div class="share" ng-if='story.status == "public"'>
-            <span translate='share'></span>
-            <a socialshare socialshare-provider="twitter" socialshare-text="{{document.title}}" socialshare-hashtags="{{settings.socialtags}}" socialshare-url="{{absoluteUrl}}"><span class='icon icon-social-twitter'></span></a>
+          
+          <!-- social share buttons: -->
+          <div ng-if='story.status == "public"' ng-include='"templates/partials/story.socialshare.html"|prefixTemplate'></div>
 
-            <a socialshare socialshare-provider="facebook" socialshare-text="{{OG.title}}" socialshare-title="{{OG.title}}" socialshare-description="{{OG.description}}"  socialshare-hashtags="{{settings.socialtags}}" socialshare-media="{{OG.image}}" socialshare-via="{{settings.facebook}}" socialshare-type="feed" socialshare-url="{{absoluteUrl}}"><span class='icon icon-social-facebook'></span></a>
-          </div>
           <blockquote embedit='story.metadata.abstract' language='language'></blockquote>
         </div>
       </div>
@@ -72,7 +72,7 @@
           <!-- </div> -->
           
           <!-- <div class='col-md-4'> -->
-            <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
+          <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
           <!-- </div> -->
         <!-- </div> -->
       </div>

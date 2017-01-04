@@ -319,7 +319,7 @@ ul.errorlist{
   /*background-color: #f0f0f0;*/
 }
 .collection h1.collection-title{
-  margin-bottom: 0;
+  margin: 0;
 }
 .collection.story h1.collection-title{
   font-size: 18px;
@@ -342,6 +342,10 @@ ul.errorlist{
   position: relative;
   padding: 10px 10px 0px 10px;
   background: #f0f0f0;
+}
+
+.collection .chapter h2 a {
+  color: #151515;
 }
 
 .collection .chapter.last{
@@ -386,15 +390,19 @@ ul.errorlist{
 }
 
 .collection .cover-wrapper{
-  /*background-color: #F0F0F0;*/
   margin: 0;
-  min-height: 400px;
   background-color: #F0F0F0;
-    margin: 0;
-    min-height: 400px;
-    /*position: absolute;*/
-    height: 100px;
-    width: 100%;
+  padding: 10px 10px 0 10px;
+  width: 100%;
+}
+
+.collection .cover-wrapper .metadata{
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.collection .cover-wrapper .image-wrapper{
+  height: 300px;
 }
 
 .collection .cover-wrapper.alternate{
@@ -433,7 +441,7 @@ ul.errorlist{
 
 .collection-abstract{
   background: #f0f0f0;
-    padding: 20px;
+  padding: 5px 15px 20px 15px;
 }
 
 /*
