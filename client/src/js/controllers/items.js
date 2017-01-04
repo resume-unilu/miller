@@ -26,9 +26,9 @@ angular.module('miller')
         .map(function(d){
           if(!d.metadata || !d.metadata.abstract)
             return d
-          // if(d.tags && d.tags.length && _.find(d.tags, {slug: 'collection'})){
-          //   d.isCollection = true
-          // }
+          if(d.tags && d.tags.length && _.filter(d.tags, {slug: 'collection', category:'writing'}).length){
+            d.isCollection = true
+          }
           // console.log(d)
           if(!d.metadata.abstract[$scope.language]){
             return d;
