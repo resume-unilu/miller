@@ -638,6 +638,9 @@ ul.errorlist{
   z-index: 1;
 }
 
+.tags{
+      text-align: left;
+}
 .tags .tag{
   text-transform: uppercase;
   font-weight: bold;
@@ -929,6 +932,7 @@ ul.errorlist{
   width: 100px;
   float: left;
   margin-right: 10px;
+  background-size: cover;
 }
 
 .cover-preview .title{

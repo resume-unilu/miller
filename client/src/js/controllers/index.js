@@ -46,7 +46,9 @@ angular.module('miller')
     // check cover of coverstory
     if($scope.coverstory && $scope.coverstory.covers.length){
       var maincover = _.first($scope.coverstory.covers);
-      $scope.coverstory.cover = _.get(maincover, 'metadata.thumbnail_url') || _.get(maincover, 'metadata.attachment');
+
+      $scope.coverstory.cover = _.get(maincover, 'metadata.thumbnail_url') || maincover.snapshot;
+
     }
 
 
