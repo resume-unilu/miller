@@ -14,6 +14,11 @@ angular.module('miller')
     
     $scope.collection.isWritable = $scope.hasWritingPermission($scope.user, $scope.collection);
 
+    // get cover of collection
+    if(collection.covers.length){
+      $scope.collection.cover = _.first(collection.covers);
+    }
+
     // set status DRAFT or PUBLIC to the document.
     $scope.setStatus = function(status){
       $log.debug('CollectionCtrl -> setStatus - status:', status);

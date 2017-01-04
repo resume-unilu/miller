@@ -21,6 +21,8 @@
 
   </div>
   
+  
+
   <div class='container'>
     <div class='row'>
       <div class='col-md-12'>
@@ -47,23 +49,7 @@
     </div> -->
   </div>
 
-  <!-- <div class="cover-wrapper" ng-if='collection.covers.length' >
-    <div class='container' style="">
-      <div class='row'>
-        <div class="col-sm-12" style="position:relative">
-          <div style='position:absolute' ng-repeat='document in collection.covers'>
-              <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
-               <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
-          </div>
-        </div>
 
-        <div class='col-md-12'>
-          <h1 embedit='collection.metadata.title' language='language'></h1>
-          <blockquote embedit='collection.metadata.abstract' language='language'></blockquote>
-        </div>
-      </div>
-    </div>
-  </div> -->
   
   <div class='container' style="">
     <div class='row'>
@@ -82,10 +68,16 @@
   </div>
 
   <div ui-view>
-    
-    <div class="cover-wrapper alternate" ng-repeat="story in chapters">
+    <div class='container'>
+    <div class="cover-wrapper" ng-if='collection.cover'>
+      <div class='image-wrapper cover' lazy-img='{{collection.cover.attachment|| collection.cover.metadata.urls.Preview}}'></div>
+    </div>
+    </div>
+  
+    <div  ng-repeat="story in chapters">
       <div class='container'>
         <div class="chapter" ng-class='{"last": $last}'>
+
           <a class="number" ui-sref='collection.story({storyId:story.slug})'>{{$index + 1}}</a>
           <div class='col-md-6'>
             <div class="inner">

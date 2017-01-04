@@ -318,6 +318,9 @@ ul.errorlist{
 .collection{
   /*background-color: #f0f0f0;*/
 }
+.collection h1.collection-title{
+  margin-bottom: 0;
+}
 .collection.story h1.collection-title{
   font-size: 18px;
     line-height: 35px;
@@ -386,6 +389,12 @@ ul.errorlist{
   /*background-color: #F0F0F0;*/
   margin: 0;
   min-height: 400px;
+  background-color: #F0F0F0;
+    margin: 0;
+    min-height: 400px;
+    /*position: absolute;*/
+    height: 100px;
+    width: 100%;
 }
 
 .collection .cover-wrapper.alternate{
