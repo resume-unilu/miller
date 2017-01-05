@@ -7,11 +7,7 @@
       <div class="header">
         <div class="inner">
           <h2 embedit='fullsized.metadata.title'></h2>
-          <div class='contents'>
-            <span embedit='fullsized.metadata.reference'></span>
-            <span ng-if='fullsized.metadata.author_name'>by {{fullsized.metadata.author_name}}</span>
-            <a ng-if='fullsized.url' target='_blank' ng-href='{{fullsized.url}}' translate='link.to.original'></a>
-          </div>
+          <div ng-init='document=fullsized' ng-include='"templates/partials/document.metadata.linear.html"|prefixTemplate''></div>
         </div>
       </div>
       <div class="main">

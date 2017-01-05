@@ -13,6 +13,7 @@ angular.module('miller')
         enabled: '=',
         oembed: '=',
         cover: '=',
+        autoplay: '=',
         fullscreen: '&'
       },
       templateUrl: RUNTIME.static + 'templates/partials/directives/rich-oembed.html',
@@ -23,7 +24,7 @@ angular.module('miller')
 
         scope.iframeEnabled = false;
         
-        $log.log('🍩 rich-oembed ready', scope.cover);
+        $log.log('🍩 rich-oembed ready, cover:', scope.cover, '- autoplay:', scope.autoplay, '- type:', scope.oembed.type);
         scope.$watch('enabled', function(v){
           $log.debug('🍩 rich-oembed @enabled:', v);
           scope.toggleEnable(!!v);
@@ -43,7 +44,7 @@ angular.module('miller')
 
             $log.log('🍩 rich-oembed apply iframeEnabled:', v);
             scope.iframeEnabled = v
-          }, 500);
+          }, 100);
         }
       }
     }

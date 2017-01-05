@@ -24,6 +24,8 @@ angular.module('miller')
         }, 
         disable = ['image', 'heading'];
 
+        
+
         scope.render = function(language) {
           if(!scope.embedit)
             return;
@@ -56,6 +58,12 @@ angular.module('miller')
 
           if(scope.stretch){
             element.find('iframe').width('100%').height('100%');
+          }
+          // autoplay from attrs. Works only on iframe.
+          if(attrs.autoplay){
+            var  src = element.find('iframe').attr('src');
+            element.find('iframe').attr('src', src + (src.indexOf('?') == -1? '?': '&') + 'autoplay=1');
+            console.log('Activating autoplay on iframe...', src)
           }
         };
         

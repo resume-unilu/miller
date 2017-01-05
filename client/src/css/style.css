@@ -1344,6 +1344,17 @@ h4.modal-title{
   z-index:1;
 }
 
+.modal.fullsize .oversize a:hover{
+  color: white;
+}
+
+.modal.fullsize .oversize .metadata{
+  background: transparent;
+  margin-bottom: 0;
+  margin-left: 20px;
+  padding: 0;
+  text-align: left;
+}
 
 .modal.fullsize .oversize .wrapper {
   height: 100%;
@@ -1478,6 +1489,46 @@ h4.modal-title{
 .rich-oembed-iframe-wrapper{
   overflow: hidden;
 }
+
+.rich-oembed-iframe-wrapper .shadow{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  top: 0;
+}
+.rich-oembed-iframe-wrapper .shadow > .toggler{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: red;
+  font-size: 50px;
+  background: #c7f464;
+  width: 50px;
+  height: 50px;
+  margin-left: -25px;
+  margin-top: -25px;
+  text-align: center;
+  opacity: .2;
+  transition: opacity .16s ease-in-out;
+  border-radius: 50px;
+}
+
+.rich-oembed-iframe-wrapper:hover .shadow > .toggler{
+  opacity: 1;
+}
+.rich-oembed-iframe-wrapper .shadow > .toggler > .icon{
+  font-size: 21px;
+  color: #151515;
+  line-height: 49px;
+  margin-left: -7px;
+  position: absolute;
+  left: 50%;
+  top:0;
+}
+
+
 .rich-oembed-iframe-wrapper > .actions {
   bottom: 0;
   top: auto;
@@ -1491,8 +1542,8 @@ h4.modal-title{
   display: inline-block;
   height: 30px;
   width: 30px;
-  background-color: rgba(0,0,0,.52);
-  color: white;
+  background-color: #c7f464; /*rgba(0,0,0,.52);*/
+  color: #151515;/*white;*/
   line-height:  30px;
   padding-top: 2px;
   transition: background-color .16s ease-in-out;
@@ -1500,6 +1551,7 @@ h4.modal-title{
 
 .rich-oembed-iframe-wrapper > .actions > .action:hover{
   background-color: #151515;
+  color: white;
   text-decoration: none;
 }
 

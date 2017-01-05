@@ -88,7 +88,7 @@ angular.module('miller')
         update: '='
       },
       restrict : 'A',
-      link: function(scope, element){
+      link: function(scope, element, attrs){
         $log.log('🚀 respect-previous-sibling ready')
         var p;
 
@@ -97,7 +97,7 @@ angular.module('miller')
           // debugger
           $timeout.cancel(p)
           p = $timeout(function(){
-            element.height(element.prev()[0].offsetHeight);
+            element.height(Math.max(element.prev()[0].offsetHeight, attrs.minHeight || 300));
           }, 500);
         }
 

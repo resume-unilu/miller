@@ -20,7 +20,7 @@
          -->
         <div class="thumbnail-image" ng-if='document.type=="image"' src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.thumbnail_url || document.metadata.urls.Preview || document.snapshot}}'></div>
         
-        <div class="thumbnail-embed" ng-if='document.type == "rich" || document.type== "video"' rich-oembed fullscreen='fullsize(document.slug, document._type)' enabled='item.isFocused' cover='document.snapshot || document.metadata.urls.Preview || document.metadata.thumbnail_url' oembed='document.metadata'></div>
+        <div class="thumbnail-embed" ng-if='document.type == "rich" || document.type== "video"' rich-oembed autoplay='true' fullscreen='fullsize(document.slug, document._type)' enabled='item.isFocused' cover='document.snapshot || document.metadata.urls.Preview || document.metadata.thumbnail_url' oembed='document.metadata'></div>
 
       </div>
 

@@ -72,19 +72,19 @@
           <!-- </div> -->
           
           <!-- <div class='col-md-4'> -->
-          <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.html"|prefixTemplate''></div>
+          <div class='metadata-wrapper' ng-include='"templates/partials/document.metadata.linear.html"|prefixTemplate''></div>
           <!-- </div> -->
         <!-- </div> -->
       </div>
 
       <div class='row' style='margin-bottom: 50px'>
-        <div  ng-class='{"col-md-12": !sidedocuments, "col-md-8 col-lg-7": sidedocuments}'>
+        <div  ng-class='{"col-md-12": !sidedocuments, "col-md-8 col-lg-7 col-xs-8": sidedocuments}'>
           <div class="contents">
             <div markdownit='story.contents' watchlanguage='true' language='language' listener='listener(event, data, callback)' settoc='setToC(ToC)' setdocs='setDocuments(items)'></div>
           </div>
         </div>
-        <div class='col-md-4 col-lg-5' ng-if='sidedocuments' respect-previous-sibling update="documents">
-          <div sliding-steps data-language='language' data-focus='focusedIdx' style='height:100%' items='documents'></div>
+        <div class='col-md-4 col-lg-5 col-xs-4' ng-if='sidedocuments' respect-previous-sibling update="documents">
+          <div  sliding-steps data-language='language' data-focus='focusedIdx' style='height:100%' items='documents'></div>
         </div>
       </div>
       <!-- <div style='margin-top: 50px' disqus="story.slug"></div> -->

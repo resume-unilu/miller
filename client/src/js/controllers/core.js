@@ -361,6 +361,11 @@ angular.module('miller')
       $location.search(field, null);
     };
 
+    // also done on resize. Store the 
+    $scope.calculateBounds = function(event) {
+      $rootScope.isASmallScreen = $window.innerWidth < 992;
+    }
+
     // watch 400 bad request form error. Cfr app.js interceptors.
     $rootScope.$on(EVENTS.BAD_REQUEST, function(e, rejection){
       $log.warn('@BAD_REQUEST.')
@@ -409,6 +414,8 @@ angular.module('miller')
       }
 
     })
+
+    angular.element($window).bind("resize", $scope.calculateBounds)
     /*
       First load
     */
@@ -426,7 +433,8 @@ angular.module('miller')
       $scope.setBreakingNews(data.results);
     }); 
 
-
+    // understand window size;
+    $scope.calculateBounds();
 
   });
   
