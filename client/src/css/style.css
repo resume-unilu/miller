@@ -1318,8 +1318,8 @@ h4.modal-title{
 
 .modal.fullsize .close{
   position: absolute;
-  right: 70px;
-  top: 55px;
+  right: 20px;
+  top: 10px;
   opacity: 1;
   z-index: 3;
   text-shadow: none;
@@ -1335,10 +1335,10 @@ h4.modal-title{
 .modal.fullsize .oversize{
   position: absolute;
   background: #454545;
-  top:50px;
-  left:50px;
-  right: 50px;
-  bottom: 50px;
+  top:10px;
+  left:10px;
+  right: 10px;
+  bottom: 10px;
   overflow:auto;
   color: #f0f0f0;
   z-index:1;
@@ -1432,12 +1432,16 @@ h4.modal-title{
 
 .modal.fullsize .oversize .wrapper .footer .inner{
   text-align: left;
-  padding:10px 20px 15px 20px;
   font-size: 11px;
     line-height: 18px;
     color: #bbb;
+  padding: 5px;
 }
 
+.modal.fullsize .oversize .wrapper .footer .inner .text{
+  padding:5px 15px 10px 15px;
+  
+}
 
 /*
   Lazy box (image background)
