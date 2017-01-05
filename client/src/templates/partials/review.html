@@ -14,6 +14,10 @@
           <th><span>due date</span></th>
           <td><span>{{review.due_date|date:'mediumDate'}}</span></td>
         </tr>
+        <tr ng-if='review.category != "editing"'>
+          <th><span>score</span></th>
+          <td><span>{{review.score}}</span></td>
+        </tr>
       </table>
     </div>
     <div class='col-xs-8 col-sm-6 col-md-5'>
@@ -32,6 +36,11 @@
       <div ng-if='review.status == "initial" || review.status == "draft"' class='center'  style='    margin-top: 35px;'>
         <div class='btn-line-group primary'>
           <button class='btn-line' ui-sref='review({id: review.id})' translate='button.completereview'></button>
+        </div>
+      </div>
+      <div ng-if='review.status != "initial" && review.status != "draft"' class='center'  style='    margin-top: 35px;'>
+        <div class='btn-line-group primary'>
+          <button class='btn-line' ui-sref='review({id: review.id})' translate='button.viewreport'></button>
         </div>
       </div>
       <div class='center'  style='    margin: 20px 0 15px 0;'>

@@ -38,7 +38,7 @@ angular
     'DOWNLOAD': 'download',
     'MESSAGE': 'message',
     'BAD_REQUEST':'bad_request',
-    'PERMISSION_DENIED':'bad_request',
+    'PERMISSION_DENIED':'permission_denied',
     'RESIZED': 'resized',
     // namespace for markdownit directive
     'MARKDOWNIT_FULLSIZE': 'markdownit_fullsize',
@@ -524,6 +524,20 @@ angular
           },
         }
       });
+    // report of review.
+    $stateProvider
+      .state('report', {
+        url: '/report/{id:[0-9]+}',
+        controller: 'ReviewCtrl',
+        templateUrl: RUNTIME.static + 'templates/review.html',
+        resolve: {
+          review: function(ReviewFactory, $stateParams) {
+            return ReviewFactory.report({
+              id: $stateParams.id
+            }).$promise;
+          }
+        }
+      })
 
     $stateProvider
      .state('blog', {

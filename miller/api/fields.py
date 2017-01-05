@@ -41,3 +41,5 @@ class JsonField(serializers.Field):
 class ContentTypeField(serializers.Field):
   def to_representation(self, obj):
     return ContentType.objects.get_for_model(obj).model
+
+

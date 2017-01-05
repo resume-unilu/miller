@@ -232,8 +232,8 @@ class ReviewAdmin(admin.ModelAdmin):
   # list_filter = ('category',)
   #list_display = ['date', 'contents', 'owner', 'story', 'status']
   list_filter = ('status', 'category')
-  list_display = ('__str__', 'category', 'assignee', 'assigned_by',   'status')
-  list_display_links = ('__str__', 'assignee')
+  list_display = ('pk', '__str__', 'category', 'assignee', 'assigned_by',   'status')
+  list_display_links = ('pk', '__str__', 'assignee')
 
   def formfield_for_foreignkey(self, db_field, request, **kwargs):
     if db_field.name == "story":
@@ -247,11 +247,12 @@ class ReviewAdmin(admin.ModelAdmin):
     self.exclude = Review.FIELDS + ('contents','assigned_by')
     return super(ReviewAdmin,self).add_view(request)
 
-  def get_readonly_fields(self, request, obj=None):
-    if obj: # obj is not None, so this is an edit
-        return ['status',] # Return a list or tuple of readonly fields' names
-    else: # This is an addition
-        return []
+  # deprecated.
+  # def get_readonly_fields(self, request, obj=None):
+  #   if obj: # obj is not None, so this is an edit
+  #       return ['status',] # Return a list or tuple of readonly fields' names
+  #   else: # This is an addition
+  #       return []
 
   def change_view(self,request,object_id,extra_content=None):
     obj = Review.objects.get(pk=object_id)

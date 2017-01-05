@@ -8,7 +8,7 @@ from rest_framework.decorators import detail_route, permission_classes, list_rou
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
-from miller.api.serializers import ReviewSerializer, LiteReviewSerializer
+from miller.api.serializers import ReviewSerializer, LiteReviewSerializer, AnonymousReviewSerializer, AnonymousLiteReviewSerializer
 from miller.api.utils import filtersFromRequest, orderingFromRequest
 
 from miller.models import Review, Author
@@ -79,7 +79,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Only authors can access review report ;-)
     """
     review = get_object_or_404(self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user) | Q(assignee=request.user)), pk=kwargs['pk'])
-    serializer = ReviewSerializer(review,
+    serializer = AnonymousReviewSerializer(review,
       context={'request': request},
     )
     return Response(serializer.data)
@@ -90,7 +90,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     Only authors can see reviews reports ;-)
     """
-    qs = self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user) | Q(assignee=request.user))
+    qs = self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user))
     page    = self.paginate_queryset(qs)
-    serializer = LiteReviewSerializer(qs, many=True, context={'request': request})
+    serializer = AnonymousLiteReviewSerializer(qs, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)

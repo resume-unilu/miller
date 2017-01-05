@@ -2343,11 +2343,27 @@ content: "\e07a";
   font-size: 0.8em;
   padding: 0 5px;
 }
+
+.review .answer{
+  margin-left: 60px;
+  margin-right: 20px;
+  padding: 10px;
+  border: 2px solid #B7B2B2;
+  background: #F0F0F0;
+}
+
 .stream.review.refusal table .status{
   background: #FF6B6B;
   color: white;
 
 }
+
+.stream.review.complete table .status{
+  background: #c7f464;
+  color: #151515;
+
+}
+
 .stream.review.draft table .status{
   background: gold;
 
@@ -2394,6 +2410,11 @@ content: "\e07a";
   text-align: center;
   line-height: 20px;
 }
+.star-rating.readonly li.filled{
+  background: #151515;
+  color: white;
+}
+
 .star-rating li.filled{
   background: #4ECDC4;
   color: white;

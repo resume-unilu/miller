@@ -7,7 +7,7 @@
  * Used directly below CoreCtrl
  */
 angular.module('miller')
-  .controller('ReviewCtrl', function ($scope, $log, review, ReviewFactory, RUNTIME, EVENTS) {
+  .controller('ReviewCtrl', function ($scope, $log, $state, review, ReviewFactory, RUNTIME, EVENTS) {
     $log.log('⏱ ReviewCtrl ready');
 
     
@@ -15,11 +15,13 @@ angular.module('miller')
       'thematic','interest', 'originality', 'innovation', 'interdisciplinarity', 'methodology', 'clarity', 'argumentation','structure', 'references', 'pertinence'];
 
     $scope.availableStatuses = [
-      'draft', 'completed', 'refusal', 'bounce'
+      'draft', 'complete', 'refusal', 'bounce'
     ];
 
     // initial status
     $scope.reviewStatus = ''+review.status;
+    // you can edit a review only if it is not completed.
+    $scope.is_editable = review.status == 'draft' || review.status == 'initial';
 
     $scope.save = function(){
       $log.debug('⏱ ReviewCtrl @SAVE');
@@ -62,7 +64,7 @@ angular.module('miller')
 
 
     $scope.finalize = function(status){
-      $log.debug('⏱ ReviewCtrl @SAVE');
+      $log.debug('⏱ ReviewCtrl -> finalize() status:', status);
       $scope.$emit(EVENTS.MESSAGE, 'closing the review');
       $scope.lock();
       if($scope.isSaving){
@@ -75,11 +77,12 @@ angular.module('miller')
         id: review.id
       }, {
         status: status // the final status!!!
-      }, function(){
-        $log.debug('⏱ ReviewCtrl @SAVE: success');
+      }, function(res){
+        $log.debug('⏱ ReviewCtrl -> finalize(): success', res);
         
         $scope.unlock();
         $scope.isSaving = false;
+        $state.go('report',{id: review.id});
       }, function(err){
         $log.warn('⏱ ReviewCtrl @SAVE: error', err);
         $scope.$emit(EVENTS.MESSAGE, 'Your request cannot be resolved. Is the review submitted already?');

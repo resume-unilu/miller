@@ -364,7 +364,7 @@ angular.module('miller')
     // watch 400 bad request form error. Cfr app.js interceptors.
     $rootScope.$on(EVENTS.BAD_REQUEST, function(e, rejection){
       $log.warn('@BAD_REQUEST.')
-      rejection.status == 400 && 
+      if(rejection.status == 400) 
         $alert({
           placement: 'top',
           title: 'form errors', 
@@ -378,7 +378,7 @@ angular.module('miller')
     });
 
     $rootScope.$on(EVENTS.PERMISSION_DENIED, function(e, rejection){
-      $log.warn('@PERMISSION_DENIED. Should redirect', $location.absUrl())
+      $log.warn('@PERMISSION_DENIED. Should redirect', $location.absUrl());
       window.location.href = '/login/?next='+$location.path();    
     });
 

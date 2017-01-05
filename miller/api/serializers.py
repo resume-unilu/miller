@@ -372,8 +372,32 @@ class LiteReviewSerializer(serializers.ModelSerializer):
   story = AnonymousLiteStorySerializer()
   class Meta:
     model = Review
-    fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'story')
+    fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'score', 'story')
 
+
+class AnonymousReviewSerializer(serializers.ModelSerializer):
+  """
+  Single review report, without assignee nor private comments. It ships the related story with full serializer.
+  """
+  contents = JsonField()
+  story = AnonymousStorySerializer()
+  class Meta:
+    model = Review
+    fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'story', 'thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdisciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
+      'structure_score','structure', 'references', 'references_score', 'pertinence','pertinence_score')
+
+
+
+class AnonymousLiteReviewSerializer(serializers.ModelSerializer):
+  """
+  list of currernt reviews and their status
+  """
+  contents = JsonField()
+  story = AnonymousLiteStorySerializer()
+
+  class Meta:
+    model = Review
+    fields = ('id', 'contents', 'category', 'status', 'due_date', 'score', 'story') + Review.FIELDS_FOR_SCORE
 
 
 class ActionSerializer(serializers.ModelSerializer):
