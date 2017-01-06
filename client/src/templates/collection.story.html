@@ -10,6 +10,17 @@
       <div class='row'>
         <div class='col-md-12'>
 
+          <div class="actions" >
+            <div ng-if='story.isWritable' class='btn-line-group primary'>
+              <button  class='btn-line' nref ui-sref='writing({storyId:story.slug})'>edit</button>
+            </div>
+
+            <div ng-if='user.is_staff' class='btn-line-group'>
+              <button class='btn-line' ng-click='setStatus("draft")' ng-class='{"active warning": story.status=="draft"}' translate="collection.status.draft"></button>
+              <button class='btn-line' ng-click='setStatus("public")' ng-class='{"active": story.status=="public"}' translate="story.status.public"></button>
+            </div>
+          </div>
+
           <h1><span class="" embedit='story.metadata.title' language='language'></span></h1>
           
           <!-- story reference and cite as buttons -->

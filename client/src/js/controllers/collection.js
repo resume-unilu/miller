@@ -9,7 +9,6 @@ angular.module('miller')
   .controller('CollectionCtrl', function($scope, $rootScope, $log, collection, EVENTS, StoryFactory, markdownItChaptersService){
     $log.log('CollectionCtrl ready', $scope.user.username, $scope.language)
 
-
     $scope.collection = collection;
     
     $scope.collection.isWritable = $scope.hasWritingPermission($scope.user, $scope.collection);
@@ -44,13 +43,12 @@ angular.module('miller')
     var links = markdownItChaptersService(collection.contents, $scope.language);
     var stories = _.keyBy(collection.stories, 'slug');
     
-    // filter chapters from links
-    $scope.chapters = links.map(function(d){
+    // filter chapters from links (avoid errors, double check if links are stored and related stories still exists.)
+    $scope.chapters = _(links).map(function(d){
       if(stories[d.slug]){
         return stories[d.slug]
+      } else{
+        $log.warn('chapter with slug: ',d.slug, 'was not found in related stories!!!')
       }
-      return d;
-    })
-
-    
-  })
+    }).compact().value();
+  });
