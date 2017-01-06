@@ -14,9 +14,6 @@
     <a href ui-sref="story({postId: story.id})">
       <span class='icon-arrow-right-circle'></span>
     </a>
-    <p>
-      <em ng-if="story.difference">{{story.difference}}</em>
-    </p>
   </blockquote>
   
   <blockquote ng-if='!story.excerpt' embedit='story.metadata.abstract' language='language'></blockquote>

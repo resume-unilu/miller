@@ -24,6 +24,24 @@ angular.module('miller')
       return obj[$rootScope.language]
     }
   })
+  .filter('tokenize', function(){
+    return function(text, maxwords) {
+      if(!text)
+        return "";
+      var words = text.split(/(?!=\.\s)\s/);
+
+      var sentence = _.take(words, maxwords).join(' ');
+      if(sentence.length < text.length){
+        if(!sentence.match(/\?\!\.$/)){
+          sentence += ' '
+        }
+        
+        sentence += '...'
+      }
+      // console.log(text, sentences);
+      return sentence;
+    }
+  })
   /*
     Replace state name point with spaces, e.g. to get collection 
   */

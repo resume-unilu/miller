@@ -5,36 +5,19 @@
  * # IndexCtrl
  */
 angular.module('miller')
-  .controller('IndexCtrl', function ($scope, $log, writings, news) {
+  .controller('IndexCtrl', function ($scope, $log, $filter, writings, news) {
     $log.debug('IndexCtrl welcome', writings, news);
     $scope.setOG({
       type: 'platform'
     });
-    /*
-      Get the firs n sentence until the number of words are covered.
-      return an array
-    */
-    function tokenize(text, maxwords) {
-      if(!text)
-        return "";
-      var words = text.split(/(?!=\.\s)\s/);
-
-      var sentence = _.take(words, maxwords).join(' ');
-      if(sentence.length < text.length){
-        if(!sentence.match(/\?\!\.$/)){
-          sentence += ' '
-        }
-        
-        sentence += '...'
-      }
-      // console.log(text, sentences);
-      return sentence;
-    }
 
     function excerpt(story) {
       story.excerpt = {}
+      if(story.tags && story.tags.length && _.filter(story.tags, {slug: 'collection', category:'writing'}).length){
+        story.is_collection = true
+      }
       for(var i in story.metadata.abstract)
-        story.excerpt[i] = tokenize(story.metadata.abstract[i], 25)
+        story.excerpt[i] = $filter('tokenize')(story.metadata.abstract[i], 32)
       return story
     }
 

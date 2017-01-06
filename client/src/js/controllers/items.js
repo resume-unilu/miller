@@ -6,7 +6,7 @@
  * common functions go here.
  */
 angular.module('miller')
-  .controller('ItemsCtrl', function ($scope, $log, items, model, factory, QueryParamsService) {
+  .controller('ItemsCtrl', function ($scope, $log, $filter, items, model, factory, QueryParamsService) {
     $log.log('ItemsCtrl ready, n.:', items.count, '- items:',items);
 
     // model is used to get the correct item template
@@ -34,14 +34,7 @@ angular.module('miller')
             return d;
           }
 
-          var sentences = tokenize(d.metadata.abstract[$scope.language], 10);
-
-          d.excerpt = sentences.shift();
-
-          if(sentences.length){
-            d.difference = sentences.join('. ');
-          }
-
+          d.excerpt = $filter('tokenize')(d.metadata.abstract[$scope.language], 32);
           return d;
         })
     };
