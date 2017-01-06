@@ -42,6 +42,20 @@ angular.module('miller')
       return sentence;
     }
   })
+  .filter('coverage', function(){
+    return function(cover){
+      var url;
+      if(typeof cover != 'object')
+        return ''
+
+      if(cover.metadata){
+        url = cover.metadata.thumbnail_url || cover.metadata.preview || cover.metadata.urls.Preview || cover.metadata.url;
+      } else {
+        url = cover.snapshot || cover.attachment;
+      }
+      return url;
+    }
+  })
   /*
     Replace state name point with spaces, e.g. to get collection 
   */

@@ -92,8 +92,7 @@
           </div>
           <div class='col-md-6' style='padding:0'>&nbsp;
             <div ng-if='story.covers.length' class="cover" ng-repeat='document in story.covers' class='fluid-container'>
-              <div class='image-wrapper cover' ng-if='!document.metadata.thumbnail_url && document.metadata.urls.Preview' lazy-img='{{document.metadata.urls.Preview}}'></div>
-               <div class='image-wrapper cover' ng-if='document.metadata.thumbnail_url' lazy-img='{{document.metadata.thumbnail_url}}'></div>
+              <div class='image-wrapper cover' lazy-img='{{document|coverage}}'></div>
             </div>
           </div>
         </div>

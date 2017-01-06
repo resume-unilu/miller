@@ -9,7 +9,10 @@
         <span class="tag" ng-repeat='tag in coverstory.tags|filter:{ category: "writing" }' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
       </div>
 
-      <h3><a href ui-sref="story({postId: coverstory.slug})" embedit='coverstory.metadata.title' language='language'></a></h3>
+      <h3>
+        <a ng-if='!story.is_collection' href ui-sref="story({postId: coverstory.slug})" embedit='coverstory.metadata.title' language='language'></a>
+        <a ng-if='story.is_collection' href ui-sref="collection({collectionId: coverstory.slug})" embedit='coverstory.metadata.title' language='language'></a>
+      </h3>
       <blockquote>
         <span embedit='coverstory.excerpt' language='language'></span>
         <a ng-if='!coverstory.is_collection' href ui-sref="story({postId: coverstory.slug})"><span class='icon-arrow-right-circle'></span></a>
@@ -34,7 +37,10 @@
           <div class="tags" ng-if="story.tags.length">
             <span  class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
           </div>
-          <h4><a href ui-sref="story({postId: story.slug})" embedit='story.metadata.title' language='language'></a></h4>
+          <h4>
+            <a ng-if='!story.is_collection' href ui-sref="story({postId: story.slug})" embedit='story.metadata.title' language='language'></a>
+            <a ng-if='story.is_collection' href ui-sref="collection({collectionId: story.slug})" embedit='story.metadata.title' language='language'></a>
+          </h4>
           
           <blockquote class="reduced">
             <span embedit='story.excerpt' language='language'></span>
@@ -53,7 +59,10 @@
       <div class="coverstory news">
         <div ng-if='!$first' class="divider"></div>
         <div class="date">{{story.date|date:'mediumDate'}}</div>
-        <h4><a href ui-sref="story({postId: story.slug})" embedit='story.metadata.title' language='language'></a></h4>
+        <h4>
+          <a ng-if='!story.is_collection' href ui-sref="story({postId: story.slug})" embedit='story.metadata.title' language='language'></a>
+          <a ng-if='story.is_collection' href ui-sref="collection({collectionId: story.slug})" embedit='story.metadata.title' language='language'></a>
+        </h4>
 
         <div class='authors' ng-if="story.authors.length">
           by <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
