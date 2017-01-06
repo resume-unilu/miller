@@ -23,7 +23,7 @@
       <label translate="field.label.cover"></label>
       <div class="cover-preview" ng-repeat="document in story.covers">
         <div ng-if='document.metadata'>
-          <div lazy-img='{{document.metadata.thumbnail_url || document.metadata.urls.Preview || document.snapshot}}' class='lazy-box'></div>
+          <div lazy-img='{{document|coverage}}' class='lazy-box'></div>
 
           <div class='tile'>
             <div class='title' embedit='document.metadata.title' language='language'></div>
