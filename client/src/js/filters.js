@@ -49,7 +49,7 @@ angular.module('miller')
         return ''
 
       if(cover.metadata){
-        url = cover.metadata.thumbnail_url || cover.metadata.preview || cover.metadata.urls.Preview || cover.metadata.url;
+        url = cover.metadata.thumbnail_url || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview') || cover.metadata.url;
       } else {
         url = cover.snapshot || cover.attachment;
       }
