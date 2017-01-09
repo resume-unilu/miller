@@ -7,7 +7,7 @@
  */
 angular.module('miller')
   .controller('AuthorCtrl', function ($scope, $log, author) {
-    $scope.isMe = $scope.user.username == author.profile.username;
+    $scope.isMe = author.profile? $scope.user.username == author.profile.username: false;
     $log.log('AuthorCtrl ready, author:',author.fullname);
     $scope.author = author;
 

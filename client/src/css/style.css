@@ -1411,6 +1411,7 @@ h4.modal-title{
   bottom: 0;
   overflow: auto;
   background-color: #151515;
+  transition: opacity .25s ease-in-out;
 }
 
 .modal.fullsize .oversize .wrapper .box .embedded .image{

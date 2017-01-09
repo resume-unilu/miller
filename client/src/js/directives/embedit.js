@@ -7,7 +7,7 @@
  * If an object and a language are provided, it handles the translation.
  */
 angular.module('miller')
-  .directive('embedit', function($sce) {
+  .directive('embedit', function($sce, $timeout) {
     return {
       restrict : 'A',
       scope:{
@@ -22,9 +22,21 @@ angular.module('miller')
           breaks:       true,
           linkify:      true,
         }, 
-        disable = ['image', 'heading'];
+        disable = ['image', 'heading'],
+        stretching;
 
-        
+        scope.do_strech = function(){
+          var els = element.find('iframe').width('100%').height('100%');
+          if(stretching)
+            $timeout.cancel(stretching);
+          if(!els.length){
+            console.log('not found. Strching again?')
+            stretching = $timeout(scope.do_strech, 300);
+          } else{
+            element.css('opacity', 1)
+            console.log('Stretched....!')
+          }
+        }
 
         scope.render = function(language) {
           if(!scope.embedit)
@@ -57,7 +69,7 @@ angular.module('miller')
           }
 
           if(scope.stretch){
-            element.find('iframe').width('100%').height('100%');
+            scope.do_strech();
           }
           // autoplay from attrs. Works only on iframe.
           if(attrs.autoplay){
@@ -67,7 +79,9 @@ angular.module('miller')
           }
         };
         
-
+        if(scope.stretch){
+          element.css('opacity', 0)
+        }
         // enable listeners
         if(scope.language && typeof scope.embedit == 'object') {
           scope.$watch('language', scope.render);
