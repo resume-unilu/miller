@@ -223,6 +223,8 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
     if(!regexp.test(url)){
       $log.error('::mde -> previewUrl() url provided:', url, 'is not valid');
       $scope.suggestMessage = '(url is not valid)';
+      $scope.embed = null;
+
       return false;
     }
     url = url.replace('#', '.hash.');
