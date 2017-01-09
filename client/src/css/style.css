@@ -16,6 +16,10 @@ h1, .h1 {
   color: #151515;
 }
 
+.clear-left{
+  clear: left;
+}
+
 /*.author{
   font-family: 'Lato';
     text-transform: uppercase;

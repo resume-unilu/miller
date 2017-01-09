@@ -31,7 +31,7 @@
     
     <div class="row">
     <!-- REMAINING STORIES -->
-      <div ng-repeat='story in otherstories' class="col-md-6">
+      <div ng-repeat='story in otherstories' class="col-md-6" ng-class-odd="'clear-left'">
         <div class="coverstory other">
           <div class="divider"></div>
           <div class="tags" ng-if="story.tags.length">
