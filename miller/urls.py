@@ -16,13 +16,14 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps import views as sm_views
 from django.views.generic import TemplateView
 
 from rest_framework import routers
 
 from miller import views, api
 from miller.feeds import LatestEntriesFeed, AtomLatestEntriesFeed
+from miller.sitemaps import sitemaps
 from miller.views import _share
 #from miller.forms import SignupForm
 # Routers provide an easy way of automatically determining the URL conf.
@@ -47,7 +48,11 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
   url(r'^$', views.home, name='home'),
   url(r'^admin/', admin.site.urls),
-  url(r'^sitemap\.xml$', sitemap, name='sitemap-xml'),
+
+  url(r'^sitemap\.xml$', sm_views.index, {'sitemaps': sitemaps}),
+  url(r'^sitemap-(?P<section>.+)\.xml$', sm_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.html'},
+    name='django.contrib.sitemaps.views.sitemap'),
+
   url(r'^api/', include(router.urls)),
   url(r'^api-auth/', include('rest_framework.urls')),
 
