@@ -130,6 +130,14 @@ class Story(models.Model):
     return cover
 
 
+  @property
+  def isCollection(self):
+    if not hasattr(self, '_isCollection'):
+      self._isCollection = self.tags.filter(slug='collection').count() > 0
+      return self._isCollection
+    else:
+      return self._isCollection
+
   # set the plural name and fix the default sorting order
   class Meta:
     ordering = ('-date_last_modified',)

@@ -1,0 +1,5 @@
+{% if cover.type == "video" or cover.type == "rich" %}
+  <a href='{{cover.dmetadata.url}}'>{{cover.dmetadata.title}}</a>
+  by <a href='{{cover.dmetadata.author_url}}'> {{cover.dmetadata.author_name}}</a>
+  (<a href='{{cover.dmetadata.provider_url}}'> {{cover.dmetadata.provider_name}}</a>)
+{% endif %}

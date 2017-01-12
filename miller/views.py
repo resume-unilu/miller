@@ -5,7 +5,7 @@ import json, codecs, os, logging, datetime
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
 from django.core import signing
-from django.shortcuts import render_to_response, redirect, render
+from django.shortcuts import render_to_response, redirect, render, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.urls import reverse
@@ -217,7 +217,7 @@ def accessibility_index(request):
 
 # accessible story
 def accessibility_story(request, pk):
-  from django.shortcuts import get_object_or_404
+  
   """ single story page """
   if request.user.is_staff:
     q = Story.objects.all()
@@ -236,6 +236,28 @@ def accessibility_story(request, pk):
   return render(request, "accessibility/story.html", content)
 
 
+def accessibility_collection(request, pk):
+  """ single story page """
+  if request.user.is_staff:
+    q = Story.objects.all()
+  elif request.user.is_authenticated():
+    q = Story.objects.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(authors__user=request.user)).distinct()
+  else:
+    q = Story.objects.filter(status=Story.PUBLIC)
+
+  q = q.filter(tags__slug='collection')
+
+  if pk.isdigit():
+    story = get_object_or_404(q, pk=pk)
+  else:
+    story = get_object_or_404(q, slug=pk)
+
+  content = _share(request)
+  content['story'] = story
+  return render(request, "accessibility/collection.html", content)
+
+
+
 def accessibility_stories(request, tag=None):
   content = _share(request)
 
@@ -247,10 +269,18 @@ def accessibility_stories(request, tag=None):
   return render(request, "accessibility/stories.html", content)
 
 
-def accessibility_author(request, author):
+def accessibility_author(request, author, tag=None):
   content = _share(request)
 
   author  = get_object_or_404(Author, slug=author)
+  
+  stories = Story.objects.filter(authors__user=request.user, status=Story.PUBLIC).distinct()
+  
+  if tag:
+    stories = stories.filter(tags__slug=tag).distinct()
+
+  content['author'] = author;
+  content['stories'] = stories;
   #stories = 
   return render(request, "accessibility/stories.html", content)
 

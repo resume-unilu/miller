@@ -1,0 +1,27 @@
+{% extends 'accessibility/story.html' %}
+{% load miller_extras %}
+{% block page %}
+  <article>
+  {% for author in story.authors.all %}
+  {% include 'accessibility/partials/author.html' %}
+  {% endfor %}
+
+  <h1>{% lookup story.dmetadata path="title" language=language %}</h1>
+  {% for cover in story.covers.all %}
+    {% include 'accessibility/partials/story.cover.html' %}
+  {% endfor %}
+
+  <blockquote class="abstract">{% lookup story.dmetadata path="abstract" language=language %}</blockquote>
+    
+  <p>table of contents</p>
+  <ol>
+    {% for story in story.stories.all %}
+    <li>
+      {% include 'accessibility/partials/story.html' %}
+    </li>
+    {% endfor %}
+  </ol>
+   
+
+  </article>
+{% endblock %}

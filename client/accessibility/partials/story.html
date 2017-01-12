@@ -6,9 +6,13 @@
   {% include 'accessibility/partials/author.html' %}
   {% endfor %}
 
-  {% url 'accessibility_story' pk=story.slug as accessibility_story_url %}
-  <h1><a href='{{ accessibility_story_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h1>
-
+  {% if story.isCollection %}
+    {% url 'accessibility_collection' pk=story.slug as accessibility_collection_url %}
+    <h1><a href='{{ accessibility_collection_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h1>
+  {% else %}
+    {% url 'accessibility_story' pk=story.slug as accessibility_story_url %}
+    <h1><a href='{{ accessibility_story_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h1>
+  {% endif %}
   {% qsfilter story.tags key="status" value="public" as qs %}
   {% for tag in qs.all %}
   {% url 'accessibility_stories' tag=tag.slug as accessibility_stories_url %}
@@ -18,13 +22,7 @@
   {% endfor %}
 
   {% for cover in story.covers.all %}
-    <div>
-    {% if cover.type == "video" or cover.type == "rich" %}
-      <p><a href='{{cover.dmetadata.url}}'>{{cover.dmetadata.title}}</a>
-      by <a href='{{cover.dmetadata.author_url}}'> {{cover.dmetadata.author_name}}</a></p>
-      (<a href='{{cover.dmetadata.provider_url}}'> {{cover.dmetadata.provider_name}}</a>)
-    {% endif %}
-    </div>
+    {% include 'accessibility/partials/story.cover.html' %}
   {% endfor %}
 
   <blockquote class="abstract">{% lookup story.dmetadata path="abstract" language=language %}</blockquote>

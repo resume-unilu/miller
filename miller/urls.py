@@ -89,6 +89,7 @@ urlpatterns = urlpatterns + [
   url(r'^accessibility/publications$', views.accessibility_stories, name='accessibility_stories'),
   url(r'^accessibility/publications/(?P<tag>[a-z\-]+)$', views.accessibility_stories, name='accessibility_stories'),
   url(r'^accessibility/story/(?P<pk>[a-z0-9\-]+)$', views.accessibility_story, name='accessibility_story'),
+  url(r'^accessibility/collection/(?P<pk>[a-z0-9\-]+)$', views.accessibility_collection, name='accessibility_collection'),
   url(r'^accessibility/(?P<page>[a-z\-]+)$', views.accessibility_page, name='accessibility_page'),
   url(r'^accessibility/author/(?P<author>[a-z0-9\-]+)/publications$', views.accessibility_author, name='accessibility_author'),
   

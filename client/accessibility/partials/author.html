@@ -1,1 +1,5 @@
-<span class="author"><a href="/author/{{author.slug}}/publications/" rel='author'>{{author.fullname}}</a>{% if author.affiliation %} ({{author.affiliation}}){% endif %}</span>
+{% load miller_extras %}
+{% url 'accessibility_author' author=author.slug as accessibility_author_url %}
+<span class="author">
+  <a href="{{ accessibility_author_url|urled }}" rel='author'>{{author.fullname}}</a>{% if author.affiliation %} ({{author.affiliation}}){% endif %}
+</span>

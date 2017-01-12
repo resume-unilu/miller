@@ -1,0 +1,18 @@
+
+<h1>{{author.fullname}}</h1>
+<p>{{author.affiliation}}</p>
+<section>
+  {{author.profile.bio}}
+</section>
+
+<h2>publications</h2>
+
+  <ol>
+    {% for story in stories %}
+    <li>
+      {% include 'accessibility/partials/story.html' %}
+
+    </li>
+    {% endfor %}
+
+  </ol>
