@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps import views as sitemaps_views
 from django.views.generic import TemplateView
+from django.views.i18n import set_language
 
 from rest_framework import routers
 
@@ -82,7 +83,16 @@ if hasattr(settings, 'GOOGLE_IDENTIFICATION'):
 
 # redirect everything here
 urlpatterns = urlpatterns + [
-  url(r'^accessibility/story/(?P<pk>[a-z0-9\-]+)$', views.story, name='accessible_story'),
+  url(r'^setlang/', set_language, name="setlang"),
+
+  url(r'^accessibility$', views.accessibility_index, name='accessibility_index'),
+  url(r'^accessibility/publications$', views.accessibility_stories, name='accessibility_stories'),
+  url(r'^accessibility/publications/(?P<tag>[a-z\-]+)$', views.accessibility_stories, name='accessibility_stories'),
+  url(r'^accessibility/story/(?P<pk>[a-z0-9\-]+)$', views.accessibility_story, name='accessibility_story'),
+  url(r'^accessibility/(?P<page>[a-z\-]+)$', views.accessibility_page, name='accessibility_page'),
+  url(r'^accessibility/author/(?P<author>[a-z0-9\-]+)/publications$', views.accessibility_author, name='accessibility_author'),
+  
+  
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
   url(r'^(?!favicon\.ico|signup|media).*$', views.home, name='app')
 ]

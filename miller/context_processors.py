@@ -1,4 +1,4 @@
-import json
+import json, os
 from django.conf import settings
 from django.utils import translation
 from miller.api.serializers import HeavyProfileSerializer
@@ -10,6 +10,8 @@ def default(request):
     'groups': []
   }
 
+  pages = [fname.replace('.md', '') for fname in os.listdir(settings.PAGES_ROOT) if fname.endswith('.md')]
+
   context_settings = {
     'title': settings.MILLER_TITLE,
     'debug': settings.MILLER_DEBUG,
@@ -17,6 +19,7 @@ def default(request):
     'settings': json.dumps(settings.MILLER_SETTINGS),
     'oembeds': json.dumps(settings.MILLER_OEMBEDS),
     'profile': json.dumps( profile ),
-    'language': translation.get_language()
+    'language': translation.get_language(),
+    'pages': pages
   }
   return context_settings

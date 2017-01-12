@@ -87,6 +87,22 @@ class Document(models.Model):
 
   models.URLField(null=True, blank=True)
 
+  @property
+  def dmetadata(self):
+    if not hasattr(self, '_dmetadata'):
+      try:
+        self._dmetadata  = json.loads(self.contents)
+      except Exception as e:
+        self._dmetadata = {}
+        logger.exception(e)
+        return {}
+      else:
+        return self._dmetadata
+      instance._dispatcher = True
+    else:
+      return self._dmetadata
+
+
   class Meta:
     ordering = ['-id']
 

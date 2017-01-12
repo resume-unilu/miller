@@ -1,3 +1,4 @@
+{% load miller_extras %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,9 +8,33 @@
       font-family: Helvetica,Arial,sans-serif;
     }
   </style>
+  {% block headers %}
+  {% endblock %}
 </head>
 <body>
+  <div role="banner">
+   <p>{{title}}</p>
+  </div>
+
+  <nav role="navigation">
+    <ul>
+      <li>
+        {% url 'accessibility_stories' as accessibility_stories_url %}
+        <a href="{{ accessibility_stories_url|urled }}">browse publications</a>
+      </li>
+      {% for page in pages %}
+      {% url 'accessibility_page' page=page as accessibility_page_url %}
+        
+      <li><a href="{{ accessibility_page_url|urled }}">{{page}}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
   {% block page %}
+
+
   {% endblock %}
+  <footer role="contentinfo">
+
+  </footer>
 </body>
 </html>

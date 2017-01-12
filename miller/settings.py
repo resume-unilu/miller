@@ -195,7 +195,13 @@ GIT_COMMITTER = {
 PROFILE_PATH_ROOT = os.path.join(GIT_ROOT, 'users')
 REVIEWS_PATH_ROOT = os.path.join(GIT_ROOT, 'reviews')
 
-PAGES_ROOT = os.path.join(BASE_DIR, 'client', 'pages')
+#............
+#
+# MILLER STATIC MARKDOWN PAGES
+# cfr. miller.context_processors.default
+#............
+PAGES_ROOT = os.path.join(BASE_DIR, 'client/src/pages')
+
 
 SITE_ID=1
 

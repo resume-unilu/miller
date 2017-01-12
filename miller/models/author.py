@@ -23,6 +23,22 @@ class Author(models.Model):
   slug        = models.CharField(max_length=140, unique=True, blank=True)
   user        = models.ForeignKey(User, related_name='authorship', blank=True, null=True, on_delete=models.CASCADE)
 
+  @property
+  def dmetadata(self):
+    if not hasattr(self, '_dmetadata'):
+      try:
+        self._dmetadata  = json.loads(self.metadata)
+      except Exception as e:
+        self._dmetadata = {}
+        logger.exception(e)
+        return {}
+      else:
+        return self._dmetadata
+      instance._dispatcher = True
+    else:
+      return self._dmetadata
+
+
   class Meta:
     app_label="miller"
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json, codecs, markdown, os, logging, datetime
+import json, codecs, os, logging, datetime
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
@@ -187,17 +187,36 @@ def logout_view( request ):
 
 
 # static pages, from markdown contents
-def pages(request, page):
+def accessibility_page(request, page):
   input_file = codecs.open(os.path.join(settings.PAGES_ROOT, "%s.md" % page), mode="r", encoding="utf-8")
   text = input_file.read()
   
   content = _share(request)
-  content['contents'] = markdown.markdown(text)
-  return render(request, "page.html", content)
+  content['contents'] = text
+  return render(request, "accessibility/page.html", content)
+
+
+def accessibility_index(request):
+  """
+  load latest stuff, index page.
+  """
+  content = _share(request)
+
+  highlights = Story.objects.filter(status=Story.PUBLIC, tags__slug= 'highlights').order_by('-date')[:10]
+  top        = Story.objects.filter(status=Story.PUBLIC, tags__slug= 'top').order_by('-date')[:5]
+  news       = Story.objects.filter(status=Story.PUBLIC, tags__slug= 'news').order_by('-date')[:10]
+
+  
+
+  content['top']        = top
+  content['highlights'] = highlights
+  content['news']       = news
+
+  return render(request, "accessibility/index.html", content)
 
 
 # accessible story
-def story(request, pk):
+def accessibility_story(request, pk):
   from django.shortcuts import get_object_or_404
   """ single story page """
   if request.user.is_staff:
@@ -215,3 +234,24 @@ def story(request, pk):
   content = _share(request)
   content['story'] = story
   return render(request, "accessibility/story.html", content)
+
+
+def accessibility_stories(request, tag=None):
+  content = _share(request)
+
+  stories = Story.objects.filter(status=Story.PUBLIC, tags__category='writing')
+  if tag is not None:
+    stories = stories.filter(tags__slug=tag)
+
+  content['stories'] = stories.distinct()
+  return render(request, "accessibility/stories.html", content)
+
+
+def accessibility_author(request, author):
+  content = _share(request)
+
+  author  = get_object_or_404(Author, slug=author)
+  #stories = 
+  return render(request, "accessibility/stories.html", content)
+
+

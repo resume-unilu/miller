@@ -106,6 +106,30 @@ class Story(models.Model):
   bibliography = models.FileField(upload_to=user_path, blank=True, null=True)
 
 
+  @property
+  def dmetadata(self):
+    if not hasattr(self, '_dmetadata'):
+      try:
+        self._dmetadata  = json.loads(self.metadata)
+      except Exception as e:
+        self._dmetadata = {}
+        logger.exception(e)
+        return {}
+      else:
+        return self._dmetadata
+      instance._dispatcher = True
+    else:
+      return self._dmetadata
+
+  @property
+  def ogcover(self):
+    """
+    cover url to be used in og meta headers
+    """
+    cover = self.covers.first()
+    return cover
+
+
   # set the plural name and fix the default sorting order
   class Meta:
     ordering = ('-date_last_modified',)

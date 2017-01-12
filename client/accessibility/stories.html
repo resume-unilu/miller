@@ -1,0 +1,22 @@
+{% extends 'accessibility/index.html'%}
+{% load miller_extras %}
+
+{% block page %}
+  <h1>publications</h1>
+  <nav role='navigation' aria-label="Publication types menu">
+    <ul>
+      
+    </ul>
+  </nav>
+
+  <ol>
+    {% for story in stories %}
+    <li>
+      {% include 'accessibility/partials/story.html' %}
+
+    </li>
+    {% endfor %}
+
+  </ol>
+
+{% endblock %}
