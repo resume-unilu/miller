@@ -1,0 +1,6 @@
+{% extends 'accessibility/index.html'%}
+{% load extras %}
+{% block page %}
+{{language}}
+{{story.metadata|lookup}}
+{% endblock %}

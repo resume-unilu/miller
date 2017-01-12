@@ -15,7 +15,7 @@ from django.views.decorators.cache import cache_page
 from templated_email import get_templated_mail, send_templated_mail
 
 from miller.forms import LoginForm, SignupForm
-from miller.models import Author
+from miller.models import Author, Story
 
 
 logger = logging.getLogger('miller')
@@ -194,3 +194,24 @@ def pages(request, page):
   content = _share(request)
   content['contents'] = markdown.markdown(text)
   return render(request, "page.html", content)
+
+
+# accessible story
+def story(request, pk):
+  from django.shortcuts import get_object_or_404
+  """ single story page """
+  if request.user.is_staff:
+    q = Story.objects.all()
+  elif request.user.is_authenticated():
+    q = Story.objects.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(authors__user=request.user)).distinct()
+  else:
+    q = Story.objects.filter(status=Story.PUBLIC)
+
+  if pk.isdigit():
+    story = get_object_or_404(q, pk=pk)
+  else:
+    story = get_object_or_404(q, slug=pk)
+
+  content = _share(request)
+  content['story'] = story
+  return render(request, "accessibility/story.html", content)

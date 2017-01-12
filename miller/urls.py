@@ -16,7 +16,8 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.sitemaps import views as sm_views
+from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps import views as sitemaps_views
 from django.views.generic import TemplateView
 
 from rest_framework import routers
@@ -42,15 +43,13 @@ router.register(r'author', api.AuthorViewSet)
 router.register(r'review', api.ReviewViewSet)
 router.register(r'pulse', api.PulseViewSet)
 
-from django.contrib.auth import views as auth_views
-#from registration.views import RegistrationView
 
 urlpatterns = [
   url(r'^$', views.home, name='home'),
   url(r'^admin/', admin.site.urls),
 
-  url(r'^sitemap\.xml$', sm_views.index, {'sitemaps': sitemaps}),
-  url(r'^sitemap-(?P<section>.+)\.xml$', sm_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.html'},
+  url(r'^sitemap\.xml$', sitemaps_views.index, {'sitemaps': sitemaps}),
+  url(r'^sitemap-(?P<section>.+)\.xml$', sitemaps_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.html'},
     name='django.contrib.sitemaps.views.sitemap'),
 
   url(r'^api/', include(router.urls)),
@@ -83,6 +82,7 @@ if hasattr(settings, 'GOOGLE_IDENTIFICATION'):
 
 # redirect everything here
 urlpatterns = urlpatterns + [
+  url(r'^accessibility/story/(?P<pk>[a-z0-9\-]+)$', views.story, name='accessible_story'),
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
   url(r'^(?!favicon\.ico|signup|media).*$', views.home, name='app')
 ]
