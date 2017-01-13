@@ -274,7 +274,7 @@ def accessibility_author(request, author, tag=None):
 
   author  = get_object_or_404(Author, slug=author)
   
-  stories = Story.objects.filter(authors__slug=author, status=Story.PUBLIC).distinct()
+  stories = Story.objects.filter(authors=author, status=Story.PUBLIC).distinct()
   
   if tag:
     stories = stories.filter(tags__slug=tag).distinct()
