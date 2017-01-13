@@ -8,10 +8,10 @@
 
   {% if story.isCollection %}
     {% url 'accessibility_collection' pk=story.slug as accessibility_collection_url %}
-    <h2><a href='{{ accessibility_collection_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h2>
+    <h3><a href='{{ accessibility_collection_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h3>
   {% else %}
     {% url 'accessibility_story' pk=story.slug as accessibility_story_url %}
-    <h2><a href='{{ accessibility_story_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h2>
+    <h3><a href='{{ accessibility_story_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h3>
   {% endif %}
   
   {% include 'accessibility/partials/story.tags.html' %}
@@ -20,6 +20,6 @@
     {% include 'accessibility/partials/story.cover.html' %}
   {% endfor %}
 
-  <blockquote class="abstract">{% lookup story.dmetadata path="abstract" language=language %}</blockquote>
+  <blockquote >{% lookup story.dmetadata path="abstract" language=language %}</blockquote>
   
 </article>

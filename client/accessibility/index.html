@@ -145,8 +145,28 @@
     </ul>
   </nav>
   {% block page %}
+  <section>
+    <h2>Relevant publications</h2>
+    <ol>
+    {% for story in highlights %}
+    <li>
+      {% include 'accessibility/partials/story.html' %}
+    </li>
+    {% endfor %}
 
+  </ol>
+  </section>
+  <section>
+    <h2>Latest news</h2>
+    <ol>
+      {% for story in news %}
+      <li>
+        {% include 'accessibility/partials/story.html' %}
+      </li>
+      {% endfor %}
 
+    </ol>
+  </section>
   {% endblock %}
   <footer role="contentinfo">
     <p>Copyright &copy; <a href="http://www.uni.lu" target="_blank">Université du Luxembourg</a> {{ now }}. All rights reserved. </p>

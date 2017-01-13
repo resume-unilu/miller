@@ -202,10 +202,9 @@ def accessibility_index(request):
   """
   content = _share(request)
 
-  highlights = Story.objects.filter(status=Story.PUBLIC, tags__slug= 'highlights').order_by('-date')[:10]
-  top        = Story.objects.filter(status=Story.PUBLIC, tags__slug= 'top').order_by('-date')[:5]
-  news       = Story.objects.filter(status=Story.PUBLIC, tags__slug= 'news').order_by('-date')[:10]
-
+  highlights = Story.objects.filter(status=Story.PUBLIC, tags__slug='highlights').order_by('-date')[:10]
+  top        = Story.objects.filter(status=Story.PUBLIC, tags__slug='top').order_by('-date')[:5]
+  news       = Story.objects.filter(status=Story.PUBLIC, tags__slug='news').order_by('-date')[:10]
   
 
   content['top']        = top
