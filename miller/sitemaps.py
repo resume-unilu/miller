@@ -8,7 +8,7 @@ class NewsSitemap(Sitemap):
   priority = 0.5
 
   def items(self):
-    return Story.objects.filter(tags__category='blog', status=Story.PUBLIC).distinct().orderby('-date_last_modified').prefetch_related('tags')
+    return Story.objects.filter(tags__category='blog', status=Story.PUBLIC).distinct().order_by('-date_last_modified').prefetch_related('tags')
 
   def lastmod(self, obj):
     return obj.date_last_modified
