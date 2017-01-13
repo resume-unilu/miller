@@ -50,7 +50,7 @@ urlpatterns = [
   url(r'^admin/', admin.site.urls),
 
   url(r'^sitemap\.xml$', sitemaps_views.index, {'sitemaps': sitemaps}),
-  url(r'^sitemap-(?P<section>.+)\.xml$', sitemaps_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.html'},
+  url(r'^sitemap-(?P<section>.+)\.xml$', sitemaps_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.section.html'},
     name='django.contrib.sitemaps.views.sitemap'),
 
   url(r'^api/', include(router.urls)),
