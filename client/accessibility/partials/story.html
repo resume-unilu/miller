@@ -8,18 +8,13 @@
 
   {% if story.isCollection %}
     {% url 'accessibility_collection' pk=story.slug as accessibility_collection_url %}
-    <h1><a href='{{ accessibility_collection_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h1>
+    <h2><a href='{{ accessibility_collection_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h2>
   {% else %}
     {% url 'accessibility_story' pk=story.slug as accessibility_story_url %}
-    <h1><a href='{{ accessibility_story_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h1>
+    <h2><a href='{{ accessibility_story_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h2>
   {% endif %}
-  {% qsfilter story.tags key="status" value="public" as qs %}
-  {% for tag in qs.all %}
-  {% url 'accessibility_stories' tag=tag.slug as accessibility_stories_url %}
-  <div class='tags'>
-  <span class="tag"><a href="{{ accessibility_stories_url|urled }}" rel='tag'>{{tag.name}}</a></span>
-  </div>
-  {% endfor %}
+  
+  {% include 'accessibility/partials/story.tags.html' %}
 
   {% for cover in story.covers.all %}
     {% include 'accessibility/partials/story.cover.html' %}

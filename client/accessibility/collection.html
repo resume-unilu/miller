@@ -2,6 +2,8 @@
 {% load miller_extras %}
 {% block page %}
   <article>
+  <div class='date'>{{ story.date_created|date }}</div>
+
   {% for author in story.authors.all %}
   {% include 'accessibility/partials/author.html' %}
   {% endfor %}
@@ -11,6 +13,8 @@
     {% include 'accessibility/partials/story.cover.html' %}
   {% endfor %}
 
+  {% include 'accessibility/partials/story.tags.html' %}
+  
   <blockquote class="abstract">{% lookup story.dmetadata path="abstract" language=language %}</blockquote>
     
   <p>table of contents</p>

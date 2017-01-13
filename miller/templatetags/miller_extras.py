@@ -61,3 +61,20 @@ def urled(url):
 @register.simple_tag()
 def qsfilter(qs, key, value):
   return qs.filter(**{key:value})
+
+
+@register.filter()
+def shorten(text, maxwords=5):
+  if not text:
+    return '';
+  words = re.split(r'(?!=\.\s)\s', text)[:maxwords];
+
+  sentence = ' '.join(words)
+
+  if len(sentence) < len(text):
+    # if(!sentence.match(/\?\!\.$/)){
+    #   sentence += ' '
+    # }
+    
+    sentence = '%s ...' % sentence
+  return sentence;

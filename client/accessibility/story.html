@@ -1,7 +1,14 @@
 {% extends 'accessibility/index.html'%}
 {% load miller_extras %}
+
+
+{% block title %}{% lookup story.dmetadata path="title" language=language as html_title_prefix %}{{html_title_prefix|shorten}} &mdash; {% endblock %}
+
+
 {% block headers %}
-  {{ block.super }}
+  {% url 'accessibility_story' pk=story.slug as accessibility_story_url %}
+  <meta name="description"        content="{{description}}">
+
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@resume_unilu" />
   <meta name="twitter:title" content="{% lookup story.dmetadata path="title" language=language %}" />
@@ -10,7 +17,7 @@
   <meta property='twitter:image' content='{{story.ogcover.url}}'>
   {% endif %}
 
-  <meta property='og:url' content=''>
+  <meta property='og:url' content='{{accessibility_story_url|urled}}'>
   <meta property='og:type' content='article'>
   <meta property='og:title' content='{% lookup story.dmetadata path="title" language=language %}'>
   <meta property='og:description' content='{% lookup story.dmetadata path="abstract" language=language %}'>
@@ -19,8 +26,8 @@
   {% elif story.ogcover.type == "photo" %}
     <meta property='og:image' content='{{story.ogcover.url}}'>
   {% endif %}
-
 {% endblock %}
+
 
 {% block page %}
   <article>
@@ -29,16 +36,14 @@
   {% endfor %}
 
   <h1>{% lookup story.dmetadata path="title" language=language %}</h1>
+
+  {% include 'accessibility/partials/story.tags.html' %}
+
   {% for cover in story.covers.all %}
-    {% if cover.type == "video" or cover.type == "rich" %}
-      <a href='{{cover.dmetadata.url}}'>{{cover.dmetadata.title}}</a>
-      by <a href='{{cover.dmetadata.author_url}}'> {{cover.dmetadata.author_name}}</a>
-      (<a href='{{cover.dmetadata.provider_url}}'> {{cover.dmetadata.provider_name}}</a>)
-    {% endif %}
+    {% include 'accessibility/partials/story.cover.html' %}
   {% endfor %}
 
   <blockquote class="abstract">{% lookup story.dmetadata path="abstract" language=language %}</blockquote>
-  {% lookup story.dmetadata path="abstract" language=language %}
   {% markdownit story.contents language=language %}
   </article>
 {% endblock %}
