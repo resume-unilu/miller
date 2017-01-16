@@ -350,7 +350,8 @@
         padding: 0px 15px;
         line-height: 20px;
         border-radius: 0;
-
+        display: inline-block;
+        word-break: break-word;
       }
 
       a.btn-line{
@@ -384,9 +385,11 @@
 
       .btn-line-group{
         border: 2px solid #B7B2B2;
-        padding: 0 2px;
+        padding: 2px;
         display: inline-block;
-        height: 32px;
+        line-height: 20px;
+        /*height: 32px;*/
+        height: auto;
       }
 
       .btn-line-group.primary{
@@ -760,8 +763,20 @@
               <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}' translate="headline.login.or.signup">log in / sign up</a>
             </li>
             {% endif %}
-            <li class='compact' ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
-            <li class='compact' ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
+            <li class="dropdown">
+            <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
+              
+              <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>
+                <span class='username'>{% verbatim %}<span translate='{{language}}'></span>{% endverbatim %}<span style='position:absolute; right:5px; top:0' class='icon icon-plus'></span></span>
+              </a>
+
+              <ul class="dropdown-menu" role="menu">
+                <li ng-class="{'active': language=='en_US'}"><a ng-click='changeLanguage("en_US")'>EN</a></li>
+                <li ng-class="{'active': language=='fr_FR'}"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
+                <li ng-class="{'active': language=='de_DE'}"><a ng-click='changeLanguage("de_DE")'>DE</a></li>
+              </ul>
+              
+            </li>
             {% verbatim %}
 
             <!-- <li class="dropdown">

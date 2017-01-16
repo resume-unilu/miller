@@ -28,13 +28,19 @@
           <div class='tile'>
             <div class='title' embedit='document.metadata.title' language='language'></div>
             <div class='copyright' embedit='document.metadata.copyright'></div>
+            <div class='btn-line-group'>
+              <button class='btn-line' ng-disabled='!story.covers.length' ng-click='
+              removeCover(document)' translate="button.removecover"></button>
+            </div>
           </div>
         </div>
 
       </div>
-      <div class='btn-line-group'>
-        <button   class='btn-line' ng-click='
-        openCoversModal()' translate="button.choosecover"></button>
+      <div class="center">
+        <div class='btn-line-group ' style='width: 100%'>
+          <button   class='btn-line' ng-click='
+            openCoversModal()' translate="button.choosecover"></button>
+        </div>
       </div>
     </div>
   </div>

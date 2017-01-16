@@ -184,12 +184,38 @@ angular.module('miller')
       });
     }
 
+    $scope.removeCover = function(doc) {
+      $log.debug('WritingCtrl -> removeCover() doc:', doc.id);
+      if($scope.isSaving){
+        $log.warn('wait, try again in. Is still saving.')
+        return;
+      }
+      $scope.isSaving = true;
+      $scope.lock();
+      StoryFactory.patch({id: story.id}, {
+        covers: []
+      }).$promise.then(function(res) {
+        $log.debug('WritingCtrl -> removeCover() doc success', res);
+        $scope.story.covers = [];
+        $scope.unlock();
+        $scope.isSaving =false;
+      }, function(err){
+        $log.error('WritingCtrl -> removeCover() doc error', err);
+        $scope.unlock();
+        $scope.isSaving =false;
+      });
+    }
+
     $scope.references = [];
     $scope.lookups = [];// ref and docs and urls...
 
     // atthach the tag $tag for the current document.
     $scope.attachTag = function(tag) {
       $log.debug('WritingCtrl -> attachTag() tag', arguments);
+      if($scope.isSaving){
+        $log.warn('wait, try again in. Is still saving.')
+        return
+      }
       $scope.isSaving = true;
       $scope.lock();
       // partial update route
@@ -202,6 +228,8 @@ angular.module('miller')
         return true;
       }, function(){
         // error
+        $scope.unlock();
+        $scope.isSaving =false;
         return false;
       });
     };
