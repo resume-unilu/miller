@@ -625,6 +625,9 @@ angular
                 filters: JSON.stringify({
                   tags__category: 'writing'
                 }),
+                exclude:JSON.stringify({
+                  tags__slug: 'chapter'
+                }),
                 ordering: '-date,-date_last_modified'
               }).$promise;
             },

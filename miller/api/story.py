@@ -54,10 +54,11 @@ class StoryViewSet(viewsets.ModelViewSet):
 
   def list(self, request):
     filters = filtersFromRequest(request=self.request)
+    excludes = filtersFromRequest(request=self.request, field_name='exclude')
     ordering = orderingFromRequest(request=self.request)
 
     stories = self._getUserAuthorizations(request)
-    stories = stories.filter(**filters).distinct()
+    stories = stories.exclude(**excludes).filter(**filters).distinct()
 
     if 'status' not in filters:
       stories = stories.exclude(status=Story.DELETED)
@@ -80,7 +81,7 @@ class StoryViewSet(viewsets.ModelViewSet):
   # for some tags require the request user to be staff user
   # @permission_classes((IsAdminUser, ))
   def partial_update(self, request, *args, **kwargs):
-    print request.user
+    # print request.user
     return super(StoryViewSet, self).partial_update(request, *args, **kwargs)
 
 
