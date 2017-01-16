@@ -4,15 +4,15 @@ from django.contrib.contenttypes.models import ContentType
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
 # filters = filtersFromRequest(request=self.request) 
 # qs = stories.objects.filter(**filters).order_by(*ordering)
-def filtersFromRequest(request):
-  filters = request.query_params.get('filters', None)
-    
+def filtersFromRequest(request, field_name='filters'):
+  filters = request.query_params.get(field_name, None)
+  print field_name
   if filters is not None:
     try:
       filters = json.loads(filters)
       # print "filters,",filters
     except Exception, e:
-      # print e
+      print e
       filters = {}
   else:
     filters = {}
