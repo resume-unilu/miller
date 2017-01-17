@@ -449,7 +449,8 @@ ul.errorlist{
 
 .collection-abstract{
   background: #f0f0f0;
-  padding: 5px 15px 20px 15px;
+  padding: 5px 20px 5px 20px;
+  margin: 0
 }
 
 /*

@@ -59,8 +59,21 @@ MILLER_OEMBEDS = {
 STATIC_ROOT = '/var/www/miller/dist'
 
 # modify settings here
-MILLER_SETTINGS['debug'] = MILLER_DEBUG
-MILLER_SETTINGS['host'] = 'https://yourwebsite.miller'
+MILLER_WS_HOST = None
+
+MILLER_SETTINGS = {
+  'wshost': MILLER_WS_HOST,
+  'host': 'https://yourwebsite.miller',
+  'debug': MILLER_DEBUG,
+  'disqus': '',
+  'socialtags': 'resume-unilu', # socila tags when sharing on twitter
+  'analytics': 'UA-XXXXXXX-1',
+  'copyright': '',
+  'copyrighturl': '',
+}
+
+
+
 # e.g modify with your smtp info
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

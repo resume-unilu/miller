@@ -22,19 +22,19 @@ button.reviewcompleted,,"{{is_valid?'I completed the review.':'cannot finalize t
 button.removecover,,remove cover,,,remove cover
 button.undo,,undo,annuler,rückgängig machen,undo
 button.upload,"when uploading resources (images, pdf)",upload,télécharger sur la plateforme,hochladen,upload
-button.upload.story,when uploading docx to create a proper content (e.g; article),upload my writing,télécharger ma contribution,mein Beitrag hochladen,upload my writing
+button.upload.story,when uploading docx to create a proper content (e.g; article),upload my contribution,télécharger ma contribution,mein Beitrag hochladen,upload my contribution
 button.viewforreview,,view publication,,,view publication
 button.viewreport,,read review,,,read review
 button.edit.author,modify author,"modify bio, home institution ...","modifier une biographie, une affiliation...","eine Biografie, eine Mitgliedschaft/ Zugehörigkeit/einen Vertrag ändern","modify bio, home institution ..."
-language.en_US,,EN,,,EN
-language.en_GB,,EN,,,EN
-language.de_DE,,DE,,,DE
-language.fr_FR,,FR,,,FR
-missing,"when scrolling a list of items, the number of remaining ones",({{count}} more),({{count}} plus),({{count}} mehr),({{count}} more)
+language.en_US,,US English,,,US English
+language.en_GB,,British English,,,British English
+language.de_DE,,German,,,German
+language.fr_FR,,French,,,French
+missing,"when scrolling a list of items, the number of remaining ones",({{count}} remaining),({{count}} plus),({{count}} mehr),({{count}} remaining)
 results.amount,,({{count}} results),({{count}} résultats),({{count}} Resultate),({{count}} results)
 document.preview,,(preview),(aperçu),(Vorschau/Ansicht),(preview)
-drop.to.upload,@todo,"drop an image or a pdf file, or click here to select a file from your computer","déposez une image ou un fichier PDF, ou cliquez ici pour sélectionner un fichier depuis votre ordinateur","legen Sie ein Bild oder eine PDF-Datei ab, oder klicken Sie hier um eine Datei aus Ihrem Computer auszuwählen","drop an image or a pdf file, or click here to select a file from your computer"
-drop.to.upload.docx,,"drop a docs file, or click here to select a file from your computer","déposez un fichier docs, ou cliquez ici pour sélectionner un fichier depuis votre ordinateur","legen Sie eine Docs-Datei ab, oder klicken Sie hier, um eine Datei aus Ihrem Computer auszuwählen","drop a docs file, or click here to select a file from your computer"
+drop.to.upload,@todo,"drop an image or a PDF file, or click here to select a file from your computer","déposez une image ou un fichier PDF, ou cliquez ici pour sélectionner un fichier depuis votre ordinateur","legen Sie ein Bild oder eine PDF-Datei ab, oder klicken Sie hier um eine Datei aus Ihrem Computer auszuwählen","drop an image or a PDF file, or click here to select a file from your computer"
+drop.to.upload.docx,,"drop a .docx file, or click here to select a file from your computer","déposez un fichier docs, ou cliquez ici pour sélectionner un fichier depuis votre ordinateur","legen Sie eine Docs-Datei ab, oder klicken Sie hier, um eine Datei aus Ihrem Computer auszuwählen","drop a .docx file, or click here to select a file from your computer"
 enrich.fromUrl,dialog window that enables users to upload resources or select already existing resources,from url,depuis une URL,aus einer URL,from url
 enrich.glossary,"idem, resource coming from the glossary",add glossary term,ajouter un termedepuis le glossaire,Begriff aus dem Glossar hinzufügen,add glossary term
 ,,,,,
@@ -45,7 +45,7 @@ enrich.publications.abstract,todo,Search the other publications on this website.
 enrich.resources,,resource,Ressource,Ressourcen,resource
 enrich.type.notsupported,,This document cannot be saved locally; we can only store the link to the original resource.,Ce document ne peut pas être sauvegardé localement; nous pouvons uniquement stocker le lien vers la ressource originale.,Dieses Dokument kann nicht lokal gespeichert werden; wir können nur den Link zur ursprünglichen Ressource aufbewahren.,This document cannot be saved locally; we can only store the link to the original resource.
 enrich.type.notitle,,We didn't find a <b>title</b> for this resource. Please add a title below.,Nous n'avons trouvé aucun <b>titre</b> pour cette ressource. Veuillez ajouter un titreci-dessous.,Wir haben keinen <b>Titel</b> für diese Ressource gefunden. Bitte fügen Sie unten einen Titel hinzu.,We didn't find a <b>title</b> for this resource. Please add a title below.
-feature.unsupported.dragdrop,Alert message when dragdrop is not supported,File Drag/Drop is not supported for this browser,Le fichier drag&drop (glisser-déposer) n'est pas pris en charge par ce navigateur.,Die drag&drop Datei wird nicht von diesem Browser unterstützt.,File Drag/Drop is not supported for this browser
+feature.unsupported.dragdrop,Alert message when dragdrop is not supported,File drag/drop is not supported for this browser,Le fichier drag&drop (glisser-déposer) n'est pas pris en charge par ce navigateur.,Die drag&drop Datei wird nicht von diesem Browser unterstützt.,File drag/drop is not supported for this browser
 field.label.title,,title,titre,Titel,title
 field.label.abstract,,abstract,résumé,Zusammenfassung,abstract
 field.label.cover,"form label, select a cover image for the article",cover image,image de couverture,Cover-Bild,cover image
@@ -54,29 +54,29 @@ field.label.upload.abstract,"form label, abstract of your docx uploaded file",Ad
 field.label.upload.docx,,... and upload your <b>.docx</b> file,...et télécharger votre fichier <b>.docx</b>,... und laden Sie Ihre <b>.docx</b> Datei hoch,... and upload your <b>.docx</b> file
 field.label.firstname,,first name,prénom,Vorname,first name
 field.label.lastname,,last name,nom de famille,Nachname,last name
-field.label.affiliation,,home institution,affiliation,Heimatinstitut/Heimatuniversität,home institution
+field.label.affiliation,,affiliation,affiliation,Heimatinstitut/Heimatuniversität,affiliation
 field.label.bio,user biography,short biography,courte biographie,kurze Biographie,short biography
-field.label.thematic,,,Le tapuscrit se rattache-t-il aux thèmes abordés par le projet de recherche RESuME?,,
+field.label.thematic,,Is the contribution related to the topics covered by the RESuME research project?,Le tapuscrit se rattache-t-il aux thèmes abordés par le projet de recherche RESuME?,,Is the contribution related to the topics covered by the RESuME research project?
 field.label.thematic.description,,,,,
-field.label.interest,,,Le tapuscrit présente-t-il un intérêt pour la communauté-cible du projet RESuME?,,
+field.label.interest,,Is the contribution of interest to the target community of the RESuME project?,Le tapuscrit présente-t-il un intérêt pour la communauté-cible du projet RESuME?,,Is the contribution of interest to the target community of the RESuME project?
 field.label.interest.description,,,,,
-field.label.originality,,,Le sujet du tapuscrit se distingue-t-il par son innovation et son originalité?,,
+field.label.originality,,Is the contribution notable for its innovation and originality?,Le sujet du tapuscrit se distingue-t-il par son innovation et son originalité?,,Is the contribution notable for its innovation and originality?
 field.label.originality.description,,,,,
-field.label.innovation,,,Le tapuscrit apporte-t-il des éléments d’interprétation ou de compréhension nouveaux du sujet abordé?,,
+field.label.innovation,,Does the contribution offer a new interpretation or shed new light on the subject?,Le tapuscrit apporte-t-il des éléments d’interprétation ou de compréhension nouveaux du sujet abordé?,,Does the contribution offer a new interpretation or shed new light on the subject?
 field.label.innovation.description,,,,,
-field.label.interdisciplinarity,,,Le tapuscrit se distingue-t-il par son caractère interdisciplinaire?,,
+field.label.interdisciplinarity,,Does the contribution take an interdisciplinary approach?,Le tapuscrit se distingue-t-il par son caractère interdisciplinaire?,,Does the contribution take an interdisciplinary approach?
 field.label.interdisciplinarity.description,,,,,
-field.label.methodology,,,La méthodologie appliquée par l’auteur est-elle appropriée et justifiée au regard du sujet traité?,,
+field.label.methodology,,"Does the author use an appropriate, reasonable method to address the subject?",La méthodologie appliquée par l’auteur est-elle appropriée et justifiée au regard du sujet traité?,,"Does the author use an appropriate, reasonable method to address the subject?"
 field.label.methodology.description,,,,,
-field.label.clarity,,,La problématique et les objectifs de recherche/d’analyse du tapuscrit sont-ils clairement exposés?,,
+field.label.clarity,,Are the central question and the research/analysis objectives of the contribution clearly outlined?,La problématique et les objectifs de recherche/d’analyse du tapuscrit sont-ils clairement exposés?,,Are the central question and the research/analysis objectives of the contribution clearly outlined?
 field.label.clarity.description,,,,,
-field.label.argumentation,,,L’argumentation développée dans le tapuscrit est-elle convaincante au regard de la problématique retenue?,,
+field.label.argumentation,,Does the contribution provide a convincing argument to address the research question?,L’argumentation développée dans le tapuscrit est-elle convaincante au regard de la problématique retenue?,,Does the contribution provide a convincing argument to address the research question?
 field.label.argumentation.description,,,,,
-field.label.structure,,,"La structure du tapuscrit, l’intitulé des différentes sections sont-ils signifiants?",,
+field.label.structure,,Does the contribution have a meaningful structure and section headings?,"La structure du tapuscrit, l’intitulé des différentes sections sont-ils signifiants?",,Does the contribution have a meaningful structure and section headings?
 field.label.structure.description,,,,,
-field.label.references,,,"Les références citées en notes de bas de page sont-elles justifiées, pertinentes, actualisées?",,
+field.label.references,,"Are the references cited in the footnotes appropriate, relevant and up to date?","Les références citées en notes de bas de page sont-elles justifiées, pertinentes, actualisées?",,"Are the references cited in the footnotes appropriate, relevant and up to date?"
 field.label.references.description,,,,,
-field.label.pertinence,,,Les ressources documentaires sélectionnées contribuent-elles utilement à l’argumentation?,,
+field.label.pertinence,,Do the selected resources make a useful contribution to the argument?,Les ressources documentaires sélectionnées contribuent-elles utilement à l’argumentation?,,Do the selected resources make a useful contribution to the argument?
 field.label.pertinence.description,,,,,
 footer.home,footer link content,home,accueil,Home/Startseite,home
 footer.termsofservice,,terms of use,notice légale,Nutzungsbedingungen,terms of use
@@ -117,7 +117,7 @@ state.blog.all.title,,News & Events,News & Événements,News & Veranstaltungen,N
 state.blog.all.label,,News & Events,News & Événements,News & Veranstaltungen,News & Events
 state.blog.news.label,,news,news,News,news
 state.publications.all.title,,Publications,Publications,Publikationen,Publications
-state.publications.all.label,,Publications,Publications,Publikationen,Publications
+state.publications.all.label,,All publications,Toutes les publications,Publikationen,All publications
 state.publications.all.abstract,,"The project involves research and teaching activities leading to the production of several products, including ePublications, oral history interviews, e-teaching modules and a training course.","Le projet implique des activités de recherche et d’enseignement menant à la production de plusieurs produits, dont des ePublications, des interviews s’inscrivant dans le cadre de l’histoire orale, des modules de e-enseignement et une formation.","Das Projekt beinhaltet Forschungs- und Lehraktivitäten, die zur Herstellung verschiedener Produkte führt, darunter ePublications, Oral-History-Interviews, e-Lehrmodule und ein Schulungskurs.","The project involves research and teaching activities leading to the production of several products, including ePublications, oral history interviews, e-teaching modules and a training course."
 state.publications.collection.title,,ePublications,ePublications,ePublications,ePublications
 state.publications.collection.label,,ePublications,ePublications,ePublications,ePublications
@@ -132,16 +132,16 @@ state.publications.papers.title,,ePapers,ePapers,ePapers,ePapers
 state.publications.papers.label,,ePapers,ePapers,ePapers,ePapers
 state.publications.papers.abstract,,eInterviews ...,eInterview...,eInterview ...,eInterviews ...
 state.publications.law.title,,law,loi,Recht,law
-state.publications.law.label,,law,loi,Recht,law
+state.publications.law.label,,Legislation,Législation,Recht,Legislation
 state.publications.law.abstract,,law ...,loi...,Recht ...,law ...
 state.publications.glossary.title,,glossary,glossaire,Glossar,glossary
-state.publications.glossary.label,,glossary,glossaire,Glossar,glossary
+state.publications.glossary.label,,glossary,Glossaire,Glossar,glossary
 state.publications.glossary.abstract,,glossary ...,glossaire...,Glossar ...,glossary ...
 state.publications.collection.title,,ePublications,ePublications,ePublications,ePublications
 state.publications.collection.label,,ePublication,ePublications,ePublications,ePublication
 state.publications.collection.abstract,,...,...,...,...
 state.publications.biography.title,,biography,biographie,Biographie,biography
-state.publications.biography.label,,biography,biographie,Biographie,biography
+state.publications.biography.label,,biography,Biographies,Biographie,biography
 state.publications.biography.abstract,,biography ...,biographie...,Biographie ...,biography ...
 state.publications.how-tos.title,indications éditoriales/guide éditorial/ guide à l'intention des auteurs,guide for authors,instructions aux auteurs,Hinweise für Autoren/innen / Autorenrichtlinien,guide for authors
 state.publications.how-tos.label,,how-tos,conseils pratiques/modes d'emploi,Anleitungen,how-tos
@@ -188,7 +188,7 @@ story.read.comments,,comments,commentaires,Kommentare,comments
 field.label.placeholder.review,"""write here...""",write here ...,Écrivez ici...,Schreiben Sie hier ...,write here ...
 field.label.review.score,,score:,points :,Punktzahl :,score:
 field.label.review.status.draft,,(still completing the review),(finalisation de la révision/de l'analyse/du commentaire en cours),(Fertigstellung der Begutachtung/Überprüfung noch nicht abgeschlossen),(still completing the review)
-field.label.review.status.complete,,Green light for publication.,Feu vert pour la publication.,Grünes Licht für die Publikation/Veröffentlichung.,Green light for publication.
+field.label.review.status.complete,,Approval for publication.,Feu vert pour la publication.,Grünes Licht für die Publikation/Veröffentlichung.,Approval for publication.
 field.label.review.status.refusal,,Refused. Do not consider for publication.,Refusé. Ne pas publier.,Abgelehnt. Nicht zur Veröffentlichung freigegeben.,Refused. Do not consider for publication.
 field.label.review.status.bounce,paper to be reviewed,Improvements needed before publication. To be submitted again.,Améliorations nécessaires avant la publication. Nouvelle soumission requise.,Erforderliche Verbesserungen vor Veröffentlichung. Muss erneut eingereicht werden.,Improvements needed before publication. To be submitted again.
 field.label.review.final,,final consideration / further comments,examen final/autres commentaires,Schlussbemerkungen / weitere Kommentare,final consideration / further comments
