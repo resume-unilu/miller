@@ -6,7 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 # qs = stories.objects.filter(**filters).order_by(*ordering)
 def filtersFromRequest(request, field_name='filters'):
   filters = request.query_params.get(field_name, None)
-  print field_name
   if filters is not None:
     try:
       filters = json.loads(filters)

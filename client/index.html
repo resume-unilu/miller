@@ -622,11 +622,12 @@
       }
 
       .dropdown .username{
-        width: 60px;
+        width: 56px;
         display: inline-block;
         text-overflow: ellipsis;
         overflow: hidden;
       }
+
       @media (min-width: 992px){
         .dropdown .username{
           width: auto;
@@ -767,13 +768,13 @@
             <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
               
               <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>
-                <span class='username'>{% verbatim %}<span translate='{{language}}'></span>{% endverbatim %}<span style='position:absolute; right:5px; top:0' class='icon icon-plus'></span></span>
+                <span class='username'>{% verbatim %}<span translate='language.{{language}}'></span>{% endverbatim %}<span style='position:absolute; right:5px; top:0' class='icon icon-arrow-down-circle'></span></span>
               </a>
 
               <ul class="dropdown-menu" role="menu">
-                <li ng-class="{'active': language=='en_US'}"><a ng-click='changeLanguage("en_US")'>EN</a></li>
-                <li ng-class="{'active': language=='fr_FR'}"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
-                <li ng-class="{'active': language=='de_DE'}"><a ng-click='changeLanguage("de_DE")'>DE</a></li>
+                <li ng-class="{'active': language=='en_US'}"><a ng-click='changeLanguage("en_US")' translate='language.en_US'></a></li>
+                <li ng-class="{'active': language=='fr_FR'}"><a ng-click='changeLanguage("fr_FR")' translate='language.fr_FR'></a></li>
+                <li ng-class="{'active': language=='de_DE'}"><a ng-click='changeLanguage("de_DE")' translate='language.de_DE'></a></li>
               </ul>
               
             </li>

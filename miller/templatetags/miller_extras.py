@@ -12,6 +12,10 @@ class MagicLinks(Extension):
   def extendMarkdown(self, md, md_globals):
     print 'exted!!!!!!!!!!!', md.inlinePatterns['link']
 
+@register.simple_tag()
+def publication_title():
+  return settings.MILLER_TITLE
+  
 
 @register.simple_tag()
 def lookup(obj, path, language):

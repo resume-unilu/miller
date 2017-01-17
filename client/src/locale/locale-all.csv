@@ -5,7 +5,7 @@ button.annotate,,tag,balise,Tag,tag
 button.agree,,agree,accepter,akzeptieren/annehmen/zustimmen,agree
 button.back,,back,retour,zurück,back
 button.backtoreviews,,back to review list,retour à la liste d'évaluation,zurück zur Prüfliste,back to review list
-button.completereview,,create or modify review,faire ou modifier une évaluation,Überprüfung erstellen oder ändern,create or modify review
+button.completereview,,create or modify review,faire ou modifier une évaluation,Begutachtung/Überprüfung erstellen oder ändern,create or modify review
 button.create,,create,créer,erstellen/schaffen/erschaffen,create
 button.viewmode,,back to reading mode,retour au mode de lecture,zurück zum Lesemodus,back to reading mode
 button.save,,save,enregistrer,speichern,save
@@ -26,10 +26,10 @@ button.upload.story,when uploading docx to create a proper content (e.g; article
 button.viewforreview,,view publication,,,view publication
 button.viewreport,,read review,,,read review
 button.edit.author,modify author,"modify bio, home institution ...","modifier une biographie, une affiliation...","eine Biografie, eine Mitgliedschaft/ Zugehörigkeit/einen Vertrag ändern","modify bio, home institution ..."
-language.en_US,,US English,,,US English
-language.en_GB,,British English,,,British English
-language.de_DE,,German,,,German
-language.fr_FR,,French,,,French
+language.en_US,,EN,,,EN
+language.en_GB,,EN,,,EN
+language.de_DE,,DE,,,DE
+language.fr_FR,,FR,,,FR
 missing,"when scrolling a list of items, the number of remaining ones",({{count}} more),({{count}} plus),({{count}} mehr),({{count}} more)
 results.amount,,({{count}} results),({{count}} résultats),({{count}} Resultate),({{count}} results)
 document.preview,,(preview),(aperçu),(Vorschau/Ansicht),(preview)
@@ -39,12 +39,12 @@ enrich.fromUrl,dialog window that enables users to upload resources or select al
 enrich.glossary,"idem, resource coming from the glossary",add glossary term,ajouter un termedepuis le glossaire,Begriff aus dem Glossar hinzufügen,add glossary term
 ,,,,,
 enrich.cvce.label,,from cvce.eu,depuis cvce.eu,aus cvce.eu,from cvce.eu
-enrich.cvce.abstract,,Type a keyword below to search the resources on the <a href='cvce.eu'>cvce.eu</a> website,Saisissez un mot clé ci-dessous pour rechercher dans les ressources du site Web <a href='cvce.eu'>cvce.eu</a>,"Geben Sie ein Begriff in das unterstehenden Feld ein, um (in) den Ressourcen auf der<a href='cvce.eu'>cvce.eu</a> Website zu durchsuchen",Type a keyword below to search the resources on the <a href='cvce.eu'>cvce.eu</a> website
+enrich.cvce.abstract,,Type a keyword below to search the resources on the <a href='cvce.eu'>cvce.eu</a> website,Saisissez un mot clé ci-dessous pour rechercher dans les ressources du site Web <a href='cvce.eu'>cvce.eu</a>,"Geben Sie ein Begriff in das unterstehenden Feld ein, uminden Ressourcen auf der<a href='cvce.eu'>cvce.eu</a> Website zu durchsuchen",Type a keyword below to search the resources on the <a href='cvce.eu'>cvce.eu</a> website
 enrich.publications.label,todo,other publications,autres publications,andere Publikationen,other publications
 enrich.publications.abstract,todo,Search the other publications on this website.,Rechercher les autres publications de ce site Web.,Suchen Sie andere Publikationen auf dieser Website,Search the other publications on this website.
 enrich.resources,,resource,Ressource,Ressourcen,resource
 enrich.type.notsupported,,This document cannot be saved locally; we can only store the link to the original resource.,Ce document ne peut pas être sauvegardé localement; nous pouvons uniquement stocker le lien vers la ressource originale.,Dieses Dokument kann nicht lokal gespeichert werden; wir können nur den Link zur ursprünglichen Ressource aufbewahren.,This document cannot be saved locally; we can only store the link to the original resource.
-enrich.type.notitle,,We didn't find a <b>title</b> for this resource. Please add a title below.,Nous n'avons trouvé aucun <b>titre</b> pour cette ressource. Veuillez ajouter un titreci-dessous.,Wir haben keinen <b>Titel</b> für diese Ressource gefunden.,We didn't find a <b>title</b> for this resource. Please add a title below.
+enrich.type.notitle,,We didn't find a <b>title</b> for this resource. Please add a title below.,Nous n'avons trouvé aucun <b>titre</b> pour cette ressource. Veuillez ajouter un titreci-dessous.,Wir haben keinen <b>Titel</b> für diese Ressource gefunden. Bitte fügen Sie unten einen Titel hinzu.,We didn't find a <b>title</b> for this resource. Please add a title below.
 feature.unsupported.dragdrop,Alert message when dragdrop is not supported,File Drag/Drop is not supported for this browser,Le fichier drag&drop (glisser-déposer) n'est pas pris en charge par ce navigateur.,Die drag&drop Datei wird nicht von diesem Browser unterstützt.,File Drag/Drop is not supported for this browser
 field.label.title,,title,titre,Titel,title
 field.label.abstract,,abstract,résumé,Zusammenfassung,abstract
@@ -80,18 +80,18 @@ field.label.pertinence,,,Les ressources documentaires sélectionnées contribuen
 field.label.pertinence.description,,,,,
 footer.home,footer link content,home,accueil,Home/Startseite,home
 footer.termsofservice,,terms of use,notice légale,Nutzungsbedingungen,terms of use
-footer.guideforauthors,indications éditoriales/guide éditorial/ guide à l'intention des auteurs,guide for authors,indications éditoriales,Hinweise für Autoren/innen,guide for authors
+footer.guideforauthors,indications éditoriales/guide éditorial/ guide à l'intention des auteurs,guide for authors,indications éditoriales,Hinweise für Autoren/innen / Autorenrichtlinien,guide for authors
 footer.latest_rss,,latest news,dernières nouvelles,aktuelle Nachrichten,latest news
 headline.project,main menu,project,projet,Projekt,project
 headline.people,main menu(auteurs/personnes),people,auteurs,Autoren/innen,people
 headline.publications,main menu,publications,publications,Publikationen,publications
 headline.publications.title,main menu,Publications,Publications,Publikationen,Publications
-headline.publications.abstract,main menu. DUPLICATE?,"The project involves research and teaching activities leading to the production of several products, including ePublications, oral history interviews, e-teaching modules and a training course.","Le projet implique des activités de recherche et d’enseignement menant à la production de plusieurs produits, dont des ePublications, des interviews s’inscrivant dans le cadre de l’histoire orale, des modules de e-enseignement et une formation.","Das Projekt beinhaltet Forschungs- und Lehraktivitäten, die zur Herstellung verschiedener Produkte führt, darunter ePublications, Oral-History-Interviews, e-Lehrmodule und ein Schulungskurs.","The project involves research and teaching activities leading to the production of several products, including ePublications, oral history interviews, e-teaching modules and a training course."
+headline.publications.abstract,main menu. DUPLICATE?,"The project involves research and teaching activities leading to the production of several products, including ePublications, oral history interviews, e-teaching modules and a training course.","Le projet RESuME comprend des activités de recherche et d’enseignement menant à la publication de plusieurs produits, dont des monographies (ou ePublications), deux revues scientifiques multidisciplinaires, l’une sur le modèle social européen (Cahiers RESuME), l’autre sur l’Union économique et monétaire (Revue de l’Euro), ainsi que des contributions présentées par des institutions ou d'auteurs partenaires, des interviews audiovisuelles, des modules d’enseignement et un apparat scientifique (glossaire, biographie, commentaires juridiques).","Das Projekt beinhaltet Forschungs- und Lehraktivitäten, die zur Herstellung verschiedener Produkte führt, darunter ePublications, Oral-History-Interviews, e-Lehrmodule und ein Schulungskurs.","The project involves research and teaching activities leading to the production of several products, including ePublications, oral history interviews, e-teaching modules and a training course."
 headline.authors,main menu,authors,auteurs,Autoren/innen,authors
 headline.blogs,main menu,blogs,blogs,Blogs,blogs
 headline.events,main menu,events,événements,Veranstaltungen,events
-headline.review.of,,review of:,révision de:,Überprüfung von :,review of:
-headline.your.reviews,vos commentaires/vos analyses/,your reviews,vos révisions,Ihre Überprüfungen,your reviews
+headline.review.of,,review of:,révision de:,Begutachtung/Überprüfung von :,review of:
+headline.your.reviews,vos commentaires/vos analyses/,your reviews,vos évaluations/révisions,Ihre Begutachtungen/Überprüfungen,your reviews
 headline.news,main menu,news,news,News,news
 headline.blog,main menu,Events & News,Événements & news,Veranstaltungen & News,Events & News
 headline.blog.title,main menu,Events,Événements,Veranstaltungen,Events
@@ -107,7 +107,7 @@ me.publications,,your contributions,vos contributions,Ihre Beiträge,your contri
 modal.covers.title,,add cover image,ajouter une image de couverture,Cover-Bild hinzufügen,add cover image
 modal.covers.description,,add cover,ajouter une page de garde,Title-Seite hinzufügen,add cover
 drafts,,(drafts),(ébauches),(Entwürfe),(drafts)
-drafts.keywords.placeholder,,add keywords ...,ajouter des mots clés...,Schlüsselwörter hinzufügen,add keywords ...
+drafts.keywords.placeholder,,add keywords ...,ajouter des mots clés...,Schlüsselwörter hinzufügen ...,add keywords ...
 profile.type.author,,author,auteur,Autor,author
 remote.url,,url,URL,URL,url
 remote.url.placeholder,,source,source,Quelle,source
@@ -122,76 +122,76 @@ state.publications.all.abstract,,"The project involves research and teaching act
 state.publications.collection.title,,ePublications,ePublications,ePublications,ePublications
 state.publications.collection.label,,ePublications,ePublications,ePublications,ePublications
 state.publications.collection.abstract,,...,...,...,...
-state.publications.cahiers.title,,RESuME Papers,Cahiers RESuME,RESuME,RESuME Papers
-state.publications.cahiers.label,,RESuME Papers,Cahiers RESuME,,RESuME Papers
-state.publications.cahiers.abstract,,RESuME Papers,Cahiers RESuME,,RESuME Papers
-state.publications.interviews.title,,eInterviews,eInterviews,,eInterviews
-state.publications.interviews.label,,eInterviews,eInterviews,,eInterviews
-state.publications.interviews.abstract,,eInterviews,eInterviews,,eInterviews
-state.publications.papers.title,,ePapers,ePapers,,ePapers
-state.publications.papers.label,,ePapers,ePapers,,ePapers
-state.publications.papers.abstract,,eInterviews ...,eInterview...,,eInterviews ...
-state.publications.law.title,,law,loi,,law
-state.publications.law.label,,law,loi,,law
-state.publications.law.abstract,,law ...,loi...,,law ...
-state.publications.glossary.title,,glossary,glossaire,,glossary
-state.publications.glossary.label,,glossary,glossaire,,glossary
-state.publications.glossary.abstract,,glossary ...,glossaire...,,glossary ...
-state.publications.collection.title,,ePublications,ePublications,,ePublications
-state.publications.collection.label,,ePublication,ePublications,,ePublication
-state.publications.collection.abstract,,...,...,,...
-state.publications.biography.title,,biography,biographie,,biography
-state.publications.biography.label,,biography,biographie,,biography
-state.publications.biography.abstract,,biography ...,biographie...,,biography ...
-state.publications.how-tos.title,,instructions aux auteurs,instructions aux auteurs,,instructions aux auteurs
-state.publications.how-tos.label,,how-tos,conseils pratiques/modes d'emploi,,how-tos
-state.publications.how-tos.abstract,,how-tos ...,conseils pratiques/modes d'emploi...,,how-tos ...
-headline.reviews,,reviews assigned to you,commentaires/analyses/révisions qui vous sont assigné(e)s,,reviews assigned to you
+state.publications.cahiers.title,,RESuME Papers,Cahiers RESuME,RESuME-Beiträge,RESuME Papers
+state.publications.cahiers.label,,RESuME Papers,Cahiers RESuME,RESuME-Beiträge,RESuME Papers
+state.publications.cahiers.abstract,,RESuME Papers,Cahiers RESuME,RESuME-Beiträge,RESuME Papers
+state.publications.interviews.title,,eInterviews,eInterviews,eInterviews,eInterviews
+state.publications.interviews.label,,eInterviews,eInterviews,eInterviews,eInterviews
+state.publications.interviews.abstract,,eInterviews,eInterviews,eInterviews,eInterviews
+state.publications.papers.title,,ePapers,ePapers,ePapers,ePapers
+state.publications.papers.label,,ePapers,ePapers,ePapers,ePapers
+state.publications.papers.abstract,,eInterviews ...,eInterview...,eInterview ...,eInterviews ...
+state.publications.law.title,,law,loi,Recht,law
+state.publications.law.label,,law,loi,Recht,law
+state.publications.law.abstract,,law ...,loi...,Recht ...,law ...
+state.publications.glossary.title,,glossary,glossaire,Glossar,glossary
+state.publications.glossary.label,,glossary,glossaire,Glossar,glossary
+state.publications.glossary.abstract,,glossary ...,glossaire...,Glossar ...,glossary ...
+state.publications.collection.title,,ePublications,ePublications,ePublications,ePublications
+state.publications.collection.label,,ePublication,ePublications,ePublications,ePublication
+state.publications.collection.abstract,,...,...,...,...
+state.publications.biography.title,,biography,biographie,Biographie,biography
+state.publications.biography.label,,biography,biographie,Biographie,biography
+state.publications.biography.abstract,,biography ...,biographie...,Biographie ...,biography ...
+state.publications.how-tos.title,indications éditoriales/guide éditorial/ guide à l'intention des auteurs,guide for authors,instructions aux auteurs,Hinweise für Autoren/innen / Autorenrichtlinien,guide for authors
+state.publications.how-tos.label,,how-tos,conseils pratiques/modes d'emploi,Anleitungen,how-tos
+state.publications.how-tos.abstract,,how-tos ...,conseils pratiques/modes d'emploi...,Anleitungen,how-tos ...
+headline.reviews,,reviews assigned to you,commentaires/analyses/révisions qui vous sont assigné(e)s,Ihnen zugewiesene Begutachtungen/Überprüfungen,reviews assigned to you
 headline.reviews.abstract,,,,,
-state.reviews.all,,view all,voir tout,,view all
-state.reviews.pending,,pending,en suspens,,pending
-story.read.documents,,resources,ressources,,resources
-story.read.reviews,,reviews,commentaires/analyses/révisions,,reviews
-story.read.comments,,comments,commentaires,,comments
-story.status.draft,the status of a story,draft,brouillon,,draft
-story.status.public,,published,publié,,published
-story.status.review.pending,,pending review,commentaires/analyses/révisions en suspens,,pending review
-story.status.review.done,,reviewed,révisé,,reviewed
-collection.status.draft,,draft,brouillon,,draft
-collection.status.public,,public,public,,public
-tab.favourite,dialog tab title,your library,votre bibliothèque,,your library
-tab.all,,all resources,toutes les ressources,,all resources
-tag.cahiers,,RESuME Papers,Cahiers RESuME,,RESuME Papers
-tag.paper,,Papers,Articles,,Papers
-tag.law,,Law,Articles de loi,,Law
+state.reviews.all,,view all,voir tout,alles anzeigen/sehen,view all
+state.reviews.pending,,pending,en suspens,ausstehend,pending
+story.read.documents,,resources,ressources,Ressourcen,resources
+story.read.reviews,,reviews,commentaires/analyses/révisions,Begutachtungen/Überprüfungen,reviews
+story.read.comments,,comments,commentaires,Kommentare,comments
+story.status.draft,the status of a story,draft,brouillon,Entwürfe,draft
+story.status.public,,published,publié,veröffentlicht,published
+story.status.review.pending,,pending review,évaluation/commentaire/analyse/révision en suspens,ausstehende Begutachtung/Überprüfung,pending review
+story.status.review.done,,reviewed,révisé,überprüft,reviewed
+collection.status.draft,,draft,brouillon,Entwürfe,draft
+collection.status.public,,public,public,Öffentlich,public
+tab.favourite,dialog tab title,your library,votre bibliothèque,Ihre Bibliothek,your library
+tab.all,,all resources,toutes les ressources,alle Ressourcen,all resources
+tag.cahiers,,RESuME Papers,Cahiers RESuME,RESuME-Beiträge,RESuME Papers
+tag.paper,,Papers,Articles,Beiträge/Artikel,Papers
+tag.law,,Law,Loi,Recht,Law
 ,,,,,
 ,,,,,
-oembed.type.rich,à rajouter,Media,Media,,Media
-oembed.type.link,,Link,Lien,,Link
-oembed.type.photo,,Image,Image,,Image
-oembed.type.image,,Image,Image,,Image
-oembed.type.picture,,Image,Image,,Image
-tab.library,,your library,votre bibliothèque,,your library
-tab.glossary,,other publications,autres publications,,other publications
-tab.CVCE,,from CVCE.eu,depuis CVCE.eu,,from CVCE.eu
-tab.url,,from url,depuis l'URL,,from url
-tab.upload,,upload,télécharger,,upload
-upload.title,,Upload your contribution,Téléchargez votre contribution,,Upload your contribution
-upload.description,,Four easy steps,Quatre étapes simples,,Four easy steps
-upload.missing.steps,,Almost there! ... {{steps > 1? steps + 'more steps': 'one last step'}} before uploading,Vous y êtes presque!... {{steps > 1? 'encore ' + steps+ ' étape(s) ': 'une dernière étape'}} avant de télécharger,,Almost there! ... {{steps > 1? steps + 'more steps': 'one last step'}} before uploading
-upload.success.title,,Congratulations! Your content has been submitted,Félicitations! Votre contenu a été transmis,,Congratulations! Your content has been submitted
-upload.success.description,,You can find your submitted content here,Vous trouverez ici votre contenu transmis,,You can find your submitted content here
-written.by,author(s) label of the article,by,par/de,,by
-story.read.documents,,documents,documents,,documents
-story.read.reviews,,reviews,commentaires/analyses/révisions,,reviews
-story.read.comments,,comments,commentaires,,comments
-field.label.placeholder.review,"""write here...""",write here ...,...,,write here ...
-field.label.review.score,,score:,points :,,score:
-field.label.review.status.draft,,(still completing the review),(finalisation de la révision/de l'analyse/du commentaire en cours),,(still completing the review)
-field.label.review.status.complete,,Green light for publication.,Feu vert pour la publication.,,Green light for publication.
-field.label.review.status.refusal,,Refused. Do not consider for publication.,Refusé. Ne pas publier.,,Refused. Do not consider for publication.
-field.label.review.status.bounce,paper to be reviewed,Improvements needed before publication. To be submitted again.,Améliorations nécessaires avant la publication. Nouvelle soumission requise.,,Improvements needed before publication. To be submitted again.
-field.label.review.final,,final consideration / further comments,examen final/autres commentaires,,final consideration / further comments
+oembed.type.rich,à rajouter,Media,Media,Media,Media
+oembed.type.link,,Link,Lien,Link,Link
+oembed.type.photo,,Image,Image,Bild,Image
+oembed.type.image,,Image,Image,Bild,Image
+oembed.type.picture,,Image,Image,Bild,Image
+tab.library,,your library,votre bibliothèque,Ihre Bibliothek,your library
+tab.glossary,,other publications,autres publications,andere Publikationen,other publications
+tab.CVCE,,from CVCE.eu,depuis CVCE.eu,aus CVCE.eu,from CVCE.eu
+tab.url,,from url,depuis l'URL,aus der URL,from url
+tab.upload,,upload,télécharger,hochladen,upload
+upload.title,,Upload your contribution,Téléchargez votre contribution,Ihren Beitrag hochladen,Upload your contribution
+upload.description,,Four easy steps,Quatre étapes simples,Vier einfache Schritte,Four easy steps
+upload.missing.steps,,Almost there! ... {{steps > 1? steps + 'more steps': 'one last step'}} before uploading,Vous y êtes presque!... {{steps > 1? 'encore' + steps+ 'étape(s)': 'une dernière étape'}} avant de télécharger,Fast erreicht! ... {{steps > 1? 'noch' + steps+ 'Schritt(e)': 'ein letzter Schritt'}} vor dem Hochladen,Almost there! ... {{steps > 1? steps + 'more steps': 'one last step'}} before uploading
+upload.success.title,,Congratulations! Your content has been submitted,Félicitations! Votre contenu a été transmis,Herzlichen Glückwunsch! Ihre Inhalte wurden eingereicht,Congratulations! Your content has been submitted
+upload.success.description,,You can find your submitted content here,Vous trouverez ici votre contenu transmis,Hier finden Sie Ihre eingereichten Inhalte,You can find your submitted content here
+written.by,author(s) label of the article,by,par/de,von,by
+story.read.documents,,documents,documents,Dokumente,documents
+story.read.reviews,,reviews,commentaires/analyses/révisions,Begutachtungen/Überprüfungen,reviews
+story.read.comments,,comments,commentaires,Kommentare,comments
+field.label.placeholder.review,"""write here...""",write here ...,Écrivez ici...,Schreiben Sie hier ...,write here ...
+field.label.review.score,,score:,points :,Punktzahl :,score:
+field.label.review.status.draft,,(still completing the review),(finalisation de la révision/de l'analyse/du commentaire en cours),(Fertigstellung der Begutachtung/Überprüfung noch nicht abgeschlossen),(still completing the review)
+field.label.review.status.complete,,Green light for publication.,Feu vert pour la publication.,Grünes Licht für die Publikation/Veröffentlichung.,Green light for publication.
+field.label.review.status.refusal,,Refused. Do not consider for publication.,Refusé. Ne pas publier.,Abgelehnt. Nicht zur Veröffentlichung freigegeben.,Refused. Do not consider for publication.
+field.label.review.status.bounce,paper to be reviewed,Improvements needed before publication. To be submitted again.,Améliorations nécessaires avant la publication. Nouvelle soumission requise.,Erforderliche Verbesserungen vor Veröffentlichung. Muss erneut eingereicht werden.,Improvements needed before publication. To be submitted again.
+field.label.review.final,,final consideration / further comments,examen final/autres commentaires,Schlussbemerkungen / weitere Kommentare,final consideration / further comments
 field.label.review.final.description,,,,,
-field.label.review.final.decision,what is your final decision?,Final decision,Décision finale,,Final decision
-state.reviews.reports,review results,Review reports,Rapports d'examen,,Review reports
+field.label.review.final.decision,what is your final decision?,Final decision,Décision finale,Endgültige Entscheidung,Final decision
+state.reviews.reports,review results,Review reports,Rapports d'examen,Begutachtungsberichte/Prüfungsberichte,Review reports
