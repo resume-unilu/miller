@@ -55,12 +55,12 @@ INSTALLED_APPS = [
     'miller',
 
     'actstream',
-    'django_seo_js'
+    #'django_seo_js'
 ]
 
 
 MIDDLEWARE_CLASSES = [
-    'django_seo_js.middleware.UserAgentMiddleware',  # If you want to detect by user agent
+    #'django_seo_js.middleware.UserAgentMiddleware',  # If you want to detect by user agent
     #'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

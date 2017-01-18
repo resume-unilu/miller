@@ -75,6 +75,7 @@ class Story(models.Model):
   date_last_modified = models.DateTimeField(auto_now=True)
 
   status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=DRAFT, db_index=True)
+  priority  = models.PositiveIntegerField(default=0, db_index=True)
 
   owner     = models.ForeignKey(User); # at least the first author, the one who owns the file.
   

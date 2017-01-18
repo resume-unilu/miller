@@ -999,19 +999,28 @@ ul.errorlist{
   margin-bottom: 20px;
 }
 
+.nav-tabs .dropdown-menu{
+  margin-top: -2px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 2px solid ;
+}
+
 .nav-tabs > li{
-  padding: 22px 10px 20px 0px;
+  /*padding: 22px 10px 20px 0px;*/
+  padding: 0px 5px 0px 0px;
 }
 
 .nav-tabs > li > a{
   font-family: 'Lato', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   color: #aaa;
   border: 2px solid transparent;
   border-radius: 0;
   line-height: 20px;
   padding: 0 10px;
+  margin-bottom: 10px;
   transition: color .25s ease-in-out, border-color .25s ease-in-out;
 }
 
@@ -1027,7 +1036,46 @@ ul.errorlist{
     
 }
 
+.nav-tabs > li.active.secondary > a,  .nav-tabs > li.active.secondary > a:focus{
+  color: #aaa;
+    border-color: #ddd;
+}
 
+.nav-tabs > li.active.secondary.open > a, .nav-tabs > li.active.secondary.open > a:hover, .nav-tabs > li.active.secondary.open > a:focus{
+  color: #151515;
+  border-color: transparent;
+  background-color: #e7e7e7;
+}
+
+
+
+/*
+  a wrapper of .nav-tabs
+*/
+#orderby{
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+  left: 0;
+  right: 0;
+  margin: 0;
+}
+
+#orderby .nav-tabs {
+  margin: 0;
+  border: 0px;
+}
+
+#orderby .nav-tabs > li {
+  margin: 0;
+  padding-right: 0;
+}
+
+#orderby  li.active.secondary > a{
+  background: #151515;
+  color: white;
+  border-color: transparent;
+}
 /*
   ng-tags-input
 */

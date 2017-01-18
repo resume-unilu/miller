@@ -1,19 +1,14 @@
 <div class='container'>
 <div class="view">
-<div class='row'>
-<div class='col-lg-8'>
-  <div>
-    <h1 translate="headline.publications.title"></h1>
 
-    <blockquote translate="headline.publications.abstract"></blockquote>
+<h1 translate="headline.publications.title"></h1>
 
-    </div>
-  </div>
-</div>
+    <p translate="headline.publications.abstract"></p>
+
 
 
 <!-- Nav tabs -->
-<ul class='nav nav-tabs'>
+<ul class='nav nav-tabs' style='margin-top: 20px'>
   <li role="presentation" ui-sref-active="active" >
     <a href ui-sref='publications.all' aria-controls="home" role="tab" data-toggle="tab" translate="state.publications.all.label"></a>
   </li>
@@ -24,12 +19,28 @@
   <li ng-if='slug' role="presentation" ui-sref-active="active" >
     <a href ui-sref='publications.tags({slug: slug})' aria-controls="home" role="tab" data-toggle="tab">/filter: <b>{{slug}}</b>/</a>
   </li>
+
+  <!-- <li class='dropdown active secondary'>
+    <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>
+      <span class='inner'>
+        <span translate='orderby.date'></span>
+        <span style='position:absolute; right:5px; top:0' class='icon icon-arrow-down-circle'></span>
+      </span>
+    </a>
+    <ul class="dropdown-menu" role="menu">
+      <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
+    </ul>
+  </li> -->
 </ul>
+
+
 
 
 <div ui-view></div>
 </div>
 </div>
+
+
 <!-- <div class='row'>
   
   <div class='col-md-4'>

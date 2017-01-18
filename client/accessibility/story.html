@@ -4,11 +4,11 @@
 
 {% block title %}{% lookup story.dmetadata path="title" language=language as html_title_prefix %}{{html_title_prefix|shorten}} &mdash; {% endblock %}
 
-
 {% block headers %}
   {% url 'accessibility_story' pk=story.slug as accessibility_story_url %}
-  <meta name="description"        content="{{description}}">
-
+  {% if story.dmetadata %}
+  <meta name="description"        content="{% lookup story.dmetadata path="abstract" language=language %}">
+  {% endif %}
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@resume_unilu" />
   <meta name="twitter:title" content="{% lookup story.dmetadata path="title" language=language %}" />
