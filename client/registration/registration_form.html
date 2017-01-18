@@ -74,7 +74,7 @@
         </div>
 
         <div class="form-group {% if form.errors.affiliation %}has-error{% endif %}">
-          <label for="id_signup_affiliation">Home institution</label>
+          <label for="id_signup_affiliation">affiliation</label>
           <input type="text" value='{{ form.affiliation.value|default_if_none:"" }}' class="form-control" id="id_signup_affiliation"  name="affiliation" placeholder="university, country ..." >
         </div>
         
