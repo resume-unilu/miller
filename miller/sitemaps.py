@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib.sitemaps import Sitemap
+from django.urls import reverse
 from miller.models import Story
 
 
@@ -26,7 +28,20 @@ class WritingsSitemap(Sitemap):
     return obj.date_last_modified
 
 
+
+class PagesSitemap(Sitemap):
+    priority = 0.5
+    changefreq = 'monthly'
+
+    def items(self):
+        return settings.MILLER_STATIC_PAGES
+
+    def location(self, item):
+        return reverse('accessibility_page', kwargs={'page':item})
+
+
 sitemaps = {
   'news': NewsSitemap,
-  'writings': WritingsSitemap
+  'writings': WritingsSitemap,
+  'pages': PagesSitemap
 }
