@@ -49,6 +49,11 @@ h1, .h1 {
   padding: 0;
 }
 
+.tags{
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+}
+
 .container{
   transition: transform .26s ease-in-out;
 }
@@ -124,16 +129,17 @@ a{
   background-color: #C7F464;
 }
 blockquote, blockquote p{
-  font-size: 20px;
-  line-height: 35px;
+  font-size: 18px;
+  line-height: 30px;
   border-left: 2px solid #ddd;
   border-left: 0px;
   padding:0;
 }
 
 blockquote.reduced, blockquote.reduced p{
-  font-size: 15px;
-  line-height: 25px;
+  font-size: 13px;
+  line-height: 21px;
+  margin-bottom: 10px;
 }
 
 .alert{
@@ -553,10 +559,7 @@ ul.errorlist{
   max-height: 58px;
   overflow: hidden;
 }
-#breaking-news .item .tags {
-  font-family: 'Lato', sans-serif;
-  font-size: 10px;
-}
+
 #breaking-news .item a{
   color: #f0f0f0;
 }
@@ -732,8 +735,11 @@ ul.errorlist{
   margin-bottom: 0px;
 }
 
+.coverstory .cover{
+  height: 100px;
+}
 .coverstory h4 {
-  margin-top:20px;
+  margin: 10px 0 10px 0;
 }
 
 .coverstory h4 a{
@@ -745,6 +751,14 @@ ul.errorlist{
   margin-bottom: 20px;
 }
 
+.authors{
+  font-size: 12px;
+}
+
+.author{
+  text-transform: uppercase;
+  font-family: 'Lato';  
+}
 /*
   contents (story)
 */
