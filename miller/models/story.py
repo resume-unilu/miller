@@ -11,7 +11,7 @@ from BeautifulSoup import BeautifulSoup
 from django.conf import settings
 from django.core.signals import request_finished
 from django.db import models
-from django.db.models.signals import pre_delete, post_save, m2m_changed
+from django.db.models.signals import pre_delete, post_save, m2m_changed, pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -351,20 +351,20 @@ class Story(models.Model):
       self._saved = self._saved + 1
     logger.debug('story@save  {pk:%s} init save, time=%s' % (self.pk, self._saved))
     
-    if not self.pk and not self.slug:
-      slug = slugify(self.title)
-      slug_exists = True
-      counter = 1
-      self.slug = slug
-      while slug_exists:
-        try:
-          slug_exits = Story.objects.get(slug=slug)
-          if slug_exits:
-              slug = self.slug + '-' + str(counter)
-              counter += 1
-        except Story.DoesNotExist:
-          self.slug = slug
-          break
+    # if not self.pk and not self.slug:
+    #   slug = slugify(self.title)
+    #   slug_exists = True
+    #   counter = 1
+    #   self.slug = slug
+    #   while slug_exists:
+    #     try:
+    #       slug_exits = Story.objects.get(slug=slug)
+    #       if slug_exits:
+    #           slug = self.slug + '-' + str(counter)
+    #           counter += 1
+    #     except Story.DoesNotExist:
+    #       self.slug = slug
+    #       break
 
     if self.date is None:
       logger.debug('story@save {slug:%s,pk:%s} not having a default date. Fixing...' % (self.slug, self.pk))
@@ -394,6 +394,14 @@ class Story(models.Model):
 
     logger.debug('story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
+
+
+@receiver(pre_save, sender=Story)
+def complete_instance(sender, instance, **kwargs):
+  logger.debug('story {pk:%s} @pre_save' % instance.pk)
+  if not instance.slug:
+    instance.slug = helpers.get_unique_slug(instance, instance.title, max_length=68)
+    logger.debug('story {pk:%s, slug:%s} @pre_save slug generated' % (instance.pk, instance.slug))
 
 
 # generic story_ready handlers ;) store in whoosh
