@@ -753,11 +753,6 @@ ul.errorlist{
   line-height: 15px;
 }
 
-
-.coverstory:hover .embedded-metadata{
-  color: #fff;
-}
-
 .coverstory h4 {
   margin: 10px 0 10px 0;
 }
