@@ -10,7 +10,8 @@ register = template.Library()
 
 class MagicLinks(Extension):
   def extendMarkdown(self, md, md_globals):
-    print 'exted!!!!!!!!!!!', md.inlinePatterns['link']
+    pass
+    #print 'exted!!!!!!!!!!!', md.inlinePatterns['link']
 
 @register.simple_tag()
 def publication_title():
@@ -60,6 +61,12 @@ def markdownit(text, language):
 def coverage(cover):
   url = None
 
+  if cover.snapshot:
+    return '/'.join(s.strip('/') for s in [
+      settings.MILLER_SETTINGS['host'],
+      cover.snapshot.url
+    ])
+
   if hasattr(cover, 'dmetadata'):
     url = cover.dmetadata['thumbnail_url'] if 'thumbnail_url' in cover.dmetadata else None
     if not url:
@@ -71,6 +78,10 @@ def coverage(cover):
     # || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview')  || cover.snapshot || cover.attachment || cover.metadata.url;
   if not url:
     url = cover.snapshot if cover.snapshot else cover.attachment
+
+  ## prefix (media_url) if not an absolute url
+  
+
   return url;
 
 
