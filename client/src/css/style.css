@@ -5,8 +5,9 @@
 */
 h1, .h1, h2, .h2, h3, .h3, h4, .h4{
   text-align: left;
-  font-family: 'Lato', sans-serif;
-  font-weight: bold;
+  /*font-family: 'Lato', sans-serif;*/
+  /*font-weight: bold;*/
+  font-weight: normal;
   color: #454545;
 }
 h1, .h1 {
@@ -740,6 +741,12 @@ ul.errorlist{
   margin-bottom: 0px;
 }
 
+.coverstory.story .cover-oembed{
+  height: 350px;
+}
+.coverstory.story .cover{
+  height: 100%;
+}
 
 .coverstory .cover{
   height: 100px;
