@@ -14,7 +14,7 @@
   <meta name="twitter:title" content="{% lookup story.dmetadata path="title" language=language %}" />
   <meta name="twitter:description" content="{% lookup story.dmetadata path="abstract" language=language %}" />
   {% if story.ogcover %}
-  <meta property='twitter:image' content='{{story.ogcover.url}}'>
+  <meta property='twitter:image' content='{{story.ogcover|coverage}}'>
   {% endif %}
 
   <meta property='og:url' content='{{accessibility_story_url|urled}}'>
@@ -22,9 +22,9 @@
   <meta property='og:title' content='{% lookup story.dmetadata path="title" language=language %}'>
   <meta property='og:description' content='{% lookup story.dmetadata path="abstract" language=language %}'>
   {% if story.ogcover.type == "video" %}
-    <meta property='og:video' content='{{story.ogcover.url}}'>
+    <meta property='og:video' content='{{story.ogcover|coverage}}'>
   {% elif story.ogcover.type == "photo" %}
-    <meta property='og:image' content='{{story.ogcover.url}}'>
+    <meta property='og:image' content='{{story.ogcover|coverage}}'>
   {% endif %}
 {% endblock %}
 

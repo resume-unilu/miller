@@ -27,8 +27,8 @@ button.viewforreview,,view publication,voir la publication,Publikation sehen,vie
 button.viewreport,,read review,lire l'évaluation,Begutachtung lesen,read review
 button.edit.author,modify author,"change biography, affiliation, etc.","modifier la biographie, l'affiliation, etc.","Biografie, Zugehörigkeit, etc.ändern","change biography, affiliation, etc."
 language.en,,English,Anglais,Englisch,English
-language.en_US,,US English,Anglais US,US-Englisch,US English
-language.en_GB,,British English,AnglaisGB,GB-Englisch,British English
+language.en_US,,English,Anglais,Englisch,English
+language.en_GB,,English,Anglais,Englisch,English
 language.de_DE,,German,Allemand,Deutsch,German
 language.fr_FR,,French,Français,Französisch,French
 missing,"when scrolling a list of items, the number of remaining ones",({{count}} remaining),({{count}} restants),({{count}} übrig),({{count}} remaining)

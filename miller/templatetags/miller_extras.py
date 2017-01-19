@@ -56,6 +56,23 @@ def markdownit(text, language):
   return mark_safe(markdown(text, extensions=['footnotes', MagicLinks()]))
 
 
+@register.filter()
+def coverage(cover):
+  url = None
+
+  if hasattr(cover, 'dmetadata'):
+    url = cover.dmetadata['thumbnail_url'] if 'thumbnail_url' in cover.dmetadata else None
+    if not url:
+      url = cover.dmetadata['preview'] if 'preview' in cover.dmetadata else None
+    if not url:
+      url = cover.snapshot if cover.snapshot else cover.attachment
+    if not url:
+      url = cover.dmetadata['url'] if 'url' in cover.dmetadata else None
+    # || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview')  || cover.snapshot || cover.attachment || cover.metadata.url;
+  if not url:
+    url = cover.snapshot if cover.snapshot else cover.attachment
+  return url;
+
 
 @register.filter()
 def urled(url):

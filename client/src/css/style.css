@@ -1,6 +1,7 @@
 /* Resume */
 /*
   p, a etc.
+  alternative blue: #0ecdc0
 */
 h1, .h1, h2, .h2, h3, .h3, h4, .h4{
   text-align: left;
@@ -713,7 +714,7 @@ ul.errorlist{
 }
 
 .story.lite h3{
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .story.lite h3 a {
@@ -1022,17 +1023,23 @@ ul.errorlist{
 
 /*
   bootstrap tabs
+  / dropdown menu
 */
 .nav-tabs {
   border-bottom: 2px solid #ddd;
   margin-bottom: 20px;
 }
 
+.navbar-nav > li > .dropdown-menu,
 .nav-tabs .dropdown-menu{
-  margin-top: -2px;
+  margin-top: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  border: 2px solid ;
+  /*border: 2px solid ;*/
+  z-index: 1;
+  border: 0px solid transparent;
+  background: #e7e7e7;
+  padding: 2px;
 }
 
 .nav-tabs > li{
@@ -1076,6 +1083,19 @@ ul.errorlist{
   background-color: #e7e7e7;
 }
 
+.navbar-nav > li > .dropdown-menu, .nav-tabs .dropdown-menu{
+  min-width: 100px;
+}
+
+.dropdown-menu > li > a{
+  padding:0 10px;
+  font-size: 12px;
+  line-height: 30px;
+}
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus{
+  background-color: #e7e7e7;
+  color: #151515;
+}
 
 
 /*
