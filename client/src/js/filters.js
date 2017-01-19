@@ -43,15 +43,21 @@ angular.module('miller')
     }
   })
   .filter('coverage', function(){
-    return function(cover){
-      var url;
+    return function(cover, hifi){
+      var url,
+          _hifi = hifi == "hifi";
+
       if(typeof cover != 'object')
         return ''
 
       if(cover.metadata){
-        url = cover.metadata.thumbnail_url || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview')  || cover.snapshot || cover.attachment || cover.metadata.url;
+        if(_hifi){
+          url = _.get(cover, 'metadata.urls.Publishable') || cover.metadata.thumbnail_url || cover.metadata.preview || cover.metadata.url   || cover.attachment || cover.snapshot;
+        } else {
+          url = cover.metadata.thumbnail_url || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview')  || cover.snapshot || cover.attachment || cover.metadata.url;
+        }
       } else {
-        url = cover.snapshot || cover.attachment;
+        url = _hifi? (cover.attachment || cover.snapshot): (cover.snapshot || cover.attachment);
       }
       return url;
     }
