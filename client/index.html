@@ -591,6 +591,9 @@
       }
 
       @media (min-width: 768px){
+        .coverstory .cover {
+          height: 300px;
+        }
         .coverstory.other, .coverstory.news{
           margin: 0
         }
@@ -629,6 +632,9 @@
       }
 
       @media (min-width: 992px){
+        .coverstory .cover {
+          height: 150px;
+        }
         .dropdown .username{
           width: auto;
           display: inline;
@@ -643,6 +649,9 @@
         }
       }
       @media (min-width: 1200px){
+        .coverstory .cover {
+          height: 200px;
+        }
         .container {
           width: 1100px;
         }
@@ -768,7 +777,7 @@
             <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
               
               <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>
-                <span class='username'>{% verbatim %}<span translate='language.{{language}}'></span>{% endverbatim %}<span style='position:absolute; right:5px; top:0' class='icon icon-arrow-down-circle'></span></span>
+                <span class='username'>{% verbatim %}<span>{{language|substr:0:2}}</span>{% endverbatim %}<span style='position:absolute; right:5px; top:0' class='icon icon-arrow-down-circle'></span></span>
               </a>
 
               <ul class="dropdown-menu" role="menu">

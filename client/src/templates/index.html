@@ -71,9 +71,11 @@
           <span embedit='story.excerpt' language='language'></span>
           <a href ui-sref="story({postId: story.slug})"><span class='icon-arrow-right-circle'></span></a>
         </blockquote>
-        <div ng-if='story.covers.length' class="cover" ng-repeat='document in story.covers' class='fluid-container'>
+        <div ng-if='story.covers.length' ng-repeat='document in story.covers' class='fluid-container relative'>
           <div class='image-wrapper cover' lazy-img='{{document|coverage}}'></div>
+          <div class='embedded-metadata' ng-include='"templates/partials/document.metadata.embedded.html"|prefixTemplate'></div>
         </div>
+
         
       </div>
     </div>

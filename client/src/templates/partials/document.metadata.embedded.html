@@ -1,0 +1,8 @@
+<span class='oneline'><em ng-if='document.metadata.title' embedit='document.metadata.title' language='language' firstline='true'></em>
+<em ng-if='!document.metadata.title && document.title' embedit='document.title' language='language' firstline='true'></em>
+
+<span ng-if='document.metadata.author_name'>
+  <span translate='by'></span>
+  <a ng-href='{{document.metadata.author_url}}' target='_blank'>{{document.metadata.author_name}}</a>
+</span>
+</span>
