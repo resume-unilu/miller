@@ -14,7 +14,7 @@
   <meta name="twitter:title" content="{% lookup story.dmetadata path="title" language=language %}" />
   <meta name="twitter:description" content="{% lookup story.dmetadata path="abstract" language=language %}" />
   {% if story.ogcover %}
-  <meta property='twitter:image' content='{{story.ogcover|coverage}}'>
+  <meta name='twitter:image' content='{{story.ogcover|coverage}}'>
   {% endif %}
 
   <meta property='og:url' content='{{accessibility_story_url|urled}}'>
