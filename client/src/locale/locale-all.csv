@@ -47,7 +47,8 @@ enrich.resources,,resource,Ressource,Ressourcen,resource
 enrich.type.notsupported,,This document cannot be saved locally; we can only store the link to the original resource.,Ce document ne peut pas être sauvegardé localement; nous pouvons uniquement stocker le lien vers la ressource originale.,Dieses Dokument kann nicht lokal gespeichert werden; wir können nur den Link zur ursprünglichen Ressource aufbewahren.,This document cannot be saved locally; we can only store the link to the original resource.
 enrich.type.notitle,,We didn't find a <b>title</b> for this resource. Please add a title below.,Nous n'avons trouvé aucun <b>titre</b> pour cette ressource. Veuillez ajouter un titreci-dessous.,Wir haben keinen <b>Titel</b> für diese Ressource gefunden. Bitte fügen Sie unten einen Titel hinzu.,We didn't find a <b>title</b> for this resource. Please add a title below.
 enrich.url.embedRequiresUrl,ask Daniele GUIDO,Fill the <b>url</b> above before editing this field,,,Fill the <b>url</b> above before editing this field
-enrich.url.noembedfound,(ask Daniele GUIDO ),No embeddable object found. Simple link preview:,,,No embeddable object found. Simple link preview:
+enrich.url.noembedfound,(ask Daniele GUIDO),No embeddable object found. Simple link preview:,,,No embeddable object found. Simple link preview:
+enrich.url.iframe.description,(ask Daniele GUIDO),copy and paste iframe content,,,copy and paste iframe content
 enrich.url.notvalid,(ask Daniele GUIDO),A valid URL is required,,,A valid URL is required
 feature.unsupported.dragdrop,Alert message when dragdrop is not supported,File drag/drop is not supported for this browser,Le fichier drag&drop (glisser-déposer) n'est pas pris en charge par ce navigateur.,Die drag&drop Datei wird nicht von diesem Browser unterstützt.,File drag/drop is not supported for this browser
 field.label.title,,title,titre,Titel,title
@@ -194,7 +195,7 @@ field.label.review.score,,score:,points :,Punktzahl :,score:
 field.label.review.status.draft,,(still completing the review),(finalisation de l'évaluation en cours),(Fertigstellung der Begutachtung noch nicht abgeschlossen),(still completing the review)
 field.label.review.status.complete,,Approval for publication.,Feu vert pour la publication.,Grünes Licht für die Publikation.,Approval for publication.
 field.label.review.status.refusal,,Refused. Do not consider for publication.,Refusé. Ne pas publier.,Abgelehnt. Nicht zur Veröffentlichung freigegeben.,Refused. Do not consider for publication.
-field.label.review.status.bounce,paper to be reviewed,Improvements needed before publication. To be submitted again.,Améliorations nécessaires avant la publication. Nouvelle soumission requise.,Erforderliche Verbesserungen vor Veröffentlichung. Muss erneut eingereicht werden.,Improvements needed before publication. To be submitted again.
+field.label.review.status.bounce,paper to be reviewed,Improvements needed before publication. To be submitted again.,Améliorations nécessaires avant la publication. Nouvelle soumission requise.,Erforderliche Verbesserungen vor Veröffentlichung. Muss erneut eingereicht werden.,
 field.label.review.final,,final consideration / further comments,examen final / autres commentaires,Schlussbemerkungen / weitere Kommentare,
 field.label.review.final.description,,,,,
 field.label.review.final.decision,what is your final decision?,Final decision,Décision finale,Endgültige Entscheidung,

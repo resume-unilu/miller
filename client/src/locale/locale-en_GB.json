@@ -152,6 +152,7 @@
   "drafts": "(drafts)", 
   "button.next": "next", 
   "headline.blogs": "blogs", 
+  "enrich.url.iframe.description": "copy and paste iframe content", 
   "link.to.original": "link to the original source", 
   "oembed.type.picture": "Image", 
   "button.loading": "loading ...", 
