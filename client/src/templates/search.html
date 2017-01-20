@@ -17,36 +17,7 @@
 <ul class='nav nav-tabs'>
 </ul>
 <div>
-  <div ng-repeat="story in items">
-    <div class="story lite">
-      <div class="coverstory other">
-        <div class="tags" ng-if="story.tags.length">
-          <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-click='setLocationFilter("tags",tag.slug)'>
-            <span ng-class='tag.category'>{{tag.name}}</span>{{$last?' ': ', '}}
-
-          </span>
-        </div>
-        <div class="date">{{story.date|date:'mediumDate'}}</div>
-
-        <div  class="divider"></div>
-        <h4>
-          <a href ui-sref="story({postId: story.id})">
-            <span embedit='story.metadata.title' language='language'></span> 
-            {{story.status != 'public'? '(DRAFT)': ''}}
-          </a>
-        </h4>
-        
-        <blockquote class="reduced" ng-if="story.matches.highlights">
-            <div embedit='story.matches.highlights'></div>
-            
-        </blockquote>
-        <div class='authors' ng-if="story.authors.length">
-          <span translate="written.by"></span> <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-        </div>
-      </div>
-    </div>
-
-  </div>
+  <div ng-repeat="story in items"  ng-include='"templates/partials/story.html"|prefixTemplate'></div>
 </div>
 </div>
 </div>

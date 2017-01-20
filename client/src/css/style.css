@@ -180,6 +180,11 @@ blockquote.reduced, blockquote.reduced p{
   margin-bottom: 10px;
 }
 
+blockquote.matches{
+  background: #E7e7e7;
+  padding: 10px;
+}
+
 .alert{
   display: block;
   position: fixed;
@@ -373,6 +378,13 @@ ul.errorlist{
   font-size: 18px;
     line-height: 35px;
     margin: 5px 0;
+}
+
+.collection.story.lite{
+  padding-bottom: 5px;
+}
+.collection.lite .divider{
+  margin: 10px 15px 10px;
 }
 
 .collection h1.collection-title a{
@@ -720,9 +732,6 @@ ul.errorlist{
 }
 
 
-
-
-
 .date{
   color: #FF6B6B;
   font-weight: bold;
@@ -772,7 +781,35 @@ ul.errorlist{
   line-height: 25px;
   margin-top: 5px
 }
+/*
+  story item in list
+*/
+.story.item{
+  margin-bottom: 20px;
+}
+.story.item .divider{
+  margin-bottom: 10px;
+  margin-top:0;
+}
 
+.story.item .title{
+      margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.story.item .title a{
+  color: #151515;
+}
+
+.story.item .cover{
+  transition:opacity .36s ease-in-out;
+  height: 190px;
+  opacity: 0;
+}
+
+.story.item .cover.loaded{
+  opacity: 1;
+}
 /*
   Index page
 */

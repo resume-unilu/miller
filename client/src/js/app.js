@@ -74,6 +74,17 @@ angular
     });
   })
   /*
+    LazyImg config
+    cfr
+  */
+  .config(function(lazyImgConfigProvider) {
+    lazyImgConfigProvider.setOptions({
+      offset: 200, // how early you want to load image (default = 100)
+      errorClass: 'error', // in case of loading image failure what class should be added (default = null)
+      successClass: 'loaded', // in case of loading image success what class should be added (default = null)
+    })
+  })
+  /*
     Angular-translate configs
     Cfr. https://scotch.io/tutorials/internationalization-of-angularjs-applications
   */

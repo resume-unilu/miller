@@ -1,44 +1,51 @@
-<div ng-if='!story.isCollection' class="story lite">
+<div ng-if='!story.isCollection' class="story item">
   <div class="row">
-  <div class="col-md-4">
-    <div ng-if='story.covers.length' ng-repeat='document in story.covers' class='fluid-container relative'>
-      <div class='image-wrapper cover' lazy-img='{{document|coverage}}'></div>
-      <div class='embedded-metadata' ng-include='"templates/partials/document.metadata.embedded.html"|prefixTemplate'></div>
+    <div class="col-md-4" ng-if='story.covers.length'>
+      <div  ng-repeat='document in story.covers' class='fluid-container relative'>
+        <div class='image-wrapper cover' lazy-img='{{document|coverage}}'></div>
+        <div class='embedded-metadata' ng-include='"templates/partials/document.metadata.embedded.html"|prefixTemplate'></div>
+      </div>
     </div>
-  </div>
-  <div class="col-md-8">
-  <!-- <div ng-if='!$first' class="divider"></div> -->
-  <div class="tags" ng-if="story.tags.length">
+    <div class="col-md-8" ng-class='{"col-md-12":!story.covers.length}'>
+    <div ng-if='!$first' class="divider"></div>
+    <div class="tags" ng-if="story.tags.length && !story.matches">
       <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
-  </div>
-  <div class="date">{{story.date|date:'mediumDate'}}</div>
+    </div>
+    <div class="tags" ng-if="story.tags.length && story.matches">
+      <span class='tag' ng-click='setLocationFilter("tags",tag.slug)' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
+    </div>
 
-  <div  class="divider"></div>
+    <div class="date">{{story.date|date:"yyyy'.'MM'.'dd"}}</div>
 
-
-  <h3 class="title"><a ui-sref="story({postId: story.slug})"><span embedit='story.metadata.title' language='language'></span> {{story.status != 'public'? '['+story.status+']': ''}}</a></h3>  
-  
-  <blockquote ng-if='story.excerpt' class="reduced">{{story.excerpt}}.
-    <a href ui-sref="story({postId: story.id})">
-      <span class='icon-arrow-right-circle'></span>
-    </a>
-  </blockquote>
-  
-  <blockquote ng-if='!story.excerpt' embedit='story.metadata.abstract' language='language'></blockquote>
-
-
-  <p>
     
-    <!-- <span class='creator' ng-if="!story.authors.length">
-      created by <span ng-init='author=story.owner;$last=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-    </span> -->
-    <span class='authors' ng-if="story.authors.length">
+
+
+    <h3 class="title"><a ui-sref="story({postId: story.slug})"><span embedit='story.metadata.title' language='language'></span> {{story.status != 'public'? '['+story.status+']': ''}}</a></h3>  
+    <div class='authors' ng-if="story.authors.length">
       <span translate="written.by"></span> <span ng-repeat='author in story.authors' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
-    </span>
-    <a ng-if='user.is_staff' target='_blank' ng-href='/admin/miller/story/{{story.id}}/change/'>modify (admin)</a>
-  
-  </p>
-  </div>
+    </div>
+    <blockquote ng-if='story.excerpt' class="reduced">{{story.excerpt}}.
+      <a href ui-sref="story({postId: story.id})">
+        <span class='icon-arrow-right-circle'></span>
+      </a>
+    </blockquote>
+    
+    <blockquote ng-if='!story.excerpt && !story.matches' class="reduced" embedit='story.metadata.abstract' language='language'></blockquote>
+
+    <blockquote class="reduced matches" ng-if="story.matches.highlights">
+      <div embedit='story.matches.highlights'></div>  
+    </blockquote>
+
+    <p>
+      
+      <!-- <span class='creator' ng-if="!story.authors.length">
+        created by <span ng-init='author=story.owner;$last=true' ng-include='"templates/partials/author.html"|prefixTemplate'></span>
+      </span> -->
+      
+      <a ng-if='user.is_staff' target='_blank' ng-href='/admin/miller/story/{{story.id}}/change/'>modify (admin)</a>
+    
+    </p>
+    </div>
   </div>
 </div>
 
