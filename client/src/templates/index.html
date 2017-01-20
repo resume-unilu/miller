@@ -49,7 +49,7 @@
             <span embedit='story.excerpt' language='language'></span>
             <a ng-if='!story.is_collection' href ui-sref="story({postId: story.slug})"><span class='icon-arrow-right-circle'></span></a>
             <a ng-if='story.is_collection' href ui-sref="collection({collectionId: story.slug})"><span class='icon-arrow-right-circle'></span></a></blockquote>
-          <div ng-if='story.covers.length' ng-repeat='document in story.covers' class='fluid-container relative'>
+          <div ui-sref="story({postId: story.slug})" style='cursor:pointer' ng-if='story.covers.length' ng-repeat='document in story.covers' class='fluid-container relative'>
             <div class='image-wrapper cover' lazy-img='{{document|coverage}}'></div>
             <div class='embedded-metadata' ng-include='"templates/partials/document.metadata.embedded.html"|prefixTemplate'></div>
           </div>
@@ -59,11 +59,11 @@
 
   </div>
   <div class="col-md-4">
-    <h5>latest news</h5>
+    <h5 class='lined'><span translate='latest news'></span></h5>
     <div ng-repeat='story in news'>
       <div class="coverstory news">
         <div ng-if='!$first' class="divider"></div>
-        <div class="date">{{story.date|date:'mediumDate'}}</div>
+        <div class="date">{{story.date|date:"yyyy'.'MM'.'dd"}}</div>
         <h4>
           <a ng-if='!story.is_collection' href ui-sref="story({postId: story.slug})" embedit='story.metadata.title' language='language'></a>
           <a ng-if='story.is_collection' href ui-sref="collection({collectionId: story.slug})" embedit='story.metadata.title' language='language'></a>
@@ -75,7 +75,7 @@
           <span embedit='story.excerpt' language='language'></span>
           <a href ui-sref="story({postId: story.slug})"><span class='icon-arrow-right-circle'></span></a>
         </blockquote>
-        <div ng-if='story.covers.length' ng-repeat='document in story.covers' class='fluid-container relative'>
+        <div ui-sref="story({postId: story.slug})" style='cursor:pointer' ng-if='story.covers.length' ng-repeat='document in story.covers' class='fluid-container relative'>
           <div class='image-wrapper cover' lazy-img='{{document|coverage}}'></div>
           <div class='embedded-metadata' ng-include='"templates/partials/document.metadata.embedded.html"|prefixTemplate'></div>
         </div>

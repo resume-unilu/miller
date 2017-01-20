@@ -227,6 +227,7 @@ angular.module('miller')
       return value
     }
   })
+
   .service('markdownItChaptersService', function($filter,markdownItLanguageService) {
     return function(value, language){
       var links = [],
@@ -338,6 +339,9 @@ angular.module('miller')
         }  
       };
 
+      md.renderer.rules.table_open = function(tokens, idx){
+        return '<table class="table">';
+      }
 
       md.renderer.rules.link_close = function(tokens, idx){
         

@@ -195,7 +195,7 @@
       .navbar-default .navbar-nav > li > a, #footer ul.navbar-nav > li > a{
         text-transform: uppercase;
         font-size: 10px;
-        color: #aaa;
+        color: #6b6b6b;
         border: 2px solid transparent;
         line-height: 20px;
         padding: 0 6px;
@@ -788,7 +788,7 @@
               <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}' translate="headline.login.or.signup">log in / sign up</a>
             </li>
             {% endif %}
-            <li class="dropdown">
+            <li class="dropdown ng-cloak">
             <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
               
               <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>

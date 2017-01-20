@@ -10,6 +10,11 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4{
   font-weight: normal;
   color: #454545;
 }
+
+h5{
+  font-family: 'Lato', sans-serif;
+
+}
 h1, .h1 {
   margin-top:40px;
   margin-bottom:30px;
@@ -26,6 +31,24 @@ h1, .h1 {
   position: relative;
 }
 
+.lined{
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+49,2989d8+50,ffffff+51 */
+background: rgb(255,255,255); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(255,255,255,1) 8px, #8c8c8c 9px, rgba(255,255,255,1) 10px); /* FF3.6-15 */
+background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 8px,#8c8c8c 9px, rgba(255,255,255,1) 10px); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom,  rgba(255,255,255,1) 8px, #8c8c8c 9px, rgba(255,255,255,1) 10px); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+
+}
+
+.lined span{
+  background: white;
+  padding: 0 10px;
+  margin-left: 20px;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: #6b6b6b;
+}
 /*.author{
   font-family: 'Lato';
     text-transform: uppercase;
@@ -40,6 +63,15 @@ h1, .h1 {
   font-size: 30px;
   line-height: 40px;
 }
+
+.contents .table{
+font-size: 12px;
+} 
+
+.contents .table th{
+  font-size: 13px;
+} 
+
 
 .page .contents h1, .page .contents .h1 {
   margin-top:40px;
@@ -487,7 +519,7 @@ ul.errorlist{
   border-top-left-radius: 30px;
   border-bottom-right-radius: 30px;
   border-bottom-left-radius: 30px;*/
-  color: #aaa;
+  color: #6b6b6b;
   padding: 0;
   width: 30px;
   line-height: 26px;
@@ -710,12 +742,18 @@ ul.errorlist{
 .story.lite{
   background: #f0f0f0;
   /*padding: 17px 20px;*/
-  padding: 20px;
+  padding: 10px 0px 0px 0px;
   margin-bottom: 20px;
+}
+
+.story.lite .tags, .story.lite .authors{
+  padding: 0px 15px 0;
 }
 
 .story.lite h3{
   margin-top: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .story.lite h3 a {
@@ -726,7 +764,8 @@ ul.errorlist{
 
 .story.lite blockquote{
   border-left: 0px;
-  padding:0;
+  padding: 0 15px;
+  margin: 0;
 }
 .story.lite blockquote p{
   font-size: 15px;
@@ -748,7 +787,7 @@ ul.errorlist{
   height: 100%;
 }
 
-.coverstory .cover{
+.story.lite .cover{
   height: 100px;
 }
 
@@ -1058,7 +1097,7 @@ ul.errorlist{
   font-family: 'Lato', sans-serif;
   font-size: 10px;
   text-transform: uppercase;
-  color: #aaa;
+  color: #6b6b6b;
   border: 2px solid transparent;
   border-radius: 0;
   line-height: 20px;
@@ -1080,7 +1119,7 @@ ul.errorlist{
 }
 
 .nav-tabs > li.active.secondary > a,  .nav-tabs > li.active.secondary > a:focus{
-  color: #aaa;
+  color: #6b6b6b;
     border-color: #ddd;
 }
 
@@ -1975,7 +2014,7 @@ div.profile-others .profile-thumb{
 }
 
 #search-wrapper button{
-  color:  #aaa;
+  color:  #6b6b6b;
   background-color: transparent;
   padding-left: 0;
   padding-right: 5px;

@@ -1,4 +1,12 @@
 <div ng-if='!story.isCollection' class="story lite">
+  <div class="row">
+  <div class="col-md-4">
+    <div ng-if='story.covers.length' ng-repeat='document in story.covers' class='fluid-container relative'>
+      <div class='image-wrapper cover' lazy-img='{{document|coverage}}'></div>
+      <div class='embedded-metadata' ng-include='"templates/partials/document.metadata.embedded.html"|prefixTemplate'></div>
+    </div>
+  </div>
+  <div class="col-md-8">
   <!-- <div ng-if='!$first' class="divider"></div> -->
   <div class="tags" ng-if="story.tags.length">
       <span class='tag' ng-repeat='tag in story.tags|filter:"public"' ng-include='"templates/partials/tag.html"|prefixTemplate'></span>
@@ -30,6 +38,8 @@
     <a ng-if='user.is_staff' target='_blank' ng-href='/admin/miller/story/{{story.id}}/change/'>modify (admin)</a>
   
   </p>
+  </div>
+  </div>
 </div>
 
 <div ng-if='story.isCollection' ng-include='"templates/partials/collection.html"|prefixTemplate'></div>
