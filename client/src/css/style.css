@@ -266,6 +266,15 @@ ul.errorlist{
   box-shadow: #d0d0d0 1px 0px 4px inset;
 }
 
+.elastic-textarea-wrapper.disabled{
+  box-shadow: none;
+
+}
+
+.elastic-textarea-wrapper textarea.limited{
+  max-height: 84px;
+}
+
 .elastic-textarea{
   /*#draft-title, #draft-abstract,  .elastic-textarea{*/
   border: 0px solid transparent;
@@ -1482,6 +1491,11 @@ h4.modal-title{
   margin-top: 10px;
 }
 
+.modal-body .preview{
+  margin: 5px 20px 0;
+  box-shadow: 1px 0px 4px #d0d0d0;
+  border: 2px solid #dbdbdb;
+}
 
 
 /*

@@ -18,11 +18,13 @@ angular.module('miller')
       },
       link: function(scope, element, attrs) {
         // console.log('::embedit @link, language:', scope.language, scope.embedit)
+        // markdownit options
         var options = {
           breaks:       true,
           linkify:      true,
         }, 
         disable = ['image', 'heading'],
+        stretching_timeout = 10000,
         stretching;
 
         scope.do_strech = function(){
@@ -30,11 +32,16 @@ angular.module('miller')
           if(stretching)
             $timeout.cancel(stretching);
           if(!els.length){
-            console.log('not found. Strching again?')
-            stretching = $timeout(scope.do_strech, 300);
+            if(stretching_time > stretching_timeout) {
+              console.warn('embedit :: skipping stretching iframe, time exceeded.');
+            } else {
+              console.log('embedit :: iframe not found, but stretch is set to true. Calling do_stretch again in a few ms...');
+              stretching = $timeout(scope.do_strech, 300);
+              stretching_time +=300;
+            }
           } else{
             element.css('opacity', 1)
-            console.log('Stretched....!')
+            console.log('embedit :: iframe Stretched.');
           }
         }
 
@@ -75,7 +82,7 @@ angular.module('miller')
           if(attrs.autoplay){
             var  src = element.find('iframe').attr('src');
             element.find('iframe').attr('src', src + (src.indexOf('?') == -1? '?': '&') + 'autoplay=1');
-            console.log('Activating autoplay on iframe...', src)
+            console.log('embedit :: Activating autoplay on iframe...', src)
           }
         };
         

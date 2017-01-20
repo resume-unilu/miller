@@ -82,6 +82,13 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
       suggest: function(url, keep){
       
       },
+      onEmbedChange: function(){
+        // change type if there is an embed with type link! We put rich.
+        $log.log('EMC @embed embed.type:', $scope.embed.type);
+        if($scope.embed.html && $scope.embed.type == 'link')
+          $scope.embed.type = 'rich'
+      },
+      
       init: function(){
         $log.log('init', this);
         localStorageService.set('lasttabname', this.name)
@@ -219,14 +226,16 @@ angular.module('miller').controller('EnrichModalCtrl', function ($timeout, $scop
     if(timer_preview)
       $timeout.cancel(timer_preview);
     // check url
-    var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&&#37;@!\-\/]))?/;
+    var regexp = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&&#37;@!\-\/]))?/;
     if(!regexp.test(url)){
       $log.error('::mde -> previewUrl() url provided:', url, 'is not valid');
       $scope.suggestMessage = '(url is not valid)';
+      $scope.isUrlValid = false;
       $scope.embed = null;
 
       return false;
     }
+    $scope.isUrlValid = true;
     url = url.replace('#', '.hash.');
     timer_preview = $timeout(function(){
       $log.debug('::mde -> previewUrl() url:', url);
