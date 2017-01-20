@@ -238,6 +238,12 @@ ul.errorlist{
   font-family: 'Lato', sans-serif;
 }
 
+.monospace{
+  font-family: monospace;
+}
+
+
+
 .icon{
   font-size: 15px;
       font-family: 'simple-line-icons';
@@ -264,7 +270,8 @@ ul.errorlist{
   /*#draft-title, #draft-abstract,  .elastic-textarea{*/
   border: 0px solid transparent;
   display: block;
-  font-size: 15px;
+  font-size: 13px;
+  line-height: 21px;
   width: 100%;
   border-bottom: 2px solid #E6E5E5;
   transition: border-color .25s ease-in-out, border-color .25s ease-in-out;
@@ -1468,6 +1475,11 @@ h4.modal-title{
 
 .modal-body .drop-box-form-wrapper{
   margin-bottom: 10px;
+}
+
+
+.modal-body > ul.nav-tabs{
+  margin-top: 10px;
 }
 
 
