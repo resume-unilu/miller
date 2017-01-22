@@ -1,9 +1,0 @@
-<div class='iframe-wrapper' ng-init='__isIntoViewport=false' ng-class='{"with-thumbnail": document.metadata.thumbnail_url}'>
-  <a class='toggle-preview' href ng-click='__isIntoViewport = !__isIntoViewport'><span class='icon icon-eye'></span></a>
-  <div class='iframe-viewport' ng-class='{"active":__isIntoViewport}'>
-    <div ng-if="document.metadata.thumbnail_url" style='height: 100%;width: 100%'>
-      <div class='cover' style='height: 100%;width: 100%; background-color:#151515;background-size: cover'  src='{{"images/spinner.gif"|prefixTemplate}}' lazy-img='{{document.metadata.thumbnail_url}}'></div>
-    </div>
-    <div ng-if='__isIntoViewport' style='height: 100%; position: absolute; top:0; left:0;width: 100%' stretch='true' embedit='document.metadata.html' language='language'></div>
-  </div>
-</div>

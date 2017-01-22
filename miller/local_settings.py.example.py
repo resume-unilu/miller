@@ -1,123 +1,200 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-MILLER_TITLE = 'MILLER'
-MILLER_DESCRIPTION = 'Your miller http meta description.'
-MILLER_DEBUG = False
+#
+#  .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. 
+# | .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |
+# | | ____    ____ | || |     _____    | || |   _____      | || |   _____      | || |  _________   | || |  _______     | |
+# | ||_   \  /   _|| || |    |_   _|   | || |  |_   _|     | || |  |_   _|     | || | |_   ___  |  | || | |_   __ \    | |
+# | |  |   \/   |  | || |      | |     | || |    | |       | || |    | |       | || |   | |_  \_|  | || |   | |__) |   | |
+# | |  | |\  /| |  | || |      | |     | || |    | |   _   | || |    | |   _   | || |   |  _|  _   | || |   |  __ /    | |
+# | | _| |_\/_| |_ | || |     _| |_    | || |   _| |__/ |  | || |   _| |__/ |  | || |  _| |___/ |  | || |  _| |  \ \_  | |
+# | ||_____||_____|| || |    |_____|   | || |  |________|  | || |  |________|  | || | |_________|  | || | |____| |___| | |
+# | |              | || |              | || |              | || |              | || |              | || |              | |
+# | '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |
+#  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' 
+#
+# """
+# 1. MILLER own stuff.
+# Please Provide translations for title and description.
+# """
+import os
+
+# Debug javascript in template. Can be different from settings.DEBUG
+MILLER_DEBUG = True
+
+# will be used to send system emails (e.g account registration)
+MILLER_EMAIL       = 'yourmail@yourdomain'
+
+# the html title?
+MILLER_TITLE       = 'MILLER'
+
+# html metadata description
+MILLER_DESCRIPTION = '''
+Long description'''
+
+# the host, absolute without trailing slashes. Default: localhost for django debug
+MILLER_DOMAIN_NAME = 'localhost'
+MILLER_HOST        = 'http://localhost:8000'
+
+# the absolute path for websocket, absolute without trailing slashes. Default: localhost for django debug
+MILLER_WS_HOST   = 'ws://localhost:8000/ws'
+
+# the disqus id, if any
+MILLER_DISQUS_ID = '***'
+
+# twitter username associated with your account
+MILLER_TWITTER_USERNAME = '***'
+MILLER_TWITTER_SOCIALTAGS = ''
+
+
+MILLER_FACEBOOK_APPID = None
+# you can use this ref in your local_settings file
+MILLER_TEMPLATE_BASE_DIR = '/path/to/your/template'
+
+# (NOT YET IMPLEMENTED) Set to true and uncomment and fill the fields correctly
+MILLER_FIREBASE_ENABLED = False
+# MILLER_FIREBASE_APIKEY            = 'AIzaSyCC6ohIY_6Fe0VaaVGib5vEntSKJkvzyKM'
+# MILLER_FIREBASE_AUTHDOMAIN        = 'resume-91a73.firebaseapp.com'
+# MILLER_FIREBASE_DATABASEURL       = 'https://resume-91a73.firebaseio.com'
+# MILLER_FIREBASE_STORAGEBUCKET     = 'resume-91a73.appspot.com'
+# MILLER_FIREBASE_MESSAGINGSENDERID = '385835616038'
+
+# Your Google Analytics account id.
+MILLER_GA_ID = '******'
+
+# OEMBED with noembed.
+MILLER_EMBEDLY_API_KEY = '*****'
+
+# use this at your own sake.
+MILLER_OEMBEDS = {
+  'EMBEDLY_API_KEY': MILLER_EMBEDLY_API_KEY,
+  'vimeo':  {
+    'endpoint': 'https://vimeo.com/api/oembed.json'
+  }
+}
 
 
 # """
-# AUTH & DJANGO_SOCIAL_AUTH
-# Put different parameters here according to the AUTHENTICATION_BACKENDS used.
+# 2. Django registration app
 # """
-SECRET_KEY = 'YOUR SUPER SECRET KEY'
+EMAIL_USE_TLS = False
+EMAIL_HOST = None 
+EMAIL_HOST_USER = None
+EMAIL_HOST_PASSWORD = None
+EMAIL_PORT = 25
+EMAIL_ACTIVATION_ACCOUNT = MILLER_EMAIL
+
+REGISTRATION_SALT = 'my precious my registration salt'
+
+DISABLE_EMAIL_ACTIVATION = True
+
+
+RSS_TITLE = MILLER_TITLE # 
+RSS_DESCRIPTION = MILLER_DESCRIPTION
+
+
+# """
+# 3. Go social, for django socual auth app.
+# Identify Google, and choose your AUTHENTICATION_BACKENDS.
+# """
+GOOGLE_IDENTIFICATION = 'google650535b3d79acc59.html'
+
 
 AUTHENTICATION_BACKENDS = (
-  # 'social.backends.google.GoogleOAuth2',
-  # 'social.backends.twitter.TwitterOAuth',
+  #'social.backends.google.GoogleOAuth2',
+  #'social.backends.twitter.TwitterOAuth',
   'django.contrib.auth.backends.ModelBackend',
 )
 
-# SOCIAL_AUTH_TWITTER_KEY = ''
-# SOCIAL_AUTH_TWITTER_SECRET = ''
+# SOCIAL_AUTH_TWITTER_KEY = '********'
+# SOCIAL_AUTH_TWITTER_SECRET = '********'
 
 
-# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'XXXYYYZZ.apps.googleusercontent.com'
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
+# OCIAL_AUTH_GOOGLE_OAUTH2_KEY = '*******'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '**********'
 
-# SOCIAL_AUTH_FACEBOOK_APPID = 'XXXXXXXX' # insert here your facebook APPID
+# SOCIAL_AUTH_FACEBOOK_APPID = 'XXXYYYYZZZ'
 
-# """
-# DJANGO_SEO for hosted prerender.io
-# more information at https://github.com/skoczen/django-seo-js
-# """
+SECRET_KEY = 'VERY SECRET KEY'
+
+# If you have one.
 # SEO_JS_BACKEND = "django_seo_js.backends.PrerenderHosted"
-# SEO_JS_PRERENDER_URL = "http://my-prerenderapp.com/"  # Note trailing slash.
-# SEO_JS_PRERENDER_RECACHE_URL = "http://my-prerenderapp.com/recache"
+# SEO_JS_PRERENDER_URL = "http://localhost:3000/"  # Note trailing slash.
+# SEO_JS_PRERENDER_RECACHE_URL = "http://localhost:3000/recache"
 
 
-"""
-Zotero. Not yet used :(
-"""
-ZOTERO_API_KEY = 'XXX'
-ZOTERO_IDENTITY = '123123123' #'user id numeric', ''
+ZOTERO_API_KEY = '******'
+ZOTERO_IDENTITY = '******'
 ZOTERO_BIB_FILE = 'zotero.bib'
-ZOTERO_IDENTITY_NAME = 'your.zotero.username'
+ZOTERO_IDENTITY_NAME = 'miller'
+SEO_JS_PRERENDER_TOKEN = 'abcdef'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'USERNAME',
-        'USER': 'DBNAME',
-        'PASSWORD': 'PASSWORD'
-    }
-}
 
-# feel free to modify the dir and add your own context processors
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'client')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'social.apps.django_app.context_processors.backends',
-                'social.apps.django_app.context_processors.login_redirect',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                # 'django.core.context_processors.static',
-                'ws4redis.context_processors.default',
-                'miller.context_processors.default',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+# """
+# 4. plain override settings.py
+# Check MILLER_DOMAIN_NAME above
+# """
+DEBUG = True
+ALLOWED_HOSTS = [MILLER_DOMAIN_NAME]
+
+
+# """
+# 5. Templating
+# Norlmally, you should not touch this. 
+# Just fill MILLER_TEMPLATE_BASE_DIR above would suffice.
+# """
+# for debug purposes
+STATICFILES_DIRS = [
+  os.path.join(MILLER_TEMPLATE_BASE_DIR, 'src'),
 ]
 
-MILLER_OEMBEDS = {
-  'EMBEDLY_API_KEY': 'xxx'
-}
+# templates. No need to extend this normally.
+# Cfr. 'miller.context_processors.default'
+# Should you need websocket support, put 'ws4redis.context_processors.default',
+# before 'miller.context_processors.default'
+TEMPLATES = [
+  {
+      'BACKEND': 'django.template.backends.django.DjangoTemplates',
+      'DIRS': [MILLER_TEMPLATE_BASE_DIR],
+      'APP_DIRS': True,
+      'OPTIONS': {
+          'context_processors': [
+              'social.apps.django_app.context_processors.backends',
+              'social.apps.django_app.context_processors.login_redirect',
+              'django.template.context_processors.debug',
+              'django.template.context_processors.request',
+              'django.contrib.auth.context_processors.auth',
+              # 'django.core.context_processors.static',
+              'ws4redis.context_processors.default',
+              'miller.context_processors.default',
+              'django.contrib.messages.context_processors.messages',
+          ],
+      },
+  },
+]
 
-STATIC_ROOT = '/var/www/miller/dist'
 
-# modify settings here
-MILLER_WS_HOST = None
-
+# """
+# 6. Flush in TEMPLATE. Check miller.context_processors.default
+# Norlmally, you should not touch this. 
+# """
+# 
 MILLER_SETTINGS = {
+  'host': MILLER_HOST,
   'wshost': MILLER_WS_HOST,
-  'host': 'https://yourwebsite.miller',
   'debug': MILLER_DEBUG,
-  'disqus': '',
-  'socialtags': 'resume-unilu', # socila tags when sharing on twitter
-  'analytics': 'UA-XXXXXXX-1',
-  'copyright': '',
-  'copyrighturl': '',
+  'disqus': MILLER_DISQUS_ID,
+  'analytics': MILLER_GA_ID,
+  'facebook': MILLER_FACEBOOK_APPID,
+  'twitter': {
+    'username': MILLER_TWITTER_USERNAME,
+    'socialtags': MILLER_TWITTER_SOCIALTAGS
+  },
+  'firebase': {
+    'apiKey': MILLER_FIREBASE_APIKEY,
+    'authDomain': MILLER_FIREBASE_AUTHDOMAIN,
+    'databaseURL': MILLER_FIREBASE_DATABASEURL,
+    'storageBucket': MILLER_FIREBASE_STORAGEBUCKET,
+    'messagingSenderId': MILLER_FIREBASE_MESSAGINGSENDERID
+  } if MILLER_FIREBASE_ENABLED else None
 }
-
-
-
-# e.g modify with your smtp info
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'test@gmail.com'
-EMAIL_HOST_PASSWORD = 'test'
-EMAIL_PORT = 587
-EMAIL_ACTIVATION_ACCOUNT = "info@miller.miller"
-
-
-REGISTRATION_SALT = 'your registration salt'
-
-# """
-# RSS feed
-# """
-RSS_TITLE = 'RSS Miller - an rss feed'
-RSS_DESCRIPTION = '''
-  here below the rss description
-'''
-
-
-# """
-# GOOGLE identification for SEO
-# """
-# Feel free to uncomment this ;)
-GOOGLE_IDENTIFICATION = 'googleXxYyZz.html'

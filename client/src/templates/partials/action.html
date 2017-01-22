@@ -1,8 +1,0 @@
-<div class="stream-item">
-  {{action.ctor.username}} 
-  <span translate='verb.{{action.verb}}'></span>
-  <span translate='model.{{action.target_content_type}}'></span>
-  {{action.timestamp|date:'Ymd'}}
-  <div ng-if="action.target_content_type == 'document'" ng-init='document=action.target' ng-include='"templates/partials/document.html"|prefixTemplate'>
-  </div>
-</div>

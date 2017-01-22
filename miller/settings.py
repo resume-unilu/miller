@@ -75,32 +75,32 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'miller.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'client')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'social.apps.django_app.context_processors.backends',
-                'social.apps.django_app.context_processors.login_redirect',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                # 'django.core.context_processors.static',
-                'ws4redis.context_processors.default',
-                'miller.context_processors.default',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [os.path.join(BASE_DIR, 'client')],
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'social.apps.django_app.context_processors.backends',
+#                 'social.apps.django_app.context_processors.login_redirect',
+#                 'django.template.context_processors.debug',
+#                 'django.template.context_processors.request',
+#                 'django.contrib.auth.context_processors.auth',
+#                 # 'django.core.context_processors.static',
+#                 'ws4redis.context_processors.default',
+#                 'miller.context_processors.default',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
 
 WSGI_APPLICATION = 'miller.wsgi.application'
 
-STATICFILES_DIRS = [
-  os.path.join(BASE_DIR, 'client/src'),
-]
+# STATICFILES_DIRS = [
+#   os.path.join(BASE_DIR, 'client/src'),
+# ]
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases

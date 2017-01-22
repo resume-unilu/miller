@@ -10,7 +10,8 @@ def default(request):
     'groups': []
   }
 
-  pages = [fname.replace('.md', '') for fname in os.listdir(settings.PAGES_ROOT) if fname.endswith('.md')]
+  # pages = [fname.replace('.md', '') for fname in os.listdir(settings.PAGES_ROOT) if fname.endswith('.md')]
+  pages = settings.MILLER_STATIC_PAGES
 
   context_settings = {
     'title': settings.MILLER_TITLE,
