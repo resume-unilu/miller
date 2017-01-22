@@ -1,0 +1,25 @@
+{% load miller_extras %}
+<article>
+
+
+  {% for author in story.authors.all %}
+  {% include 'miller/accessibility/partials/author.html' %}
+  {% endfor %}
+
+  {% if story.isCollection %}
+    {% url 'accessibility_collection' pk=story.slug as accessibility_collection_url %}
+    <h3><a href='{{ accessibility_collection_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h3>
+  {% else %}
+    {% url 'accessibility_story' pk=story.slug as accessibility_story_url %}
+    <h3><a href='{{ accessibility_story_url|urled }}'>{% lookup story.dmetadata path="title" language=language %}</a></h3>
+  {% endif %}
+  
+  {% include 'miller/accessibility/partials/story.tags.html' %}
+
+  {% for cover in story.covers.all %}
+    {% include 'miller/accessibility/partials/story.cover.html' %}
+  {% endfor %}
+
+  <blockquote >{% lookup story.dmetadata path="abstract" language=language %}</blockquote>
+  
+</article>

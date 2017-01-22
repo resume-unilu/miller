@@ -10,6 +10,7 @@ from document import DocumentViewSet
 from profile import ProfileViewSet
 from comment import CommentViewSet
 from pulse import PulseViewSet
+from page import PageViewSet
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 

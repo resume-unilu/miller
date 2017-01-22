@@ -9,7 +9,7 @@ angular.module('miller')
   .controller('PageCtrl', function ($scope, $log, page) {
     $log.log('PageCtrl ready', page.status);
     // $scope.post = post;
-    $scope.md = page.data;
+    $scope.md = page.contents;
 
     // colllect media
     $scope.setOG();

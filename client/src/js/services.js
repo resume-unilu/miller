@@ -181,12 +181,8 @@ angular.module('miller')
   /*
     get static pages
   */
-  .factory('PageFactory', function ($http, RUNTIME) {
-    return {
-      get: function(params) {
-        return $http.get(RUNTIME.static + 'pages/' + params.name + '.md');
-      }
-    };
+  .factory('PageFactory', function ($resource, RUNTIME) {
+    return $resource('/api/page/:name/', {},{});
   })
 
   /*

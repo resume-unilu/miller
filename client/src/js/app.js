@@ -794,7 +794,7 @@ angular
         templateUrl: RUNTIME.static + 'templates/md.html',
         resolve: {
           page: function(PageFactory, $stateParams) {
-            return PageFactory.get({name: $stateParams.name});
+            return PageFactory.get({name: $stateParams.name}).$promise
           },
         }
       });

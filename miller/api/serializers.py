@@ -1,7 +1,7 @@
 from actstream.models import Action
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review
+from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review, Page
 from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField
 from miller.api import utils
 
@@ -427,5 +427,28 @@ class ActionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Action
     fields = ('id', 'verb', 'description', 'timestamp', 'actor', 'target', 'target_content_type') #, 'actor', 'target')
+
+
+
+class PageSerializer(serializers.HyperlinkedModelSerializer):
+  class Meta:
+    model = Page
+    fields = ('id', 'name', 'slug', 'contents', 'url') #, 'actor', 'target')
+    extra_kwargs = {
+      'url': {
+        'lookup_field': 'slug'
+      }
+    }
+
+
+class LitePageSerializer(serializers.HyperlinkedModelSerializer):
+  class Meta:
+    model = Page
+    fields = ('id', 'name', 'slug', 'url') #, 'actor', 'target')
+    extra_kwargs = {
+      'url': {
+        'lookup_field': 'slug'
+      }
+    }
 
 

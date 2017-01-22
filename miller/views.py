@@ -15,7 +15,7 @@ from django.views.decorators.cache import cache_page
 from templated_email import get_templated_mail, send_templated_mail
 
 from miller.forms import LoginForm, SignupForm
-from miller.models import Author, Story
+from miller.models import Author, Story, Page
 
 
 logger = logging.getLogger('miller')
@@ -54,47 +54,47 @@ def _share(request=None, extra={}):
 # views here
 @ensure_csrf_cookie
 def home(request):
-  return render(request, "index.html", _share(request))
+  return render(request, "miller/index.html", _share(request))
 
 # @cache_page(60 * 15)
-@csrf_protect
-def login_view(request):
-  print 'login'
-  if request.user.is_authenticated():
-    print 'is authenticated...'
-    return redirect('home')
+# @csrf_protect
+# def login_view(request):
+#   print 'login'
+#   if request.user.is_authenticated():
+#     print 'is authenticated...'
+#     return redirect('home')
 
-  form = LoginForm(request.POST)
-  next = request.GET.get('next', 'home')
+#   form = LoginForm(request.POST)
+#   next = request.GET.get('next', 'home')
 
-  login_message = {
-    'next': next if len( next ) else 'home'
-  }
+#   login_message = {
+#     'next': next if len( next ) else 'home'
+#   }
 
-  if request.method != 'POST':
-    return render(request, "login.html", _share(request, extra=login_message))
+#   if request.method != 'POST':
+#     return render(request, "login.html", _share(request, extra=login_message))
 
-  if not request.POST.get('remember_me', None):
-    request.session.set_expiry(0)
+#   if not request.POST.get('remember_me', None):
+#     request.session.set_expiry(0)
 
-  if form.is_valid():
-    user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-    if user is not None:
-      if user.is_active:
-        login(request, user)
-        # @todo: Redirect to next page
+#   if form.is_valid():
+#     user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+#     if user is not None:
+#       if user.is_active:
+#         login(request, user)
+#         # @todo: Redirect to next page
 
-        return redirect(login_message['next'])
-      else:
-        login_message['error'] = _("user has been disabled")
-    else:
-      login_message['error'] = _("invalid credentials")
-      # Return a 'disabled account' error message
-  else:
-    login_message['error'] = _("invalid credentials")
-    login_message['invalid_fields'] = form.errors
+#         return redirect(login_message['next'])
+#       else:
+#         login_message['error'] = _("user has been disabled")
+#     else:
+#       login_message['error'] = _("invalid credentials")
+#       # Return a 'disabled account' error message
+#   else:
+#     login_message['error'] = _("invalid credentials")
+#     login_message['invalid_fields'] = form.errors
   
-  return render(request, 'login.html', _share(request, extra=login_message))
+#   return render(request, 'miller/login.html', _share(request, extra=login_message))
 
 
 @csrf_protect
@@ -188,12 +188,13 @@ def logout_view( request ):
 
 # static pages, from markdown contents
 def accessibility_page(request, page):
-  input_file = codecs.open(os.path.join(settings.PAGES_ROOT, "%s.md" % page), mode="r", encoding="utf-8")
-  text = input_file.read()
+  page = get_object_or_404(Page, slug=page)
+  #input_file = codecs.open(os.path.join(settings.PAGES_ROOT, "%s.md" % page), mode="r", encoding="utf-8")
+  #text = input_file.read()
   
   content = _share(request)
-  content['contents'] = text
-  return render(request, "accessibility/page.html", content)
+  content['contents'] = page.contents
+  return render(request, "miller/accessibility/page.html", content)
 
 
 def accessibility_index(request):
@@ -211,7 +212,7 @@ def accessibility_index(request):
   content['highlights'] = highlights
   content['news']       = news
 
-  return render(request, "accessibility/index.html", content)
+  return render(request, "miller/accessibility/index.html", content)
 
 
 # accessible story
@@ -232,7 +233,7 @@ def accessibility_story(request, pk):
 
   content = _share(request)
   content['story'] = story
-  return render(request, "accessibility/story.html", content)
+  return render(request, "miller/accessibility/story.html", content)
 
 
 def accessibility_collection(request, pk):
@@ -253,7 +254,7 @@ def accessibility_collection(request, pk):
 
   content = _share(request)
   content['story'] = story
-  return render(request, "accessibility/collection.html", content)
+  return render(request, "miller/accessibility/collection.html", content)
 
 
 
@@ -265,7 +266,7 @@ def accessibility_stories(request, tag=None):
     stories = stories.filter(tags__slug=tag)
 
   content['stories'] = stories.distinct()
-  return render(request, "accessibility/stories.html", content)
+  return render(request, "miller/accessibility/stories.html", content)
 
 
 def accessibility_author(request, author, tag=None):
@@ -281,6 +282,6 @@ def accessibility_author(request, author, tag=None):
   content['author'] = author;
   content['stories'] = stories;
   #stories = 
-  return render(request, "accessibility/stories.html", content)
+  return render(request, "miller/accessibility/stories.html", content)
 
 

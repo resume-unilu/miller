@@ -9,9 +9,17 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment, Review
+from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment, Review, Page
 
 codemirror_json_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
+  'fixedGutter': True, 
+  'lineNumbers':True, 
+  'matchBrackets': True,
+  'autoCloseBrackets': True,
+  'lineWrapping': True
+})
+
+codemirror_md_widget = CodeMirrorTextarea(mode="markdown", theme="elegant", config={ 
   'fixedGutter': True, 
   'lineNumbers':True, 
   'matchBrackets': True,
@@ -145,16 +153,6 @@ class CaptionInline(admin.TabularInline):
 
 class StoryAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
-    codemirror_md_widget = CodeMirrorTextarea(mode="markdown", theme="elegant", config={ 
-      'fixedGutter': True, 
-      'lineNumbers':True, 
-      'matchBrackets': True,
-      'autoCloseBrackets': True,
-      'lineWrapping': True
-    })
-
-    
-
     super(StoryAdminForm, self).__init__(*args, **kwargs)
     self.fields['contents'].widget = codemirror_md_widget
     self.fields['metadata'].widget = codemirror_json_widget
@@ -169,12 +167,32 @@ class StoryAdminForm(forms.ModelForm):
     
     return self.cleaned_data['metadata']
 
+
+
 class StoryAdmin(admin.ModelAdmin):
   # inlines = (CaptionInline,)
   exclude=['cover', 'cover_copyright', 'watchers', 'stories']
   search_fields = ['title']
   list_filter = ('status', WritingTagsListFilter, BlogTagsListFilter)
   form = StoryAdminForm
+
+
+
+class PageAdminForm(forms.ModelForm):
+  """
+  Add markdown with codemirror.
+  """
+  def __init__(self, *args, **kwargs):
+    super(PageAdminForm, self).__init__(*args, **kwargs)
+    self.fields['contents'].widget = codemirror_md_widget
+
+
+
+class PageAdmin(admin.ModelAdmin):
+  # inlines = (CaptionInline,)
+  exclude=[]
+  search_fields = ['contents']
+  form = PageAdminForm
 
 
 class TagAdminForm(forms.ModelForm):
@@ -278,3 +296,4 @@ admin.site.register(Caption, CaptionAdmin)
 admin.site.register(Mention)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Review, ReviewAdmin)
+admin.site.register(Page, PageAdmin)

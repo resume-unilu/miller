@@ -1,0 +1,27 @@
+{% block subject %}Welcome to RESuME, {{username}}{% endblock %}
+{% block plain %}
+  Dear {{fullname}},
+
+  You just signed up for {{site_name}} ({{site_url}}) with the username: {{username}}
+
+  Please copy this link to your browser address bar to activate your account, then you will be able to log in to our platform.
+
+  {{activation_link}}
+
+  Join date: {{signup_date}}
+
+  Thank you
+
+  Merci et bonne navigation !
+{% endblock %}
+{% block html %}
+  <p>Dear {{fullname}},</p>
+
+  <p>You just signed up for {{site_name}} ({{site_url}}) with the username: {{username}}</p>
+
+  <p> Please follow this link or copy it to your browser address bar to activate your account. 
+  Then you will be able to login to our platform.
+  </p>
+  <a href="{{activation_link}}">{{activation_link}}</a>
+  <p>Thank you<br/><i>Merci et bonne navigation !</i></p>
+{% endblock %}

@@ -8,3 +8,4 @@ from caption import Caption
 from mention import Mention
 from comment import Comment
 from review import Review
+from page import Page

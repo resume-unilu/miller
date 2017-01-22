@@ -43,6 +43,7 @@ router.register(r'comment', api.CommentViewSet)
 router.register(r'author', api.AuthorViewSet)
 router.register(r'review', api.ReviewViewSet)
 router.register(r'pulse', api.PulseViewSet)
+router.register(r'page', api.PageViewSet)
 
 
 urlpatterns = [
@@ -56,7 +57,7 @@ urlpatterns = [
   url(r'^api/', include(router.urls)),
   url(r'^api-auth/', include('rest_framework.urls')),
 
-  url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login_view'), # views.login_view, name='login_view'),
+  url(r'^login/$', auth_views.login, {'template_name': 'miller/login.html'}, name='login_view'), # views.login_view, name='login_view'),
   # url(r'^login/$', views.login_view, name='login_view'),
   
   url(r'^signup/$', views.signup_view, name='signup_view'),
@@ -85,13 +86,22 @@ if hasattr(settings, 'GOOGLE_IDENTIFICATION'):
 urlpatterns = urlpatterns + [
   url(r'^setlang/', set_language, name="setlang"),
 
+
   url(r'^accessibility$', views.accessibility_index, name='accessibility_index'),
   url(r'^accessibility/publications$', views.accessibility_stories, name='accessibility_stories'),
   url(r'^accessibility/publications/(?P<tag>[a-z\-]+)$', views.accessibility_stories, name='accessibility_stories'),
   url(r'^accessibility/story/(?P<pk>[a-z0-9\-]+)$', views.accessibility_story, name='accessibility_story'),
   url(r'^accessibility/collection/(?P<pk>[a-z0-9\-]+)$', views.accessibility_collection, name='accessibility_collection'),
-  url(r'^accessibility/(?P<page>[a-z\-]+)$', views.accessibility_page, name='accessibility_page'),
   url(r'^accessibility/author/(?P<author>[a-z0-9\-]+)/publications$', views.accessibility_author, name='accessibility_author'),
+  
+  # sitemaps for search engines...
+  url(r'^accessibility/sitemap\.xml$', sitemaps_views.index, {'sitemaps': sitemaps}),
+  url(r'^accessibility/sitemap-(?P<section>.+)\.xml$', sitemaps_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.section.html'},
+    name='django.contrib.sitemaps.views.sitemap'),
+
+
+  url(r'^accessibility/(?P<page>[a-z\-]+)$', views.accessibility_page, name='accessibility_page'),
+  
   
   
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),

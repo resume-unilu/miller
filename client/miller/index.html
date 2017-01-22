@@ -1,0 +1,1243 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+  <html ng-app='miller'>
+  <head>
+    <title ng-bind="page +' - {{title}}'">{{title}}</title>
+    <base href="{{host}}">
+    <meta name="fragment"           content="!">
+    <meta name="description"        content="{{description}}">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name='pinterest'          content='nopin' description="contents subject to copyright"></meta>
+    <meta name="viewport"           content="width=device-width, initial-scale=1.0">
+
+    {% verbatim %}
+    <meta property="og:url"         content='{{absoluteUrl}}' />
+    <meta property="og:type"        content='{{OG.type ||"article"}}'/>
+    <meta property="og:title"       content='{{OG.title}}' />
+    <meta property="og:description" content='{{OG.description}}' />
+    <meta property="og:image"       content='{{OG.image}}' />
+    {% endverbatim %}
+    <!-- <link rel="stylesheet" href="//releases.flowplayer.org/6.0.5/skin/minimalist.css">
+   -->
+    {% if debug %}
+      <link href='{% static "css/bootstrap.css" %}'     rel='stylesheet'></link>
+      <link href='{% static "css/simplemde.min.css" %}' rel='stylesheet'></link>
+      <link href='{% static "css/style.css" %}'         rel='stylesheet'></link>
+    {% else %}
+      <link href='{% static "css/styles.min.css" %}'    rel='stylesheet'></link>
+    {% endif %}
+
+    <!--[if lt IE 9]>
+    <script src='{% static "js/lib/html5shiv.min.js"%}'></script>
+    <![endif]-->
+    <!-- google analytics -->
+    <script>
+    (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    </script>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css' rel='stylesheet' type='text/css'></link>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,400italic,700|Lato:400,700' rel='stylesheet' type='text/css'></link>
+    <style>
+      [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+      }
+      html, body {
+        height: 100%;
+      }
+      body{
+        background-color:#fff;
+        font-family: 'Merriweather', serif;
+        /*color: #252525;*/
+        font-size: 13px;
+        line-height: 21px;
+        color: #454545;
+      }
+      
+      #logo{
+        /*position: absolute;
+        top: 3px;
+        width: 100px;
+        left: 2px;*/
+        padding: 0;
+        margin: 0;
+      }
+
+      #logo img{
+        height:auto;
+        width: 98px;
+        margin-left: 2px;
+        margin-top: 4px;
+      }
+
+      .navbar-default .navbar-toggle {
+        border: 2px solid transparent;
+        border-color: transparent;
+        width: 45px;
+        height: 45px;
+        border-radius: 45px;
+        float: none;
+        position: absolute;
+        right: 30px;
+        margin: 12px 0 0;
+      }
+
+      .navbar-default .navbar-toggle .icon-bar{
+        background-color: #151515;
+      }
+
+      .container>.navbar-collapse{
+        position: relative;
+            margin-left: 100px;
+      }
+
+      .navbar-default{
+        background: white;
+        border-bottom : 2px solid #4ecdc4;
+      }
+
+      .navbar-default .scrolling{
+        border-bottom-color: #E7E4E4;
+      }
+
+      #navbar ul.navbar-nav{
+
+        position:relative;
+        margin-left: 0px;
+      }
+
+      #navbar.show-menu{
+        height: 270px;
+      }
+
+      #navbar .menu-wrapper{
+        position: absolute;
+        bottom: 0;
+        top: 68px;
+        background: white;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        /*border-top: 2px solid #d9d9d9;*/
+        /*display: none;*/
+      }
+
+      #navbar .menu-wrapper .inner{
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+        right: 20px;
+      }
+
+      #navbar.show-menu .menu-wrapper{
+        display:block;
+      }
+
+      .navbar{
+        font-family: 'Lato', sans-serif;
+        height: 70px;
+        padding: 0 50px 0 25px;
+        transform: translateY(70px);
+        -webkit-transform: translateY(70px);
+        -moz-transform: translateY(70px);
+        -ms-transform: translateY(70px);
+        transition: height .3s ease-in-out;
+      }
+
+      .navbar.below-floating{
+        border-bottom: 2px solid #f0f0f0;
+        box-shadow: 0 0 6px rgba(0,0,0,.1);
+      }
+
+      /*.container{
+        margin-left: 100px;
+        margin-top: 120px;
+      }*/
+
+      .navbar-default .navbar-brand{
+        height: 70px;
+        line-height: 40px;
+      }
+
+      .view{
+        position: relative;
+        text-align: justify;
+        margin-top: 150px;
+        margin-bottom: 50px;
+        /*padding: 0 40px;*/
+        transition: transform .27s ease-in-out;
+      }
+
+      .container{
+        padding-right: 30px;
+        padding-right: 30px;
+      }
+
+      #footer ul.navbar-nav{
+        font-family: 'Lato', sans-serif;
+        border-top: 2px solid #4ECDC4;
+        width: 100%;
+        margin: 10px;
+      }
+
+      #footer .icon{
+        line-height: 15px;
+      }
+
+      .navbar-default .navbar-nav > li, #footer ul.navbar-nav > li{
+        padding: 22px 0 20px 5px;
+      }
+
+
+      .navbar-default .navbar-nav > li > a, #footer ul.navbar-nav > li > a{
+        text-transform: uppercase;
+        font-size: 10px;
+        color: #6b6b6b;
+        border: 2px solid transparent;
+        line-height: 20px;
+        padding: 0 6px;
+        transition: color .25s ease-in-out, border-color .25s ease-in-out;
+      }
+
+      .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus, #footer ul.navbar-nav > li.active > a, #footer ul.navbar-nav > li.active > a:hover, #footer ul.navbar-nav > li.active > a:focus{
+        color: #FF6B6B;
+        border: 2px solid;
+        background-color: transparent;
+      }
+
+      .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus{
+        border: 2px solid #4ECDC4;
+        color: #4ECDC4;
+      }
+
+      .navbar-default .navbar-nav > li.open > a:hover, .navbar-default .navbar-nav > li.open > a:focus{
+        border: 2px solid transparent;
+        color: #151515;
+      }
+
+      .navbar-default .menu-wrapper .navbar-nav > li{
+        padding: 0;
+      }
+
+      
+
+      .navbar-brand img {
+        height: 30px;
+      }
+
+      #table-of-contents{
+        position: fixed;
+        left:0;
+        top: 70px;
+        width: 250px;
+        bottom: 0;
+        color: white;
+        background: #FF6B6B;
+        transition: transform .27s ease-in-out;
+        transform: translateX(-250px);
+        -webkit-transform: translateX(-250px);
+        -moz-transform: translateX(-250px);
+        -ms-transform: translateX(-250px);
+        z-index: 2;
+      }
+
+      #inner-table-of-contents {
+        position:absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
+      }
+
+
+      #writing-tools {
+        position:fixed;
+        top: 70px;
+        left: 115px;
+        height: 30px;
+        
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
+      }
+
+      #writing-tools.below-floating{
+        background: #f0f0f0;
+      }
+      
+
+      #table-of-contents-toggler{
+        position: fixed;
+        bottom: 20px;
+        left: 30px;
+        transition: opacity .3s ease-in-out;
+        opacity: 0;
+        z-index: 1101;
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
+      }
+
+      #table-of-contents-toggler button{
+        padding: 0;
+      }
+
+      #table-of-contents-toggler button span{
+        line-height: 30px;
+      }
+
+      #table-of-contents-toggler.active{
+        opacity: 1;
+      }
+
+      #table-of-documents{
+        position: fixed;
+        right: 0;
+        top: 70px;
+        bottom: 0;
+        transition: transform .27s ease-in-out;
+
+        transform: translateX(210px);
+        -webkit-transform: translateX(210px);
+        -moz-transform: translateX(210px);
+        -ms-transform: translateX(210px);
+        z-index: 2;
+        width: 210px;
+        
+      }
+
+      #table-of-contents.active, #table-of-documents.active{
+        transform: translateX(0px);
+      }
+
+      #inner-table-of-documents{
+        position:absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0px;
+        overflow: scroll;
+        transform: translateY(140px);
+        -webkit-transform: translateY(140px);
+        -moz-transform: translateY(140px);
+        -ms-transform: translateY(140px);
+      }
+      
+
+      .btn-transparent{
+        background: transparent;
+        border: 0px solid;
+        height: 30px;
+        width: 30px;
+        background: #FF6B6B;
+        line-height: 30px;
+        color: white;
+        border-radius: 30px;
+      }
+
+      .btn-line{
+        font-family: 'Lato', sans-serif;
+        text-transform: uppercase;
+        background-color: #e0e0e0;
+        border: 2px solid transparent;
+        color: #B7B2B2;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 0px 15px;
+        line-height: 20px;
+        border-radius: 0;
+        display: inline-block;
+        word-break: break-word;
+      }
+
+      a.btn-line{
+        display: inline-block;
+      }
+
+      a.btn-line:hover{
+        text-decoration: none;
+      }
+
+      .btn-line.warning{
+        background-color: #FF6B6B;
+        color: white;
+      }
+
+      .btn-line:hover{
+        background-color: #151515;
+        color: white;
+      }
+      .btn-line:focus{
+        outline: none;
+
+      }
+      .btn-line.active{
+        background: #B7B2B2;
+        color: white;
+      }
+      .btn-line.active.warning{
+        background-color: #ff9305;
+      }
+
+      .btn-line-group{
+        border: 2px solid #B7B2B2;
+        padding: 2px;
+        display: inline-block;
+        line-height: 20px;
+        /*height: 32px;*/
+        height: auto;
+      }
+
+      .btn-line-group.primary{
+        border: 2px solid #151515;
+      }
+
+      .btn-line-group.primary .btn-line{
+        color: #151515;
+      }
+
+      .btn-line-group.primary .btn-line:hover{
+        color: white;
+      }
+
+      .btn-line .icon{
+        float: right;
+        margin-left: 5px;
+        margin-right: 0;
+      }
+
+      #showreel{
+        position: absolute;
+        top: 0px;
+        background: #101010;
+        left:0;
+        width: 100%;
+        z-index: 3;
+      }
+
+      #unilu-logo-wrapper{
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        /*border-left: 2px solid white;*/
+      }
+
+      #unilu-logo{
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 380px;
+        background-color: #4ECDC4;
+        background-image: url(/static/images/DEIS_uni.lu.png);
+        z-index: 1;
+        background-size: contain;
+        /* border-top-left-radius: 5px; */
+        /* border-top-right-radius: 5px; */
+        background-position: left bottom;
+      }
+
+      #showreel, #showreel-inner, #unilu-logo-wrapper, #unilu-logo{
+        height: 70px;
+      }
+
+
+
+      .breakingNews{
+        float:left;
+        width:33.3%;
+        color: white;
+        height: 100%;
+        background: #111;
+      }
+
+      .breakingNews .wrapper{
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+
+      .breakingNews .overlay{
+        position: absolute;
+        bottom: 0px;
+        background-color: rgba(16,16,16,.5);
+        
+        left: 0;
+    right: 0;
+    padding: 10px 20px 0 20px;
+      }
+
+      .breakingNews h3{
+        color: #F0F0F0;
+        font-size: 16px;
+        line-height: 25px;
+        border-bottom: 2px solid #FF6B6B;
+        margin: 0 0 15px 0;
+        padding: 0px 0 10px 0;
+        max-height: 58px;
+        overflow: hidden;
+      }
+      .breakingNews .type, .breakingNews span.tag {
+        font-family: 'Lato', sans-serif;
+        font-size: 10px;
+        color: #fafafa;
+        text-transform: uppercase
+      }
+      .breakingNews a{
+        color: #f0f0f0;
+      }
+      .breakingNews a:hover, .breakingNews a:focus{
+        color: white
+      }
+
+      #wrapper {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        margin: 0 auto -200px;
+      }
+      #footer, .push {
+        height: 200px;
+      }
+
+      #footer{
+        /*background-color: #d9d9d9;*/
+        padding-top: 35px;
+        border-top: 2px solid #f0f0f0;
+      }
+
+      #footer a {
+        color: #FF6B6B
+      }
+
+      #messenger{
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        margin-left: -100px;
+        width: 200px;
+        background-color: #fff;
+        display: none;
+        z-index: 100;
+        text-align: center;
+        border: 2px solid;
+        padding: 10px 0;
+      }
+      #messenger.active{
+        display: block;
+      }
+
+      .cover-wrapper{
+        margin-top: 10px;
+      }
+      .icon{
+        font-size: 15px;
+        line-height: 20px;
+      }
+
+      .coverstory.other, .coverstory.news{
+        margin: 0 20px;
+      }
+
+      
+
+      @media only screen and (min-width : 768px) {
+        #navbar.show-menu .menu-wrapper, #navbar .menu-wrapper{
+          display: none;
+        }
+        
+        #navbar.show-menu{
+          height: 70px;
+        }
+
+        #showreel, #showreel-inner, #unilu-logo-wrapper, #unilu-logo{
+          height: 140px;
+        }
+
+        .view{
+          margin-top: 240px;
+        }
+
+        .navbar{
+          transform: translateY(140px);
+          -webkit-transform: translateY(140px);
+          -moz-transform: translateY(140px);
+          -ms-transform: translateY(140px);
+        }
+
+        .chapter {
+            display: table;
+            width: 100%
+        }
+        .chapter .cover{
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          top: 0;
+        }
+        .chapter [class*="col-"] {
+            float: none;
+            display: table-cell;
+            vertical-align: top;
+            background-color: white;
+        }
+        .chapter .image-wrapper{
+          height: 100%;
+        }
+      }
+
+      @media (min-width: 768px){
+        .coverstory .cover {
+          height: 300px;
+        }
+        .coverstory.story .cover{
+          height: 100%;
+        }
+
+        .coverstory.other, .coverstory.news{
+          margin: 0
+        }
+        .navbar-default{
+          background: white;
+          border-bottom: 2px solid transparent;
+        }
+        .navbar-nav .collapse-toggler {
+          display: none;
+        }
+        #table-of-contents-toggler{
+          top: 155px;
+          left: 20px;
+          z-index: 1;
+        }
+        #footer ul.navbar-nav{
+          margin: 10px 0;
+        }
+        .modal.fullsize .oversize{
+          top: 50px;
+          left: 50px;
+          right: 50px;
+          bottom: 50px;
+        }
+        .modal.fullsize .close{
+          right: 70px;
+          top: 55px;
+        }
+      }
+
+      .dropdown .username{
+        width: 56px;
+        display: inline-block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      @media (min-width: 992px){
+        .coverstory .cover {
+          height: 150px;
+        }
+        .coverstory.story .cover{
+          height: 100%;
+        }
+        .dropdown .username{
+          width: auto;
+          display: inline;
+          overflow: visible;
+        }
+        /* show menu*/
+        .navbar-default .navbar-nav > li > a{
+          padding: 0 10px;
+        }
+        .container {
+          width: 910px;
+        }
+      }
+      @media (min-width: 1200px){
+        .coverstory .cover {
+          height: 200px;
+        }
+        .coverstory.story .cover{
+          height: 100%;
+        }
+        .container {
+          width: 1100px;
+        }
+      }
+      
+
+      /*.view{
+        margin-top: 210px;
+      }*/
+    </style>
+  </head>
+  {% block body %}
+  <body  ng-controller='CoreCtrl' >
+    {% block page %}
+    <!-- where highlights are -->
+    <div id='showreel'>
+      <div class='container'>
+        <div class="row" >
+          <div id='showreel-inner'>
+            {% verbatim %}
+            <div class="breakingNews">
+              <div id='unilu-logo-wrapper'>
+                <div id='unilu-logo'></div>
+              </div>
+            </div>
+            <div class="breakingNews" ng-repeat='news in breakingNews' ng-include='"templates/partials/breakingNews.html"|prefixTemplate'></div>
+            {% endverbatim %}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <nav id="navbar" class='navbar navbar-default navbar-fixed-top' ng-init='showMenu=false' ng-class='{"show-menu":showMenu}' ng-controller='PulseCtrl'>
+      
+      <div class='container' > 
+        <div class="navbar-header">
+          <button type="button" ng-click="showMenu=!showMenu" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span> 
+          </button>
+          <div class='navbar-brand' id="logo">
+            <a ui-sref='index'>
+              <img src='{% static "images/logo-resume.svg" %}'>
+            </a>
+          </div>
+        </div>
+
+        <div class="collapse navbar-collapse">
+
+          
+          <ul class="nav navbar-nav">
+
+            
+            <li class='collapse-toggler'>
+              <a href title='toggle menu'><div class='icon icon-menu'></div></a>
+            </li>
+            <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
+            <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
+            <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
+            <li ng-class="{active: (state.includes('publications') || state.includes('story') || state.includes('collection')) && !state.includes('me')}"><a href ui-sref='publications.all' translate="headline.publications"></a></li>
+            <!-- <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li> -->
+            <li ui-sref-active="active"><a ui-sref="blog.event" translate="headline.events"></a></li>
+            <li ui-sref-active="active"><a ui-sref="blog.news" translate="headline.news"></a></li>
+
+           <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
+            --> 
+            <!-- <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b style='color:#151515' translate="write"></b></a></li> -->
+            <li id='search-wrapper'>
+              <form role="form" ng-submit="search(searchquery)">
+                <div class="input-group">
+                  <input type="text" class="form-control" ng-model="searchquery" placeholder="Search for...">
+                  <span class="input-group-btn">
+                    <button ng-click="search(searchquery)" class="btn btn-secondary" type="button"><div class='icon icon-magnifier'></div></button>
+                  </span>
+                </div>
+
+              </form>
+            </li>
+            
+
+          </ul>
+          
+          
+
+          <ul style='margin-left: 10px' class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+
+            <li class="dropdown">
+            <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
+              
+              <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>
+                <span class='username'>{{user.username}}<span style='position:absolute; right:5px; top:0' class='icon icon-plus'></span></span>
+              </a>
+
+              <ul class="dropdown-menu" role="menu">
+                
+                <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
+                <li ui-sref-active="active"><a ui-sref="upload" translate='upload'></a></li>
+
+                <li ui-sref-active="active" ng-repeat='author in user.profile.authors'>
+                  <a ui-sref='author.publications.all({slug:author.slug})' translate='headline.your.writings'></a>
+                </li>
+                <li ui-sref-active="active" ng-if='user.is_reviewer'><a ui-sref='reviews.all'><b translate='headline.your.reviews'></b></a></li>
+                
+                
+                <!-- <li ui-sref-active="active"><a ui-sref="notifications.activities" translate='notifications'></a></li> -->
+                <!-- <li ui-sref-active="active"><a ui-sref="profile({username:user.username})" translate='headline.edit.your.information'></a></li> -->
+                <li><a href='{% url "logout_view" %}'>log out</a></li> 
+                {% if user.is_staff %}
+                <li><a href='{% url "admin:index" %}'>admin</a></li>
+                {% endif %}
+              </ul>
+              
+            </li>
+            {% else %}
+            <li>
+              <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}' translate="headline.login.or.signup">log in / sign up</a>
+            </li>
+            {% endif %}
+            <li class="dropdown ng-cloak">
+            <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
+              
+              <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false" style='position:relative; padding-right: 30px'>
+                <span class='username'>{% verbatim %}<span>{{language|substr:0:2}}</span>{% endverbatim %}<span style='position:absolute; right:5px; top:0' class='icon icon-arrow-down-circle'></span></span>
+              </a>
+
+              <ul class="dropdown-menu" role="menu">
+                <li ng-class="{'active': language=='en_US'}"><a ng-click='changeLanguage("en_US")' translate='language.en_US'></a></li>
+                <li ng-class="{'active': language=='fr_FR'}"><a ng-click='changeLanguage("fr_FR")' translate='language.fr_FR'></a></li>
+                <li ng-class="{'active': language=='de_DE'}"><a ng-click='changeLanguage("de_DE")' translate='language.de_DE'></a></li>
+              </ul>
+              
+            </li>
+            {% verbatim %}
+
+            <!-- <li class="dropdown">
+
+              <a bs-dropdown placement='bottom-right' aria-haspopup="true" aria-expanded="false"> more</a>
+              <ul class="dropdown-menu" role="menu">
+                
+                <li ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})'>terms of use</a></li>
+                
+              </ul>
+            </li> -->
+            {% endverbatim %}
+          </ul>
+         
+        </div>
+
+        <div class="menu-wrapper">
+          <div class="inner">
+            <div class="row">
+              <div class="col-xs-6">
+                <ul class="nav navbar-nav">
+
+            
+                  
+                  <!-- <li class="active"><a href="#">home <span class="sr-only">(current)</span></a></li> -->
+                  <li ui-sref-active="active"><a href ui-sref='page({name:"project"})' translate="headline.project"></a></li>
+                  <li ui-sref-active="active"><a href ui-sref='page({name:"people"})' translate="headline.people"></a></li>
+                  <li ng-class="{active: (state.includes('publications') || state.includes('story') || state.includes('collection')) && !state.includes('me')}"><a href ui-sref='publications.all' translate="headline.publications"></a></li>
+                  <!-- <li ui-sref-active="active"><a href ui-sref='authors' translate="headline.authors"></a></li> -->
+                  <li ui-sref-active="active"><a ui-sref="blog.event" translate="headline.events"></a></li>
+                  <li ui-sref-active="active"><a ui-sref="blog.news" translate="headline.news"></a></li>
+
+                 <!--  <li ng-class="{active: state.includes('event')}"><a ui-sref="events.everything" translate="headline.events"></a></li>
+                  --> 
+                  <!-- <li ng-if='user.username' ui-sref-active="active"><a ui-sref="draft"><b style='color:#151515' translate="write"></b></a></li> -->
+                  <li id='search-wrapper'>
+                    <form role="form" ng-submit="search(searchquery)">
+                      <div class="input-group">
+                        <input type="text" class="form-control" ng-model="searchquery" placeholder="Search for...">
+                        <span class="input-group-btn">
+                          <button ng-click="search(searchquery)" class="btn btn-secondary" type="button"><div class='icon icon-magnifier'></div></button>
+                        </span>
+                      </div>
+
+                    </form>
+                  </li>
+                  
+
+                </ul>
+
+              </div>
+              <div class="col-xs-6">
+                <ul class="nav navbar-nav navbar-right">
+                  {% if user.is_authenticated %}
+                  <li class="dropdown">
+                  <!-- <li class="dropdown" ng-class="{active: state.includes('me') || state.includes('draft')}"> -->
+                    
+                    
+
+                    <li ui-sref-active="active"><a ui-sref="draft" translate='write'></a></li>
+                      <li ui-sref-active="active"><a ui-sref="upload" translate='upload'></a></li>
+                      <li ui-sref-active="active"><a ui-sref="profile.publications({username:user.username})">your writings</a></li>
+                      <li><a href='{% url "logout_view" %}'>log out</a></li> 
+                      {% if user.is_staff %}
+                      <li><a href='{% url "admin:index" %}'>admin</a></li>
+                      {% endif %}
+                    
+                    
+                  </li>
+                  {% else %}
+                  <li>
+                    <a ng-href='{% url "login_view" %}?next={% verbatim %}{{path}}{% endverbatim %}' translate="headline.login.or.signup">log in / sign up</a>
+                  </li>
+                  {% endif %}
+                  <li class='compact' ng-class="language=='en_US'?'active':''"><a ng-click='changeLanguage("en_US")'>EN</a></li>
+                  <li class='compact' ng-class="language=='fr_FR'?'active':''"><a ng-click='changeLanguage("fr_FR")'>FR</a></li>
+                  
+
+                </ul>
+
+              </div>
+            </div>
+            
+
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- CONTENTS -->
+    
+    <div id='wrapper' ng-class='state'>
+      <div ng-click='hasToC = false;' ng-class='{"with-ToC": hasToC && ToC.length>0}' >
+        {% block content %}
+        <div ng-class='state' ui-view='' autoscroll>
+        </div>
+        {% endblock %}
+      </div>
+      <div class="push"></div>
+      
+    </div>
+
+    {% block footer %}
+    <div id="footer" ng-class='state'>
+      <div class='container'>
+        <div class='row'>
+          <div class='col-sm-6'>
+            <div class='copyright'>
+            Copyright &copy; <a href="http://www.uni.lu" target="_blank">Université du Luxembourg</a> {{ now }}. All rights reserved.     
+            </div>
+
+          </div>
+          <div class='col-sm-6'>
+            <p>
+              <img src='{% static "images/erasmus_plus.jpg" %}'>
+            </p>
+          </div>
+          <div class='col-sm-12'>
+            <ul class="nav navbar-nav">
+              <li ui-sref-active="active"><a href ui-sref='index' translate='footer.home'></a>
+              </li>
+              <li ui-sref-active="active"><a href ui-sref='page({name:"terms-of-use"})' translate='footer.termsofservice'></a>
+              </li>
+              <li ui-sref-active="active"><a href ui-sref='page({name:"guide-for-authors"})' translate='footer.guideforauthors'></a>
+              </li>
+              <li><a href='{% url "latest_rss"%}' target='_blank'><span translate="footer.latest_rss"></span>&nbsp;<span class="icon icon-feed"></span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    <aside id='table-of-contents'  ng-class='{"active":hasToC && ToC.length>0}'>
+      <div id="inner-table-of-contents"><div ng-include='"templates/partials/table-of-contents.html"|prefixTemplate'></div></div>
+    </aside>
+
+    <!-- <aside id='table-of-documents' ng-class='hasToC? "":"active"'>
+      <div id="inner-table-of-documents"><div ng-include='"templates/partials/table-of-documents.html"|prefixTemplate'></div></div>
+    </aside> -->
+
+    <div id='table-of-contents-toggler'  ng-class='{"active": ToC.length > 0}' >
+      <div >
+        <button class='btn-transparent' ng-click='toggleTableOfContents()'><span  class='icon-book-open'></span></button>
+      </div>
+      <div ng-if='state == "writing" || state == "draft"' style='margin-top:20px' ng-click='save()'>
+        <button class='btn-transparent btn-line'><span  class='icon-disc'></span></button>
+        <div class='sans-serif' style='text-transform: uppercase; font-size:11px; text-align:center; line-height:20px' translate='save'></div>
+      </div>
+      
+    </div>
+    {% verbatim %}
+    <div id="messenger" ng-class='{"active":message}' translate="{{message}}"></div>
+    {% endverbatim %}
+    {% endblock %}
+    {% if debug %}
+    <script src='{% static "js/lib/jquery-2.2.1.min.js" %}'></script>
+    <script src='{% static "js/lib/md5.js" %}'></script>
+    
+
+    <!-- lodash build with lodash-cli:
+         lodash include=map,filter,each,compact,uniq,value,keyBy,first,chunk,fromPairs,mapValues,isEmpty -->
+    <script src='{% static "js/lib/lodash.custom.min.js" %}'></script>
+    <!-- <script src='{% static "js/lib/marked.min.js" %}'></script> -->
+    <script src='{% static "js/lib/markdown-it.min.js" %}'></script>
+    <script src='{% static "js/lib/markdown-it-footnote.min.js" %}'></script>
+    <script src='{% static "js/lib/markdown-it-container.min.js" %}'></script>
+    <script src='{% static "js/lib/markdown-it-attrs.min.js" %}'></script>
+    
+
+    <!-- <script src='{% static "js/lib/simplemde.min.js" %}'></script> -->
+    <!-- <script src='{% static "js/lib/bibtexParse.js" %}'></script> -->
+    <!-- <script src='{% static "js/lib/codemirror.addons.placeholder.js'></script> -->
+    <script src='{% static "js/lib/reconnecting-websocket.min.js" %}'></script>
+    
+
+    <script src='{% static "js/lib/angular.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-route.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-resource.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-cookies.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-debounce.js" %}'></script> 
+    <script src='{% static "js/lib/angular-sanitize.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-ui-router.min.js" %}'></script>
+    <!-- <script src='{% static "js/lib/angular-disqus.min.js" %}'></script>  -->
+    <script src='{% static "js/lib/angular-load.min.js" %}'></script> 
+    <script src='{% static "js/lib/angular-strap.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-strap.tpl.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-elastic.js" %}'></script>
+    <script src='{% static "js/lib/angular-embedly.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-embed.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-socialshare.min.js" %}'></script> 
+
+    <script src='{% static "js/lib/angular-local-storage.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-translate.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-translate-loader-static-files.min.js" %}'></script>
+    <script src='{% static "js/lib/ng-tags-input.min.js" %}'></script>
+    <script src='{% static "js/lib/angular-lazy-img.min.js" %}'></script>
+    <script src='{% static "js/lib/ng-file-upload.min.js" %}'></script>
+    
+   
+    <script src='{% static "js/app.js" %}'></script>
+    <script src='{% static "js/controllers/author.js" %}'></script>
+    <script src='{% static "js/controllers/core.js" %}'></script>
+    <script src='{% static "js/controllers/collection.js" %}'></script>
+    <script src='{% static "js/controllers/draft.js" %}'></script>
+    <script src='{% static "js/controllers/index.js" %}'></script>
+    <script src='{% static "js/controllers/items.js" %}'></script>
+    <script src='{% static "js/controllers/login.js" %}'></script>
+    <script src='{% static "js/controllers/story.js" %}'></script>
+    <script src='{% static "js/controllers/blog.js" %}'></script>
+    <script src='{% static "js/controllers/notifications.js" %}'></script>
+    <script src='{% static "js/controllers/page.js" %}'></script>
+    <script src='{% static "js/controllers/profile.js" %}'></script>
+    <script src='{% static "js/controllers/pulse.js" %}'></script>
+    <script src='{% static "js/controllers/review.js" %}'></script>
+    <script src='{% static "js/controllers/search.js" %}'></script>
+    <script src='{% static "js/controllers/upload.js" %}'></script>
+    <script src='{% static "js/controllers/uploaded.js" %}'></script>
+    <script src='{% static "js/controllers/writing.js" %}'></script>
+
+    <script src='{% static "js/controllers/modals/enrich.js" %}'></script>
+    <script src='{% static "js/controllers/modals/covers.js" %}'></script>
+
+    <script src='{% static "js/directives/embedit.js" %}'></script>
+    <script src='{% static "js/directives/footnote.js" %}'></script>  
+    <script src='{% static "js/directives/marked.js" %}'></script>
+    <script src='{% static "js/directives/mde.js" %}'></script>
+    <script src='{% static "js/directives/lazy.js" %}'></script>  
+    <script src='{% static "js/directives/rating.js" %}'></script>
+    <script src='{% static "js/directives/rich-oembed.js" %}'></script>  
+    <script src='{% static "js/directives/sliding-steps.js" %}'></script>  
+
+    <script src='{% static "js/services.js" %}'></script>
+    <script src='{% static "js/filters.js" %}'></script>
+    <script src='{% static "js/templates.js" %}'></script>
+    {% else %}
+    <script src='{% static "js/scripts.lib.min.js" %}'></script>
+    <script src='{% static "js/scripts.min.js" %}'></script>
+    {% endif %}
+
+    {% autoescape off %}
+
+    <script>
+      console.log('\n    oila!   \n(-(-_(-_-)_-)-)\n\n\n');
+      
+      var user = {
+        username: "{{user.username}}",
+        first_name: "{{user.first_name}}",
+        last_name: "{{user.last_name}}",
+        is_staff: "{{user.is_staff}}" === "True",
+        profile: {{profile}}
+      };
+
+      var oembeds = {{oembeds}};
+      var settings = {{settings}};
+     
+
+      settings.session_key = "{{ request.session.session_key }}";
+
+      var _windox  = $(window),
+          _offsetables = {
+            navbar: $('#navbar'),
+            'table-of-contents-toggler': $('#table-of-contents-toggler'),
+            'inner-table-of-contents': $('#inner-table-of-contents'),
+            // 'inner-table-of-documents': $('#inner-table-of-documents'),
+            // 'writing-tools': $('#writing-tools')
+          },
+          _is_mobile = _windox.width() < 768,
+          _navbar_offset = _is_mobile? 70: 140,
+          st,
+          floatinglimit = _is_mobile? 70:140,
+          isBelowFloating = false;
+
+      _windox.on('resize', function(){
+        _is_mobile = _windox.width() < 768;
+        floatinglimit = _is_mobile? 70:140,
+        evaluateFloating();
+      })
+
+      function evaluateFloating(e){
+          st = _windox.scrollTop();
+          navbar_offset = Math.max(floatinglimit - st, 0);
+
+        if(navbar_offset != _navbar_offset)
+          for(var i in _offsetables)
+            _offsetables[i].css({
+              transform: 'translateY('+navbar_offset+'px)',
+              '-webkit-transform': 'translateY('+navbar_offset+'px)',
+              '-moz-transform': 'translateY('+navbar_offset+'px)',
+              '-ms-transform': 'translateY('+navbar_offset+'px)',
+            });
+
+        if(st > floatinglimit) {
+          if(!isBelowFloating){
+            for(var i in _offsetables)
+              _offsetables[i].addClass('below-floating');
+          }
+          isBelowFloating = true;
+        } else {
+          if(isBelowFloating){
+            for(var i in _offsetables)
+              _offsetables[i].removeClass('below-floating');
+          }
+          isBelowFloating = false;
+        }
+
+
+        _navbar_offset = navbar_offset;
+      };
+
+      _windox.scroll(evaluateFloating)
+      
+      
+      angular.module('miller')
+        .run(function($log, $q, $http, embedService, ngEmbedYoutubeHandler){
+          
+          for (var i in oembeds){
+            // ignore if there ys no pattern.
+            if(!oembeds[i].patterns)
+              continue;
+            // register if the settings are complete enough
+            var endpoint = oembeds[i].endpoint;
+            $log.log('registering embed handler:', i, '- endpoint: ',oembeds[i].endpoint);
+            
+            embedService.registerHandler({
+                name: i,
+                patterns: oembeds[i].patterns,
+                embed: function(url, max_width) {
+                  var deferred = $q.defer();
+                  $log.debug('embedService handler', endpoint)
+                  return $http({
+                    method: 'GET',
+                    url: endpoint + '?url=' + url
+                  }).then(function successCallback(response) {
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return response.data
+                    
+                  }, function errorCallback(response) {debugger
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    return response.data
+                  });
+                }
+            });
+          }
+
+          // embedly key : cfr app.js, KEY it is shipped with RUNTIME const.
+          embedService.registerHandler(ngEmbedYoutubeHandler);
+
+
+         
+        })
+        //Apply user and other settings to resume app
+        .constant("RUNTIME", {
+          static: '{% static ""%}',
+
+          user: user,
+          oembeds: oembeds,
+          settings: settings,
+          stories: {
+            writing: [
+              {
+                name: 'collection',
+                slug: 'collection',
+                url: '/collection'
+              },
+              {
+                name: 'cahiers',
+                slug: 'cahiers',
+                url: '/cahiers'
+              },
+              {
+                name: 'Revue de l’Euro',
+                slug: 'revue-ecu-euro',
+                url: '/revue-ecu-euro',
+                preventTranslation: true 
+              },
+              {
+                name: 'papers',
+                slug: 'paper',
+                url: '/papers'
+              },
+              {
+                name: 'glossary',
+                slug: 'glossary',
+                url: '/glossary'
+              },
+              {
+                name: 'law',
+                slug: 'law',
+                url: '/laws'
+              },
+              // {
+              //   name: 'interviews',
+              //   slug: 'interview',
+              //   url: '/interviews'
+              // },
+              {
+                name: 'biography',
+                slug: 'biography',
+                url: '/biographies'
+              },
+              // {
+              //   name: 'how-tos',
+              //   slug: 'how-tos',
+              //   url: '/how-tos'
+              // },
+            ]
+          }
+        });
+
+        /*
+          Register search function for each oembed service having a search endpoint
+        */
+        angular.module('miller')
+          .factory('OembedSearchFactory', function($http) {
+            return _(oembeds)
+              .filter('search')
+              .keyBy('name')
+              .mapValues(function(o, k) {
+                /*
+                  params = {
+                    q: <your query>
+                  }
+                */
+                return function(params) {
+                  return $http.get(o.search, {
+                    params: params
+                  })
+                }
+              })
+              .value();
+          });
+        
+    </script>
+    {% endautoescape %}
+  </body>
+  {% endblock %}
+  </html>
