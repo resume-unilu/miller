@@ -52,6 +52,28 @@ DATABASES = {
     }
 }
 
+# feel free to modify the dir and add your own context processors
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'client')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                # 'django.core.context_processors.static',
+                'ws4redis.context_processors.default',
+                'miller.context_processors.default',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 MILLER_OEMBEDS = {
   'EMBEDLY_API_KEY': 'xxx'
 }
