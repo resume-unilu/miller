@@ -33,8 +33,9 @@ MILLER_DESCRIPTION = '''
 Long description'''
 
 # the host, absolute without trailing slashes. Default: localhost for django debug
-MILLER_DOMAIN_NAME = 'localhost'
-MILLER_HOST        = 'http://localhost:8000'
+MILLER_DOMAIN_NAME   = 'localhost'
+MILLER_HOST          = 'http://localhost:8000'
+MILLER_HOST_PROTOCOL = 'http' # of https
 
 # the absolute path for websocket, absolute without trailing slashes. Default: localhost for django debug
 MILLER_WS_HOST   = 'ws://localhost:8000/ws'

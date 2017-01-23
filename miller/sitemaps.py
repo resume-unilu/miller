@@ -8,6 +8,7 @@ from miller.models import Story
 class NewsSitemap(Sitemap):
   changefreq = "never"
   priority = 0.5
+  protocol = settings.MILLER_HOST_PROTOCOL
 
   def items(self):
     return Story.objects.filter(tags__category='blog', status=Story.PUBLIC).distinct().order_by('-date_last_modified').prefetch_related('tags')
@@ -20,6 +21,7 @@ class NewsSitemap(Sitemap):
 class WritingsSitemap(Sitemap):
   changefreq = "never"
   priority = 0.5
+  protocol = settings.MILLER_HOST_PROTOCOL
 
   def items(self):
     return Story.objects.filter(tags__category='writing', status=Story.PUBLIC).distinct().order_by('-date').prefetch_related('tags')
@@ -32,7 +34,8 @@ class WritingsSitemap(Sitemap):
 class PagesSitemap(Sitemap):
     priority = 0.5
     changefreq = 'monthly'
-
+    protocol = settings.MILLER_HOST_PROTOCOL
+    
     def items(self):
         return settings.MILLER_STATIC_PAGES
 
