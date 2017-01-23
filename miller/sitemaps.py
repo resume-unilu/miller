@@ -6,7 +6,7 @@ from miller.models import Story
 
 
 class NewsSitemap(Sitemap):
-  changefreq = "never"
+  changefreq = "daily"
   priority = 0.5
   protocol = settings.MILLER_HOST_PROTOCOL
 
@@ -19,7 +19,7 @@ class NewsSitemap(Sitemap):
 
 
 class WritingsSitemap(Sitemap):
-  changefreq = "never"
+  changefreq = "daily"
   priority = 0.5
   protocol = settings.MILLER_HOST_PROTOCOL
 
@@ -35,7 +35,7 @@ class PagesSitemap(Sitemap):
     priority = 0.5
     changefreq = 'monthly'
     protocol = settings.MILLER_HOST_PROTOCOL
-    
+
     def items(self):
         return settings.MILLER_STATIC_PAGES
 
