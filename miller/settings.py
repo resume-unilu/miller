@@ -25,7 +25,7 @@ TESTING = management_command.startswith("test")
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '^gobax#cw-&*8i_lj*1(irdn-_pe4+qe5^5##+psz42mw$&c63'
+SECRET_KEY = 'change in your localsettings'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

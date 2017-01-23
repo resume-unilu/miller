@@ -136,7 +136,7 @@ SEO_JS_PRERENDER_TOKEN = 'abcdef'
 # """
 DEBUG = True
 ALLOWED_HOSTS = [MILLER_DOMAIN_NAME]
-
+DEFAULT_FROM_EMAIL = MILLER_EMAIL
 
 # """
 # 5. Templating
@@ -144,6 +144,7 @@ ALLOWED_HOSTS = [MILLER_DOMAIN_NAME]
 # Just fill MILLER_TEMPLATE_BASE_DIR above would suffice.
 # """
 # for debug purposes
+STATIC_ROOT = os.path.join(MILLER_TEMPLATE_BASE_DIR, 'dist')
 STATICFILES_DIRS = [
   os.path.join(MILLER_TEMPLATE_BASE_DIR, 'src'),
 ]
