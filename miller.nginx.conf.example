@@ -8,15 +8,29 @@ upstream django {
 server {
     # the port your site will be served on
     listen      80;
+
     # the domain name it will serve for
     server_name .example.com; # substitute your machine's IP address or FQDN
     charset     utf-8;
 
+    # enable access log
+    access_log /var/log/nginx/miller.access.log combined;
+
     # max upload size
     client_max_body_size 75M;   # adjust to taste  
 
+    location /robots.txt {
+      return 200 "User-agent: *\nDisallow: /static/\nDisallow: /media/\n";
+    }
+
+    # your Django project's static files, cfr miller/settings.js STATIC_ROOT
     location /static {
-      alias /var/www/miller/dist; # your Django project's static files - amend as required, cfr miller/settings.js
+      alias /path/to/miller/dist; 
+    }
+
+    # your Django project's media files, cfr miller/settings.js MEDIA_ROOT
+    location /media {
+      alias /path/to/miller/media;
     }
 
     # the websocket config if daphne is using these args: 
@@ -28,15 +42,33 @@ server {
       proxy_set_header Connection "upgrade"; 
     }
 
-    location /media {
-      alias /path/to/miller/media;
-    }
+    
 
     # Finally, send all non-media requests to the Django server.
     location / {
+      # for js app.
+      set $prerender 0;
+      if ($http_user_agent ~* "google|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator") {
+          set $prerender 1;
+      }
+      if ($args ~ "_escaped_fragment_") {
+          set $prerender 1;
+      }
+      if ($request_uri ~ ^/accessibility) {
+        set $prerender 0;
+      }
+      # if needed, we use /accessibility endpoint to ser plain text contents to SEO and for better accessibility
+      if ($prerender = 1) {
+        rewrite ^/(.*)$ /accessibility/$1? break;
+      }
+
       uwsgi_pass  django;
+      proxy_pass_request_headers on;
+      proxy_no_cache $cookie_nocache  $arg_nocache$arg_comment;
+      proxy_no_cache $http_pragma     $http_authorization;
+      proxy_cache_bypass $cookie_nocache $arg_nocache $arg_comment;
+      proxy_cache_bypass $http_pragma $http_authorization;
       include     /path/to/miller/uwsgi_params; # the uwsgi_params file you installed
     }
     
 }
-
