@@ -86,8 +86,8 @@ if hasattr(settings, 'GOOGLE_IDENTIFICATION'):
 urlpatterns = urlpatterns + [
   url(r'^setlang/', set_language, name="setlang"),
 
-
   url(r'^accessibility$', views.accessibility_index, name='accessibility_index'),
+  url(r'^accessibility/$', views.accessibility_index, name='accessibility_index_with_slash'),
   url(r'^accessibility/publications$', views.accessibility_stories, name='accessibility_stories'),
   url(r'^accessibility/publications/(?P<tag>[a-z\-]+)$', views.accessibility_stories, name='accessibility_stories'),
   url(r'^accessibility/story/(?P<pk>[a-z0-9\-]+)$', views.accessibility_story, name='accessibility_story'),
