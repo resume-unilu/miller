@@ -95,7 +95,7 @@ urlpatterns = urlpatterns + [
   url(r'^accessibility/author/(?P<author>[a-z0-9\-]+)/publications$', views.accessibility_author, name='accessibility_author'),
   
   # sitemaps for search engines...
-  url(r'^accessibility/sitemap\.xml$', sitemaps_views.index, {'sitemaps': sitemaps}),
+  url(r'^accessibility/sitemap\.xml$', sitemaps_views.index, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.html'}),
   url(r'^accessibility/sitemap-(?P<section>.+)\.xml$', sitemaps_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.section.html'},
     name='django.contrib.sitemaps.views.sitemap'),
 
