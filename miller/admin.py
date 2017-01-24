@@ -174,6 +174,7 @@ class StoryAdmin(admin.ModelAdmin):
   exclude=['cover', 'cover_copyright', 'watchers', 'stories']
   search_fields = ['title']
   list_filter = ('status', WritingTagsListFilter, BlogTagsListFilter)
+  list_display = ['__str__', 'date', 'priority']
   form = StoryAdminForm
 
 
