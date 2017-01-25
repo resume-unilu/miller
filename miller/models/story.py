@@ -34,7 +34,7 @@ story_ready = django.dispatch.Signal(providing_args=["instance", "created"])
 
 def user_path(instance, filename, safeOrigin=False):
   root, ext = os.path.splitext(filename)
-  src = os.path.join(settings.MEDIA_ROOT, instance.owner.profile.short_url, instance.short_url + ext if not safeOrigin else filename)
+  src = os.path.join(settings.MEDIA_ROOT, instance.owner.profile.short_url if not settings.TESTING else 'test_%s' % instance.owner.username, instance.short_url + ext if not safeOrigin else filename)
   return src
 
 
@@ -276,13 +276,16 @@ class Story(models.Model):
       return outputfile
 
     tempoutputfile = user_path(self, '__%s.md' % self.short_url)
-
+    logger.debug('story {pk:%s} creating temp file.' % self.pk)
+    authors   =  u", ".join([u'%s' % t.fullname for t in self.authors.all()])
+    tags      = u",".join([u'%s' % t.slug for t in self.tags.filter(category=Tag.KEYWORD)])
+    
     # rewrite links for interactive PDF
     with codecs.open(tempoutputfile, "w", "utf-8") as temp:
       temp.write(u'\n\n'.join([
         # u"#%s" % self.title,
         # u"> %s" % self.abstract if self.abstract else "",
-        # generate citation
+        # generate citation, signatures
         self.contents
       ]))
 
@@ -295,8 +298,11 @@ class Story(models.Model):
         '-V', 'geometry:top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm',
         '-V','footer=%s' % settings.MILLER_TITLE,
         '-V', 'title=%s' % self.title.replace('&', '\&'),
+        '-V', 'author=%s' % ', '.join([u'%s (%s)' % (a.fullname, a.affiliation) for a in self.authors.all()]),
+        
         '-V','abstract=%s' % self.abstract.replace('&', '\&') if self.abstract else ''
       ])
+    # once done,
     os.remove(tempoutputfile)
 
     return outputfile

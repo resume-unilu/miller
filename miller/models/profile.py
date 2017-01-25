@@ -67,8 +67,8 @@ def create_working_folder(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Profile)
-def check_working_folder(sender, instance, created, **kwargs):
-  user_path = os.path.join(settings.MEDIA_ROOT, instance.short_url)
+def check_media_folder(sender, instance, created, **kwargs):
+  user_path = os.path.join(settings.MEDIA_ROOT, instance.short_url if not settings.TESTING else 'test_%s' % instance.user.username)
   path = instance.get_path()
 
   if not os.path.exists(path):
@@ -104,6 +104,7 @@ def delete_working_folder(sender, instance, **kwargs):
 # delete the user media folder, created once an user upload a file or download it
 @receiver(pre_delete, sender=Profile)
 def delete_user_media_folder(sender, instance, **kwargs):
-  path = os.path.join(settings.MEDIA_ROOT, instance.short_url)
-  shutil.rmtree(path)
+  path = os.path.join(settings.MEDIA_ROOT, instance.short_url if not settings.TESTING else 'test_%s' % instance.user.username)
+  if not settings.TESTING:
+    shutil.rmtree(path)
   logger.debug('(profile {pk:%s}) @pre_delete: done.' % instance.pk)
