@@ -296,10 +296,10 @@ class Story(models.Model):
         '--latex-engine=xelatex',
         '--template=%s' % settings.MILLER_TEX,
         '-V', 'geometry:top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm',
-        '-V','footer=%s' % settings.MILLER_TITLE,
+        '-V', 'footer=%s' % settings.MILLER_TITLE,
         '-V', 'title=%s' % self.title.replace('&', '\&'),
         '-V', 'author=%s' % ', '.join([u'%s (%s)' % (a.fullname, a.affiliation) for a in self.authors.all()]),
-        
+        '-V', 'keywords=%s' % tags,
         '-V','abstract=%s' % self.abstract.replace('&', '\&') if self.abstract else ''
       ])
     # once done,
