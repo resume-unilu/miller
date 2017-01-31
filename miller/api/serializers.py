@@ -110,7 +110,8 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
   # light document serializer (to be used in manytomany retrieve)
   """
   metadata = JsonField(source='contents')
-
+  snapshot = OptionalFileField()
+  attachment = OptionalFileField()
   class Meta:
     model = Document
     fields = ('id', 'type', 'metadata', 'url', 'attachment', 'snapshot', 'slug', 'mimetype')
