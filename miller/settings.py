@@ -362,7 +362,7 @@ CACHES = {
 #
 #............
 MILLER_WS_HOST = None # override in your localsettings with the full address for your websocket e;g. ws://resume.cvce.eu
-MILLER_HOST_PROTOCOL = 'http'
+MILLER_HOST_PROTOCOL = 'http' # used by miller.sitemaps module
 MILLER_DEBUG = True
 
 MILLER_TITLE = 'RESuME'

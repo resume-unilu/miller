@@ -1,5 +1,5 @@
 import json
-
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
 from rest_framework import serializers
@@ -11,10 +11,10 @@ class HitField(serializers.Field):
   def to_representation(self, obj):
     return obj
 
-class OptionalFileField(serializers.Field):
+class OptionalFileField(serializers.FileField):
   def to_representation(self, obj):
     if hasattr(obj, 'url'):
-      return obj.url
+      return '%s%s'%(settings.MILLER_HOST, obj.url)
     return None
 
 class JsonField(serializers.Field):

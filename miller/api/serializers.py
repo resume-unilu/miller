@@ -306,6 +306,7 @@ class CreateDocumentSerializer(serializers.ModelSerializer):
     default=serializers.CurrentUserDefault()
   )
   snapshot = OptionalFileField(read_only=True)
+  attachment = OptionalFileField()
 
   class Meta:
     model = Document
