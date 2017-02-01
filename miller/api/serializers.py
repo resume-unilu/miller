@@ -72,10 +72,11 @@ class LiteAuthorSerializer(serializers.ModelSerializer):
   """
   lite Serializer for an author, i.e. without profile info.
   """
+  stories = serializers.IntegerField(read_only=True, source='num_stories')
   metadata = JsonField()
   class Meta:
     model = Author
-    fields = ('id', 'fullname', 'affiliation', 'metadata', 'slug')
+    fields = ('id', 'fullname', 'affiliation', 'metadata', 'slug', 'stories')
 
 
 

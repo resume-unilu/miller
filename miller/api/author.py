@@ -1,10 +1,10 @@
 from rest_framework import serializers,viewsets
-
+from rest_framework.decorators import list_route
 
 from django.shortcuts import get_object_or_404
-
-from miller.api.serializers import AuthorSerializer
-from miller.models import Author
+from django.db.models import Count
+from miller.api.serializers import AuthorSerializer, LiteAuthorSerializer
+from miller.models import Author, Story
 
 from rest_framework.response import Response
 
@@ -20,6 +20,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
   """
   queryset = Author.objects.all()
   serializer_class = AuthorSerializer
+  list_serializer_class = LiteAuthorSerializer
   # lookup_field = 'pk'
   # lookup_value_regex = '[0-9a-zA-Z\.-_]+'
 
@@ -43,3 +44,19 @@ class AuthorViewSet(viewsets.ModelViewSet):
     
     serializer = AuthorSerializer(author, context={'request': request})
     return Response(serializer.data)
+
+
+  @list_route(methods=['get'])
+  def hallOfFame(self, request):
+    # top n authors, per story filters.
+    top_authors = Author.objects.filter(
+      authors__status=Story.PUBLIC
+    ).annotate(
+      num_stories=Count('authors')
+    ).order_by('-num_stories')
+
+    page    = self.paginate_queryset(top_authors)
+    serializer = LiteAuthorSerializer(top_authors, many=True, context={'request': request})
+    return self.get_paginated_response(serializer.data)
+
+
