@@ -56,7 +56,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
     ).order_by('-num_stories')
 
     page    = self.paginate_queryset(top_authors)
-    serializer = LiteAuthorSerializer(top_authors, many=True, context={'request': request})
+    serializer = LiteAuthorSerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
 
 
