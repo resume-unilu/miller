@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
 from miller.models import Story, Tag, Document, Caption, Comment
-from miller.api.utils import filtersFromRequest, orderingFromRequest
+from miller.api.utils import filtersFromRequest, orderbyFromRequest
 from miller.api.fields import OptionalFileField, JsonField
 from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer
 
@@ -55,7 +55,7 @@ class StoryViewSet(viewsets.ModelViewSet):
   def list(self, request):
     filters = filtersFromRequest(request=self.request)
     excludes = filtersFromRequest(request=self.request, field_name='exclude')
-    ordering = orderingFromRequest(request=self.request)
+    ordering = orderbyFromRequest(request=self.request)
 
     stories = self._getUserAuthorizations(request)
     stories = stories.exclude(**excludes).filter(**filters).distinct()

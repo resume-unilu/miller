@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
 # filters = filtersFromRequest(request=self.request) 
-# qs = stories.objects.filter(**filters).order_by(*ordering)
+# qs = stories.objects.filter(**filters).order_by(*orderby)
 def filtersFromRequest(request, field_name='filters'):
   filters = request.query_params.get(field_name, None)
   if filters is not None:
@@ -20,11 +20,11 @@ def filtersFromRequest(request, field_name='filters'):
 
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
-# ordering = orderingFromRequest(request=self.request) 
-# qs = stories.objects.all().order_by(*ordering)
-def orderingFromRequest(request):
-  ordering = request.query_params.get('ordering', None)
-  return ordering.split(',') if ordering is not None else None
+# orderby = orderbyFromRequest(request=self.request) 
+# qs = stories.objects.all().order_by(*orderby)
+def orderbyFromRequest(request):
+  orderby = request.query_params.get('orderby', None)
+  return orderby.split(',') if orderby is not None else None
 
 # get corresponding serializer class to content_type.model property. `content_type` is instance of django.contrib.contenttypes.models.ContentType 
 # https://docs.djangoproject.com/en/1.10/ref/contrib/contenttypes/#django.contrib.contenttypes.models.ContentType  

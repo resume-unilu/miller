@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from miller.api.serializers import ReviewSerializer, LiteReviewSerializer, AnonymousReviewSerializer, AnonymousLiteReviewSerializer
-from miller.api.utils import filtersFromRequest, orderingFromRequest
+from miller.api.utils import filtersFromRequest, orderbyFromRequest
 
 from miller.models import Review, Author
 
@@ -48,7 +48,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
   
   def list(self, request, *args, **kwargs):
     filters = filtersFromRequest(request=self.request)
-    ordering = orderingFromRequest(request=self.request)
+    ordering = orderbyFromRequest(request=self.request)
     """
     This is the list of your reviews. Access to the uncompleted list via todo
     """
