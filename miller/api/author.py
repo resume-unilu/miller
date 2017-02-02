@@ -55,11 +55,13 @@ class AuthorViewSet(viewsets.ModelViewSet):
       filters.update({'stories__status':Story.PUBLIC})
 
     excludes = filtersFromRequest(request=self.request, field_name='exclude')
+
+    # horrible workaround.
+    ids = Story.objects.exclude(**excludes).filter(**filters).values('pk')
+    print ids
     # print filters
     # top n authors, per story filters.
-    top_authors = Author.objects.exclude(**excludes).filter(
-      **filters
-    ).annotate(
+    top_authors = Author.objects.filter(stories__pk__in=[s['pk'] for s in ids]).annotate(
       num_stories=Count('stories', distinct=True)
     ).order_by('-num_stories')
     
