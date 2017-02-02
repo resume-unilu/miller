@@ -58,7 +58,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
 
     # horrible workaround.
     ids = Story.objects.exclude(**excludes).filter(**filters).values('pk')
-    print ids
+    # print ids
     # print filters
     # top n authors, per story filters.
     top_authors = Author.objects.filter(stories__pk__in=[s['pk'] for s in ids]).annotate(
