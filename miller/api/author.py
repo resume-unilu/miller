@@ -52,7 +52,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
     filters = filtersFromRequest(request=self.request)
     
     if not request.user.is_staff:
-      filters.update({'stories__status':Story.PUBLIC})
+      filters.update({'status':Story.PUBLIC})
 
     excludes = filtersFromRequest(request=self.request, field_name='exclude')
 
