@@ -244,6 +244,13 @@ RSS_DESCRIPTION = 'Miller description'
 WEBSOCKET_URL = '/ws/'
 WS4REDIS_EXPIRE = 7200
 WS4REDIS_PREFIX = 'miller'
+
+#............
+#
+# django-redis-session
+# https://github.com/martinrusev/django-redis-sessions
+#............
+SESSION_ENGINE = 'redis_sessions.session'
 # If the Redis datastore uses connection settings other than the defaults, use this dictionary to override these values
 # WS4REDIS_CONNECTION = {
 #     'host': 'localhost',

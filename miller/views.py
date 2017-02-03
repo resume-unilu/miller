@@ -54,7 +54,8 @@ def _share(request=None, extra={}):
 # views here
 @ensure_csrf_cookie
 def home(request):
-  return render(request, "miller/index.html", _share(request))
+  return render(request, "miller/index.html")
+  #, _share(request))
 
 # @cache_page(60 * 15)
 # @csrf_protect
