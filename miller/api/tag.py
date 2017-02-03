@@ -29,7 +29,7 @@ class TagViewSet(viewsets.ModelViewSet):
     if request.user.is_authenticated() and request.user.is_staff:
       tags = Tag.objects.filter(**filters)
     else:
-      tags = Tag.objects.filter(category__in='keyword').filter(**filters)
+      tags = Tag.objects.filter(category=Tag.KEYWORD).filter(**filters)
 
     page    = self.paginate_queryset(tags)
 
