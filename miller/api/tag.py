@@ -1,10 +1,15 @@
 import json
+
+from django.db.models import Count
+
 from rest_framework import serializers,viewsets
 
 from miller.api.fields import JsonField
+from miller.api.serializers import TagSerializer
+from miller.api.utils import filtersFromRequest
 from miller.models import Tag, Story
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, list_route
 
 # story serializer for tags
 class StorySerializer(serializers.ModelSerializer):
@@ -12,38 +17,15 @@ class StorySerializer(serializers.ModelSerializer):
     model = Tag
     fields = ('url', 'title', 'date')
 
-# Serializers define the API representation.
-class TagSerializer(serializers.HyperlinkedModelSerializer):
-  metadata = JsonField()
-
-  class Meta:
-    model = Tag
-    fields = ('id', 'url','name', 'category', 'metadata')
-    
 
 # ViewSets define the view behavior. Filter by status
 class TagViewSet(viewsets.ModelViewSet):
-  stories = StorySerializer(many=True)
-
-
   queryset = Tag.objects.all()
   serializer_class = TagSerializer
 
   def list(self, request):
-    filters = self.request.query_params.get('filters', None)
+    filters = filtersFromRequest(request=self.request)
     
-    if filters is not None:
-      print filters
-      try:
-        filters = json.loads(filters)
-        # print "filters,",filters
-      except Exception, e:
-        # print e
-        filters = {}
-    else:
-      filters = {}
-    # print filters
-    # retrieve only good filters
     if request.user.is_authenticated() and request.user.is_staff:
       tags = Tag.objects.filter(**filters)
     else:
@@ -54,4 +36,26 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer = TagSerializer(tags, many=True,
         context={'request': request}
     )
+    return self.get_paginated_response(serializer.data)
+
+
+  @list_route(methods=['get'])
+  def hallOfFame(self, request):
+    filters = filtersFromRequest(request=self.request)
+    excludes = filtersFromRequest(request=self.request, field_name='exclude')
+
+    if not request.user.is_staff:
+      filters.update({'status':Story.PUBLIC})
+    
+    # horrible workaround.
+    ids = Story.objects.exclude(**excludes).filter(**filters).values('pk')
+    # print ids
+    # print filters
+    # top n authors, per story filters.
+    top_tags = Tag.objects.filter(category=Tag.KEYWORD, story__pk__in=[s['pk'] for s in ids]).annotate(
+      num_stories=Count('story', distinct=True)
+    ).order_by('-num_stories')
+    
+    page    = self.paginate_queryset(top_tags)
+    serializer = self.serializer_class(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)

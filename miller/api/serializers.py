@@ -46,9 +46,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
 # tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
+  stories = serializers.IntegerField(read_only=True, source='num_stories')
+
   class Meta:
     model = Tag
-    fields = ('id', 'category', 'slug', 'name', 'status')
+    fields = ('id', 'category', 'slug', 'name', 'status', 'stories')
 
 
 
