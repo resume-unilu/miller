@@ -251,6 +251,7 @@ WS4REDIS_PREFIX = 'miller'
 # https://github.com/martinrusev/django-redis-sessions
 #............
 SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_DB = 3
 # If the Redis datastore uses connection settings other than the defaults, use this dictionary to override these values
 # WS4REDIS_CONNECTION = {
 #     'host': 'localhost',
