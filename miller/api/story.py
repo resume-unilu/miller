@@ -180,4 +180,14 @@ class StoryViewSet(viewsets.ModelViewSet):
     serializer = CommentSerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
 
+
+  @detail_route(methods=['get'], url_path='git-log')
+  def gitlog(self, request, pk): 
+    return Response(pk)
+
+
+  @detail_route(methods=['get'],url_path='git-diffs')
+  def gitdiffs(self, request, pk):
+    return Response(pk)
+
   
