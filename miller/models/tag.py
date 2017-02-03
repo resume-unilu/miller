@@ -15,13 +15,15 @@ class Tag(models.Model):
   HIGHLIGHTS   = 'highlights'
   WRITING      = 'writing'
   COLLECTION   = 'collection'
+  PUBLISHING   = 'publishing' # things related to publishing activity, I.E issue number that can be filtered by
 
   CATEGORY_CHOICES = (
     (KEYWORD, 'keyword'),
     (BLOG, 'blog'),
     (HIGHLIGHTS, 'highlights'),
     (WRITING, 'writing'),
-    (COLLECTION, 'collection')
+    (COLLECTION, 'collection'),
+    (PUBLISHING, 'publishing')
   )
 
   HIDDEN  = 'hidden'
