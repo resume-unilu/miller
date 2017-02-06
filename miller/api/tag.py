@@ -50,9 +50,11 @@ class TagViewSet(viewsets.ModelViewSet):
     # horrible workaround.
     ids = Story.objects.exclude(**excludes).filter(**filters).values('pk')
     # print ids
+    tag__filters = filtersFromRequest(request=self.request, field_name='tag__filters')
+
     # print filters
     # top n authors, per story filters.
-    top_tags = Tag.objects.filter(category=Tag.KEYWORD, story__pk__in=[s['pk'] for s in ids]).annotate(
+    top_tags = Tag.objects.filter(**tag__filters).filter(story__pk__in=[s['pk'] for s in ids]).annotate(
       num_stories=Count('story', distinct=True)
     ).order_by('-num_stories')
     
