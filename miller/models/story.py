@@ -149,6 +149,10 @@ class Story(models.Model):
   def get_path(self):
     return os.path.join(self.owner.profile.get_path(), self.short_url+ '.md')
 
+
+  def get_git_path(self):
+    return 'users/%s/%s.md' % (self.owner.profile.short_url, self.short_url)
+
   
   def get_absolute_url(self):
     return u"/story/%s" % self.slug
@@ -230,18 +234,78 @@ class Story(models.Model):
     repo.tag(tag)
 
 
+  def gitLog(self, limit=4, offset=0):
+    from django.utils import timezone
+    from datetime import datetime
+    repo = Repo.init(settings.GIT_ROOT)
+    path = self.get_git_path()
+    git  = repo.git()
+
+    # coms = helpers.get_previous_and_next(repo.iter_commits(paths=path, max_count=limit, skip=offset))
+    coms = helpers.get_previous_and_next(list(repo.iter_commits(paths=path, max_count=limit, skip=offset)))
+    logs = []
+
+    for cprev, commit, cnext in coms:
+      logs.append({
+        'hexsha': commit.hexsha,
+        'author': commit.author.email,
+        'date': datetime.fromtimestamp(commit.authored_date),
+        'diff': repo.git.diff(commit, cnext, path) if cnext else None
+      })
+      
+    # # # print repo.git.diff(commits_touching_path[0], commits_touching_path[1], path)
+    # #   print repo.git.diff(pairs[0], pairs[1], path)
+    # for cprev, com, cnext in coms:
+    #   if cnext:
+    #     print repo.git.diff(com, cnext, path)
+    return logs
+
+        
+
+  def gitBlob(self, commit_id):
+    repo = Repo.init(settings.GIT_ROOT)
+    # relative path to repo
+    path = self.get_git_path()
+    
+    logger.debug('story {pk:%s} git show %s:%s' % (self.pk, commit_id, path))
+  
+    try:
+      file_contents = repo.git.show('%s:%s'%(commit_id,path))
+    except Exception as e:
+      logger.exception(e)
+      return None
+
+    return file_contents
+
+
+
   def gitCommit(self):
     """
     convenient function to commit the story
     """
-    logger.debug('story {pk:%s} gitCommit...' % self.pk)
+    logger.debug('story {pk:%s} gitCommit: %s' % (self.pk, self.get_path()))
   
     path = self.get_path()
     
-    f = codecs.open(path, encoding='utf-8', mode='w+')
-    f.write(self.contents)
-    f.seek(0)
-    f.close()
+    # check that the path is accessible
+    if not os.path.exists(path):
+      logger.debug('story {pk:%s} gitCommit: path not found, owner changed?' % self.pk)
+      try:
+        owner_path = self.owner.profile.get_path()
+        os.makedirs(owner_path)
+        logger.debug('story {pk:%s} gitCommit: owner_path created at %s.' % (self.pk, owner_path))
+      
+      except OSError as exception:
+        if exception.errno != errno.EEXIST:
+          logger.exception(e)
+
+    try:   
+      f = codecs.open(path, encoding='utf-8', mode='w+')
+      f.write(self.contents)
+      f.seek(0)
+      f.close()
+    except Exception as e:
+      logger.exception(e)
 
     if settings.TESTING:
       logger.debug('story {pk:%s} gitCommit skipped, just testing!' % self.pk)

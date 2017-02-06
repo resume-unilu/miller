@@ -9,6 +9,36 @@ import shortuuid, os, json, logging
 logger = logging.getLogger('miller')
 
 
+def get_previous_and_next(iterable):
+  """
+  Get previous and next values inside a loop.
+  Thanks to http://stackoverflow.com/users/125801/unode and http://stackoverflow.com/users/17160/nosklo
+  http://stackoverflow.com/questions/1011938/python-previous-and-next-values-inside-a-loop
+
+  Then use it in a loop, and you'll have previous and next items in it:
+
+  ```
+  mylist = ['banana', 'orange', 'apple', 'kiwi', 'tomato']
+
+  for previous, item, nxt in get_previous_and_next(mylist):
+    print "Item is now", item, "next is", nxt, "previous is", previous
+  ```
+  The results:
+
+  Item is now banana next is orange previous is None
+  Item is now orange next is apple previous is banana
+  Item is now apple next is kiwi previous is orange
+  Item is now kiwi next is tomato previous is apple
+  Item is now tomato next is None previous is kiwi
+  """
+  from itertools import tee, islice, chain, izip
+
+  prevs, items, nexts = tee(iterable, 3)
+  prevs = chain([None], prevs)
+  nexts = chain(islice(nexts, 1, None), [None])
+  return izip(prevs, items, nexts)
+
+
 def get_unique_slug(instance, trigger, max_length=140):
   """
   generate a slug that do not exists in db, incrementing the number. usage sample:

@@ -15,7 +15,7 @@ from rest_framework.decorators import  api_view, permission_classes, detail_rout
 from miller.models import Story, Tag, Document, Caption, Comment
 from miller.api.utils import filtersFromRequest, orderbyFromRequest
 from miller.api.fields import OptionalFileField, JsonField
-from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer
+from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, IncrediblyLiteStorySerializer
 
 
 # ViewSets define the view behavior. Filter by status
@@ -181,13 +181,44 @@ class StoryViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
 
-  @detail_route(methods=['get'], url_path='git-log')
-  def gitlog(self, request, pk): 
-    return Response(pk)
+  @detail_route(methods=['get'], url_path='git/diffs')
+  def gitdiffs(self, request, pk): 
+    q = self._getUserAuthorizations(request)
+    
+    if not pk.isdigit():
+      story = get_object_or_404(q, slug=pk)
+    else:
+      story = get_object_or_404(q, pk=pk)
+
+    serializer = IncrediblyLiteStorySerializer(story,
+      context={'request': request},
+    )
+    d = serializer.data
+    d['logs'] = story.gitLog()
+
+    return Response(d)
 
 
-  @detail_route(methods=['get'],url_path='git-diffs')
-  def gitdiffs(self, request, pk):
-    return Response(pk)
+  @detail_route(methods=['get'], url_path='git/blob/(?P<commit_id>[0-9a-f]+)')
+  def gitblob(self, request, pk, commit_id=None):
+    """
+    e.g. http://localhost:8000/api/story/populism/git/blob/538d1420fbb0da6be027317d963c059e71b45de5/
+    """
+    q = self._getUserAuthorizations(request)
+    
+    if not pk.isdigit():
+      story = get_object_or_404(q, slug=pk)
+    else:
+      story = get_object_or_404(q, pk=pk)
+
+    contents = story.gitBlob(commit_id)
+
+    serializer = StorySerializer(story,
+      context={'request': request},
+    )
+    
+    d = serializer.data
+    d['contents'] = contents
+    return Response(d)
 
   
