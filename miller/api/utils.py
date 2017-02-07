@@ -1,11 +1,45 @@
-import json
+import json, re
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import FieldError
+
+
+waterfallre = re.compile(r'^_*')
+
+
+class Glue():
+  def __init__(self, request, queryset):
+    self.filters, self.filtersWaterfall = filtersFromRequest(request=request)
+    self.excludes, self.excludesWaterfall = filtersFromRequest(request=request, field_name='exclude')
+    self.ordering = orderbyFromRequest(request=request)
+    self.queryset = queryset
+
+    try:
+      self.queryset = self.queryset.exclude(**self.excludes).filter(**self.filters)
+    except FieldError as e:
+      pass
+    except TypeError as e:
+      pass
+
+    # apply filters progressively
+    for fil in self.filtersWaterfall:
+      print fil
+      try:
+        self.queryset = self.queryset.filter(**fil)
+      except FieldError as e:
+        pass
+      except TypeError as e:
+        pass
+
+    if self.ordering is not None:
+      self.queryset = self.queryset.order_by(*self.ordering)
+
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
 # filters = filtersFromRequest(request=self.request) 
 # qs = stories.objects.filter(**filters).order_by(*orderby)
 def filtersFromRequest(request, field_name='filters'):
   filters = request.query_params.get(field_name, None)
+  waterfall = []
   if filters is not None:
     try:
       filters = json.loads(filters)
@@ -15,8 +49,16 @@ def filtersFromRequest(request, field_name='filters'):
       filters = {}
   else:
     filters = {}
+  # filter filters having AND__ prefixes (cascade stuffs)
+  for k,v in filters.items():
+    if k.startswith('_'):
+      waterfall.append({
+        waterfallre.sub('', k): v
+      })
+      # get rifd of dirty filters
+      filters.pop(k, None)
 
-  return filters
+  return filters, waterfall
 
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 

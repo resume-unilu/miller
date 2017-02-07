@@ -4,7 +4,7 @@ from rest_framework.decorators import list_route
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from miller.api.serializers import AuthorSerializer, LiteAuthorSerializer
-from miller.api.utils import filtersFromRequest
+from miller.api.utils import Glue
 from miller.models import Author, Story
 
 from rest_framework.response import Response
@@ -49,17 +49,17 @@ class AuthorViewSet(viewsets.ModelViewSet):
 
   @list_route(methods=['get'])
   def hallOfFame(self, request):
-    filters = filtersFromRequest(request=self.request)
-    
+    stories = Story.objects.all()
     if not request.user.is_staff:
-      filters.update({'status':Story.PUBLIC})
+      stories = stories.filter(status=Story.PUBLIC)
 
-    excludes = filtersFromRequest(request=self.request, field_name='exclude')
+    g = Glue(queryset=stories, request=request)
+    
+    
+    print g.filters, g.filtersWaterfall
 
-    # horrible workaround.
-    ids = Story.objects.exclude(**excludes).filter(**filters).values('pk')
-    # print ids
-    # print filters
+    ids = g.queryset.values('pk')
+    
     # top n authors, per story filters.
     top_authors = Author.objects.filter(stories__pk__in=[s['pk'] for s in ids]).annotate(
       num_stories=Count('stories', distinct=True)

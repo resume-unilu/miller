@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
 from miller.models import Story, Tag, Document, Caption, Comment
-from miller.api.utils import filtersFromRequest, orderbyFromRequest
+from miller.api.utils import Glue
 from miller.api.fields import OptionalFileField, JsonField
 from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, IncrediblyLiteStorySerializer
 
@@ -29,7 +29,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     elif request.user.is_authenticated():
       q = Story.objects.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(authors__user=request.user)).distinct()
     else:
-      q = Story.objects.filter(status=Story.PUBLIC)
+      q = Story.objects.filter(status=Story.PUBLIC).distinct()
     return q
 
 
@@ -53,20 +53,15 @@ class StoryViewSet(viewsets.ModelViewSet):
   
 
   def list(self, request):
-    filters = filtersFromRequest(request=self.request)
-    excludes = filtersFromRequest(request=self.request, field_name='exclude')
-    ordering = orderbyFromRequest(request=self.request)
-
     stories = self._getUserAuthorizations(request)
-    stories = stories.exclude(**excludes).filter(**filters).distinct()
+    g = Glue(request=request, queryset=stories)
+    
+    stories = g.queryset
 
-    if 'status' not in filters:
+    if 'status' not in g.filters:
       stories = stories.exclude(status=Story.DELETED)
 
-    if ordering is not None:
-      stories = stories.order_by(*ordering)
     # add orderby
-
     # print stories.query
     page    = self.paginate_queryset(stories)
     

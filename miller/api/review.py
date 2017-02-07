@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from miller.api.serializers import ReviewSerializer, LiteReviewSerializer, AnonymousReviewSerializer, AnonymousLiteReviewSerializer
-from miller.api.utils import filtersFromRequest, orderbyFromRequest
+from miller.api.utils import Glue
 
 from miller.models import Review, Author
 
@@ -47,17 +47,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
   
   def list(self, request, *args, **kwargs):
-    filters = filtersFromRequest(request=self.request)
-    ordering = orderbyFromRequest(request=self.request)
+    reviews = self.queryset.filter(assignee=request.user)
+    g = Glue(queryset=reviews, request=request)
+    #filters = filtersFromRequest(request=self.request)
+    #ordering = orderbyFromRequest(request=self.request)
     """
     This is the list of your reviews. Access to the uncompleted list via todo
     """
-    qs = self.queryset.filter(assignee=request.user).filter(**filters)
-    if ordering is not None:
-      qs = qs.order_by(*ordering)
+    reviews = g.queryset
 
-    page    = self.paginate_queryset(qs)
-    serializer = LiteReviewSerializer(qs, many=True, context={'request': request})
+    page    = self.paginate_queryset(reviews)
+    serializer = LiteReviewSerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
 
   
@@ -92,5 +92,5 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     qs = self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user))
     page    = self.paginate_queryset(qs)
-    serializer = AnonymousLiteReviewSerializer(qs, many=True, context={'request': request})
+    serializer = AnonymousLiteReviewSerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
