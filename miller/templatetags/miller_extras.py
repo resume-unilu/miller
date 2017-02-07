@@ -35,6 +35,9 @@ def lookup(obj, path, language):
 
 @register.simple_tag()
 def markdownit(text, language):
+  if not text:
+    return ''
+    
   desiredLanguage = [item[2] for item in settings.LANGUAGES if item[0] == language][0]
   defaultLanguage = [item[2] for item in settings.LANGUAGES if item[0] == settings.LANGUAGE_CODE][0]
 
