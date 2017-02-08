@@ -22,6 +22,7 @@ django-templated-email==2.0
 django-websocket-redis==0.4.6
 djangorestframework==3.5.3
 djoser==0.5.1
+Embedly==0.5.0
 feedparser==5.2.1
 gevent==1.1.1
 gevent-socketio==0.2.1
@@ -29,6 +30,7 @@ gevent-websocket==0.9.5
 gitdb==0.6.4
 GitPython==1.0.2
 greenlet==0.4.9
+httplib2==0.10.3
 incremental==16.10.1
 jsonfield==1.0.3
 lxml==3.6.4
