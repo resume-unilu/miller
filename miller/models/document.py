@@ -243,7 +243,7 @@ class Document(models.Model):
     if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
       logger.debug('document {pk:%s, mimetype:%s, type:%s} snapshot can be generated' % (self.pk, self.mimetype, self.type))
       
-      filename = '%s.snapshot.png' % os.path.basename(self.attachment.name)
+      filename = '%s.snapshot.png' % self.short_url
       outfile = os.path.join(settings.MEDIA_ROOT, snapshot_attachment_file_name(self, filename))
 
       # generate dir if there is none
@@ -261,7 +261,7 @@ class Document(models.Model):
         # generate snapshot
         helpers.generate_snapshot(filename=self.attachment.path, output=outfile, width=234)
            
-        self.snapshot = snapshot_attachment_file_name(self,  filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
+        self.snapshot = snapshot_attachment_file_name(self, filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
         self._dirty = True
         logger.debug('document {pk:%s, mimetype:%s, type:%s} IMAGE thumbnail done.' % (self.pk, self.mimetype, self.type))
         # remove tempfile
