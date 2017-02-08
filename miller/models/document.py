@@ -314,6 +314,23 @@ class Document(models.Model):
       logger.debug('document {pk:%s} snapshot cannot be generated.' % self.pk)
       
 
+  def noembed(self):
+    """
+    use noembed MILLER_EMBEDLY_API_KEY to get videos from url
+    """
+    if self.url:
+      logger.debug('document {pk:%s, url:%s} init embedly' % (self.pk, self.url))
+
+      from embedly import Embedly
+      
+      client = Embedly(settings.MILLER_EMBEDLY_API_KEY)
+      embed = client.oembed(self.url, raw=True)
+      self.contents = embed['raw'] 
+      #  print json.embed
+      #else:
+      #  logger.warn('document {pk:%s, url:%s} cannot embedly, it is not a recognized provider.' % (self.pk, self.url))
+
+
   def create_oembed(self):
     """
     Create a rich oembed for uploaded document, if needed.

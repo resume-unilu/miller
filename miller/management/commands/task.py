@@ -21,6 +21,7 @@ class Command(BaseCommand):
   
 
   available_tasks = (
+    'noembed',
     'snapshot', # require document pk, e.g python manage.py task snapshot --pk=991
     'snapshots', # handle pdf snapshot, python manage.py task snapshots
     'snapshots404',
@@ -111,7 +112,21 @@ class Command(BaseCommand):
         break
       else:
         logger.debug('task: update_whoosh for doc {pk:%s} success' % doc.pk)
-      
+    
+
+  def noembed(self, **options):
+    logger.debug('task: noembed!')
+    if not options['pk']:
+      raise Exception('--pk not found')
+    
+    logger.debug('task: noembed for {document:%s}' % options['pk'])
+
+    doc = Document.objects.get(pk=options['pk'])
+    try:
+      doc.noembed()
+      doc.save()
+    except Exception as e:
+      logger.exception(e)
 
 
   def snapshot(self, **options):
