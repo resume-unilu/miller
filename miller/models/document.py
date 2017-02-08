@@ -14,7 +14,7 @@ from django.dispatch import receiver, Signal
 from django.utils.text import slugify
 
 from miller import helpers
-from wand.image import Image
+from wand.image import Image, Color
 
 
 logger = logging.getLogger('miller.commands')
@@ -156,38 +156,42 @@ class Document(models.Model):
     if self.url: 
       logger.debug('url: %s for document {pk:%s}' % (self.url, self.pk))
 
-      res = requests.get(self.url,  timeout=5, stream=True)
-      if res.status_code == requests.codes.ok:
-        self.mimetype = res.headers['content-type'].split(';')[0]
-        logger.debug('mimetype found: %s for document {pk:%s}' % (self.mimetype, self.pk))
-        if self.mimetype == 'application/pdf':
-          # Create a temporary file
-          filename = self.url.split('/')[-1]
-          filename = filename[:80]
-          lf = tempfile.NamedTemporaryFile()
+      try:
+        res = requests.get(self.url, timeout=settings.MILLER_URL_REQUEST_TIMEOUT, stream=True)
+      except requests.exceptions.Timeout:
+        logger.debug('url: %s for document {pk:%s} TIMEOUT...' % (self.url, self.pk))
+      else:
+        if res.status_code == requests.codes.ok:
+          self.mimetype = res.headers['content-type'].split(';')[0]
+          logger.debug('mimetype found: %s for document {pk:%s}' % (self.mimetype, self.pk))
+          if self.mimetype == 'application/pdf':
+            # Create a temporary file
+            filename = self.url.split('/')[-1]
+            filename = filename[:80]
+            lf = tempfile.NamedTemporaryFile()
 
-          # Read the streamed image in sections
-          for block in res.iter_content(1024 * 8):
-            if not block: # If no more file then stop
-              break
-            lf.write(block) # Write image block to temporary file
-          # complete writing.
-          lf.flush()
+            # Read the streamed image in sections
+            for block in res.iter_content(1024 * 8):
+              if not block: # If no more file then stop
+                break
+              lf.write(block) # Write image block to temporary file
+            # complete writing.
+            lf.flush()
 
-          logger.debug('saving attachment: %s for document {pk:%s}' % (filename, self.pk))
-          outfile = os.path.join(settings.MEDIA_PRIVATE_ROOT, self.type, self.short_url)
+            logger.debug('saving attachment: %s for document {pk:%s}' % (filename, self.pk))
+            outfile = os.path.join(settings.MEDIA_PRIVATE_ROOT, self.type, self.short_url)
 
-          try:
-            os.makedirs(os.path.dirname(outfile))
-          except OSError:
-            pass
+            try:
+              os.makedirs(os.path.dirname(outfile))
+            except OSError:
+              pass
 
-          
-          shutil.copy(lf.name, outfile)
-          self.attachment = os.path.join(settings.MEDIA_PRIVATE_RELATIVE_PATH, self.type, self.short_url)
-          self.save()
-          # clean tempfile
-          lf.close()
+            
+            shutil.copy(lf.name, outfile)
+            self.attachment = os.path.join(settings.MEDIA_PRIVATE_RELATIVE_PATH, self.type, self.short_url)
+            self.save()
+            # clean tempfile
+            lf.close()
           
 
   def generate_metadata(self):
@@ -285,6 +289,9 @@ class Document(models.Model):
         try:
           # Converting first page into JPG
           with Image(filename='%s[%s]'%(pdffile,page), resolution=150) as img:
+            img.format = 'png'
+            img.background_color = Color('white') # Set white background.
+            img.alpha_channel = 'remove'
             img.save(filename=outfile)
 
           self.snapshot = snapshot_attachment_file_name(self, filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)

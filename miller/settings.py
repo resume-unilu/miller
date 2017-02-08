@@ -407,6 +407,9 @@ MILLER_SETTINGS = {
   'copyrighturl': '',
 }
 
+# in seconds
+MILLER_URL_REQUEST_TIMEOUT = 15
+
 # please check that in your static pages root there are .md files for each of these pagenames
 MILLER_STATIC_PAGES = ['guide-for-authors', 'people', 'project', 'terms-of-use']
 MILLER_STATIC_PAGES_ROOT = os.path.join(BASE_DIR, 'client/src/pages')
