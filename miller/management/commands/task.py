@@ -23,6 +23,7 @@ class Command(BaseCommand):
   available_tasks = (
     'snapshot', # require document pk, e.g python manage.py task snapshot --pk=991
     'snapshots', # handle pdf snapshot, python manage.py task snapshots
+    'snapshots404',
     'cleanbin',
     'update_whoosh',
     'update_localisation'
@@ -143,6 +144,31 @@ class Command(BaseCommand):
         doc.save()
       except Exception as e:
         logger.exception(e)
+
+
+  def snapshots404(self, **options):
+    """
+    Find snapshots giving 404 so that we know what need to be fixed.
+    """
+    logger.debug('task: find 404 snapshots!')
+
+    docs = Document.objects.exclude(url__isnull=True).filter(mimetype='application/pdf', snapshot__isnull=False)
+    logger.debug('  looking for application/pdf on %s / %s documents.' % (docs.count(), Document.objects.all().count()))
+    # The `iterator()` method ensures only a few rows are fetched from
+    # the database at a time, saving memory.
+    for doc in docs.iterator():
+      logger.debug('task: snapshot missing for {document:%s}' % doc.id)
+      # try:
+      #   doc.fill_from_url()
+      #   doc.create_snapshot()
+      #   doc.save()
+      # except Exception as e:
+      #   logger.exception(e)
+
+    # having snapshot. Do file exists?
+    # docs = Document.objects.exclude(snapshot__isnull=True)
+    # for doc in docs.iterator():
+    #   os.path.exists(doc.snapshot.path)
 
   #cleaning story.DELETED older than 2 months
   def cleanbin(self, **options):
