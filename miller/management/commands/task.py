@@ -152,12 +152,13 @@ class Command(BaseCommand):
     """
     logger.debug('task: find 404 snapshots!')
 
-    docs = Document.objects.exclude(url__isnull=True).filter(mimetype='application/pdf', snapshot__isnull=True)
+    docs = Document.objects.exclude(url__isnull=True).filter(mimetype='application/pdf')
     logger.debug('  looking for application/pdf on %s / %s documents.' % (docs.count(), Document.objects.all().count()))
     # The `iterator()` method ensures only a few rows are fetched from
     # the database at a time, saving memory.
     for doc in docs.iterator():
-      logger.debug('task: snapshot missing for {document:%s}' % doc.id)
+      if not doc.snapshot or not os.path.exists(doc.snapshot.path):
+        logger.debug('task: snapshot missing for {document:%s}' % doc.id)
       # try:
       #   doc.fill_from_url()
       #   doc.create_snapshot()
