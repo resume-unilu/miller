@@ -246,6 +246,13 @@ class Document(models.Model):
       filename = '%s.snapshot.png' % os.path.basename(self.attachment.name)
       outfile = os.path.join(settings.MEDIA_ROOT, snapshot_attachment_file_name(self, filename))
 
+      # generate dir if there is none
+      try:
+        os.makedirs(os.path.dirname(outfile))
+      except OSError:
+        logger.debug('document {pk:%s, mimetype:%s, type:%s} creating folder for snapshot' % (self.pk, self.mimetype, self.type))
+        pass
+
       # generate thumbnail
       if self.mimetype == 'image/png' or self.mimetype == 'image/jpeg' or self.mimetype == 'image/gif' or self.type == Document.IMAGE or self.type == Document.PHOTO:
         logger.debug('document {pk:%s, mimetype:%s, type:%s} generating IMAGE thumbnail...' % (self.pk, self.mimetype, self.type))
