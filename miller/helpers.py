@@ -9,6 +9,44 @@ import shortuuid, os, json, logging
 logger = logging.getLogger('miller')
 
 
+def generate_snapshot(filename, output, width=234, height=234):
+  """
+  Use liquid_rescale to scale down snapshots to the desired dimension
+  """
+  from wand.image import Image
+  
+  # clean
+  try:
+    os.remove(output)
+  except OSError as e:
+    pass
+
+  try:
+    os.makedirs(os.path.dirname(output))
+  except OSError:
+    pass
+
+  
+  with Image(filename=filename) as img:
+    ratio = 1.0*img.width/img.height
+
+    # resize to the minimum, then crop
+
+    if img.width > img.height :
+      # width greated than height
+      img.transform(resize='x%s'%width)
+    elif img.width < img.height:
+      img.transform(resize='%sx'%width)
+    else:
+      img.transform(resize='%sx%s'% (width, height))
+    img.crop(width=width, height=height, gravity='center')
+
+    
+    img.save(filename=output)
+          
+        
+
+
 def get_previous_and_next(iterable):
   """
   Get previous and next values inside a loop.

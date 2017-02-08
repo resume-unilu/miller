@@ -184,7 +184,12 @@ SIMPLEMDE_OPTIONS = {
 STATIC_URL  = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'dist')
 MEDIA_URL   = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
+
+# media files will be stored here as technical copies. It has to be related to MEDIA root
+MEDIA_PRIVATE_RELATIVE_PATH  = 'private'
+MEDIA_PRIVATE_ROOT = os.path.join(MEDIA_ROOT, 'private')
+
 
 GIT_ROOT = os.path.join(BASE_DIR, 'contents')
 GIT_COMMITTER = {

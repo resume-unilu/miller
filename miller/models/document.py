@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2, bibtexparser
+import shutil,os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2, bibtexparser
 
 from actstream import action
 from actstream.actions import follow
@@ -25,7 +25,11 @@ document_ready = Signal(providing_args=["instance", "created"])
 def attachment_file_name(instance, filename):
   return os.path.join(instance.type, filename)
 
+def private_attachment_file_name(instance, filename):
+  return os.path.join(settings.MEDIA_PRIVATE_ROOT, instance.type, filename)
+
 def snapshot_attachment_file_name(instance, filename):
+  print 'generating', os.path.join(instance.type, 'snapshots', filename)
   return os.path.join(instance.type, 'snapshots', filename)
 
 
@@ -160,7 +164,6 @@ class Document(models.Model):
           # Create a temporary file
           filename = self.url.split('/')[-1]
           filename = filename[:80]
-          print 'filename', filename
           lf = tempfile.NamedTemporaryFile()
 
           # Read the streamed image in sections
@@ -168,11 +171,24 @@ class Document(models.Model):
             if not block: # If no more file then stop
               break
             lf.write(block) # Write image block to temporary file
-            
-          logger.debug('saving attachment: %s for document {pk:%s}' % (filename, self.pk))
-        
-          self.attachment.save(filename, files.File(lf))
+          # complete writing.
+          lf.flush()
 
+          logger.debug('saving attachment: %s for document {pk:%s}' % (filename, self.pk))
+          outfile = os.path.join(settings.MEDIA_PRIVATE_ROOT, self.type, self.short_url)
+
+          try:
+            os.makedirs(os.path.dirname(outfile))
+          except OSError:
+            pass
+
+          
+          shutil.copy(lf.name, outfile)
+          self.attachment = os.path.join(settings.MEDIA_PRIVATE_RELATIVE_PATH, self.type, self.short_url)
+          self.save()
+          # clean tempfile
+          lf.close()
+          
 
   def generate_metadata(self):
     if getattr(self, '__metadata', None) is None:
@@ -226,29 +242,30 @@ class Document(models.Model):
       
     if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
       logger.debug('document {pk:%s, mimetype:%s, type:%s} snapshot can be generated' % (self.pk, self.mimetype, self.type))
+      
+      filename = '%s.snapshot.png' % os.path.basename(self.attachment.name)
+      outfile = os.path.join(settings.MEDIA_ROOT, snapshot_attachment_file_name(self, filename))
+
       # generate thumbnail
       if self.mimetype == 'image/png' or self.mimetype == 'image/jpeg' or self.mimetype == 'image/gif' or self.type == Document.IMAGE or self.type == Document.PHOTO:
         logger.debug('document {pk:%s, mimetype:%s, type:%s} generating IMAGE thumbnail...' % (self.pk, self.mimetype, self.type))
-        with Image(filename=self.attachment.path) as img:
-          # width = img.width
-          # height = img.height
-          # print width, height
-
-          # img.liquid_rescale(234, 234)
-          img.save(filename=self.attachment.path + '.234x234.png')
-          
-        with open(self.attachment.path + '.234x234.png') as f:
-          # this save its parent... 
-          self.snapshot.save(os.path.basename(self.attachment.path) + '.234x234.png', files.images.ImageFile(f), save=False)
-          self._dirty = True
-          logger.debug('document {pk:%s, mimetype:%s, type:%s} IMAGE thumbnail done.' % (self.pk, self.mimetype, self.type))
-
+        
+        
+        # generate snapshot
+        helpers.generate_snapshot(filename=self.attachment.path, output=outfile, width=234)
+           
+        self.snapshot = snapshot_attachment_file_name(self,  filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
+        self._dirty = True
+        logger.debug('document {pk:%s, mimetype:%s, type:%s} IMAGE thumbnail done.' % (self.pk, self.mimetype, self.type))
+        # remove tempfile
+        
 
       # print mimetype
       elif self.mimetype == 'application/pdf':
         logger.debug('document {pk:%s, mimetype:%s, type:%s} generating PDF snapshot...' % (self.pk, self.mimetype, self.type))
-      
-        pdf_im = PyPDF2.PdfFileReader(self.attachment)
+        
+        pdffile = self.attachment.path
+        pdf_im = PyPDF2.PdfFileReader(pdffile)
 
         # get page
         page = 0
@@ -260,13 +277,17 @@ class Document(models.Model):
         
         try:
           # Converting first page into JPG
-          with Image(filename=self.attachment.path + '[%s]'%page, resolution=150) as img:
-            img.save(filename=self.attachment.path + '.png')
+          with Image(filename='%s[%s]'%(pdffile,page), resolution=150) as img:
+            img.save(filename=outfile)
 
-          with open(self.attachment.path + '.png') as f:
-            self.snapshot.save(os.path.basename(self.attachment.path)[:100] + '.png', files.images.ImageFile(f), save=False)
-            self._dirty = True
-            logger.debug('document {pk:%s, type:%s} PDF snapshot done.' % (self.pk,self.type))
+          self.snapshot = snapshot_attachment_file_name(self, filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
+          self._dirty = True
+        
+
+          # with open(self.attachment.path + '.png') as f:
+          #   self.snapshot.save(os.path.basename(self.attachment.path)[:100] + '.png', files.images.ImageFile(f), save=False)
+          #   self._dirty = True
+          #   logger.debug('document {pk:%s, type:%s} PDF snapshot done.' % (self.pk,self.type))
 
         except Exception as e:
           logger.exception(e)
