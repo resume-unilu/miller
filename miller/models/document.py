@@ -158,17 +158,16 @@ class Document(models.Model):
 
       try:
         res = requests.get(self.url, timeout=settings.MILLER_URL_REQUEST_TIMEOUT, stream=True)
-      except requests.exceptions.Timeout:
-        logger.debug('url: %s for document {pk:%s} TIMEOUT...' % (self.url, self.pk))
-      else:
+
         if res.status_code == requests.codes.ok:
-          self.mimetype = res.headers['content-type'].split(';')[0]
+          self.mimetype = res.headers['content-type'].split(';')[0].lower()
           logger.debug('mimetype found: %s for document {pk:%s}' % (self.mimetype, self.pk))
           if self.mimetype == 'application/pdf':
             # Create a temporary file
             filename = self.url.split('/')[-1]
             filename = filename[:80]
             lf = tempfile.NamedTemporaryFile()
+
 
             # Read the streamed image in sections
             for block in res.iter_content(1024 * 8):
@@ -192,6 +191,9 @@ class Document(models.Model):
             self.save()
             # clean tempfile
             lf.close()
+      
+      except requests.exceptions.Timeout:
+        logger.debug('url: %s for document {pk:%s} TIMEOUT...' % (self.url, self.pk))
           
 
   def generate_metadata(self):
