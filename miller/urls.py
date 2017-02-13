@@ -80,6 +80,7 @@ urlpatterns = [
 if hasattr(settings, 'GOOGLE_IDENTIFICATION'):
   urlpatterns = urlpatterns + [
     url(r'^'+ settings.GOOGLE_IDENTIFICATION + r'$', TemplateView.as_view(template_name=settings.GOOGLE_IDENTIFICATION)),
+    url(r'^accessibility/$' + settings.GOOGLE_IDENTIFICATION + r'$', TemplateView.as_view(template_name=settings.GOOGLE_IDENTIFICATION)),
   ]
 
 # redirect everything here
