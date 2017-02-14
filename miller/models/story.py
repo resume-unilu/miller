@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import pypandoc, re, os, codecs, json, logging
+import pypandoc, re, os, codecs, json, logging, errno
 import django.dispatch
 
 from actstream import action
@@ -289,15 +289,17 @@ class Story(models.Model):
     
     # check that the path is accessible
     if not os.path.exists(path):
-      logger.debug('story {pk:%s} gitCommit: path not found, owner changed?' % self.pk)
+      logger.debug('story {pk:%s} gitCommit: path "%s" not found, owner changed?' % (self.pk, path))
       try:
         owner_path = self.owner.profile.get_path()
         os.makedirs(owner_path)
         logger.debug('story {pk:%s} gitCommit: owner_path created at %s.' % (self.pk, owner_path))
       
-      except OSError as exception:
-        if exception.errno != errno.EEXIST:
+      except OSError as e:
+        if e.errno != errno.EEXIST:
           logger.exception(e)
+      except Exception as e:
+        logger.exception(e)
 
     try:   
       f = codecs.open(path, encoding='utf-8', mode='w+')
@@ -553,7 +555,10 @@ def create_first_author(sender, instance, created, **kwargs):
 @receiver(story_ready, sender=Story)
 def create_working_md(sender, instance, created, **kwargs):
   logger.debug('story@story_ready {pk:%s}: create_working_md...' % instance.pk)
-  instance.gitCommit()
+  try:
+    instance.gitCommit()
+  except Exception as e:
+    logger.exception(e)
   logger.debug('story@story_ready {pk:%s}: create_working_md done.' % instance.pk)
 
 
