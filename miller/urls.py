@@ -103,7 +103,9 @@ urlpatterns = urlpatterns + [
 
   url(r'^accessibility/(?P<page>[a-z\-]+)$', views.accessibility_page, name='accessibility_page'),
   
-  
+  # oaht2 toolkit here
+  url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+     
   
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
   url(r'^(?!favicon\.ico|signup|media).*$', views.home, name='app')

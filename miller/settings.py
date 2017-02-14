@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'social.apps.django_app.default',
     'channels',
+    'oauth2_provider',
     'rest_framework',
     'templated_email',
     'djoser',
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
 
     'actstream',
     #'django_seo_js'
+    
 ]
 
 
@@ -156,6 +158,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+}
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -167,6 +174,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+    ),
     'PAGE_SIZE': 4
 }
 
