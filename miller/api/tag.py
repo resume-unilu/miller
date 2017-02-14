@@ -51,11 +51,12 @@ class TagViewSet(viewsets.ModelViewSet):
     # print ids
     tag__filters, tf = filtersFromRequest(request=self.request, field_name='tag__filters')
 
+    g.ordering.append('-num_stories')
     # print filters
     # top n authors, per story filters.
     top_tags = Tag.objects.filter(**tag__filters).filter(story__pk__in=[s['pk'] for s in ids]).annotate(
       num_stories=Count('story', distinct=True)
-    ).order_by('-num_stories')
+    ).order_by(**ordering)
     
     page    = self.paginate_queryset(top_tags)
     serializer = self.serializer_class(page, many=True, context={'request': request})

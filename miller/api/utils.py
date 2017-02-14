@@ -79,8 +79,8 @@ def get_serializer(content_type):
     from miller.api.serializers import LiteDocumentSerializer
     serializer = LiteDocumentSerializer
   elif content_type.model == 'story':
-    from miller.api.serializers import LiteStorySerializer
-    serializer = LiteStorySerializer
+    from miller.api.serializers import IncrediblyLiteStorySerializer
+    serializer = IncrediblyLiteStorySerializer
   elif content_type.model == 'profile':
     from miller.api.serializers import ProfileSerializer
     serializer = ProfileSerializer
