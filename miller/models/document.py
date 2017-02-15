@@ -35,6 +35,7 @@ def snapshot_attachment_file_name(instance, filename):
 
 class Document(models.Model):
   BIBLIOGRAPHIC_REFERENCE = 'bibtex'
+  CROSSREF_REFERENCE = 'crossref'
   VIDEO_COVER = 'video-cover'
   PICTURE = 'picture'
   IMAGE   = 'image'
@@ -48,6 +49,7 @@ class Document(models.Model):
   AV      = 'audiovisual'
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
+    (CROSSREF_REFERENCE, 'bibtex'),
     (VIDEO_COVER, 'video interview'),
     (VIDEO, 'video'),
     (TEXT, 'text'),
