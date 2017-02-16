@@ -16,11 +16,12 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   copyrights = serializers.ReadOnlyField(source='document.copyrights')
   caption = serializers.ReadOnlyField(source='contents')
   metadata = JsonField(source='document.contents')
-  snapshot = OptionalFileField(source='document.snapshot', read_only=True)
+  snapshot   = OptionalFileField(source='document.snapshot', read_only=True)
+  attachment = OptionalFileField(source='document.attachment', read_only=True)
 
   class Meta:
     model = Caption
-    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
+    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'attachment', 'metadata')
 
 
 class UserSerializer(serializers.ModelSerializer):
