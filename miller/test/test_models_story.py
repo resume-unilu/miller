@@ -4,7 +4,7 @@ import os
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import TestCase
 from miller import helpers
-from miller.models import Story, Author
+from miller.models import Story, Author, Comment
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -40,6 +40,14 @@ class StoryTest(TestCase):
     self.story.authors.add(coauthor)
     print [a.fullname for a in self.story.authors.all()]
     self.assertTrue(os.path.exists(self.story.get_path()))
+
+
+  def test_comment(self):
+    # add comment
+    com = Comment(story=self.story, contents=u'{}', owner=self.user)
+    com.save()
+    self.assertEquals(com.highlights, '')
+    # print com.short_url
 
 
 

@@ -170,8 +170,19 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       sel = Q(story__slug=pk)
 
-    coms = Comment.objects.filter(sel).filter(Q(owner=request.user))
-    page    = self.paginate_queryset(coms)
+    coms = Comment.objects.filter(sel)
+    
+    if request.user.is_staff:
+      pass
+    elif request.user.is_authenticated():
+      # I amn the author of the ocomment OR I am the 
+      coms = coms.filter(Q(owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user)).distinct()
+    else:
+      coms = coms.filter(status=Comment.PUBLIC).filter(story__status=Story.PUBLIC).distinct()
+    
+    g = Glue(request=request, queryset=coms)
+
+    page    = self.paginate_queryset(g.queryset)
     serializer = CommentSerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
 
@@ -185,7 +196,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       story = get_object_or_404(q, pk=pk)
 
-    serializer = IncrediblyLiteStorySerializer(story,
+    serializer = LiteStorySerializer(story,
       context={'request': request},
     )
     d = serializer.data

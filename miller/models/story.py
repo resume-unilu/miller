@@ -122,6 +122,15 @@ class Story(models.Model):
     else:
       return self._dmetadata
 
+
+  @property
+  def highlights(self):
+    """
+    highlights 
+    """
+    return filter(None, self.comments.values_list('highlights', flat=True))
+
+
   @property
   def ogcover(self):
     """

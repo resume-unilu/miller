@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
+import json, logging
 from actstream import action
 
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from miller import helpers
 
+logger = logging.getLogger('miller.commands')
 
 class Comment(models.Model):
   """
@@ -27,9 +29,12 @@ class Comment(models.Model):
     (DELETED, 'deleted'), # deleted comments, marked to be removed forever.
   )
 
+  short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
+  
   story = models.ForeignKey('miller.Story', related_name='comments')
   owner = models.ForeignKey('auth.User'); # at least the first author, the one who owns the file.
   
+  # follows = model.foreignKey(self);
   status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING, db_index=True)
 
   date               = models.DateTimeField(null=True, blank=True, auto_now_add=True, db_index=True) # date displayed (metadata)
@@ -42,6 +47,21 @@ class Comment(models.Model):
     'content': '',
     'annotation': {}
   }, indent=1),blank=True)
+
+  # highlights rangy identifiers, given as text (e.g. path)
+  highlights = models.CharField(default='', blank=True, max_length=100)
+
+
+@receiver(pre_save, sender=Comment)
+def complete_instance(sender, instance, **kwargs):
+  """
+  Substitute the instance.highlights identifier with the correct one.
+  Highlights are generated story property highlights
+  """
+  logger.debug('comment {pk:%s} @pre_save' % instance.pk)
+  if instance.highlights:
+    instance.highlights = instance.highlights.replace('$highlight$', '$%s$' % instance.short_url)
+
 
 
 @receiver(post_save, sender=Comment)

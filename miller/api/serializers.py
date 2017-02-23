@@ -6,6 +6,7 @@ from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTyp
 from miller.api import utils
 
 
+
 class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   document_id    = serializers.ReadOnlyField(source='document.id')
   type  = serializers.ReadOnlyField(source='document.type')
@@ -40,10 +41,14 @@ class CommentSerializer(serializers.ModelSerializer):
   
   class Meta:
     model = Comment
-    fields = ('pk', 'owner', 'contents',)
+    fields = ('pk', 'owner', 'contents','date_created', 'status')
 
 
-
+class ActionCommentSerializer(serializers.ModelSerializer):
+  owner    = UserSerializer()
+  class Meta:
+    model = Comment
+    fields = ('pk', 'owner')
 
 # tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
@@ -168,13 +173,13 @@ class AnonymousLiteStorySerializer(serializers.ModelSerializer):
 
 # retrieve a Story, full
 class StorySerializer(serializers.HyperlinkedModelSerializer):
-  authors = AuthorSerializer(many=True)
-  owner = UserSerializer()
-  tags = TagSerializer(many=True)
-  documents = CaptionSerializer(source='caption_set', many=True)
-  covers = LiteDocumentSerializer(many=True)
-  stories = LiteMentionSerializer(many=True)
-  metadata = JsonField()
+  authors    = AuthorSerializer(many=True)
+  owner      = UserSerializer()
+  tags       = TagSerializer(many=True)
+  documents  = CaptionSerializer(source='caption_set', many=True)
+  covers     = LiteDocumentSerializer(many=True)
+  stories    = LiteMentionSerializer(many=True)
+  metadata   = JsonField()
 
   class Meta:
     model = Story
@@ -186,7 +191,8 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
       'contents',
       'date', 'date_created', 
       'status', 
-      'authors','owner'
+      'authors','owner',
+      'highlights'
     )
 
 
@@ -250,6 +256,22 @@ class CreateCommentSerializer(serializers.ModelSerializer):
   owner = serializers.HiddenField(
     default=serializers.CurrentUserDefault()
   )
+
+  def validate_contents(self, value):
+    """
+    Check that Json contents is actually JSON content and it contains something
+    """
+    import json
+    try:
+      _value = json.loads(value)
+      if not 'content' in _value:
+        raise serializers.ValidationError("contents JSON should contain a 'content' property.")
+      if not _value['content']:
+        raise serializers.ValidationError("contents JSON should contain a 'content' property.")
+      
+    except Exception as e:
+      raise serializers.ValidationError("contents field should contain a valid JSON text")
+    return value
 
   class Meta:
     model  = Comment
