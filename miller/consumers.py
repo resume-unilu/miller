@@ -33,7 +33,7 @@ def ws_connect(message):
     print '%s connected to staff group channel' % (message.user.username,)
     Group("pulse-staff").add(message.reply_channel)
     Group("pulse-staff").send({
-      "text": 'welcome to the stuff staff channel',
+      "text": json.dumps({'welcome': 'welcome to the stuff staff channel.'}),
     })
 
   Group("pulse").add(message.reply_channel)
