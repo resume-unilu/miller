@@ -64,20 +64,23 @@ class PulseConsumer(BaseConsumer):
 
 @receiver(post_save, sender=Action)
 def add_action(sender, instance, created, **kwargs):
-  from miller.api.utils import get_serialized
+  logger.debug('add_action to channel pulse-staff')
+  try:
+    from miller.api.utils import get_serialized
 
-  # pseudo serializer ;)
-  msg = json.dumps({
-    'actor': get_serialized(instance.actor),
-    'verb': instance.verb,
-    'action_object': instance.actor_content_type.model,
-    'target': get_serialized(instance.target),
-    'timesince': instance.timesince()
-  })
-  Group("pulse-staff").send({
-    "text": msg,
-  })
-
+    # pseudo serializer ;)
+    msg = json.dumps({
+      'actor': get_serialized(instance.actor),
+      'verb': instance.verb,
+      'action_object': instance.actor_content_type.model,
+      'target': get_serialized(instance.target),
+      'timesince': instance.timesince()
+    })
+    Group("pulse-staff").send({
+      "text": msg,
+    })
+  except Exception as e:
+    logger.exception(e)
 
 
 def broadcast(group, message):
