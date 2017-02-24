@@ -2,12 +2,22 @@ from rest_framework import serializers,viewsets, status
 
 from miller.api.serializers import CommentSerializer, CreateCommentSerializer
 from miller.models import Comment
+from miller.api.utils import Glue
 from rest_framework.response import Response
 
 # ViewSets define the view behavior. Filter by status
 class CommentViewSet(viewsets.ModelViewSet):
   queryset = Comment.objects.all()
   serializer_class = CommentSerializer
+
+  def _getUserAuthorizations(self, request):
+    if request.user.is_staff:
+      q = self.queryset
+    elif request.user.is_authenticated():
+      q = self.queryset.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(story__authors__user=request.user)).distinct()
+    else:
+      q = self.queryset.filter(status=Story.PUBLIC).distinct()
+    return q
 
   """
   you can leave a comment if:
@@ -29,4 +39,18 @@ class CommentViewSet(viewsets.ModelViewSet):
     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-  #   pass
+  def list(self, request):
+    coms = self._getUserAuthorizations(request)
+    g = Glue(request=request, queryset=coms)
+    
+    coms = g.queryset
+
+    # add orderby
+
+    # print coms.query
+    page    = self.paginate_queryset(coms)
+    
+    serializer = CommentSerializer(page, many=True, context={'request': request})
+    return self.get_paginated_response(serializer.data)
+
+  #  pass
