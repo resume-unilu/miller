@@ -1,4 +1,4 @@
-import json
+import json, logging
 
 from actstream.models import Action
 
@@ -12,6 +12,10 @@ from channels.sessions import channel_session
 from channels.auth import http_session_user, channel_session_user, channel_session_user_from_http
 
 from miller.models import Author, Story, Document
+
+
+logger = logging.getLogger('miller')
+
 
 @channel_session_user
 def ws_receive(message):
@@ -27,7 +31,7 @@ def ws_receive(message):
 # Connected to websocket.connect
 @channel_session_user_from_http
 def ws_connect(message):
-  print '%s connected to staff pulse %s' % (message.user.username,message.user.is_staff)
+  logger.debug('%s connected to staff pulse %s' % (message.user.username,message.user.is_staff))
     
   if message.user.is_staff:
     print '%s connected to staff group channel' % (message.user.username,)
@@ -41,7 +45,7 @@ def ws_connect(message):
 # Connected to websocket.disconnect
 @channel_session_user
 def ws_disconnect(message):
-  print '%s diconnected to staff pulse %s' % (message.user.username,message.user.is_staff)
+  logger.debug('%s DISCONNECTED to staff pulse %s' % (message.user.username,message.user.is_staff))
     
   if message.user.is_staff:
     Group("pulse-staff").discard(message.reply_channel)
@@ -76,4 +80,9 @@ def add_action(sender, instance, created, **kwargs):
 
 
 
+def broadcast(group, message):
+  logger.debug('BROADCASTING to channel %s, msg %s' % (group,message))
+  Group("pulse-staff").send({
+    "text": message,
+  })
 
