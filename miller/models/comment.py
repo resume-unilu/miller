@@ -69,5 +69,12 @@ def just_commented(sender, instance, created, **kwargs):
   """
   Every time someone comment on a story item, an action is saved
   """
+  logger.debug('comment {pk:%s, short_url:%s} @post_save' % (instance.pk, instance.short_url))
   if created:  
-    action.send(instance.owner, verb='commented', target=instance.story)
+    try:
+      action.send(instance.owner, verb='commented', target=instance.story)
+      logger.debug('comment {pk:%s, short_url:%s} @post_save action saved.' % (instance.pk, instance.short_url))
+  
+    except Exception as e:
+      logger.exception(e)
+  
