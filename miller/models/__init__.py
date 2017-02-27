@@ -26,17 +26,30 @@ def add_action(sender, instance, created, **kwargs):
   try:
     from miller.api.utils import get_serialized
 
-    # pseudo serializer ;)
-    msg = json.dumps({
+    data = {
       'actor': get_serialized(instance.actor),
+      'actor_type': instance.actor_content_type.model,
+
       'verb': instance.verb,
-      'action_object': instance.actor_content_type.model,
+      
       'target': get_serialized(instance.target),
+      'target_type': instance.target_content_type.model,
+
       'timesince': instance.timesince()
-    })
+    }
+
+    msg = json.dumps(data)
+
+    if data['target_type'] == 'story':
+      for u in instance.target.authors.values('user__username'):
+        Group("pulse-" + u['user__username']).send({
+          "text": msg,
+        })
+
     Group("pulse-staff").send({
       "text": msg,
     })
+
   except Exception as e:
     logger.exception(e)
   else:

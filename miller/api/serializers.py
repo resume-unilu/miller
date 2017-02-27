@@ -138,11 +138,9 @@ class LiteMentionSerializer(serializers.ModelSerializer):
 
 # Story Serializer to use in action lists
 class IncrediblyLiteStorySerializer(serializers.ModelSerializer):
-  metadata = JsonField()
-  tags     = TagSerializer(many=True)
   class Meta:
     model = Story
-    fields = ('id', 'slug', 'metadata', 'tags')
+    fields = ('id', 'short_url', 'slug')
 
 
 # Story Serializer to use in lists

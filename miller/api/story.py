@@ -16,7 +16,7 @@ from rest_framework.decorators import  api_view, permission_classes, detail_rout
 from miller.models import Story, Tag, Document, Caption, Comment
 from miller.api.utils import Glue
 from miller.api.fields import OptionalFileField, JsonField
-from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, IncrediblyLiteStorySerializer
+from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer
 
 
 # ViewSets define the view behavior. Filter by status
