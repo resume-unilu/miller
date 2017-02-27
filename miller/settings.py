@@ -277,6 +277,15 @@ SESSION_REDIS_DB = 3
 
 #............
 #
+# ACTSTREAM
+# http://django-activity-stream.readthedocs.io/en/latest/data.html
+#............
+ACTSTREAM_SETTINGS ={
+  'USE_JSONFIELD': True
+}
+
+#............
+#
 # LOGGING
 #
 #............
