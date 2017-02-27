@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'simplemde',
     'captcha',
     'miller',
-
     'actstream',
     #'django_seo_js'
     

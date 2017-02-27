@@ -1,10 +1,6 @@
 import json, logging
 
-from actstream.models import Action
-
 from django.apps import apps
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.http import HttpResponse
 from channels import Group
 from channels.generic import BaseConsumer
@@ -62,25 +58,6 @@ class PulseConsumer(BaseConsumer):
   def method_name(self, message, **kwargs):
       pass
 
-@receiver(post_save, sender=Action)
-def add_action(sender, instance, created, **kwargs):
-  logger.debug('add_action to channel pulse-staff')
-  try:
-    from miller.api.utils import get_serialized
-
-    # pseudo serializer ;)
-    msg = json.dumps({
-      'actor': get_serialized(instance.actor),
-      'verb': instance.verb,
-      'action_object': instance.actor_content_type.model,
-      'target': get_serialized(instance.target),
-      'timesince': instance.timesince()
-    })
-    Group("pulse-staff").send({
-      "text": msg,
-    })
-  except Exception as e:
-    logger.exception(e)
 
 
 def broadcast(group, message):
