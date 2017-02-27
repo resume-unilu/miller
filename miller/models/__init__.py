@@ -14,7 +14,7 @@ from page import Page
 
 import logging, json
 
-from channels import Group
+from miller.consumers import broadcast
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from actstream.models import Action
@@ -38,17 +38,10 @@ def add_action(sender, instance, created, **kwargs):
       'timesince': instance.timesince()
     }
 
-    msg = json.dumps(data)
-
     if data['target_type'] == 'story':
       for u in instance.target.authors.values('user__username'):
-        Group("pulse-" + u['user__username']).send({
-          "text": msg,
-        })
-
-    Group("pulse-staff").send({
-      "text": msg,
-    })
+        broadcast("pulse-%s"% u['user__username'], data)
+    broadcast('pulse-staff', data)
 
   except Exception as e:
     logger.exception(e)

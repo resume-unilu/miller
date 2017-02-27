@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 import json, logging
 from actstream import action
-
+from django.core.cache import cache
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 from miller import helpers
 
@@ -58,10 +58,23 @@ def complete_instance(sender, instance, **kwargs):
   Substitute the instance.highlights identifier with the correct one.
   Highlights are generated story property highlights
   """
-  logger.debug('comment {pk:%s} @pre_save' % instance.pk)
+  logger.debug('comment {pk:None, short_url:%s} @pre_save %s' % (instance.short_url, 'with highlights' if instance.highlights else 'without highlights'))
   if instance.highlights:
     instance.highlights = instance.highlights.replace('$highlight$', '$%s$' % instance.short_url)
 
+
+@receiver(pre_save, sender=Comment)
+def clear_cache_on_save(sender, instance, **kwargs):
+  ckey = 'story.%s' % instance.story.short_url
+  cache.delete(ckey)
+  logger.debug('comment {pk:%s, short_url:%s} @pre_save story {short_url:%s} cache deleted.' % (instance.pk, instance.short_url, instance.story.short_url))
+
+
+@receiver(pre_delete, sender=Comment)
+def clear_cache_on_delete(sender, instance, **kwargs):
+  ckey = 'story.%s' % instance.story.short_url
+  cache.delete(ckey)
+  logger.debug('comment {pk:%s, short_url:%s} @pre_delete story {short_url:%s} cache deleted.' % (instance.pk, instance.short_url, instance.story.short_url))
 
 
 @receiver(post_save, sender=Comment)

@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import serializers,viewsets, status
 
 from miller.api.serializers import CommentSerializer, CreateCommentSerializer
@@ -13,10 +14,10 @@ class CommentViewSet(viewsets.ModelViewSet):
   def _getUserAuthorizations(self, request):
     if request.user.is_staff:
       q = self.queryset
-    elif request.user.is_authenticated():
-      q = self.queryset.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(story__authors__user=request.user)).distinct()
+    elif request.user.is_authenticated:
+      q = self.queryset.filter(Q(owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user)).distinct()
     else:
-      q = self.queryset.filter(status=Story.PUBLIC).distinct()
+      q = self.queryset.filter(status=Comment.PUBLIC).distinct()
     return q
 
   """

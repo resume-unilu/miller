@@ -27,7 +27,7 @@ class StoryViewSet(viewsets.ModelViewSet):
   def _getUserAuthorizations(self, request):
     if request.user.is_staff:
       q = Story.objects.all()
-    elif request.user.is_authenticated():
+    elif request.user.is_authenticated:
       q = Story.objects.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(authors__user=request.user)).distinct()
     else:
       q = Story.objects.filter(status=Story.PUBLIC).distinct()
@@ -185,9 +185,9 @@ class StoryViewSet(viewsets.ModelViewSet):
     
     if request.user.is_staff:
       pass
-    elif request.user.is_authenticated():
+    elif request.user.is_authenticated:
       # I amn the author of the ocomment OR I am the 
-      coms = coms.filter(Q(owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user)).distinct()
+      coms = coms.filter(Q(story__owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user)).distinct()
     else:
       coms = coms.filter(status=Comment.PUBLIC).filter(story__status=Story.PUBLIC).distinct()
     
