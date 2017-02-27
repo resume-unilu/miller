@@ -10,6 +10,7 @@ from BeautifulSoup import BeautifulSoup
 
 from django.conf import settings
 from django.core.signals import request_finished
+from django.core.cache import cache
 from django.db import models
 from django.db.models.signals import pre_delete, post_save, m2m_changed, pre_save
 from django.dispatch import receiver
@@ -479,11 +480,12 @@ class Story(models.Model):
 
 @receiver(pre_save, sender=Story)
 def complete_instance(sender, instance, **kwargs):
-  logger.debug('story {pk:%s} @pre_save' % instance.pk)
   if not instance.slug:
     instance.slug = helpers.get_unique_slug(instance, instance.title, max_length=68)
-    logger.debug('story {pk:%s, slug:%s} @pre_save slug generated' % (instance.pk, instance.slug))
-
+    logger.debug('story@pre_save {pk:%s, slug:%s} slug generated.' % (instance.pk, instance.slug))
+  else:
+    logger.debug('story@pre_save {pk:%s} slug checked.' % instance.pk)
+  
 
 # generic story_ready handlers ;) store in whoosh
 @receiver(post_save, sender=Story)
@@ -523,14 +525,19 @@ def store_working_md(sender, instance, created, **kwargs):
   logger.debug('story@story_ready {pk:%s} store_working_md: done' % instance.pk)
 
 
+# handle redis cache correctly
+@receiver(story_ready, sender=Story)
+def clear_cache_on_save(sender, instance, created, **kwargs):
+  ckey = 'story.%s' % instance.short_url
+  cache.delete(ckey)
+  logger.debug('story@story_ready {pk:%s} cache deleted.' % instance.pk)
+
 
 # clean store in whoosh when deleted
 @receiver(pre_delete, sender=Story)
 def unstore_working_md(sender, instance, **kwargs):
   instance.unstore()
   logger.debug('story@pre_delete {pk:%s} unstore_working_md: done' % instance.pk)
-
-
 
 
 # check if there is a source file of type docx attached and transform it to content.
@@ -549,7 +556,6 @@ def transform_source(sender, instance, created, **kwargs):
   
   logger.debug('story@story_ready {pk:%s} transform_source: done' % instance.pk)
   
-
 
 
 @receiver(story_ready, sender=Story)
@@ -627,14 +633,26 @@ def delete_working_md(sender, instance, **kwargs):
   logger.debug('story@pre_delete {pk:%s} removed from git.' % instance.pk)
 
 
+@receiver(pre_delete, sender=Story)
+def delete_cache_on_save(sender, instance, **kwargs):
+  ckey = 'story.%s' % instance.short_url
+  cache.delete(ckey)
+  logger.debug('story@pre_delete {pk:%s} delete_cache_on_save: done' % instance.pk)
+
+
 @receiver(m2m_changed, sender=Story.tags.through)
 def store_tags(sender, instance, **kwargs):
   if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
     instance.store(receiver='m2m_changed tags')
+    ckey = 'story.%s' % instance.short_url
+    cache.delete(ckey)
+
 
 @receiver(m2m_changed, sender=Story.authors.through)
 def store_authors(sender, instance, **kwargs):
   if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
     instance.store(receiver='m2m_changed authors')
+    ckey = 'story.%s' % instance.short_url
+    cache.delete(ckey)
 
 

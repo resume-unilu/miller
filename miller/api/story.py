@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
@@ -46,9 +47,19 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       story = get_object_or_404(q, pk=kwargs['pk'])
     
+    ckey = 'story.%s' % story.short_url
+    #print 'nocache:', request.query_params.get('nocache', None)
+
+    if not request.query_params.get('nocache', None) and cache.has_key(ckey):
+      #print 'serve cahced', ckey
+      return Response(cache.get(ckey))
+
     serializer = StorySerializer(story,
         context={'request': request},
     )
+    #print 'set cache', ckey
+    cache.set('story.%s' % story.short_url, serializer.data)
+    
     return Response(serializer.data)
   
 
