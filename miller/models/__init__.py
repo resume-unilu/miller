@@ -35,7 +35,9 @@ def add_action(sender, instance, created, **kwargs):
       'target': get_serialized(instance.target),
       'target_type': instance.target_content_type.model,
 
-      'timesince': instance.timesince()
+      'timesince': instance.timesince(),
+
+      'info': instance.data
     }
 
     if data['target_type'] == 'story':

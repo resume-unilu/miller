@@ -85,7 +85,11 @@ def just_commented(sender, instance, created, **kwargs):
   logger.debug('comment {pk:%s, short_url:%s} @post_save' % (instance.pk, instance.short_url))
   if created:  
     try:
-      action.send(instance.owner, verb='commented', target=instance.story, highlights=instance.highlights)
+      action.send(instance.owner, verb='commented', target=instance.story, comment={
+        'highlights': instance.highlights, 
+        'short_url':instance.short_url,
+        'pk': instance.pk
+      })
       logger.debug('comment {pk:%s, short_url:%s} @post_save action saved.' % (instance.pk, instance.short_url))
   
     except Exception as e:
