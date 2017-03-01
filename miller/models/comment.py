@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json, logging
+
 from actstream import action
 from django.core.cache import cache
 from django.db import models
 from django.db.models.signals import post_save, pre_save, pre_delete
-from django.dispatch import receiver
+from django.dispatch import receiver, Signal
 from miller import helpers
 
 logger = logging.getLogger('miller.commands')
+
 
 class Comment(models.Model):
   """
@@ -51,6 +53,7 @@ class Comment(models.Model):
   # highlights rangy identifiers, given as text (e.g. path)
   highlights = models.CharField(default='', blank=True, max_length=100)
 
+  
   @property
   def dcontents(self):
     if not hasattr(self, '_dcontents'):
@@ -97,12 +100,14 @@ def just_commented(sender, instance, created, **kwargs):
   Every time someone comment on a story item, an action is saved
   """
   logger.debug('comment {pk:%s, short_url:%s} @post_save' % (instance.pk, instance.short_url))
-  if created:  
-    try:
+  try:
+    if created:
       from miller.api.serializers import CommentSerializer
       action.send(instance.owner, verb='commented', target=instance.story, comment=CommentSerializer(instance=instance).data)
-      logger.debug('comment {pk:%s, short_url:%s} @post_save action saved.' % (instance.pk, instance.short_url))
-  
-    except Exception as e:
-      logger.exception(e)
-  
+      logger.debug('comment {pk:%s, short_url:%s} @post_save action saved.' % (instance.pk, instance.short_url))  
+    elif instance.status == Comment.DELETED:
+      action.send(instance.owner, verb='uncommented', target=instance.story, comment={'short_url': instance.short_url})
+  except Exception as e:
+    logger.exception(e)
+  else:
+    logger.debug('comment {pk:%s, short_url:%s, status:%s} @post_save action saved.' % (instance.pk, instance.short_url, instance.status)) 

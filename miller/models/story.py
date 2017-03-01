@@ -129,7 +129,7 @@ class Story(models.Model):
     """
     highlights 
     """
-    return filter(None, self.comments.values_list('highlights', flat=True))
+    return filter(None, self.comments.exclude(status='deleted').values_list('highlights', flat=True))
 
 
   @property

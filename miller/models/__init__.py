@@ -1,4 +1,6 @@
 # __init__.py
+import logging, json
+
 from profile import Profile
 from tag import Tag
 from document import Document
@@ -10,16 +12,14 @@ from comment import Comment
 from review import Review
 from page import Page
 
-
-
-import logging, json
-
 from miller.consumers import broadcast
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from actstream.models import Action
 
 logger = logging.getLogger('miller')
+
+
 
 @receiver(post_save, sender=Action)
 def add_action(sender, instance, created, **kwargs):

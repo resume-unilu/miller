@@ -5,6 +5,7 @@ from rest_framework import serializers,viewsets, status
 
 from miller.api.serializers import CommentSerializer, CreateCommentSerializer
 from miller.models import Comment
+
 from miller.api.utils import Glue
 from rest_framework.response import Response
 
@@ -46,16 +47,18 @@ class CommentViewSet(viewsets.ModelViewSet):
 
   def destroy(self, request, *args, **kwargs):
     q = self.queryset.exclude(status=Comment.DELETED)
-    if kwargs['pk'].isdigit():
-      q = q.filter(pk=kwargs['pk'])
-    else:
-      q = q.filter(short_url=kwargs['pk'])
-
     if not request.user.is_staff:
       q = q.filter(owner=request.user)
+
+    if kwargs['pk'].isdigit():
+      com = get_object_or_404(q, pk=kwargs['pk'])
+    else:
+      com = get_object_or_404(q, short_url=kwargs['pk'])
     
-    affected = q.update(status=Comment.DELETED)
-    return Response(status=status.HTTP_204_NO_CONTENT if affected > 0 else status.HTTP_404_NOT_FOUND)
+    com.status = Comment.DELETED
+    com.save()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
     
 

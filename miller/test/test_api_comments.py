@@ -1,4 +1,5 @@
 import json
+from actstream.models import any_stream
 from django.test import TestCase
 from miller.test import ApiMillerTestCase
 from miller.models import Comment
@@ -91,13 +92,7 @@ class CommentTest(ApiMillerTestCase):
     self.assertEqual(response_user_A.status_code, 200)
     self.assertEqual(response_user_A.json()['count'], count - 1);
 
-    # reset comment status
-    com.status = Comment.PENDING
-    com.save()
+    # get the latest action!!
+    action = any_stream(self.user_A).first()
 
-
-
-
-
-
-
+    self.assertEqual(action.verb, 'uncommented')

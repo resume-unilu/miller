@@ -181,7 +181,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       sel = Q(story__slug=pk)
 
-    coms = Comment.objects.filter(sel)
+    coms = Comment.objects.exclude(status=Comment.DELETED).filter(sel)
     
     if request.user.is_staff:
       pass

@@ -17,6 +17,7 @@ class NoDbTestRunner(DiscoverRunner):
 class ApiMillerTestCase(TestCase):
   """
   This contain a common workflow for miller.
+  We create a story with two authors and we set the clients for the different users/roles
   """
   def setUp(self):
     # create normal users
