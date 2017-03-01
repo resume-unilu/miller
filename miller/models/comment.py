@@ -99,15 +99,8 @@ def just_commented(sender, instance, created, **kwargs):
   logger.debug('comment {pk:%s, short_url:%s} @post_save' % (instance.pk, instance.short_url))
   if created:  
     try:
-      action.send(instance.owner, verb='commented', target=instance.story, comment={
-        'highlights': instance.highlights, 
-        'short_url':instance.short_url,
-        'excerpt': {
-          'quote': instance.dcontents['quote'],
-          'content': instance.dcontents['content'][0:60]
-        },
-        'pk': instance.pk
-      })
+      from miller.api.serializers import CommentSerializer
+      action.send(instance.owner, verb='commented', target=instance.story, comment=CommentSerializer(instance=instance).data)
       logger.debug('comment {pk:%s, short_url:%s} @post_save action saved.' % (instance.pk, instance.short_url))
   
     except Exception as e:
