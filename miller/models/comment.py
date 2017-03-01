@@ -51,6 +51,20 @@ class Comment(models.Model):
   # highlights rangy identifiers, given as text (e.g. path)
   highlights = models.CharField(default='', blank=True, max_length=100)
 
+  @property
+  def dcontents(self):
+    if not hasattr(self, '_dcontents'):
+      try:
+        self._dcontents  = json.loads(self.contents)
+      except Exception as e:
+        self._dcontents = {}
+        logger.exception(e)
+        return {}
+      else:
+        return self._dcontents
+    else:
+      return self._dcontents
+
 
 @receiver(pre_save, sender=Comment)
 def complete_instance(sender, instance, **kwargs):
@@ -88,6 +102,10 @@ def just_commented(sender, instance, created, **kwargs):
       action.send(instance.owner, verb='commented', target=instance.story, comment={
         'highlights': instance.highlights, 
         'short_url':instance.short_url,
+        'excerpt': {
+          'quote': instance.dcontents['quote'],
+          'content': instance.dcontents['content'][0:60]
+        },
         'pk': instance.pk
       })
       logger.debug('comment {pk:%s, short_url:%s} @post_save action saved.' % (instance.pk, instance.short_url))
