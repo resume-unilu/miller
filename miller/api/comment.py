@@ -1,4 +1,6 @@
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+
 from rest_framework import serializers,viewsets, status
 
 from miller.api.serializers import CommentSerializer, CreateCommentSerializer
@@ -42,8 +44,23 @@ class CommentViewSet(viewsets.ModelViewSet):
     return Response(CommentSerializer(instance=serializer.instance).data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+  def destroy(self, request, *args, **kwargs):
+    q = self.queryset.exclude(status=Comment.DELETED)
+    if kwargs['pk'].isdigit():
+      q = q.filter(pk=kwargs['pk'])
+    else:
+      q = q.filter(short_url=kwargs['pk'])
+
+    if not request.user.is_staff:
+      q = q.filter(owner=request.user)
+    
+    affected = q.update(status=Comment.DELETED)
+    return Response(status=status.HTTP_204_NO_CONTENT if affected > 0 else status.HTTP_404_NOT_FOUND)
+
+    
+
   def list(self, request):
-    coms = self._getUserAuthorizations(request)
+    coms = self._getUserAuthorizations(request).exclude(status=Comment.DELETED)
     g = Glue(request=request, queryset=coms)
     
     coms = g.queryset
