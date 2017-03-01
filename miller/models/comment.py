@@ -106,7 +106,10 @@ def just_commented(sender, instance, created, **kwargs):
       action.send(instance.owner, verb='commented', target=instance.story, comment=CommentSerializer(instance=instance).data)
       logger.debug('comment {pk:%s, short_url:%s} @post_save action saved.' % (instance.pk, instance.short_url))  
     elif instance.status == Comment.DELETED:
-      action.send(instance.owner, verb='uncommented', target=instance.story, comment={'short_url': instance.short_url})
+      action.send(instance.owner, verb='uncommented', target=instance.story, comment={
+        'short_url': instance.short_url,
+        'highlights': instance.highlights
+      })
   except Exception as e:
     logger.exception(e)
   else:
