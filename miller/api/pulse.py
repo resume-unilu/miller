@@ -1,5 +1,5 @@
 from rest_framework import serializers,viewsets
-from actstream.models import any_stream
+from actstream.models import any_stream, user_stream
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -23,9 +23,13 @@ class PulseViewSet(viewsets.GenericViewSet):
 
   def list(self, request):
     """
-    list everything
+    list everything if staff;
+    list everything onnected to your follows otherwise
     """
-    queryset = any_stream(request.user)
+    if request.user.is_staff: 
+      queryset = self.queryset.exclude(actor_object_id=request.user.pk)
+    else:
+      queryset = user_stream(request.user).exclude(actor_object_id=request.user.pk)
     
     page    = self.paginate_queryset(queryset)
     serializer = ActionSerializer(page, many=True, context={'request': request})
@@ -36,9 +40,15 @@ class PulseViewSet(viewsets.GenericViewSet):
   @list_route(methods=['get'])
   def unread(self, request):
     """
-    get unread things count
+    get just unread things count
     """
-    queryset = any_stream(request.user).filter(timestamp__gte=request.user.profile.date_last_notified)
+    if request.user.is_staff: 
+      queryset = self.queryset.exclude(actor_object_id=request.user.pk)
+    else:
+      queryset = user_stream(request.user).exclude(actor_object_id=request.user.pk)
+
+    queryset = queryset.filter(timestamp__gte=request.user.profile.date_last_notified)
+
     return Response({"count": queryset.count()})
 
 
@@ -47,8 +57,11 @@ class PulseViewSet(viewsets.GenericViewSet):
     """
     what other people are doing?
     """
-    queryset = any_stream(request.user).filter(timestamp__gte=request.user.profile.date_last_notified)
-    return Response({"count": queryset.count()})
+    queryset = self.queryset.filter(timestamp__gte=request.user.profile.date_last_notified)
+    page    = self.paginate_queryset(queryset)
+    serializer = ActionSerializer(page, many=True, context={'request': request})
+
+    return self.get_paginated_response(serializer.data)
 
 
   @list_route(methods=['post'])

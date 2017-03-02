@@ -140,7 +140,7 @@ class LiteMentionSerializer(serializers.ModelSerializer):
 class IncrediblyLiteStorySerializer(serializers.ModelSerializer):
   class Meta:
     model = Story
-    fields = ('id', 'short_url', 'slug')
+    fields = ('id', 'short_url', 'slug', 'title', 'status')
 
 
 # Story Serializer to use in lists
@@ -452,7 +452,7 @@ class ActionSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Action
-    fields = ('id', 'verb', 'description', 'timestamp', 'actor', 'target', 'target_content_type') #, 'actor', 'target')
+    fields = ('id', 'verb', 'description', 'timestamp', 'actor', 'target', 'target_content_type', 'data') #, 'actor', 'target')
 
 
 
