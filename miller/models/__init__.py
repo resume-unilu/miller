@@ -33,14 +33,14 @@ def add_action(sender, instance, created, **kwargs):
       'verb': instance.verb,
       
       'target': get_serialized(instance.target),
-      'target_type': instance.target_content_type.model,
+      'target_content_type': instance.target_content_type.model,
 
       'timesince': instance.timesince(),
 
       'info': instance.data
     }
 
-    if data['target_type'] == 'story':
+    if data['target_content_type'] == 'story':
       for u in instance.target.authors.values('user__username'):
         broadcast("pulse-%s"% u['user__username'], data)
     broadcast('pulse-staff', data)

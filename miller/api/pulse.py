@@ -57,7 +57,13 @@ class PulseViewSet(viewsets.GenericViewSet):
     """
     what other people are doing?
     """
-    queryset = self.queryset.filter(timestamp__gte=request.user.profile.date_last_notified)
+    if request.user.is_staff: 
+      queryset = self.queryset.exclude(actor_object_id=request.user.pk)
+    else:
+      queryset = user_stream(request.user).exclude(actor_object_id=request.user.pk)
+
+    queryset = queryset.filter(timestamp__gte=request.user.profile.date_last_notified)
+    
     page    = self.paginate_queryset(queryset)
     serializer = ActionSerializer(page, many=True, context={'request': request})
 

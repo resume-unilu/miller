@@ -449,10 +449,11 @@ class ActionSerializer(serializers.ModelSerializer):
   actor  = IncredibleField(read_only=True)
   target = IncredibleField(read_only=True)
   target_content_type = ContentTypeField(source='target', read_only=True)
+  info = JsonField(source='data')
 
   class Meta:
     model = Action
-    fields = ('id', 'verb', 'description', 'timestamp', 'actor', 'target', 'target_content_type', 'data') #, 'actor', 'target')
+    fields = ('id', 'verb', 'description', 'timestamp', 'timesince', 'actor', 'target', 'target_content_type', 'info') #, 'actor', 'target')
 
 
 
