@@ -17,10 +17,10 @@ class Comment(models.Model):
   Stores a single comment on a writing item (article, news etc..); this model is related to :model:`miller.Story` and
   :model:`auth.User`. All edits can be done by the owner or by the staff.
   """
-  PENDING  = 'pending' # visible just for you
+  PENDING  = 'pending' # like PRIVATE, but waiting for being public
   PUBLIC   = 'public' # everyone can see this.
   PRIVATE  = 'private' # only staff, story authors and comment owner can see this
-  ONREVIEW = 'on review' # only staff, story authors and comment owner can see this
+  ONREVIEW = 'on review' # like PRIVATE, but as review mode. Only staff, story authors and comment owner can see this
   DELETED  = 'deleted'
 
   STATUS_CHOICES = (
@@ -37,7 +37,7 @@ class Comment(models.Model):
   owner = models.ForeignKey('auth.User'); # at least the first author, the one who owns the file.
   
   # follows = model.foreignKey(self);
-  status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING, db_index=True)
+  status    = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PRIVATE, db_index=True)
 
   date               = models.DateTimeField(null=True, blank=True, auto_now_add=True, db_index=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
