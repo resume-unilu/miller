@@ -622,6 +622,10 @@ def delete_working_md(sender, instance, **kwargs):
 
   logger.debug('story@pre_delete {pk:%s} markdown removed.' % instance.pk)
 
+  if settings.TESTING:
+    logger.debug('story@pre_delete {pk:%s} delete_working_md skipped commit, just testing!' % instance.pk)
+    return
+
   # commit if there are any differences
   repo = Repo.init(settings.GIT_ROOT)
 

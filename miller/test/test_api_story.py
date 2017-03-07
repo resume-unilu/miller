@@ -31,3 +31,6 @@ class StoryTest(ApiMillerTestCase):
       response_json = json.loads(response.content)
       self.assertEqual(response_json[u'slug'], u'this-is-a-sad-old-story')
       self.assertEqual(response_json[u'contents'], u"## La compétitivité européenne :\\\ncompétition, coopération, solidarité\n\nVersion : 30 mai 2016\n\n### 1 L’exigence d’un engagement total\n\nLa compétitivité est une obsession[^1].\n\n[^1]: Krugman, Paul. Competitiveness : A Dangerous Obsession. *Foreign\n    Affairs*, mars-avril 1994, vol. 73, n°2, pp. 28-44 ; pour une\n    critique similaire du « diktat » de la compétitivité : Rinehart,\n    James. The ideology of competitiveness. *Monthly Review*, 1995,\n    vol. 47 n° 5, p. 14.\n")
+  
+  def test_cleanup(self):
+    self.cleanUp()
