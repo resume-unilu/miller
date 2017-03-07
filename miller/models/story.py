@@ -515,7 +515,8 @@ def dispatcher(sender, instance, created, **kwargs):
     follow(instance.owner, instance, actor_only=False)
   elif instance.status != Story.DRAFT and instance.has_diffs(exclude='status'):
     # something changed in a NON DRAFT document.
-    action.send(instance.owner, verb='updated', target=instance)
+    pass
+    # action.send(instance.owner, verb='updated', target=instance)
 
 
 # store in whoosh
