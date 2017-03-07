@@ -78,7 +78,7 @@ class CommentTest(ApiMillerTestCase):
     self.assertEqual(response_user_C.status_code, 404)
 
     com.refresh_from_db()
-    self.assertEqual(com.status, Comment.PENDING)
+    self.assertEqual(com.status, Comment.PRIVATE) # the default is private
 
     # let the user delete its own comments:
     response_user_A = self.client_user_A.delete('/api/comment/%s/'% com.short_url)
