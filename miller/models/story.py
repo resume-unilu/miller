@@ -617,7 +617,13 @@ def delete_working_md(sender, instance, **kwargs):
   committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
 
   # /* delete file */
-  os.remove(path);
+  try:
+    os.remove(path);
+  except OSError as e:
+    # it has been canceled already
+    pass
+  except Exception as e:
+    logger.exception(e)
   # keep exports in .gitignore
 
   logger.debug('story@pre_delete {pk:%s} markdown removed.' % instance.pk)

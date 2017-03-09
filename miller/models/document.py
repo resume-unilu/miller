@@ -367,7 +367,7 @@ class Document(models.Model):
       self.fill_from_metadata()
       
       if self.url:
-        #print 'verify the url:', self.url
+        print 'verify the url:', self.url
         try:
           doc = Document.objects.get(url=self.url)
           
