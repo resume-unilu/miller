@@ -50,7 +50,9 @@ class CaptionViewSet(viewsets.ModelViewSet):
 
   def create(self, request, *args, **kwargs):
     # get the document id from the slug
-    # print request.data
+    print ''
+    print '------'
+    print request.data
 
     doc = get_object_or_404(Document, slug=request.data['document']['slug']);
     story = get_object_or_404(Story, pk=request.data['story'])

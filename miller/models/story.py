@@ -43,20 +43,22 @@ def user_path(instance, filename, safeOrigin=False):
 class Story(models.Model):
   language_dict = helpers.get_languages_dict()
   
-  DRAFT    = 'draft' # visible just for you
-  SHARED   = 'shared' # share with specific user
-  PUBLIC   = 'public' # everyone can access that.
+  DRAFT    = 'draft'   # visible just for you and staff users
+  PENDING  = 'pending'
+  SHARED   = 'shared'  # share with specific user
+  PUBLIC   = 'public'  # everyone can access that.
   EDITING  = 'editing' # only staff and editors access this
-  REVIEW   = 'review' # staff, editors and reviewer acces this
+  REVIEW   = 'review'  # staff, editors and reviewer acces this
   DELETED  = 'deleted' # will be sent to the bin
 
   STATUS_CHOICES = (
     (DRAFT,   'draft'),
     (SHARED,  'shared'),
-    (PUBLIC,  'public'), # accepted paper.
-    (EDITING, 'editing'),
-    (REVIEW,  'review'), # ask for review
+    (PUBLIC,  'public'),  # accepted paper.
+    (EDITING, 'editing'), # ask for editing review
+    (REVIEW,  'review'),  # ask for review
     (DELETED, 'deleted'),
+    (PENDING, 'pending')  # ask for publication
   )
 
   short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
@@ -594,7 +596,10 @@ def if_status_changed(sender, instance, created, **kwargs):
     if instance.status == Story.PUBLIC:
       # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
       action.send(instance.owner, verb='got_published', target=instance)
-      pass
+    if instance.status == Story.PENDING:
+      # send email.
+      instance.send_email_to_staff(template_name='story_pending_for_staff')
+      action.send(instance.owner, verb='ask_for_publication', target=instance)
     if instance.status == Story.EDITING:
       # send email.
       action.send(instance.owner, verb='ask_for_editing', target=instance)

@@ -1,4 +1,6 @@
 import os
+from django.conf import settings
+from django.core import mail
 from django.test import TestCase
 from django.test.client import Client
 from django.test.runner import DiscoverRunner
@@ -62,6 +64,13 @@ class ApiMillerTestCase(TestCase):
       contents=u'## Basic \n\nWith a nice paragraph[^1] and some footnotes.\n\n### this is a third level\n\nsome text...\n\n[^1]: footnote content',
       owner=self.user_A
     )
+
+    # check mail!!
+    self.assertEqual(len(mail.outbox), 1)
+    self.assertEqual(mail.outbox[0].to, [settings.DEFAULT_FROM_EMAIL])
+
+    # Empty the test outbox
+    mail.outbox = []
 
     # add authors
     self.author_A = self.user_A.authorship.first()

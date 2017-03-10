@@ -160,21 +160,29 @@ class StoryViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
 
-  @detail_route(methods=['put'])
-  def tags(self, request, pk=None):
-    queryset = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()))
+  @detail_route(methods=['post'])
+  def publish(self, request, pk):
+    """
+    A safe method to publish the story, only if the author is 
+    """
+    q =  self.queryset.filter(Q(owner=request.user) | Q(authors__user=request.user)).distinct()
 
-    story = get_object_or_404(queryset, pk=12333)
+    if pk.isdigit():
+      story = get_object_or_404(q, pk=pk)
+    else:
+      story = get_object_or_404(q, slug=pk)
 
-
-    # save, then return tagged items according to tagform
-    serializer = StorySerializer(story,
-        context={'request': request},
-    )
+    if request.user.is_staff:
+      story.status = Story.PUBLIC
+    else:
+      story.status = Story.PENDING
+    story.save()
+    serializer = LiteStorySerializer(story, context={'request': request})
     return Response(serializer.data)
 
+    
 
-  @detail_route(methods=['get', 'post'])
+  @detail_route(methods=['get'])
   def comments(self, request, pk=None):
     if pk.isdigit():
       sel = Q(story__pk=pk)
