@@ -180,7 +180,22 @@ class StoryViewSet(viewsets.ModelViewSet):
     serializer = LiteStorySerializer(story, context={'request': request})
     return Response(serializer.data)
 
+  
+  @list_route(methods=['get'])
+  def featured(self, request):
+    ckey = 'story.featured'
+    if not request.query_params.get('nocache', None) and cache.has_key(ckey):
+      print 'serve cahced', ckey
+      return Response({'results': cache.get(ckey)})
     
+    stories = self.queryset.filter(status=Story.PUBLIC).filter(tags__slug='top', tags__category=Tag.HIGHLIGHTS)
+    page    = self.paginate_queryset(stories)
+    serializer = LiteStorySerializer(page, many=True, context={'request': request})
+
+    print 'set cache', ckey
+    cache.set(ckey, serializer.data)
+    return self.get_paginated_response(serializer.data)
+
 
   @detail_route(methods=['get'])
   def comments(self, request, pk=None):

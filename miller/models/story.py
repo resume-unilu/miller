@@ -662,6 +662,7 @@ def store_tags(sender, instance, **kwargs):
     instance.store(receiver='m2m_changed tags')
     ckey = 'story.%s' % instance.short_url
     cache.delete(ckey)
+    cache.delete('story.featured')
 
 
 @receiver(m2m_changed, sender=Story.authors.through)
