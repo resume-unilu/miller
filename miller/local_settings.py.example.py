@@ -60,8 +60,9 @@ MILLER_FIREBASE_ENABLED = False
 # MILLER_FIREBASE_STORAGEBUCKET     = 'resume-91a73.appspot.com'
 # MILLER_FIREBASE_MESSAGINGSENDERID = '385835616038'
 
-# CSV table for command task $ python manage.py task update_localisation
+# CSV table for command task $ python manage.py task update_localisation and python manage.py task update_localisation_gs if you have a google spreadsheet table
 MILLER_LOCALISATION_TABLE = '/path/to/your/template/locale/locale-all.csv'
+MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET = None
 
 # Your Google Analytics account id.
 MILLER_GA_ID = '******'

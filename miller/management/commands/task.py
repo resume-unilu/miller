@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Tasks on models
-import os, logging, json
+import os, logging, json, re
 
 from miller.helpers import get_whoosh_index
 from miller.models import Document, Story
@@ -27,7 +27,8 @@ class Command(BaseCommand):
     'snapshots404',
     'cleanbin',
     'update_whoosh',
-    'update_localisation'
+    'update_localisation',
+    'update_localisation_gs'
   )
 
 
@@ -48,6 +49,38 @@ class Command(BaseCommand):
       logger.debug('command NOT FOUND, tasks availables: ["%s"]' % '","'.join(self.available_tasks))
     logger.debug('command finished.')
   
+  
+  def update_localisation_gs(self,  **options):
+    """ 
+    load the csv specified in MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET, if any provided.
+    """
+    url = settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET
+    # something like https://docs.google.com/spreadsheets/d/{yourid}/edit#gid=0
+    if not url:
+      raise Exception('no google spreadsheet link in settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET')
+    
+    print url
+
+    m = re.match(r'https://docs.google.com/spreadsheets/d/([^/]*)', url)
+    if not m:
+      raise Exception('bad url in settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET')
+    import requests, StringIO
+    import unicodecsv as csv
+    response = requests.get('https://docs.google.com/spreadsheets/d/%s/export?format=csv' % m.group(1), stream=True)
+    # print response.content
+    # rows = csv.DictReader(StringIO.StringIO(response.content), encoding='utf-8', delimiter='\t')
+    if response.status_code != 200:
+      raise Exception('bad response for settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET')
+    # for row in rows:
+    #   print row
+    logger.debug('writing csv file at settings.MILLER_LOCALISATION_TABLE:%s', settings.MILLER_LOCALISATION_TABLE)
+    with open(settings.MILLER_LOCALISATION_TABLE, 'wb') as f:
+      for chunk in response.iter_content(chunk_size=1024): 
+        if chunk: # filter out keep-alive new chunks
+          f.write(chunk)
+    
+    logger.debug('now updating localisation...')
+    self.update_localisation(**options)
 
   def update_localisation(self,  **options):
     """ 
