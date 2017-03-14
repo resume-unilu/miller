@@ -1,33 +1,3 @@
-__*/
-__*.*
-!__init__.py
-*.sqlite3
-*.pyc
-
-contents/
-dist/
-local_settings.py
-*.log
-!README.md
-# uwsgi related files
-*.uwsgi.ini
-*.conf
-media/*
-!media/.gitkeep
-logs/*
-!logs/.gitkeep
-whoosh/
-
-client/src/images/*
-!client/src/images/.gitkeep
-!client/src/images/logo-resume.svg
-
-node_modules
-
-# docx and other temp files
-~*.*
-*.rdb
-docs/
-
-# google verification file
-google*.html
+_site
+.sass-cache
+.jekyll-metadata
