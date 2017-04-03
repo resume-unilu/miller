@@ -28,7 +28,8 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ('username', 'first_name', 'last_name', 'is_staff')
+    fields = ('id', 'username', 'email', 'is_staff')
+
 
 class UserGroupSerializer(serializers.ModelSerializer):
   class Meta:
@@ -165,7 +166,6 @@ class AnonymousLiteStorySerializer(serializers.ModelSerializer):
   class Meta:
     model = Story
     fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata')
-
 
 
 
@@ -388,6 +388,10 @@ class ReviewSerializer(serializers.ModelSerializer):
       'structure_score','structure', 'references', 'references_score', 'pertinence','pertinence_score')
 
 
+class CreateReviewSerializer(serializers.ModelSerializer):
+  class Meta:
+    model  = Review
+    fields = ('id', 'story', 'assignee', 'category', 'status', 'due_date')
 
 class LiteReviewSerializer(serializers.ModelSerializer):
   """
@@ -424,6 +428,15 @@ class AnonymousLiteReviewSerializer(serializers.ModelSerializer):
   class Meta:
     model = Review
     fields = ('id', 'contents', 'category', 'status', 'due_date', 'score', 'story') + Review.FIELDS_FOR_SCORE
+
+
+class LiteReviewWithoutStorySerializer(serializers.ModelSerializer):
+  assignee = UserSerializer()
+  
+  class Meta:
+    model = Review
+    fields = ('id', 'category', 'status', 'due_date', 'score', 'assignee')
+
 
 
 class ActionSerializer(serializers.ModelSerializer):
@@ -477,5 +490,17 @@ class LitePageSerializer(serializers.HyperlinkedModelSerializer):
         'lookup_field': 'slug'
       }
     }
+
+
+# Story Serializer, with review to use in lists
+class PendingStorySerializer(serializers.ModelSerializer):
+  tags = TagSerializer(many=True)
+  covers = LiteDocumentSerializer(many=True)
+  metadata = JsonField()
+  reviews = LiteReviewWithoutStorySerializer(many=True)
+  class Meta:
+    model = Story
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata', 'reviews')
+
 
 

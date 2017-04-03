@@ -2,16 +2,16 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 
-from rest_framework import serializers,viewsets
+from rest_framework import serializers, viewsets, status
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.decorators import detail_route, permission_classes, list_route, detail_route
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
-from miller.api.serializers import ReviewSerializer, LiteReviewSerializer, AnonymousReviewSerializer, AnonymousLiteReviewSerializer
+from miller.api.serializers import CreateReviewSerializer, ReviewSerializer, LiteReviewSerializer, AnonymousReviewSerializer, AnonymousLiteReviewSerializer
 from miller.api.utils import Glue
 
-from miller.models import Review, Author
+from miller.models import Review, Author, Story
 
 
 
@@ -34,7 +34,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
       #       @permission_classes((IsAdminUser,))
       # TypeError: 'tuple' object is not callable
       raise NotAuthenticated()
-    super(ReviewViewSet, self).create(self, request, *args, **kwargs)
+    
+    # print request.data
+    serializer = CreateReviewSerializer(data=request.data, context={'request': request}, partial=True)
+    
+    if not serializer.is_valid():
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer.save()
+    return Response(serializer.data)
+    
+
 
 
   def partial_update(self, request, *args, **kwargs):
@@ -42,7 +52,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Request user can partial update reviews they have been assigned.
     Once the review status has been changed to COMPLETED/REJECTED/BOUNCE this method is no more available (a not found error is thrown) 
     """
-    review = get_object_or_404(self.queryset.filter(status__in=[Review.INITIAL, Review.DRAFT], assignee=request.user), pk=kwargs['pk'])
+    self.queryset = self.queryset.filter(status__in=[Review.INITIAL, Review.DRAFT], assignee=request.user)
+
+    review = get_object_or_404(self.queryset, pk=kwargs['pk'])
     return super(ReviewViewSet, self).partial_update(request, *args, **kwargs)
 
   

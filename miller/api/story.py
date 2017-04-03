@@ -17,7 +17,7 @@ from rest_framework.decorators import  api_view, permission_classes, detail_rout
 from miller.models import Story, Tag, Document, Caption, Comment
 from miller.api.utils import Glue
 from miller.api.fields import OptionalFileField, JsonField
-from miller.api.serializers import LiteDocumentSerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer
+from miller.api.serializers import LiteDocumentSerializer, AnonymousLiteStorySerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, PendingStorySerializer
 
 
 # ViewSets define the view behavior. Filter by status
@@ -207,9 +207,9 @@ class StoryViewSet(viewsets.ModelViewSet):
     if not request.user.is_authenticated or not request.user.groups.filter(name='reviewers').exists():
       # check 
       raise PermissionDenied()
-    qs = self.queryset.filter(status=Story.PENDING).filter(reviews=None)
+    qs = self.queryset.filter(status__in=[Story.PENDING, Story.REVIEW, Story.EDITING])
     page    = self.paginate_queryset(qs)
-    serializer = LiteStorySerializer(page, many=True, context={'request': request})
+    serializer = PendingStorySerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
 
 
