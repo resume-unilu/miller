@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAdminUser
+from rest_framework.exceptions import PermissionDenied
 
 from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
@@ -185,15 +186,30 @@ class StoryViewSet(viewsets.ModelViewSet):
   def featured(self, request):
     ckey = 'story.featured'
     if not request.query_params.get('nocache', None) and cache.has_key(ckey):
-      print 'serve cahced', ckey
+      # print 'serve cahced', ckey
       return Response({'results': cache.get(ckey)})
     
     stories = self.queryset.filter(status=Story.PUBLIC).filter(tags__slug='top', tags__category=Tag.HIGHLIGHTS)
     page    = self.paginate_queryset(stories)
     serializer = LiteStorySerializer(page, many=True, context={'request': request})
 
-    print 'set cache', ckey
+    # print 'set cache', ckey
     cache.set(ckey, serializer.data)
+    return self.get_paginated_response(serializer.data)
+
+
+  @list_route(methods=['get'])
+  def pending(self, request):
+    """
+    Return a list of stories marked for reviews without assigned reviews.
+    This is also accessible by reviewers.
+    """
+    if not request.user.is_authenticated or not request.user.groups.filter(name='reviewers').exists():
+      # check 
+      raise PermissionDenied()
+    qs = self.queryset.filter(status=Story.PENDING).filter(reviews=None)
+    page    = self.paginate_queryset(qs)
+    serializer = LiteStorySerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
 
 
@@ -260,5 +276,3 @@ class StoryViewSet(viewsets.ModelViewSet):
     d = serializer.data
     d['contents'] = contents
     return Response(d)
-
-  
