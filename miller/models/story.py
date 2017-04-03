@@ -487,7 +487,14 @@ def complete_instance(sender, instance, **kwargs):
     logger.debug('story@pre_save {pk:%s, slug:%s} slug generated.' % (instance.pk, instance.slug))
   else:
     logger.debug('story@pre_save {pk:%s} slug checked.' % instance.pk)
-  
+
+# handle redis cache correctly
+@receiver(pre_save, sender=Story)
+def clear_cache_on_save(sender, instance, **kwargs):
+  ckey = 'story.%s' % instance.short_url
+  cache.delete(ckey)
+  logger.debug('story@pre_save {pk:%s, short_url:%s} cache deleted.' % (instance.pk,instance.short_url))
+
 
 # generic story_ready handlers ;) store in whoosh
 @receiver(post_save, sender=Story)
@@ -528,12 +535,6 @@ def store_working_md(sender, instance, created, **kwargs):
   logger.debug('story@story_ready {pk:%s} store_working_md: done' % instance.pk)
 
 
-# handle redis cache correctly
-@receiver(story_ready, sender=Story)
-def clear_cache_on_save(sender, instance, created, **kwargs):
-  ckey = 'story.%s' % instance.short_url
-  cache.delete(ckey)
-  logger.debug('story@story_ready {pk:%s} cache deleted.' % instance.pk)
 
 
 # clean store in whoosh when deleted
