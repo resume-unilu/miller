@@ -165,7 +165,7 @@ class AnonymousLiteStorySerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Story
-    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata')
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata', 'source')
 
 
 

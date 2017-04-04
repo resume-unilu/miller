@@ -25,8 +25,9 @@ from markdown import markdown
 from miller import helpers
 from miller.models import Tag, Document, Author
 
-from simplemde.fields import SimpleMDEField
-
+# from simplemde.fields import SimpleMDEField
+from templated_email import send_templated_mail
+      
 
 
 logger = logging.getLogger('miller.commands')
@@ -298,12 +299,13 @@ class Story(models.Model):
     logger.debug('story {pk:%s} gitCommit: %s' % (self.pk, self.get_path()))
   
     path = self.get_path()
-    
-    # check that the path is accessible
-    if not os.path.exists(path):
+    dirpath = os.path.dirname(path)
+
+    # check that the dir path is accessible
+    if not os.path.exists(dirpath):
       logger.debug('story {pk:%s} gitCommit: path "%s" not found, owner changed?' % (self.pk, path))
       try:
-        owner_path = self.owner.profile.get_path()
+        owner_path = os.path.dirname(self.owner.profile.get_path())
         os.makedirs(owner_path)
         logger.debug('story {pk:%s} gitCommit: owner_path created at %s.' % (self.pk, owner_path))
       
@@ -318,6 +320,7 @@ class Story(models.Model):
       f.write(self.contents)
       f.seek(0)
       f.close()
+      logger.debug('story {pk:%s} gitCommit: md file "%s" written.' % (self.pk, path))
     except Exception as e:
       logger.exception(e)
 
@@ -333,9 +336,12 @@ class Story(models.Model):
 
     # add and commit JUST THIS FILE
     #tree = Tree(repo=repo, path=self.owner.profile.get_path())
-    repo.index.add([self.owner.profile.get_path()])
-    c = repo.index.commit(message=u"saving %s" % self.title, author=author, committer=committer)
-
+    try:
+      repo.index.add([path])
+      c = repo.index.commit(message=u"saving %s" % self.title, author=author, committer=committer)
+    except IOError as e:
+      logger.debug('story {pk:%s} gitCommit has errors.' % self.pk)
+      logger.exception(e)
 
     logger.debug('story {pk:%s} gitCommit done.' % self.pk)
 
@@ -392,7 +398,6 @@ class Story(models.Model):
     recipient = settings.DEFAULT_FROM_EMAIL
     if recipient:
       logger.debug('story {pk:%s} sending email to DEFAULT_FROM_EMAIL {email:%s}...' % (self.pk, settings.DEFAULT_FROM_EMAIL))
-      from templated_email import send_templated_mail
       send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context={
         'title':    self.title,
         'abstract': self.abstract,
@@ -405,6 +410,27 @@ class Story(models.Model):
     else:
       logger.debug('story {pk:%s} cannot send email to recipient, settings.DEFAULT_FROM_EMAIL not found!' % (self.pk))
       
+
+  def send_email_to_author(self, author, template_name):
+    """
+    Send email to staff, to the settings.DEFAULT_FROM_EMAIL address.
+    """
+    recipient = [author.user.email]
+    if recipient:
+      logger.debug('story {pk:%s} sending email to author {email:%s}...' % (self.pk, recipient))
+      send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context={
+        'title':    self.title,
+        'abstract': self.abstract,
+        'slug':     self.slug,
+        # 'authors':  self.authors.all(),
+        'author':   author,
+        'site_name': settings.MILLER_TITLE,
+        'site_url':  settings.MILLER_SETTINGS['host']
+      })
+    else:
+      logger.debug('story {pk:%s} cannot send email to recipient, not found fo author {pk:%s}' % (self.pk,author.pk))
+      
+
 
   # hook init so that during save we won't keep data
   def __init__(self, *args, **kwargs):
@@ -435,20 +461,12 @@ class Story(models.Model):
       self._saved = self._saved + 1
     logger.debug('story@save  {pk:%s} init save, time=%s' % (self.pk, self._saved))
     
-    # if not self.pk and not self.slug:
-    #   slug = slugify(self.title)
-    #   slug_exists = True
-    #   counter = 1
-    #   self.slug = slug
-    #   while slug_exists:
-    #     try:
-    #       slug_exits = Story.objects.get(slug=slug)
-    #       if slug_exits:
-    #           slug = self.slug + '-' + str(counter)
-    #           counter += 1
-    #     except Story.DoesNotExist:
-    #       self.slug = slug
-    #       break
+    # check slug
+    if not self.slug:
+      self.slug = helpers.get_unique_slug(self, self.title, max_length=68)
+      logger.debug('story@save {pk:%s, slug:%s} slug generated.' % (self.pk, self.slug))
+    else:
+      logger.debug('story@save {pk:%s} slug ok.' % self.pk)
 
     if self.date is None:
       logger.debug('story@save {slug:%s,pk:%s} not having a default date. Fixing...' % (self.slug, self.pk))
@@ -476,17 +494,10 @@ class Story(models.Model):
       except Exception as e:
         logger.exception(e)
 
+
     logger.debug('story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
 
-
-@receiver(pre_save, sender=Story)
-def complete_instance(sender, instance, **kwargs):
-  if not instance.slug:
-    instance.slug = helpers.get_unique_slug(instance, instance.title, max_length=68)
-    logger.debug('story@pre_save {pk:%s, slug:%s} slug generated.' % (instance.pk, instance.slug))
-  else:
-    logger.debug('story@pre_save {pk:%s} slug checked.' % instance.pk)
 
 # handle redis cache correctly
 @receiver(pre_save, sender=Story)
@@ -535,6 +546,15 @@ def store_working_md(sender, instance, created, **kwargs):
   logger.debug('story@story_ready {pk:%s} store_working_md: done' % instance.pk)
 
 
+@receiver(story_ready, sender=Story)
+def create_first_author(sender, instance, created, **kwargs):
+  if created:
+    author = instance.owner.authorship.first()
+    instance.authors.add(author)
+    instance._dirty = True
+    logger.debug('story@story_ready {pk:%s} add author {fullname:%s}" done.' % (instance.pk, author.fullname))
+
+
 
 
 # clean store in whoosh when deleted
@@ -559,15 +579,8 @@ def transform_source(sender, instance, created, **kwargs):
   
   
   logger.debug('story@story_ready {pk:%s} transform_source: done' % instance.pk)
-  
 
 
-@receiver(story_ready, sender=Story)
-def create_first_author(sender, instance, created, **kwargs):
-  if created:
-    instance.authors.add(instance.owner.authorship.first())
-    instance._dirty = True
-    logger.debug('story@story_ready {pk:%s} create author {username:%s}" done.' % (instance.pk, instance.owner.username))
 
 
 # create story file if it is not exists; if the story eists already, cfr the followinf story_ready
@@ -598,8 +611,15 @@ def if_status_changed(sender, instance, created, **kwargs):
       # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
       action.send(instance.owner, verb='got_published', target=instance)
     if instance.status == Story.PENDING:
-      # send email.
+      # send email to staff
       instance.send_email_to_staff(template_name='story_pending_for_staff')
+
+      # send email to authors
+      authors = instance.authors.exclude(user__email__isnull=True)
+      
+      for author in authors:
+        instance.send_email_to_author(author=author, template_name='story_pending_for_author')
+        
       action.send(instance.owner, verb='ask_for_publication', target=instance)
     if instance.status == Story.EDITING:
       # send email.
@@ -664,6 +684,13 @@ def store_tags(sender, instance, **kwargs):
     ckey = 'story.%s' % instance.short_url
     cache.delete(ckey)
     cache.delete('story.featured')
+
+
+@receiver(m2m_changed, sender=Story.covers.through)
+def store_tags(sender, instance, **kwargs):
+  if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
+    ckey = 'story.%s' % instance.short_url
+    cache.delete(ckey)
 
 
 @receiver(m2m_changed, sender=Story.authors.through)

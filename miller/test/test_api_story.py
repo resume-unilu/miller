@@ -48,10 +48,12 @@ class StoryTest(ApiMillerTestCase):
     self.story_A.refresh_from_db()
     self.assertEqual(self.story_A.status, Story.PENDING)
 
-    self.assertEqual(len(mail.outbox), 1)
+    # story has 2 authors with emails.
+    self.assertEqual(len(mail.outbox), 3)
+    
     # first thing, the submitter username
     self.assertEqual(mail.outbox[0].subject.split(' ')[0], self.user_A.username)
-
+    mail.outbox = []
 
 
   def _test_attach_documents(self):

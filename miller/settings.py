@@ -329,7 +329,7 @@ LOGGING = {
             'propagate': True,
         },
         'miller.commands': {
-            'handlers': ['console','commands'],
+            'handlers': ['commands'],
             'level': 'DEBUG'
         },
         'miller': {
