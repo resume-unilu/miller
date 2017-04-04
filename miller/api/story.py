@@ -208,6 +208,8 @@ class StoryViewSet(viewsets.ModelViewSet):
       # check 
       raise PermissionDenied()
     qs = self.queryset.filter(status__in=[Story.PENDING, Story.REVIEW, Story.EDITING])
+    # cannot get your own stories...
+    qs = qs.exclude(authors__user=request.user).distinct()
     page    = self.paginate_queryset(qs)
     serializer = PendingStorySerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
