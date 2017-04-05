@@ -50,7 +50,6 @@ class StoryTest(ApiMillerTestCase):
 
     # story has 2 authors with emails.
     self.assertEqual(len(mail.outbox), 3)
-    
     # first thing, the submitter username
     self.assertEqual(mail.outbox[0].subject.split(' ')[0], self.user_A.username)
     mail.outbox = []

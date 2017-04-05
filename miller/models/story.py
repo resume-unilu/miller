@@ -417,16 +417,19 @@ class Story(models.Model):
     """
     recipient = [author.user.email]
     if recipient:
-      logger.debug('story {pk:%s} sending email to author {email:%s}...' % (self.pk, recipient))
-      send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context={
-        'title':    self.title,
-        'abstract': self.abstract,
-        'slug':     self.slug,
-        # 'authors':  self.authors.all(),
-        'author':   author,
-        'site_name': settings.MILLER_TITLE,
-        'site_url':  settings.MILLER_SETTINGS['host']
-      })
+      logger.debug('story {pk:%s} sending email to author {username:%s}...' % (self.pk, author.user.username))
+      try:
+        send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=recipient, fail_silently=False, context={
+          'title':    self.title,
+          'abstract': self.abstract,
+          'slug':     self.slug,
+          # 'authors':  self.authors.all(),
+          'author':   author,
+          'site_name': settings.MILLER_TITLE,
+          'site_url':  settings.MILLER_SETTINGS['host']
+        })
+      except Exception as e:
+        logger.exception(e)
     else:
       logger.debug('story {pk:%s} cannot send email to recipient, not found fo author {pk:%s}' % (self.pk,author.pk))
       
