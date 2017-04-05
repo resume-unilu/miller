@@ -231,12 +231,14 @@ class Story(models.Model):
   # convert the content of in a suitable markdown file. to be used before store() and before create_working_md() are called
   # if force is true, it overrides the contents field.
   def convert(self, force=False):
-    
-    # we force to use # headers by setting the threshold of 3 so that h1 "===" is transformed to h3 "###"
-    contents = pypandoc.convert_file(self.source.path, 'markdown',  extra_args=['--base-header-level=3'])
-    # ... but we have to transform them back, minus a level (e.g. transformed h1 becomes h2).
-    # We should check if we can use the pandoc options for that directly
-    self.contents = re.sub(r'#(#+)', r'\1', contents) 
+    if not contents:
+      # we force to use # headers by setting the threshold of 3 so that h1 "===" is transformed to h3 "###"
+      contents = pypandoc.convert_file(self.source.path, 'markdown',  extra_args=['--base-header-level=3'])
+      # ... but we have to transform them back, minus a level (e.g. transformed h1 becomes h2).
+      # We should check if we can use the pandoc options for that directly
+      self.contents = re.sub(r'#(#+)', r'\1', contents) 
+    else:
+      logger.debug('story {pk:%s} already contains contents. Skipped.' % self.pk)
 
 
   def gitTag(self, tag):
