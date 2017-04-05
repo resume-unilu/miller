@@ -19,6 +19,8 @@
 # """
 import os
 
+_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Debug javascript in template. Can be different from settings.DEBUG
 MILLER_DEBUG = True
 
@@ -161,7 +163,7 @@ STATICFILES_DIRS = [
 TEMPLATES = [
   {
       'BACKEND': 'django.template.backends.django.DjangoTemplates',
-      'DIRS': [MILLER_TEMPLATE_BASE_DIR],
+      'DIRS': [MILLER_TEMPLATE_BASE_DIR, os.path.join(_BASE_DIR, 'miller', 'templates')],
       'APP_DIRS': True,
       'OPTIONS': {
           'context_processors': [
