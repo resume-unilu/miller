@@ -83,6 +83,18 @@ class ReviewTest(TestCase):
     # Now score should have been calculated.
     self.assertEqual(review_dblind.score, 4)
 
+    # clean the mailbox
+    mail.outbox = []
+    # close the review, with success (sorry for the confusion)!!
+    review_dblind.status = Review.COMPLETED
+    review_dblind.save()
+
+    # a receipt has been sent.
+    self.assertEqual(len(mail.outbox), 1)
+
+    print mail.outbox[0].subject, mail.outbox[0].body 
+
+    
 
   def remove_story(self):
     self.story.delete()

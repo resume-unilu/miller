@@ -198,6 +198,7 @@ class Review(models.Model):
     context = {
       'username': self.assignee.username,
       'site_name': settings.MILLER_TITLE,
+      'story': self.story,
       'reviews_url': settings.MILLER_SETTINGS['host'] + '/login/?next=/reviews',
       'site_name': settings.MILLER_TITLE,
       'site_url':  settings.MILLER_SETTINGS['host']
@@ -212,7 +213,7 @@ class Review(models.Model):
         # from_email=settings.DEFAULT_FROM_EMAIL, 
     else:
       logger.debug('review {pk:%s} cannot send email to assignee, user {pk:%s} email not found!' % (self.pk, self.assignee.pk))
-      
+
 
   def generate_report(self, doubleblind=True):
     """
@@ -278,14 +279,21 @@ def calculate_score(sender, instance, **kwargs):
 @receiver(post_save, sender=Review)
 def dispatcher(sender, instance, created, **kwargs):
   if created or (hasattr(instance, '_original') and instance._original['assignee__pk'] != instance.assignee.pk):
-    logger.debug('review {pk:%s, category:%s} sending email to user {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+    logger.debug('review {pk:%s, category:%s} sending email to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
     try:
       instance.send_email_to_assignee(template_name='assignee_%s'%instance.category)
     except Exception as e:
       logger.exception(e)
     # else:
     #   logger.debug('review {pk:%s, category:%s} cannot send email to assignee, no settings.EMAIL_HOST present in loca_settings ...' %(instance.category, instance.pk))
-
+  elif instance.status == Review.COMPLETED or instance.status == Review.BOUNCE or instance == Review.REFUSAL:
+    logger.debug('review {pk:%s, category:%s} sending email to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+    try:
+      instance.send_email_to_assignee(template_name='assignee_%s_done'% instance.category)
+      logger.debug('review {pk:%s, category:%s} email sent to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+  
+    except Exception as e:
+      logger.exception(e)
 
 
 # @receiver(post_save, sender=Review)

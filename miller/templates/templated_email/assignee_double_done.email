@@ -1,0 +1,33 @@
+{% block subject %}{{site_name}} - Review of manuscript "{{story.title}}"{% endblock %}
+{% block plain %}
+Dear {{username}},
+ 
+Your review of the manuscript “{{story.title}}” has been successfully submitted.
+ 
+We take the opportunity to thank you for your assistance and support to the RESuME project.
+Do not hesitate to contact us for any query or further information.
+ 
+Best regards,
+
+The Editorial Team
+RESuME project – Université du Luxembourg
+Web {{site_url}}
+{% endblock %}
+
+{% block html %}
+  <p>Dear {{username}},</p>
+
+  <p>Your review of the manuscript “{{story.title}}” has been successfully submitted.</p>
+ 
+  <p>
+    We take the opportunity to thank you for your assistance and support to the RESuME project.<br/>
+    Do not hesitate to contact us for any query or further information.
+  </p>
+
+  <p>Best regards,</p>
+  <p>
+    The Editorial Team<br/>
+    RESuME project – Université du Luxembourg<br/>
+    Web {{site_url}}
+  </p>
+{% endblock %}
