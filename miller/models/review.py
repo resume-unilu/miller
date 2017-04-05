@@ -195,13 +195,23 @@ class Review(models.Model):
     send email to assignee
     """
     recipient = self.assignee.email
+
+    decision = '(still completing the review)'
+    if self.status == Review.REFUSAL:
+      decision = 'Refused. Do not consider for publication.'
+    elif self.status == Review.COMPLETED:
+      decision = 'Approved for publication'
+    elif self.status == Review.BOUNCE:
+      decision = 'Improvements needed before publication. To be submitted again.'
+      
     context = {
       'username': self.assignee.username,
       'site_name': settings.MILLER_TITLE,
       'story': self.story,
       'reviews_url': settings.MILLER_SETTINGS['host'] + '/login/?next=/reviews',
       'site_name': settings.MILLER_TITLE,
-      'site_url':  settings.MILLER_SETTINGS['host']
+      'site_url':  settings.MILLER_SETTINGS['host'],
+      'decision': decision
     }
     # update with extra field according to email template.
     context.update(extra);

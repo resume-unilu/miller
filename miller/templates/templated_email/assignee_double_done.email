@@ -2,7 +2,7 @@
 {% block plain %}
 Dear {{username}},
  
-Your review of the manuscript “{{story.title}}” has been successfully submitted.
+Your review of the manuscript “{{story.title}}” has been successfully submitted with the following assessment: **{{decision}}**.
  
 We take the opportunity to thank you for your assistance and support to the RESuME project.
 Do not hesitate to contact us for any query or further information.
@@ -17,7 +17,7 @@ Web {{site_url}}
 {% block html %}
   <p>Dear {{username}},</p>
 
-  <p>Your review of the manuscript “{{story.title}}” has been successfully submitted.</p>
+  <p>Your review of the manuscript “{{story.title}}” has been successfully submitted with the following assessment: <b>{{decision}}</b></p>
  
   <p>
     We take the opportunity to thank you for your assistance and support to the RESuME project.<br/>
