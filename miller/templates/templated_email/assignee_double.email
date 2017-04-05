@@ -1,24 +1,25 @@
-{% block subject %}A new review has been assigned to you{% endblock %}
+{% block subject %}{{site_name}} - A review has been assigned to you{% endblock %}
 {% block plain %}
-Cher {{fullname}}, 
+Dear {{username}}, 
 
-Vous venez de vous inscrire à {{site_name}} ({{site_url}}). Votre nom d’utilisateur est : {{username}}
+A new review has been assigned to you. Please login and check [your reviews]({{reviews_url}}) section to start the review process.
 
-Pour activer votre compte, cliquez sur le lien suivant ou copiez le dans la barre d’adresse de votre navigateur. Vous pourrez ensuite vous connecter à la plateforme. 
+Merci et bonne review !
 
-{{activation_link}}
-
-Merci et bonne navigation ! 
-
+The Editorial Team
+RESuME project – Université du Luxembourg
+Web {{site_url}}
 {% endblock %}
 
 {% block html %}
-  <p>Dear {{fullname}},</p>
+  <p>Dear {{username}},</p>
 
-  <p>A new review has been assigned to you. Please check Vous venez de vous inscrire à {{site_name}} ({{site_url}}). Votre nom d’utilisateur est : {{username}}</p>
+  <p>A new review has been assigned to you. Please check your <a href='{{reviews_url}}'>review</a> section to start the review process.</p>
 
-  <p> Pour activer votre compte, cliquez sur le lien suivant ou copiez le dans la barre d’adresse de votre navigateur. Vous pourrez ensuite vous connecter à la plateforme.
+  <p>Merci et bonne review ! </p>
+  <p>
+    The Editorial Team<br/>
+    RESuME project – Université du Luxembourg<br/>
+    Web {{site_url}}
   </p>
-  <a href="{{activation_link}}">{{activation_link}}</a>
-  <p>Merci et bonne navigation ! </p>
 {% endblock %}

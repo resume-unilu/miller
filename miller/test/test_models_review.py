@@ -71,9 +71,9 @@ class ReviewTest(TestCase):
     # Test that one message has been sent.
     self.assertEqual(len(mail.outbox), 3)
 
-    # # Verify that the subject of the first message is correct.
+    # # Verify that the subject of the last message is correct.
     # print mail.outbox[1].subject, mail.outbox[1]
-    self.assertEqual(mail.outbox[2].subject, u'A new review has been assigned to you')
+    self.assertEqual(mail.outbox[2].subject, u'%s - A review has been assigned to you' % settings.MILLER_TITLE)
     # check that the user has been deleted
     # .. set review...
     review_dblind.status = Review.DRAFT

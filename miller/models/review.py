@@ -198,7 +198,9 @@ class Review(models.Model):
     context = {
       'username': self.assignee.username,
       'site_name': settings.MILLER_TITLE,
-      'reviews_url': settings.MILLER_SETTINGS['host'] + '/reviews'
+      'reviews_url': settings.MILLER_SETTINGS['host'] + '/login/?next=/reviews',
+      'site_name': settings.MILLER_TITLE,
+      'site_url':  settings.MILLER_SETTINGS['host']
     }
     # update with extra field according to email template.
     context.update(extra);
@@ -210,7 +212,7 @@ class Review(models.Model):
         # from_email=settings.DEFAULT_FROM_EMAIL, 
     else:
       logger.debug('review {pk:%s} cannot send email to assignee, user {pk:%s} email not found!' % (self.pk, self.assignee.pk))
-  
+      
 
   def generate_report(self, doubleblind=True):
     """
@@ -267,7 +269,7 @@ def calculate_score(sender, instance, **kwargs):
   Precalculate score according to SCORE_FIELD integer fields
   """
   if instance.pk:
-    print [getattr(instance, f) for f in Review.FIELDS_FOR_SCORE]
+    #print [getattr(instance, f) for f in Review.FIELDS_FOR_SCORE]
     instance.score = reduce(lambda x,y: (x if x is not None else 0)+(y if y is not None else 0), [getattr(instance, f) for f in Review.FIELDS_FOR_SCORE])
     logger.debug('review {pk:%s} @pre_save, total score: %s' % (instance.pk, instance.score))
     
