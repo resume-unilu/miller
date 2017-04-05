@@ -204,7 +204,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     Return a list of stories marked for reviews without assigned reviews.
     This is also accessible by reviewers.
     """
-    if not request.user.is_authenticated or not request.user.groups.filter(name='reviewers').exists():
+    if not request.user.is_authenticated or not request.user.groups.filter(name='chief-reviewers').exists():
       # check 
       raise PermissionDenied()
     qs = self.queryset.filter(status__in=[Story.PENDING, Story.REVIEW, Story.EDITING])

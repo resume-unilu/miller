@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 
 
 from rest_framework import serializers, viewsets, status
-from rest_framework.exceptions import NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from rest_framework.decorators import detail_route, permission_classes, list_route, detail_route
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
@@ -29,11 +29,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     Only staff can create reviews
     """
-    if not request.user.is_staff:
+    if not request.user.is_staff and not request.user.groups.filter(name='chief-reviewers').exists():
+      # check 
+      raise PermissionDenied()
       # it seems that the permission_classes is not working
       #       @permission_classes((IsAdminUser,))
       # TypeError: 'tuple' object is not callable
-      raise NotAuthenticated()
+      
     
     # print request.data
     serializer = CreateReviewSerializer(data=request.data, context={'request': request}, partial=True)
@@ -73,7 +75,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
   
-  def get(self, request, pk, *args, **kwargs):
+  def retrieve(self, request, pk, *args, **kwargs):
     """
     List the reviews assigned to the request user. It requires an authentified user.
     """
