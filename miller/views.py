@@ -108,6 +108,7 @@ def activation_complete(request):
 
 @csrf_protect
 def signup_view(request):
+  print 'here'
   if request.method == 'GET':
     signup_message = {}
     form = SignupForm(initial={
@@ -144,7 +145,7 @@ def signup_view(request):
       
       logger.info('user-author saved  {author:%s, user.pk:%s}' % (aut, aut.user.pk))
 
-      logger.info('registration success {pk:%s}' % user.pk)
+      
       
       activation_key = signing.dumps(
         obj=user.username,
@@ -159,19 +160,25 @@ def signup_view(request):
         print activation_key
       else:
         logger.info('sending activation email {pk:%s}' % user.pk)
-        tmp = send_templated_mail(
-          template_name='welcome.en_US', 
-          from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
-          recipient_list=[user.email],
-          context={
-            'activation_link': request.build_absolute_uri(reverse('registration_activate', args=[activation_key])),
-            'username': user.username,
-            'fullname': aut.fullname,
-            'site_name': settings.MILLER_TITLE,
-            'site_url': request.build_absolute_uri(reverse('home'))
-          }, 
-          create_link=True
-        )
+        try:
+          tmp = send_templated_mail(
+            template_name='welcome.en_US', 
+            from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
+            recipient_list=[user.email],
+            context={
+              'activation_link': request.build_absolute_uri(reverse('registration_activate', args=[activation_key])),
+              'username': user.username,
+              'fullname': aut.fullname,
+              'site_name': settings.MILLER_TITLE,
+              'site_url': request.build_absolute_uri(reverse('home'))
+            }, 
+            fail_silenty=False,
+            create_link=True
+          )
+          logger.info('activation email sent to user {pk:%s}' % user.pk)
+        except Exception as e:
+          logger.exception(e)
+      logger.info('registration success {pk:%s}' % user.pk)
       return redirect('home')
 
 
