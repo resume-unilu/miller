@@ -108,7 +108,6 @@ def activation_complete(request):
 
 @csrf_protect
 def signup_view(request):
-  print 'here'
   if request.method == 'GET':
     signup_message = {}
     form = SignupForm(initial={
@@ -123,10 +122,8 @@ def signup_view(request):
     })
     # confirm
     # register user and all
-
-
     if form.is_valid():
-      logger.info('registration started  {first_name:%s}' % form.cleaned_data['first_name'])
+      logger.info('registration started  {username:%s}, form is valid' % form.cleaned_data['username'])
       REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 
       user = form.save(commit=False)

@@ -1,22 +1,62 @@
-{% block subject %}{{site_name}} - A review has been assigned to you{% endblock %}
+{% block subject %}{{site_name}} - Invitation to review manuscript "{{story.title}}"{% endblock %}
 {% block plain %}
 Dear {{username}}, 
 
-A new review has been assigned to you. Please login and check [your reviews]({{reviews_url}}) section to start the review process.
+We would like to invite you to review a manuscript submitted for publication in one of the scientific products of the [RESuME project]({{site_url}}).
+ 
+Title:
+{{story.title}}
+ 
+Abstract:
+{{story.abstract}}
+ 
+If you agree to review the manuscript, we would ask for your comments within **three weeks** from your acceptance. Do not hesitate to contact us for any query or further information.
+ 
+To ACCEPT, please activate or log in to your RESuME account by clicking on the following link: [{{site_url}}/login]({{site_url}}/login)
+You will then be able to access the manuscript and the review form by logging to the “Your reviews” section of your account or by clicking on the following link: [{{site_url}}/login?next=/reviews]({{site_url}}/login?next=/reviews)
 
-Merci et bonne review !
+To DECLINE, please send us feedback by answering this email.
+ 
+Thank you for your consideration and support to our project.  
 
+Best regards,
+ 
 The Editorial Team
 RESuME project – Université du Luxembourg
 Web {{site_url}}
+
 {% endblock %}
 
 {% block html %}
   <p>Dear {{username}},</p>
 
-  <p>A new review has been assigned to you. Please check your <a href='{{reviews_url}}'>review</a> section to start the review process.</p>
+  <p>We would like to invite you to review a manuscript submitted for publication in one of the scientific products of the <a href='{{site_url}}'>RESuME project</a>.</p>
 
-  <p>Merci et bonne review ! </p>
+  <p>
+    <label>Title:</label>
+    <h4>{{story.title}}</h4>
+  </p>
+
+  <p>
+    <label>Abstract:</label>
+    <blockquote>
+      {{story.abstract}}
+    </blockquote>
+  </p>
+
+  <p>If you agree to review the manuscript, we would ask for your comments within **three weeks** from your acceptance. Do not hesitate to contact us for any query or further information.</p>
+
+
+  <p>To ACCEPT, please log in to your RESuME account by clicking on the following link: [{{site_url}}/login]({{site_url}}/login)
+  <br/>
+  You will then be able to access the manuscript and the review form by logging to the <a href='{{site_url}}/login?next=/reviews'> Your reviews</a> section of your account.
+  </p>
+
+  <p>To DECLINE, please send us feedback by answering this email.</p>
+
+
+  <p>Thank you for your consideration and support to our project.</p>
+  <p>Best regards,</p>
   <p>
     The Editorial Team<br/>
     RESuME project – Université du Luxembourg<br/>

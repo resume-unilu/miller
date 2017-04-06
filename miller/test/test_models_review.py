@@ -73,7 +73,7 @@ class ReviewTest(TestCase):
 
     # # Verify that the subject of the last message is correct.
     # print mail.outbox[1].subject, mail.outbox[1]
-    self.assertEqual(mail.outbox[2].subject, u'%s - A review has been assigned to you' % settings.MILLER_TITLE)
+    self.assertEqual(mail.outbox[2].subject, u'%s - Invitation to review manuscript "%s"' % (settings.MILLER_TITLE, self.story.title))
     # check that the user has been deleted
     # .. set review...
     review_dblind.status = Review.DRAFT
