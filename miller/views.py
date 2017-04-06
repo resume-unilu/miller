@@ -156,29 +156,28 @@ def signup_view(request):
       # print activation_key
       # print settings.EMAIL_ACTIVATION_ACCOUNT
       # print user.email
-      if hasattr(settings,'DISABLE_EMAIL_ACTIVATION'):
-        print activation_key
+      try:
+        tmp = send_templated_mail(
+          template_name='welcome.en_US', 
+          from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
+          recipient_list=[user.email],
+          context={
+            'activation_link': request.build_absolute_uri(reverse('registration_activate', args=[activation_key])),
+            'username': user.username,
+            'fullname': aut.fullname,
+            'site_name': settings.MILLER_TITLE,
+            'site_url': request.build_absolute_uri(reverse('home'))
+          }, 
+          fail_silenty=False,
+          #create_link=True
+        )
+        logger.info('activation email sent to user {pk:%s}' % user.pk)
+      except Exception as e:
+        logger.debug('sending activation email failed {pk:%s, key:%s}' % (user.pk, activation_key))
+      
+        logger.exception(e)
       else:
-        logger.info('sending activation email {pk:%s}' % user.pk)
-        try:
-          tmp = send_templated_mail(
-            template_name='welcome.en_US', 
-            from_email=settings.EMAIL_ACTIVATION_ACCOUNT,
-            recipient_list=[user.email],
-            context={
-              'activation_link': request.build_absolute_uri(reverse('registration_activate', args=[activation_key])),
-              'username': user.username,
-              'fullname': aut.fullname,
-              'site_name': settings.MILLER_TITLE,
-              'site_url': request.build_absolute_uri(reverse('home'))
-            }, 
-            fail_silenty=False,
-            create_link=True
-          )
-          logger.info('activation email sent to user {pk:%s}' % user.pk)
-        except Exception as e:
-          logger.exception(e)
-      logger.info('registration success {pk:%s}' % user.pk)
+        logger.info('registration success {pk:%s}' % user.pk)
       return redirect('home')
 
 
