@@ -29,21 +29,18 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     Only staff can create reviews
     """
-    if not request.user.is_staff and not request.user.groups.filter(name='chief-reviewers').exists():
+    if not request.user.is_staff and not request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
       # check 
       raise PermissionDenied()
       # it seems that the permission_classes is not working
       #       @permission_classes((IsAdminUser,))
       # TypeError: 'tuple' object is not callable
-      
-    
-    # print request.data
     serializer = CreateReviewSerializer(data=request.data, context={'request': request}, partial=True)
     
     if not serializer.is_valid():
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    serializer.save()
+    
+    serializer.save(assigned_by=request.user)
     return Response(serializer.data)
     
 
@@ -55,7 +52,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Once the review status has been changed to COMPLETED/REJECTED/BOUNCE this method is no more available (a not found error is thrown) 
     """
     self.queryset = self.queryset.filter(status__in=[Review.INITIAL, Review.DRAFT], assignee=request.user)
-
+    print "AAAARRG"
     review = get_object_or_404(self.queryset, pk=kwargs['pk'])
     return super(ReviewViewSet, self).partial_update(request, *args, **kwargs)
 
@@ -79,7 +76,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     List the reviews assigned to the request user. It requires an authentified user.
     """
-    review = get_object_or_404(self.queryset.filter(assignee=request.user), pk=pk)
+    if request.user.is_staff or request.user.groups.filter(name__in=[Review.GROUP_CHIEF_REVIEWERS, Review.GROUP_REVIEWERS, Review.GROUP_EDITORS]).exists():
+      review = get_object_or_404(self.queryset, pk=pk)
+    else:
+      review = get_object_or_404(self.queryset.filter(assignee=request.user), pk=pk)
     
     serializer = ReviewSerializer(review,
         context={'request': request},

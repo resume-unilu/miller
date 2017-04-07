@@ -258,12 +258,12 @@ class ReviewAdmin(admin.ModelAdmin):
     if db_field.name == "story":
       kwargs["queryset"] = Story.objects.filter(status__in=[Story.EDITING, Story.REVIEW])
     elif db_field.name == "assignee":
-      kwargs["queryset"] = User.objects.filter(groups__name__in=['reviewers', 'editors'])
+      kwargs["queryset"] = User.objects.filter(groups__name__in=['reviewers', 'editors']).distinct()
     return super(ReviewAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
   def add_view(self,request,extra_content=None):
-    self.exclude = Review.FIELDS + ('contents','assigned_by')
+    self.exclude = Review.FIELDS + ('contents','assigned_by',)
     return super(ReviewAdmin,self).add_view(request)
 
   # deprecated.

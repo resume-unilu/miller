@@ -1,0 +1,26 @@
+[ 
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "reviewers",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": {
+      "name": "editors",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": {
+      "name": "chief-reviewers",
+      "permissions": []
+    }
+  }
+]

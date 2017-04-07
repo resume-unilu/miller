@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, logging, json
+from datetime import timedelta
 
 from actstream import action
 
 from miller import helpers
+from miller.models import Story
 
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -12,12 +14,19 @@ from django.db import models
 from django.db.models.signals import pre_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 
 logger = logging.getLogger('miller.commands')
 
+
+def assign_due_date():
+  return timezone.now()+timedelta(days=settings.MILLER_REVIEW_DEFAULT_DUE_DATE_DAYS)
+
 class Review(models.Model):
+  GROUP_REVIEWERS         = 'reviewers'
+  GROUP_EDITORS           = 'editors'
+  GROUP_CHIEF_REVIEWERS   = 'chief-reviewers'
   """
   Due by
   """
@@ -49,6 +58,17 @@ class Review(models.Model):
     (COMPLETED, 'complete')
   )
 
+  ACCEPTED = 'accepted'
+  CONFLICT = 'conflict'
+  TOOBUSY  = 'busy'
+
+  ACCEPTANCE_CHOICES = (
+    (INITIAL,   'initial'),
+    (ACCEPTED,  'accepted'),
+    (CONFLICT,  'conflict of interest'),
+    (TOOBUSY,   'refused - other reason'),
+  )
+
   # List of fields
   FIELDS = ('thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdisciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
       'structure_score','structure', 'references', 'references_score', 'pertinence','pertinence_score',)
@@ -58,13 +78,13 @@ class Review(models.Model):
 
   story       = models.ForeignKey('miller.Story', related_name='reviews', help_text="This shows only stories having status 'review' or 'editing'")
   assignee    = models.ForeignKey('auth.User', related_name='assigned_reviews', help_text="To include users in this list, add them to the groups 'editors' or 'reviewers'") # at least the first author, the one who owns the file.
-  assigned_by = models.ForeignKey('auth.User', blank=True, null=True, related_name='dispatched_reviews', help_text="This has been automatically assigned.") # should be request.user in case of admin.
+  assigned_by = models.ForeignKey('auth.User', related_name='dispatched_reviews', help_text="This has been automatically assigned.") # should be request.user in case of admin.
 
-  category = models.CharField(max_length=8, choices=CATEGORY_CHOICES, default=EDITING) # e.g. 'actor' or 'institution'
-  
-  status = models.CharField(max_length=8, choices=STATUS_CHOICES, default=INITIAL)
+  category   = models.CharField(max_length=8, choices=CATEGORY_CHOICES, default=EDITING) # e.g. 'actor' or 'institution'  
+  status     = models.CharField(max_length=8, choices=STATUS_CHOICES, default=INITIAL)
+  acceptance = models.CharField(max_length=8, choices=ACCEPTANCE_CHOICES, default=INITIAL)
 
-  due_date           = models.DateTimeField(null=True, blank=True)
+  due_date           = models.DateTimeField(blank=True, default=assign_due_date)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
@@ -224,6 +244,25 @@ class Review(models.Model):
     else:
       logger.debug('review {pk:%s} cannot send email to assignee, user {pk:%s} email not found!' % (self.pk, self.assignee.pk))
 
+  def send_email_to_staff(self, template_name):
+    """
+    Send email to staff, to the settings.DEFAULT_FROM_EMAIL address.
+    """
+    recipient = settings.DEFAULT_FROM_EMAIL
+    if recipient:
+      logger.debug('story {pk:%s} sending email to DEFAULT_FROM_EMAIL {email:%s}...' % (self.pk, settings.DEFAULT_FROM_EMAIL))
+      send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context={
+        'title':    self.story.title,
+        'abstract': self.story.abstract,
+        'slug':     self.story.slug,
+        'first_author': self.owner.authorship.first(),
+        'username': 'staff member',
+        'site_name': settings.MILLER_TITLE,
+        'site_url':  settings.MILLER_SETTINGS['host']
+      })
+    else:
+      logger.debug('story {pk:%s} cannot send email to recipient, settings.DEFAULT_FROM_EMAIL not found!' % (self.pk))
+      
 
   def generate_report(self, doubleblind=True):
     """
@@ -294,45 +333,21 @@ def dispatcher(sender, instance, created, **kwargs):
       instance.send_email_to_assignee(template_name='assignee_%s'%instance.category)
     except Exception as e:
       logger.exception(e)
+
+    if instance.story.status != Story.REVIEW or instance.story.status != Story.EDITING:
+      instance.story.status = Story.EDITING if instance.category == Review.EDITING else Story.REVIEW
+      instance.story.save()
     # else:
     #   logger.debug('review {pk:%s, category:%s} cannot send email to assignee, no settings.EMAIL_HOST present in loca_settings ...' %(instance.category, instance.pk))
   elif instance.status == Review.COMPLETED or instance.status == Review.BOUNCE or instance == Review.REFUSAL:
-    logger.debug('review {pk:%s, category:%s} sending email to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+    logger.debug('review {pk:%s, category:%s} sending email to assignee and staff {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
     try:
       instance.send_email_to_assignee(template_name='assignee_%s_done'% instance.category)
+      instance.send_email_to_staff(template_name='assignee_%s_donefor_staff'% instance.category)
+      
       logger.debug('review {pk:%s, category:%s} email sent to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
   
     except Exception as e:
       logger.exception(e)
-
-
-# @receiver(post_save, sender=Review)
-# def git_commit(sender, instance, created, **kwargs):
-#   """
-#   convenient function to commit the review
-#   """
-#   logger.debug('review {pk:%s} init git commit...' % self.pk)
-
-#   path = instance.assignee.get_path()
-  
-#   f = codecs.open(path, encoding='utf-8', mode='w+')
-#   f.write(instance.generate_report)
-#   f.seek(0)
-#   f.close()
-
-  
-#   author = Actor(self.owner.username, self.owner.email)
-#   committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
-
-#   # commit if there are any differences
-#   repo = Repo.init(settings.GIT_ROOT)
-
-#   # add and commit JUST THIS FILE
-#   #tree = Tree(repo=repo, path=self.owner.profile.get_path())
-#   repo.index.add([self.owner.profile.get_path()])
-#   c = repo.index.commit(message=u"saving %s" % self.title, author=author, committer=committer)
-
-
-#   logger.debug('story {pk:%s} git commit done.' % self.pk)
 
 

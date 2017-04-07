@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.test.runner import DiscoverRunner
 from miller.models import Story, Comment, Author
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser, User, Group
 
 class NoDbTestRunner(DiscoverRunner):
   """ A test runner to test without database creation/deletion """
@@ -18,6 +18,7 @@ class NoDbTestRunner(DiscoverRunner):
 
 
 class ApiMillerTestCase(TestCase):
+  fixtures = ('auth.group.json', )
   """
   This contain a common workflow for miller.
   We create a story with two authors and we set the clients for the different users/roles
@@ -30,17 +31,27 @@ class ApiMillerTestCase(TestCase):
       username='alessandro.baricco',  email='alessandro@baricco', password='top_secret')
     self.user_C           = User.objects.create_user(
       username='lewis.carrol',  email='lewis@carrol', password='top_secret')
+    self.user_D           = User.objects.create_user(
+      username='gilles.deleuze',  email='gilles@deleuze', password='top_secret')
     
+    # group chief reviewer should have been created with fixtures
+    self.group_chief_reviewer, created = Group.objects.get_or_create(name='chief-reviewers')
+    self.assertEqual(created, False)
+    self.group_chief_reviewer.user_set.add(self.user_D)
+
     # staff user
     self.user_staff       = User.objects.create_user(
       username='staff.user', email='staff@staff', password='top_secret', is_staff=True)
 
-    self.users = [self.user_A, self.user_B, self.user_C, self.user_staff]
+    self.users = [self.user_A, self.user_B, self.user_C, self.user_D, self.user_staff]
     # clients for normal users
     self.client_user_A    = Client(enforce_csrf_checks=False)
     self.client_user_B    = Client(enforce_csrf_checks=False)
     self.client_user_C    = Client(enforce_csrf_checks=False)
     
+    # client for chief reviewers, yes it is a normal user with super powers but not enough
+    self.client_user_D    = Client(enforce_csrf_checks=False)
+
     # client without authentification
     self.client_anonymous = Client(enforce_csrf_checks=False)
     
@@ -52,6 +63,7 @@ class ApiMillerTestCase(TestCase):
     self.client_user_A.force_login(user=self.user_A)
     self.client_user_B.force_login(user=self.user_B)
     self.client_user_C.force_login(user=self.user_C)
+    self.client_user_D.force_login(user=self.user_D)
 
     # force login for staff user
     self.client_staff.force_login(user=self.user_staff)
