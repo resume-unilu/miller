@@ -208,7 +208,34 @@ class Review(models.Model):
         'status': self.status
       }
   
+  @property
+  def content(self):
+    if not hasattr(self, '_content'):
+      try:
+        self._content  = json.loads(self.contents)
+      except Exception as e:
+        self._content = {
+          'text': 'Error in parsing the text.'
+        }
+        logger.exception(e)
+        return self._content['text']
+      else:
+        return self._content['text']
+    else:
+      return self._content['text']
 
+  @property
+  def decision(self):
+    decision = '(still completing the review)'
+    if self.status == 'refusal':
+      decision = 'Refused. Do not consider for publication.'
+    elif self.status == 'completed':
+      decision = 'Approved for publication'
+    elif self.status == 'bounce':
+      decision = 'Improvements needed before publication. To be submitted again.'
+    return decision
+
+    
   def send_email_to_assignee(self, template_name, extra={}):
     """
     send email to assignee

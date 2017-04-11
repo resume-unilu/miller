@@ -399,14 +399,14 @@ class Story(models.Model):
 
     return outputfile
 
-  def send_email_to_staff(self, template_name):
+  def send_email_to_staff(self, template_name, extra=None):
     """
     Send email to staff, to the settings.DEFAULT_FROM_EMAIL address.
     """
     recipient = settings.DEFAULT_FROM_EMAIL
     if recipient:
       logger.debug('story {pk:%s} sending email to DEFAULT_FROM_EMAIL {email:%s}...' % (self.pk, settings.DEFAULT_FROM_EMAIL))
-      send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context={
+      context = {
         'title':    self.title,
         'abstract': self.abstract,
         'slug':     self.slug,
@@ -414,7 +414,10 @@ class Story(models.Model):
         'username': 'staff member',
         'site_name': settings.MILLER_TITLE,
         'site_url':  settings.MILLER_SETTINGS['host']
-      })
+      }
+      if extra:
+        context.update(extra)
+      send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context=context)
     else:
       logger.debug('story {pk:%s} cannot send email to recipient, settings.DEFAULT_FROM_EMAIL not found!' % (self.pk))
       
@@ -616,12 +619,13 @@ def if_status_changed(sender, instance, created, **kwargs):
   if created:
     instance.send_email_to_staff(template_name='story_created')
 
+  # if status really changed.
   if hasattr(instance, '_original') and instance.status != instance._original[0][1]:
     logger.debug('(story@story_ready {pk:%s, status:%s} @story_ready if_status_changed from %s' % (instance.pk, instance.status, instance._original[0][1]))
     if instance.status == Story.PUBLIC:
       # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
       action.send(instance.owner, verb='got_published', target=instance)
-    if instance.status == Story.PENDING:
+    elif instance.status == Story.PENDING:
       # send email to staff
       instance.send_email_to_staff(template_name='story_pending_for_staff')
 
@@ -632,13 +636,24 @@ def if_status_changed(sender, instance, created, **kwargs):
         instance.send_email_to_author(author=author, template_name='story_pending_for_author')
         
       action.send(instance.owner, verb='ask_for_publication', target=instance)
-    if instance.status == Story.EDITING:
+    elif instance.status == Story.EDITING:
       # send email.
       action.send(instance.owner, verb='ask_for_editing', target=instance)
-    if instance.status == Story.REVIEW:
+    elif instance.status == Story.REVIEW:
       # send email.
+      instance.send_email_to_staff(template_name='story_review_for_staff')
       action.send(instance.owner, verb='ask_for_review', target=instance)
-
+    elif instance.status == Story.REVIEW_DONE:
+      closingremarks = instance.reviews.filter(category='closing').select_related('assignee').first()
+      
+      try:
+        instance.send_email_to_staff(template_name='story_reviewdone_for_staff', extra={
+          #chief decision:
+          'closingremarks': closingremarks,
+          'reviews': instance.reviews.filter(category='double')
+        })
+      except Exception as e:
+        print e
 
 # clean makdown version and commit
 @receiver(pre_delete, sender=Story)

@@ -65,8 +65,9 @@ class Command(BaseCommand):
     if not m:
       raise Exception('bad url in settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET')
     import requests, StringIO
-    import unicodecsv as csv
     response = requests.get('https://docs.google.com/spreadsheets/d/%s/export?format=csv' % m.group(1), stream=True)
+    print response.encoding
+    response.encoding = 'utf8'
     # print response.content
     # rows = csv.DictReader(StringIO.StringIO(response.content), encoding='utf-8', delimiter='\t')
     if response.status_code != 200:

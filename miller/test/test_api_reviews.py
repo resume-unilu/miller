@@ -1,6 +1,7 @@
 import json
 from actstream.models import any_stream
 from django.core import mail
+from django.conf import settings
 from django.test import TestCase
 from miller.test import ApiMillerTestCase
 from miller.models import Review, Story
@@ -87,11 +88,18 @@ class ReviewTest(ApiMillerTestCase):
     1. The story reviewed should be in status=Story.REVIEW
     2. The CHIEF_REVIEWER shouldn't be implied (author or owner)
     """
+    # Empty the test outbox
+    mail.outbox = []
+
     # Chief reviewer user_D creates a Review for user_B.
     response_user_D = self.client_user_D.post('/api/review/', {
       'story': self.story_A.pk,
       'assignee': self.user_B.pk,
-      'category': Review.DOUBLE_BLIND
+      'category': Review.DOUBLE_BLIND,
+      'contents': json.dumps({
+        'title': 'Indeed Very nice story',
+        'text': 'Very good. Please consider for publication'
+      })
     })
     self.assertEqual(response_user_D.status_code, 200)
     self.assertEqual(response_user_D.json()['category'], Review.DOUBLE_BLIND)
@@ -101,8 +109,13 @@ class ReviewTest(ApiMillerTestCase):
     self.assertEqual(review.assignee.username, self.user_B.username)
     self.assertEqual(review.assigned_by.username, self.user_D.username)
     self.assertEqual(review.status, Review.INITIAL)
+    self.assertEqual(review.story.title, self.story_A.title)
     self.assertEqual(review.story.status, Story.REVIEW)
 
+    # check the mail
+    self.assertEqual(len(mail.outbox), 2)
+    self.assertEqual(u''.join(mail.outbox[0].to), self.user_B.email)
+    
     # Now chief reviewer canc lose the review. A bad request:
     response_user_D = self.client_user_D.post('/api/review/close/', {
       #'story': self.story_A.pk,
@@ -129,11 +142,15 @@ class ReviewTest(ApiMillerTestCase):
     self.assertEqual(review.status, Review.REFUSAL)
     self.assertEqual(review.story.status, Story.REVIEW_DONE)
 
+    self.assertEqual(len(mail.outbox), 3)
+    self.assertEqual(mail.outbox[2].subject, '%s - review completed for manuscript "%s"' % (settings.MILLER_TITLE,review.story.title,))
+    
+    print mail.outbox[2].body
 
 
 
   def test_suite(self):
     self._test_chief_reviewer_can_access_story()
-    # self._test_create_editing_review()
+    self._test_create_editing_review()
     self._test_close_review()
     self.cleanUp()

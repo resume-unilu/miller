@@ -1,8 +1,9 @@
 {% block subject %}{{first_author.user.username}} sent a manuscript to be published{% endblock %}
 {% block plain %}
-Dear {{username}}, 
+Dear staff memeber, 
 
-Your **publication** is now under review:
+**{{first_author.fullname}}** has requested the publication of 
+  his paper:
 
 ## {{title}}
 {{abstract}}
@@ -16,7 +17,7 @@ Merci et bonne navigation !
 {% endblock %}
 
 {% block html %}
-  <p>Dear staff,</p>
+  <p>Dear staff member,</p>
 
   <p>
   <a href='{{site_url}}/login/?next=/author/{{first_author.slug}}/publications/'>{{first_author.fullname}}</a> has requested the publication of 

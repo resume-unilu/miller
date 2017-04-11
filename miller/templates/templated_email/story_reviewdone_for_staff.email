@@ -1,0 +1,42 @@
+{% block subject %}{{site_name}} - review completed for manuscript "{{title}}"{% endblock %}
+{% block plain %}
+Dear staff member,
+
+The manuscript “{{title}}” has been reviewed by many reviewers and  the final assestment made by [{{closingremarks.assignee.username}} is:
+
+  **{{closingremarks.decision}}**
+
+  final remarks:
+  > {{closingremarks.content}}
+
+This is based on this list of reviews:
+{% for review in reviews %}
+  1. **{{review.decision}}** by {{review.assignee.username}}
+    date: `{{review.date_last_modified}}`
+    score: `{{review.score}}`
+    final remarks:
+
+    > {{review.content}}
+
+{% endfor %}
+
+You can now decide to publish or communicate further with the author.
+
+Best regards,
+
+The Editorial Team
+RESuME project – Université du Luxembourg
+Web {{site_url}}
+{% endblock %}
+
+{% block html %}
+  <p>Dear {{author.fullname}},</p>
+
+Best regards,
+
+  <p>
+    The Editorial Team<br/>
+    RESuME project – Université du Luxembourg<br/>
+    Web {{site_url}}
+  </p>
+{% endblock %}
