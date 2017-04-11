@@ -4,7 +4,7 @@ from django.core import mail
 from django.test import TestCase
 from django.test.client import Client
 from django.test.runner import DiscoverRunner
-from miller.models import Story, Comment, Author
+from miller.models import Story, Comment, Author, Review
 from django.contrib.auth.models import AnonymousUser, User, Group
 
 class NoDbTestRunner(DiscoverRunner):
@@ -35,7 +35,7 @@ class ApiMillerTestCase(TestCase):
       username='gilles.deleuze',  email='gilles@deleuze', password='top_secret')
     
     # group chief reviewer should have been created with fixtures
-    self.group_chief_reviewer, created = Group.objects.get_or_create(name='chief-reviewers')
+    self.group_chief_reviewer, created = Group.objects.get_or_create(name=Review.GROUP_CHIEF_REVIEWERS)
     self.assertEqual(created, False)
     self.group_chief_reviewer.user_set.add(self.user_D)
 

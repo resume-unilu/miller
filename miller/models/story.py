@@ -45,21 +45,27 @@ class Story(models.Model):
   language_dict = helpers.get_languages_dict()
   
   DRAFT    = 'draft'   # visible just for you and staff users
-  PENDING  = 'pending'
   SHARED   = 'shared'  # share with specific user
   PUBLIC   = 'public'  # everyone can access that.
-  EDITING  = 'editing' # only staff and editors access this
-  REVIEW   = 'review'  # staff, editors and reviewer acces this
+  # status related to review process.
+  PENDING      = 'pending'
+  EDITING      = 'editing' # only staff and editors access this
+  REVIEW       = 'review'  # staff, editors and reviewer acces this
+  REVIEW_DONE  = 'reviewdone'
+
   DELETED  = 'deleted' # will be sent to the bin
+  # REFUSED  = 'refused' # will be sent to the bin
 
   STATUS_CHOICES = (
     (DRAFT,   'draft'),
     (SHARED,  'shared'),
     (PUBLIC,  'public'),  # accepted paper.
-    (EDITING, 'editing'), # ask for editing review
-    (REVIEW,  'review'),  # ask for review
     (DELETED, 'deleted'),
-    (PENDING, 'pending')  # ask for publication
+
+    (PENDING,     'pending review'),  # ask for publication, pending review
+    (EDITING,     'editing'), # ask for editing review
+    (REVIEW,      'review'),             # under review
+    (REVIEW_DONE, 'review done')
   )
 
   short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)

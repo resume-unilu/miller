@@ -52,7 +52,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Once the review status has been changed to COMPLETED/REJECTED/BOUNCE this method is no more available (a not found error is thrown) 
     """
     self.queryset = self.queryset.filter(status__in=[Review.INITIAL, Review.DRAFT], assignee=request.user)
-    print "AAAARRG"
     review = get_object_or_404(self.queryset, pk=kwargs['pk'])
     return super(ReviewViewSet, self).partial_update(request, *args, **kwargs)
 
@@ -84,6 +83,30 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer = ReviewSerializer(review,
         context={'request': request},
     )
+    return Response(serializer.data)
+
+
+  @list_route(methods=['post'])
+  def close(self, request, *args, **kwargs):
+    """
+    Create a *special review* where the assignee and the assigned_by is the chief reviewer.
+    Set the related story status to: REVIEW_DONE.
+    test with `python manage.py miller.test.test_api_reviews.ReviewTest`
+    cfr. `_test_close_review` method.
+    """
+    if not 'story' in request.data:
+      return Response([], status=status.HTTP_400_BAD_REQUEST)
+
+    if not request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
+      raise PermissionDenied()
+
+    serializer = CreateReviewSerializer(data=request.data, context={'request': request}, partial=True)
+    
+    if not serializer.is_valid():
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    story = get_object_or_404(Story.objects.filter(status=Story.REVIEW).exclude(Q(authors__user=request.user) | Q(owner=request.user)), pk=request.data['story'])
+    serializer.save(story=story,category=Review.CLOSING_REMARKS, assigned_by=request.user, assignee=request.user)
     return Response(serializer.data)
 
 

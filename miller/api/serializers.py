@@ -390,10 +390,11 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CreateReviewSerializer(serializers.ModelSerializer):
   assigned_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
-  
+  contents = JsonField()
+
   class Meta:
     model  = Review
-    fields = ('id', 'story', 'assignee', 'assigned_by', 'category', 'status', 'due_date')
+    fields = ('id', 'story', 'assignee', 'assigned_by', 'contents', 'category', 'status', 'due_date')
 
 class LiteReviewSerializer(serializers.ModelSerializer):
   """

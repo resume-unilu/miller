@@ -79,9 +79,61 @@ class ReviewTest(ApiMillerTestCase):
     # self.assertEqual(response_user_A.status_code, 200)
 
 
-  #def _test_create_editing_review(self):
+  def _test_close_review(self):
+    """
+    Our CHIEF_REVIEWER is responible for CLOSING a review.
+    conditions:
+    
+    1. The story reviewed should be in status=Story.REVIEW
+    2. The CHIEF_REVIEWER shouldn't be implied (author or owner)
+    """
+    # Chief reviewer user_D creates a Review for user_B.
+    response_user_D = self.client_user_D.post('/api/review/', {
+      'story': self.story_A.pk,
+      'assignee': self.user_B.pk,
+      'category': Review.DOUBLE_BLIND
+    })
+    self.assertEqual(response_user_D.status_code, 200)
+    self.assertEqual(response_user_D.json()['category'], Review.DOUBLE_BLIND)
+
+    review = Review.objects.get(pk=response_user_D.json()['id'])
+
+    self.assertEqual(review.assignee.username, self.user_B.username)
+    self.assertEqual(review.assigned_by.username, self.user_D.username)
+    self.assertEqual(review.status, Review.INITIAL)
+    self.assertEqual(review.story.status, Story.REVIEW)
+
+    # Now chief reviewer canc lose the review. A bad request:
+    response_user_D = self.client_user_D.post('/api/review/close/', {
+      #'story': self.story_A.pk,
+      'status': Review.REFUSAL
+    })
+    self.assertEqual(response_user_D.status_code, 400)
+    
+    # Then the good one
+    response_user_D=self.client_user_D.post('/api/review/close/', {
+      'story': self.story_A.pk,
+      'status': Review.REFUSAL,
+      'contents': json.dumps({
+        'title': 'Very nice story',
+        'text': 'please consider for publication'
+      })
+    })
+    self.assertEqual(response_user_D.status_code, 200)
+    self.assertEqual(response_user_D.json()['category'], Review.CLOSING_REMARKS)
+
+    review = Review.objects.get(pk=response_user_D.json()['id'])
+    
+    self.assertEqual(review.assignee.username, self.user_D.username)
+    self.assertEqual(review.assigned_by.username, self.user_D.username)
+    self.assertEqual(review.status, Review.REFUSAL)
+    self.assertEqual(review.story.status, Story.REVIEW_DONE)
+
+
+
 
   def test_suite(self):
     self._test_chief_reviewer_can_access_story()
-    self._test_create_editing_review()
+    # self._test_create_editing_review()
+    self._test_close_review()
     self.cleanUp()

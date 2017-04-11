@@ -27,17 +27,16 @@ class Review(models.Model):
   GROUP_REVIEWERS         = 'reviewers'
   GROUP_EDITORS           = 'editors'
   GROUP_CHIEF_REVIEWERS   = 'chief-reviewers'
-  """
-  Due by
-  """
-  EDITING      = 'editing'
-  DOUBLE_BLIND = 'double'
-  TRANSPARENT  = 'open'
+  
+  EDITING          = 'editing'
+  DOUBLE_BLIND     = 'double'
+  CLOSING_REMARKS  = 'closing'
+
 
   CATEGORY_CHOICES = (
-    (EDITING,      'editing'),
-    (DOUBLE_BLIND, 'double blind'),
-    (TRANSPARENT, 'open')
+    (EDITING,         'editing'),
+    (DOUBLE_BLIND,    'double blind'),
+    (CLOSING_REMARKS, 'closing remarks')
   )
 
   INITIAL   = 'initial'
@@ -334,9 +333,14 @@ def dispatcher(sender, instance, created, **kwargs):
     except Exception as e:
       logger.exception(e)
 
-    if instance.story.status != Story.REVIEW or instance.story.status != Story.EDITING:
+    if instance.category == Review.CLOSING_REMARKS:
+      if instance.story.status != Story.REVIEW_DONE:
+        instance.story.status = Story.REVIEW_DONE
+        instance.story.save()
+    elif instance.story.status != Story.REVIEW_DONE or instance.story.status != Story.REVIEW or instance.story.status != Story.EDITING:
       instance.story.status = Story.EDITING if instance.category == Review.EDITING else Story.REVIEW
       instance.story.save()
+      
     # else:
     #   logger.debug('review {pk:%s, category:%s} cannot send email to assignee, no settings.EMAIL_HOST present in loca_settings ...' %(instance.category, instance.pk))
   elif instance.status == Review.COMPLETED or instance.status == Review.BOUNCE or instance == Review.REFUSAL:
