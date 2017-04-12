@@ -30,10 +30,38 @@ Web {{site_url}}
 {% endblock %}
 
 {% block html %}
-  <p>Dear {{author.fullname}},</p>
+  <p>Dear staff member,</p>
 
+  <p>The manuscript “{{title}}” has been reviewed by many reviewers and  the final assestment made by <b>{{closingremarks.assignee.username}}</b> is:</p>
+
+  <p>
+    <h3>{{closingremarks.decision}}</h3>
+    final remarks:
+    <blockquote>{{closingremarks.content}}</blockquote>
+  </p>
+
+  <p>
+    This is based on this list of reviews:
+    <ol>
+    {% for review in reviews %}
+      <li>
+        <b>{{review.decision}}</b> by {{review.assignee.username}}
+        date: `{{review.date_last_modified}}`
+        <br/>
+        score: `{{review.score}}`
+        <br/>
+        final remarks:
+        <blockquote>{{review.content}}</blockquote>
+      </li>
+    {% endfor %}
+    </ol>
+  </p>
+  <p>
+You can now decide to publish or communicate further with the author.
+  </p>
+  <p>
 Best regards,
-
+  </p>
   <p>
     The Editorial Team<br/>
     RESuME project – Université du Luxembourg<br/>
