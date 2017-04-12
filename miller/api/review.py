@@ -105,7 +105,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     if not serializer.is_valid():
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    story = get_object_or_404(Story.objects.filter(status=Story.REVIEW).exclude(Q(authors__user=request.user) | Q(owner=request.user)), pk=request.data['story'])
+    story = get_object_or_404(Story.objects.filter(status__in=[Story.REVIEW, Story.EDITING]).exclude(Q(authors__user=request.user) | Q(owner=request.user)), pk=request.data['story'])
     serializer.save(story=story,category=Review.CLOSING_REMARKS, assigned_by=request.user, assignee=request.user)
     return Response(serializer.data)
 
