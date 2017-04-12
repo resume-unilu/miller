@@ -14,7 +14,7 @@ Web {{site_url}}
 {% block html %}
   <p>Dear staff member,</p>
 
-  <p>Your review of the manuscript “{{story.title}}” has been successfully submitted with the following assessment: <b>{{decision}}</b></p>
+  <p>The review of the manuscript “{{story.title}}” has been successfully submitted with the following assessment: <b>{{decision}}</b></p>
 
   <p>Best regards,</p>
   <p>

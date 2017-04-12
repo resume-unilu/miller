@@ -210,30 +210,14 @@ class StoryViewSet(viewsets.ModelViewSet):
     if not request.user.is_authenticated or not request.user.groups.filter(name='chief-reviewers').exists():
       # check 
       raise PermissionDenied()
-    qs = self.queryset.filter(status__in=[Story.PENDING, Story.REVIEW, Story.EDITING])
+
+    qs = self.queryset.filter(status__in=[Story.PENDING, Story.REVIEW, Story.REVIEW_DONE, Story.EDITING]).exclude(authors__user=request.user).distinct()
+    g = Glue(request=request, queryset=qs)
+
     # cannot get your own stories...
-    qs = qs.exclude(authors__user=request.user).distinct()
-    page    = self.paginate_queryset(qs)
+    page    = self.paginate_queryset(g.queryset)
     serializer = PendingStorySerializer(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
-
-
-  @list_route(methods=['get'])
-  def reviewed(self, request):
-    """
-    Return a list of stories reviewed. For Admin only.
-    This is also accessible by chief-reviewers.
-    """
-    if request.user.is_authenticated and (request.user.is_staff or request.user.groups.filter(name='chief-reviewers').exists()):
-      qs = self.queryset.filter(status=[Story.REVIEW_DONE])
-      # cannot get your own stories...
-      qs = qs.exclude(authors__user=request.user).distinct()
-      page    = self.paginate_queryset(qs)
-      serializer = PendingStorySerializer(page, many=True, context={'request': request})
-      return self.get_paginated_response(serializer.data)
-
-    else:  # check 
-      raise PermissionDenied()
     
 
 

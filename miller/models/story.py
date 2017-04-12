@@ -634,7 +634,10 @@ def if_status_changed(sender, instance, created, **kwargs):
       
       for author in authors:
         instance.send_email_to_author(author=author, template_name='story_pending_for_author')
-        
+      
+      # chief reviewer as well @todo
+
+
       action.send(instance.owner, verb='ask_for_publication', target=instance)
     elif instance.status == Story.EDITING:
       # send email.
