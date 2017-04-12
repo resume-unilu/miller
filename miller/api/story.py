@@ -218,6 +218,25 @@ class StoryViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
 
+  @list_route(methods=['get'])
+  def reviewed(self, request):
+    """
+    Return a list of stories reviewed. For Admin only.
+    This is also accessible by chief-reviewers.
+    """
+    if request.user.is_authenticated and (request.user.is_staff or request.user.groups.filter(name='chief-reviewers').exists()):
+      qs = self.queryset.filter(status=[Story.REVIEW_DONE])
+      # cannot get your own stories...
+      qs = qs.exclude(authors__user=request.user).distinct()
+      page    = self.paginate_queryset(qs)
+      serializer = PendingStorySerializer(page, many=True, context={'request': request})
+      return self.get_paginated_response(serializer.data)
+
+    else:  # check 
+      raise PermissionDenied()
+    
+
+
   @detail_route(methods=['get'])
   def comments(self, request, pk=None):
     if pk.isdigit():
