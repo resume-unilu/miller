@@ -15,7 +15,8 @@ from django.db.models.signals import pre_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+from templated_email import send_templated_mail
+      
 
 logger = logging.getLogger('miller.commands')
 
@@ -235,21 +236,13 @@ class Review(models.Model):
       decision = 'Improvements needed before publication. To be submitted again.'
     return decision
 
-    
+
   def send_email_to_assignee(self, template_name, extra={}):
     """
     send email to assignee
     """
     recipient = self.assignee.email
-
-    decision = '(still completing the review)'
-    if self.status == Review.REFUSAL:
-      decision = 'Refused. Do not consider for publication.'
-    elif self.status == Review.COMPLETED:
-      decision = 'Approved for publication'
-    elif self.status == Review.BOUNCE:
-      decision = 'Improvements needed before publication. To be submitted again.'
-      
+  
     context = {
       'username': self.assignee.username,
       'site_name': settings.MILLER_TITLE,
@@ -257,14 +250,13 @@ class Review(models.Model):
       'reviews_url': settings.MILLER_SETTINGS['host'] + '/login/?next=/reviews',
       'site_name': settings.MILLER_TITLE,
       'site_url':  settings.MILLER_SETTINGS['host'],
-      'decision': decision
+      'decision': self.decision
     }
     # update with extra field according to email template.
     context.update(extra);
 
     if recipient:
       logger.debug('review {pk:%s} sending email to user {pk:%s}...' % (self.pk, self.assignee.pk))
-      from templated_email import send_templated_mail
       send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[self.assignee.email], context=context)
         # from_email=settings.DEFAULT_FROM_EMAIL, 
     else:
@@ -355,7 +347,9 @@ def calculate_score(sender, instance, **kwargs):
 def dispatcher(sender, instance, created, **kwargs):
   if created or (hasattr(instance, '_original') and instance._original['assignee__pk'] != instance.assignee.pk):
     logger.debug('review {pk:%s, category:%s} sending email to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+    
     try:
+      # if closing remarks, many thanks to the assignee!
       instance.send_email_to_assignee(template_name='assignee_%s'%instance.category)
     except Exception as e:
       logger.exception(e)
