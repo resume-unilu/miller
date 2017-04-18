@@ -58,6 +58,8 @@ class Author(models.Model):
 # create an author whenever a Profile is created.
 @receiver(post_save, sender=Profile)
 def create_author(sender, instance, created, **kwargs):
+  if kwargs['raw']:
+    return
   if created:
     fullname = u'%s %s' % (instance.user.first_name, instance.user.last_name) if instance.user.first_name else instance.user.username
     aut = Author(user=instance.user, fullname=fullname, metadata=json.dumps({

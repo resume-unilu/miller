@@ -58,6 +58,8 @@ class Profile(models.Model):
 # Create a folder to store user contents: stories, files etc..
 @receiver(post_save, sender=User)
 def create_working_folder(sender, instance, created, **kwargs):
+  if kwargs['raw']:
+    return
   if created:
     pro = Profile(user=instance)
     pro.save()
@@ -68,6 +70,8 @@ def create_working_folder(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Profile)
 def check_media_folder(sender, instance, created, **kwargs):
+  if kwargs['raw']:
+    return
   user_path = os.path.join(settings.MEDIA_ROOT, instance.short_url if not settings.TESTING else 'test_%s' % instance.user.username)
   path = instance.get_path()
 
@@ -81,6 +85,8 @@ def check_media_folder(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Profile)
 def create_zotero_collection(sender, instance, created, **kwargs):
+  if kwargs['raw']:
+    return
   if not hasattr(settings, 'ZOTERO_IDENTITY'):
     logger.warn('(profile {pk:%s}) @post_save: ZOTERO_IDENTITY not set, skipping...' % instance.pk)
     return

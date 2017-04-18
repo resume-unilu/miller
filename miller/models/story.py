@@ -528,6 +528,8 @@ def dispatcher(sender, instance, created, **kwargs):
   Generic post_save handler. Dispatch a story_ready signal.
   If receiver need to update the instance, they just need to put the property `_dirty`
   """
+  if kwargs['raw']:
+    return
   if not hasattr(instance, '_dispatcher'):
     instance._dispatcher = True
   else:
