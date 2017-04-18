@@ -1,3 +1,4 @@
+appdirs==1.4.0
 asgi-redis==1.0.0
 asgiref==1.0.0
 autobahn==0.16.1
@@ -40,9 +41,12 @@ Markdown==2.6.6
 msgpack-python==0.4.8
 MySQL-python==1.2.5
 oauthlib==1.1.2
+packaging==16.8
 Pillow==3.4.2
+psycopg2==2.7.1
 PyJWT==1.4.0
 pypandoc==1.2.0
+pyparsing==2.1.10
 PyPDF2==1.25.1
 python-docx==0.8.6
 python-openid==2.2.5
