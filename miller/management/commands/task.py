@@ -26,9 +26,13 @@ class Command(BaseCommand):
     'snapshots', # handle pdf snapshot, python manage.py task snapshots
     'snapshots404',
     'cleanbin',
+    'clean_cache',
     'update_whoosh',
     'update_localisation',
-    'update_localisation_gs'
+    'update_localisation_gs',
+
+    # tasks migration related.
+    'migrate_documents'
   )
 
 
@@ -50,6 +54,22 @@ class Command(BaseCommand):
     logger.debug('command finished.')
   
   
+  def migrate_documents(self, **options):
+    logger.debug('task: migrate_documents')
+    docs = Document.objects.filter(data={})
+    
+    for doc in docs.iterator():
+      logger.debug('task: migrate_documents for document {pk:%s}' % doc.pk)
+      d = doc.dmetadata
+      d.update({})
+      doc.data = d
+      doc.save()
+
+  def clean_cache(self, **options):
+    logger.debug('task: clean_cache')
+    from django.core.cache import cache
+    cache.clear();
+
   def update_localisation_gs(self,  **options):
     """ 
     load the csv specified in MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET, if any provided.
