@@ -7,13 +7,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import list_route
 
 from miller.models import Document
-from miller.api.serializers import MatchingDocumentSerializer, DocumentSerializer, CreateDocumentSerializer
+from miller.api.serializers import MatchingDocumentSerializer, LiteDocumentSerializer, DocumentSerializer, CreateDocumentSerializer
+from miller.api.utils import Glue
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
   queryset = Document.objects.all()
   serializer_class = CreateDocumentSerializer
-
+  list_serializer_class = LiteDocumentSerializer
   # retrieve by PK or slug
   def retrieve(self, request, *args, **kwargs):
     if 'pk' in kwargs and not kwargs['pk'].isdigit():
@@ -28,31 +29,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     
 
   def list(self, request):
-    filters = self.request.query_params.get('filters', None)
-    
-    if filters is not None:
-      print filters
-      try:
-        filters = json.loads(filters)
-        print "filters,",filters
-      except Exception, e:
-        print e
-        filters = {}
-    else:
-      filters = {}
-    
-    if request.user.is_authenticated():
-      docs = Document.objects.filter(**filters).distinct()
-    else:
-      docs = Document.objects.filter(**filters).distinct()
-    
-    page    = self.paginate_queryset(docs)
-    if page is not None:
-      serializer = DocumentSerializer(page, many=True, context={'request': request})
-      return self.get_paginated_response(serializer.data)
+    g = Glue(request=request, queryset=self.queryset.distinct())
+    page    = self.paginate_queryset(g.queryset)
+    serializer = self.list_serializer_class(page, many=True, context={'request': request})
+    return self.get_paginated_response(serializer.data)
 
-    serializer = DocumentSerializer(queryset, many=True, context={'request': request})
-    return Response(serializer.data)
 
 
   @list_route(methods=['get'])

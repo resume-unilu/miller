@@ -16,13 +16,13 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   short_url = serializers.ReadOnlyField(source='document.short_url')
   copyrights = serializers.ReadOnlyField(source='document.copyrights')
   caption = serializers.ReadOnlyField(source='contents')
-  metadata = JsonField(source='document.contents')
+  data = JsonField(source='document.data')
   snapshot   = OptionalFileField(source='document.snapshot', read_only=True)
   attachment = OptionalFileField(source='document.attachment', read_only=True)
 
   class Meta:
     model = Caption
-    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'attachment', 'metadata')
+    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'attachment', 'data')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -114,17 +114,54 @@ class HeavyProfileSerializer(ProfileSerializer):
     fields = ('pk', 'bio', 'picture', 'username', 'authors', 'groups', 'newsletter')
 
 
+############
+# Document #
+############
 
 class LiteDocumentSerializer(serializers.ModelSerializer):
   """
   # light document serializer (to be used in manytomany retrieve)
   """
-  metadata = JsonField(source='contents')
   snapshot = OptionalFileField()
   attachment = OptionalFileField()
   class Meta:
     model = Document
-    fields = ('id', 'type', 'metadata', 'url', 'attachment', 'snapshot', 'slug', 'mimetype')
+    fields = ('id', 'title', 'slug', 'mimetype', 'type', 'data', 'url', 'attachment', 'snapshot')
+
+
+
+# Serializers define the API representation.
+class DocumentSerializer(LiteDocumentSerializer):
+  src   = OptionalFileField(source='attachment')
+  class Meta:
+    model = Document
+    fields = ('id', 'url', 'src', 'metadata', 'data', 'type', 'slug', 'title', 'snapshot', 'copyrights', 'attachment')
+
+
+class MatchingDocumentSerializer(serializers.ModelSerializer):
+  matches = HitField()
+  metadata = JsonField(source='contents')
+  src   = OptionalFileField(source='attachment')
+
+  class Meta:
+    model = Document
+    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'metadata', 'matches')
+
+
+# define the 
+class CreateDocumentSerializer(serializers.ModelSerializer):
+  # metadata = JsonField(source='contents')
+  owner = serializers.HiddenField(
+    default=serializers.CurrentUserDefault()
+  )
+  snapshot = OptionalFileField(read_only=True)
+  attachment = OptionalFileField(required=False)
+
+  class Meta:
+    model = Document
+    fields = ('id', 'owner', 'type', 'data', 'short_url', 'title', 'slug', 'copyrights', 'url', 'attachment', 'snapshot', 'mimetype')
+  
+
 
 
 class LiteMentionSerializer(serializers.ModelSerializer):
@@ -296,47 +333,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 
 
 
-############
-# Document #
-############
 
-# Serializers define the API representation.
-class DocumentSerializer(serializers.ModelSerializer):
-  # authors = AuthorSerializer(many=True)
-  # owner = UserSerializer()
-  # tags = TagSerializer(many=True)
-  # captions = CaptionSerializer(source='caption_set', many=True)
-  metadata = JsonField(source='contents')
-  src   = OptionalFileField(source='attachment')
-  snapshot = OptionalFileField(read_only=True)
-  class Meta:
-    model = Document
-    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'snapshot', 'copyrights', 'attachment')
-
-
-class MatchingDocumentSerializer(serializers.ModelSerializer):
-  matches = HitField()
-  metadata = JsonField(source='contents')
-  src   = OptionalFileField(source='attachment')
-
-  class Meta:
-    model = Document
-    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'metadata', 'matches')
-
-
-# define the 
-class CreateDocumentSerializer(serializers.ModelSerializer):
-  metadata = JsonField(source='contents')
-  owner = serializers.HiddenField(
-    default=serializers.CurrentUserDefault()
-  )
-  snapshot = OptionalFileField(read_only=True)
-  attachment = OptionalFileField(required=False)
-
-  class Meta:
-    model = Document
-    fields = ('id', 'owner', 'type','short_url', 'title', 'slug', 'metadata', 'copyrights', 'url', 'attachment', 'snapshot', 'mimetype')
-  
 
   # def create(self, validated_data):
   #   print 'CREATING', validated_data

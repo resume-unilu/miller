@@ -125,6 +125,7 @@ class DocumentAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
     super(DocumentAdminForm, self).__init__(*args, **kwargs)
     self.fields['contents'].widget = codemirror_json_widget
+    self.fields['data'].widget = codemirror_json_widget
 
   def clean_contents(self):
     try:

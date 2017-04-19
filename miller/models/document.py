@@ -7,6 +7,7 @@ from actstream.actions import follow
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.core import files
 from django.db import models
 from django.db.models.signals import pre_delete, post_save, pre_save
@@ -80,6 +81,7 @@ class Document(models.Model):
 
   contents   = models.TextField(null=True, blank=True, default=json.dumps(DEFAULT_OEMBED, indent=1)) # OEMBED (JSON) metadata field, in different languages if available.
   
+  data       = JSONField(default=dict)
 
   copyrights = models.TextField(null=True, blank=True,  default='')
 
@@ -91,7 +93,8 @@ class Document(models.Model):
 
   locked     = models.BooleanField(default=False) # prevent accidental override when it is not needed.
 
-  models.URLField(null=True, blank=True)
+  # documents  = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_with')
+
 
   @property
   def dmetadata(self):
@@ -410,6 +413,7 @@ def complete_instance(sender, instance, **kwargs):
   if not instance.slug:
     instance.slug = helpers.get_unique_slug(instance, instance.title, max_length=68)
     logger.debug('document {pk:%s, slug:%s} @pre_save slug generated' % (instance.pk, instance.slug))
+
 
 
 @receiver(post_save, sender=Document)
