@@ -55,10 +55,14 @@ INSTALLED_APPS = [
     'captcha',
     'miller',
     'actstream',
+    'dbbackup'
     #'django_seo_js'
     
 ]
 
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'backup')}
+DBBACKUP_DATE_FORMAT     = '%Y-%m-%d'
 
 MIDDLEWARE_CLASSES = [
     #'django_seo_js.middleware.UserAgentMiddleware',  # If you want to detect by user agent

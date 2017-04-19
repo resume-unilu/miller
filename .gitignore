@@ -4,6 +4,7 @@ __*.*
 *.sqlite3
 *.pyc
 
+backup/
 contents/
 dist/
 local_settings.py
