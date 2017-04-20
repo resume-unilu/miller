@@ -13,7 +13,7 @@ Abstract:
 If you agree to review the manuscript, we would ask for your comments within **three weeks** from your acceptance. Do not hesitate to contact us for any query or further information.
  
 To ACCEPT, please activate or log in to your RESuME account by clicking on the following link: [{{site_url}}/login]({{site_url}}/login)
-You will then be able to access the manuscript and the review form by logging to the “Your reviews” section of your account or by clicking on the following link: [{{site_url}}/login?next=/reviews]({{site_url}}/login?next=/reviews)
+You will then be able to access the manuscript and the review form by logging to the “Your reviews” section of your account or by clicking on the following link: [{{site_url}}/login/?next=/reviews]({{site_url}}/login/?next=/reviews)
 
 To DECLINE, please send us feedback by answering this email.
  
@@ -47,9 +47,9 @@ Web {{site_url}}
   <p>If you agree to review the manuscript, we would ask for your comments within **three weeks** from your acceptance. Do not hesitate to contact us for any query or further information.</p>
 
 
-  <p>To ACCEPT, please log in to your RESuME account by clicking on the following link: [{{site_url}}/login]({{site_url}}/login)
+  <p>To ACCEPT, please log in to your RESuME account by clicking on the following link: <a href='{{site_url}}/login/?next=/reviews'>{{site_url}}/login/?next=/reviews</a>
   <br/>
-  You will then be able to access the manuscript and the review form by logging to the <a href='{{site_url}}/login?next=/reviews'> Your reviews</a> section of your account.
+  You will then be able to access the manuscript and the review form by logging to the section <a href='{{site_url}}/login?next=/reviews'> Your reviews</a> related to your account.
   </p>
 
   <p>To DECLINE, please send us feedback by answering this email.</p>
