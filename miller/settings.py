@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     
 ]
 
-DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE         = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(BASE_DIR, 'backup')}
 DBBACKUP_DATE_FORMAT     = '%Y-%m-%d'
 
@@ -333,7 +333,7 @@ LOGGING = {
             'propagate': True,
         },
         'miller.commands': {
-            'handlers': ['commands'],
+            'handlers': ['commands', 'console'],
             'level': 'DEBUG'
         },
         'miller': {
