@@ -120,10 +120,11 @@ class StoryViewSet(viewsets.ModelViewSet):
     """
     This should work for the owner, the authro, the staff, chief-reviewers and reviewers only.
     """
+    q = self.queryset.exclude(source__isnull=True)
     if not request.user.is_authenticated:
       raise PermissionDenied()
     elif request.user.is_staff:
-      q = self.queryset
+      pass
     else:
       q = self.queryset.filter(Q(owner=request.user) | Q(authors__user=request.user) | Q(reviews__assignee=request.user) | Q(reviews__assigned_by=request.user))
 
