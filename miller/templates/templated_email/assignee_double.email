@@ -49,7 +49,7 @@ Web {{site_url}}
 
   <p>To ACCEPT, please log in to your RESuME account by clicking on the following link: <a href='{{site_url}}/login/?next=/reviews'>{{site_url}}/login/?next=/reviews</a>
   <br/>
-  You will then be able to access the manuscript and the review form by logging to the section <a href='{{site_url}}/login?next=/reviews'> Your reviews</a> related to your account.
+  You will then be able to access the manuscript and the review form by logging to the section <a href='{{site_url}}/login/?next=/reviews'> Your reviews</a> related to your account.
   </p>
 
   <p>To DECLINE, please send us feedback by answering this email.</p>
@@ -60,6 +60,6 @@ Web {{site_url}}
   <p>
     The Editorial Team<br/>
     RESuME project – Université du Luxembourg<br/>
-    Web {{site_url}}
+    Web <a href='{{site_url}}'>{{site_url}}</a>
   </p>
 {% endblock %}
