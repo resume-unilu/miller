@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
+import json, os, mimetypes
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import Q
+from django.http import StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -14,10 +15,12 @@ from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
-from miller.models import Story, Tag, Document, Caption, Comment
+from miller.models import Story, Tag, Document, Caption, Comment, Review
 from miller.api.utils import Glue
 from miller.api.fields import OptionalFileField, JsonField
 from miller.api.serializers import LiteDocumentSerializer, AnonymousLiteStorySerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, PendingStorySerializer
+
+from wsgiref.util import FileWrapper
 
 
 # ViewSets define the view behavior. Filter by status
@@ -100,19 +103,36 @@ class StoryViewSet(viewsets.ModelViewSet):
     story = get_object_or_404(q, pk=pk)
 
 
-    import os, mimetypes
-    from wsgiref.util import FileWrapper
-    from django.http import StreamingHttpResponse
-    from django.utils.text import slugify
-
+    
     attachment = story.download(outputFormat='pdf')
     mimetype = mimetypes.guess_type(attachment)[0]
     # print attachment,mimetype
     
     response = StreamingHttpResponse(FileWrapper( open(attachment), 8192), content_type=mimetype)
     response['Content-Length'] = os.path.getsize(attachment)  
-    response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (slugify(story.title),mimetypes.guess_extension(mimetype))
+    response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (story.slug,mimetypes.guess_extension(mimetype))
       
+    return response
+
+
+  @detail_route(methods=['get'], url_path='download/source')
+  def downloadSource(self, request, pk):
+    """
+    This should work for the owner, the authro, the staff, chief-reviewers and reviewers only.
+    """
+    if not request.user.is_authenticated:
+      raise PermissionDenied()
+    elif request.user.is_staff:
+      q = self.queryset
+    else:
+      q = self.queryset.filter(Q(owner=request.user) | Q(authors__user=request.user) | Q(reviews__assignee=request.user) | Q(reviews__assigned_by=request.user))
+
+    story = get_object_or_404(q, pk=pk)
+    mimetype = mimetypes.guess_type(story.source.path)[0]
+    response = StreamingHttpResponse(FileWrapper( open(story.source.path), 8192), content_type=mimetype)
+    response['Content-Length'] = os.path.getsize(story.source.path)  
+    response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (story.slug,mimetypes.guess_extension(mimetype))
+    
     return response
 
   

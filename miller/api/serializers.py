@@ -252,8 +252,8 @@ class AnonymousStorySerializer(serializers.HyperlinkedModelSerializer):
       'metadata',
       'contents',
       'date', 'date_created', 
-      'status', 
-      'authors','owner'
+      'status','owner',
+      'source'
     )
 
 
