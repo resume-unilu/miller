@@ -1,18 +1,10 @@
 {% block subject %}{{site_name}} - manuscript "{{title}}"{% endblock %}
 {% block plain %}
-Dear {{author.fullname}}, 
+Dear staff member,
 
-Thank you for submitting your manuscript to {{site_name}}.
- 
-Your manuscript “{{title}}” has been successfully submitted and is presently being given full consideration for publication in one of our scientific products.
- 
-You can view the status of your manuscript at any time by logging in to our platform at the following link:
-[{{site_url}}/login/?next=/story/{{slug}}]({{site_url}}/login/?next=/story/{{slug}}).
+the chief reviewer has assigned the manuscript [“{{title}}”]({{site_url}}/login/?next=/story/{{slug}}) by {{first_author.user.username}} for review.
 
-Your personal identifier is: {{author.user.username}}
- 
-We will come back to you after the completion of our peer-review process. Do not hesitate to contact us for any query or further information.
- 
+
 Best regards,
 
 The Editorial Team
@@ -21,25 +13,12 @@ Web {{site_url}}
 {% endblock %}
 
 {% block html %}
-  <p>Dear {{author.fullname}},</p>
+  <p>Dear Staff member,</p>
 
   <p>
-    Thank you for submitting your manuscript to {{site_name}}.
-  </p>
-  <p>
-    Your manuscript “{{title}}” has been successfully submitted and is presently being given full consideration for publication in one of our scientific products.
-  </p>
-
-  <p>
-    You can view the status of your manuscript at any time by logging in to our platform at the following link: 
-    <a href='{{site_url}}/login/?next=/story/{{slug}}'>{{site_url}}/login/?next=/story/{{slug}}</a>
-  </p>
-  
-  <p>
-    Your personal identifier is: {{author.user.username}}
-  </p>
-  <p>
-    We will come back to you after the completion of our peer-review process. Do not hesitate to contact us for any query or further information.
+    the chief reviewer has assigned the manuscript 
+    <a href='{{site_url}}/login/?next=/story/{{slug}}'>{{title}}</a>
+    by {{first_author.user.username}} for review.
   </p>
   <p>
     Best regards,

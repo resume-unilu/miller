@@ -228,11 +228,11 @@ class Review(models.Model):
   @property
   def decision(self):
     decision = '(still completing the review)'
-    if self.status == 'refusal':
+    if self.status == Review.REFUSAL:
       decision = 'Refused. Do not consider for publication.'
-    elif self.status == 'completed':
+    elif self.status == Review.COMPLETED:
       decision = 'Approved for publication'
-    elif self.status == 'bounce':
+    elif self.status == Review.BOUNCE:
       decision = 'Improvements needed before publication. To be submitted again.'
     return decision
 
@@ -273,7 +273,6 @@ class Review(models.Model):
         'title':    self.story.title,
         'abstract': self.story.abstract,
         'slug':     self.story.slug,
-        'first_author': self.owner.authorship.first(),
         'username': 'staff member',
         'site_name': settings.MILLER_TITLE,
         'site_url':  settings.MILLER_SETTINGS['host']
