@@ -182,40 +182,34 @@ class IncrediblyLiteStorySerializer(serializers.ModelSerializer):
     fields = ('id', 'short_url', 'slug', 'title', 'status')
 
 
-# Story Serializer to use in lists
-class LiteStorySerializer(serializers.ModelSerializer):
-  authors = AuthorSerializer(many=True)
-  owner = UserSerializer()
-  tags = TagSerializer(many=True)
-  covers = LiteDocumentSerializer(many=True)
-  metadata = JsonField()
-
-  class Meta:
-    model = Story
-    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
-
 
 # Story Serializer to use in lists
 class AnonymousLiteStorySerializer(serializers.ModelSerializer):
-  tags = TagSerializer(many=True)
-  covers = LiteDocumentSerializer(many=True)
+  tags     = TagSerializer(many=True)
+  covers   = LiteDocumentSerializer(many=True)
   metadata = JsonField()
+  source   = serializers.BooleanField(source='isSourceAvailable')
 
   class Meta:
     model = Story
     fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata', 'source')
 
 
+# Story Serializer to use in lists
+class LiteStorySerializer(AnonymousLiteStorySerializer):
+  authors = AuthorSerializer(many=True)
+  owner = UserSerializer()
+  
+  class Meta:
+    model = Story
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
+
+
 
 # retrieve a Story, full
-class StorySerializer(serializers.HyperlinkedModelSerializer):
-  authors    = AuthorSerializer(many=True)
-  owner      = UserSerializer()
-  tags       = TagSerializer(many=True)
+class StorySerializer(LiteStorySerializer):
   documents  = CaptionSerializer(source='caption_set', many=True)
-  covers     = LiteDocumentSerializer(many=True)
   stories    = LiteMentionSerializer(many=True)
-  metadata   = JsonField()
 
   class Meta:
     model = Story
@@ -227,22 +221,20 @@ class StorySerializer(serializers.HyperlinkedModelSerializer):
       'contents',
       'date', 'date_created', 
       'status', 
+      'source',
       'authors','owner',
       'highlights'
     )
 
 
 
-class AnonymousStorySerializer(serializers.HyperlinkedModelSerializer):
+class AnonymousStorySerializer(AnonymousLiteStorySerializer):
   """
   Retrive a full stry instance, but anonymous
   """
-  tags = TagSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
-  covers = LiteDocumentSerializer(many=True)
   stories = LiteMentionSerializer(many=True)
-  metadata = JsonField()
-
+  
   class Meta:
     model = Story
     fields = (

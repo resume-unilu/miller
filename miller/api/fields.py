@@ -11,11 +11,13 @@ class HitField(serializers.Field):
   def to_representation(self, obj):
     return obj
 
+
 class OptionalFileField(serializers.FileField):
   def to_representation(self, obj):
     if hasattr(obj, 'url'):
       return '%s%s'%(settings.MILLER_HOST, obj.url)
     return None
+
 
 class JsonField(serializers.Field):
   def to_internal_value(self, data):

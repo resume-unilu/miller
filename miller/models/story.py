@@ -134,6 +134,10 @@ class Story(models.Model):
 
 
   @property
+  def isSourceAvailable(self):
+    return hasattr(self.source, 'url')
+
+  @property
   def highlights(self):
     """
     highlights 
