@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core import files
+from django.core.cache import cache
 from django.db import models
 from django.db.models.signals import pre_delete, post_save, pre_save
 from django.dispatch import receiver, Signal
@@ -470,6 +471,15 @@ def create_oembed(sender, instance, created, **kwargs):
     logger.debug('document@document_ready {pk:%s}: NO need to create oembed.' % instance.pk)
 
 
+@receiver(document_ready, sender=Document)
+def clean_related_documents_cache(sender, instance, created, **kwargs):
+  # list of affected stories
+  affected = set(list(instance.stories.values_list('short_url', flat=True)) + list(instance.stories.values_list('short_url', flat=True)))
+  
+  for key in affected:
+    ckey = 'story.%s' % key
+    cache.delete(ckey)
 
+  logger.debug('document@document_ready {pk:%s}: clean cache of %s related docs.' % (instance.pk, len(affected)))
 
 
