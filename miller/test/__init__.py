@@ -28,11 +28,11 @@ class ApiMillerTestCase(TestCase):
     self.user_A           = User.objects.create_user(
       username='douglas.adams', email='douglas@adams', password='top_secret')
     self.user_B           = User.objects.create_user(
-      username='alessandro.baricco',  email='alessandro@baricco', password='top_secret')
+      username='alessandro.baricco',  email='alessandro@baricco', password='top_secret', first_name='Alessandro', last_name='Baricco')
     self.user_C           = User.objects.create_user(
       username='lewis.carrol',  email='lewis@carrol', password='top_secret')
     self.user_D           = User.objects.create_user(
-      username='gilles.deleuze',  email='gilles@deleuze', password='top_secret')
+      username='gilles.deleuze',  email='gilles@deleuze', password='top_secret', first_name='Gilles', last_name='Deleuze')
     
     # group chief reviewer should have been created with fixtures
     self.group_chief_reviewer, created = Group.objects.get_or_create(name=Review.GROUP_CHIEF_REVIEWERS)

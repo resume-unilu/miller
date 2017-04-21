@@ -45,6 +45,8 @@ class Review(models.Model):
   PRIVATE   = 'private'
   REFUSAL   = 'refusal'
   COMPLETED    = 'complete'
+
+  APPROVED    = 'approved'
   BOUNCE    = 'bounce'
   PUBLIC    = 'public'
 
@@ -55,7 +57,8 @@ class Review(models.Model):
     (PUBLIC,    'public'),
     (REFUSAL,   'refusal'),
     (BOUNCE,    'bounce'),
-    (COMPLETED, 'complete')
+    (COMPLETED, 'complete'),
+    (APPROVED,  'approved')
   )
 
   ACCEPTED = 'accepted'
@@ -88,10 +91,7 @@ class Review(models.Model):
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
-  contents = models.TextField(default=json.dumps({
-    'title': '',
-    'text': ''
-  }, indent=1),blank=True) # generic contents for the generic introduction? Is it ok?
+  contents = models.TextField(default='', blank=True) # generic review comments textfield.
   
 
   thematic = models.TextField(null=True, blank=True)
@@ -232,9 +232,16 @@ class Review(models.Model):
       decision = 'Refused. Do not consider for publication.'
     elif self.status == Review.COMPLETED:
       decision = 'Approved for publication'
+    elif self.status == Review.APPROVED:
+      decision = 'Approved for publication'
     elif self.status == Review.BOUNCE:
       decision = 'Improvements needed before publication. To be submitted again.'
     return decision
+
+
+  @property
+  def max_score(self):
+    return len(Review.FIELDS_FOR_SCORE) * 5
 
 
   def send_email_to_assignee(self, template_name, extra={}):
@@ -262,34 +269,29 @@ class Review(models.Model):
     else:
       logger.debug('review {pk:%s} cannot send email to assignee, user {pk:%s} email not found!' % (self.pk, self.assignee.pk))
 
-  def send_email_to_staff(self, template_name):
-    """
-    Send email to staff, to the settings.DEFAULT_FROM_EMAIL address.
-    """
-    recipient = settings.DEFAULT_FROM_EMAIL
-    if recipient:
-      logger.debug('story {pk:%s} sending email to DEFAULT_FROM_EMAIL {email:%s}...' % (self.pk, settings.DEFAULT_FROM_EMAIL))
-      send_templated_mail(template_name=template_name, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[recipient], context={
-        'title':    self.story.title,
-        'abstract': self.story.abstract,
-        'slug':     self.story.slug,
-        'username': 'staff member',
-        'site_name': settings.MILLER_TITLE,
-        'site_url':  settings.MILLER_SETTINGS['host']
-      })
+
+  def send_smart_email(self, recipient, template_name, from_email=settings.DEFAULT_FROM_EMAIL, extra={}):
+    recipient_list = [recipient if isinstance(recipient, basestring) else recipient.email]
+    context = {
+      'recipient': recipient,
+      'review': self,
+      'site_name': settings.MILLER_TITLE,
+      'site_url':  settings.MILLER_SETTINGS['host'],
+    }
+    context.update(extra)
+    try:
+      send_templated_mail(template_name=template_name, from_email=from_email, recipient_list=recipient_list, context=context)
+    except Exception as e:
+      logger.exception(e)
     else:
-      logger.debug('story {pk:%s} cannot send email to recipient, settings.DEFAULT_FROM_EMAIL not found!' % (self.pk))
-      
+      logger.debug('review {pk:%s} email %s sent' % (self.pk, template_name))
+  
+
 
   def generate_report(self, doubleblind=True):
     """
     Genereate a markdown report (useful for sending email)
     """
-    try:
-      contents = json.loads(self.contents)['text']
-    except Exception as e:
-      contents = self.contents
-
     chunks = [
       'Review Report',
       '===',
@@ -321,7 +323,7 @@ class Review(models.Model):
     
     chunks = chunks + [
       '---',
-      contents,  
+      self.contents,  
       '',
       u'final result: %s' % self.status
     ]
@@ -338,14 +340,14 @@ def calculate_score(sender, instance, **kwargs):
   if instance.pk:
     #print [getattr(instance, f) for f in Review.FIELDS_FOR_SCORE]
     instance.score = reduce(lambda x,y: (x if x is not None else 0)+(y if y is not None else 0), [getattr(instance, f) for f in Review.FIELDS_FOR_SCORE])
-    logger.debug('review {pk:%s} @pre_save, total score: %s' % (instance.pk, instance.score))
+    logger.debug('review@pre_save {pk:%s}, total score: %s' % (instance.pk, instance.score))
     
 
 
 @receiver(post_save, sender=Review)
 def dispatcher(sender, instance, created, **kwargs):
   if created or (hasattr(instance, '_original') and instance._original['assignee__pk'] != instance.assignee.pk):
-    logger.debug('review {pk:%s, category:%s} sending email to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+    logger.debug('review@post_save {pk:%s, category:%s} sending email to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
     
     try:
       # if closing remarks, many thanks to the assignee!
@@ -355,6 +357,8 @@ def dispatcher(sender, instance, created, **kwargs):
 
     if instance.category == Review.CLOSING_REMARKS:
       if instance.story.status != Story.REVIEW_DONE:
+        # "@todo manda email to the chief reviewer as receipt" 
+
         instance.story.status = Story.REVIEW_DONE
         instance.story.save()
     elif instance.story.status != Story.REVIEW_DONE or instance.story.status != Story.REVIEW or instance.story.status != Story.EDITING:
@@ -363,15 +367,17 @@ def dispatcher(sender, instance, created, **kwargs):
       
     # else:
     #   logger.debug('review {pk:%s, category:%s} cannot send email to assignee, no settings.EMAIL_HOST present in loca_settings ...' %(instance.category, instance.pk))
-  elif instance.status == Review.COMPLETED or instance.status == Review.BOUNCE or instance == Review.REFUSAL:
-    logger.debug('review {pk:%s, category:%s} sending email to assignee and staff {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
+  elif instance.status == Review.APPROVED or instance.status == Review.COMPLETED or instance.status == Review.BOUNCE or instance.status == Review.REFUSAL:
+    logger.debug('review@post_save {pk:%s, category:%s} sending email to assignee, assigned_by and staff {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
     try:
-      instance.send_email_to_assignee(template_name='assignee_%s_done'% instance.category)
-      instance.send_email_to_staff(template_name='assignee_%s_donefor_staff'% instance.category)
+      instance.send_smart_email(recipient=instance.assignee, template_name='review_%s_done_for_assignee'% instance.category)
+      instance.send_smart_email(recipient=instance.assigned_by, template_name='review_%s_done_for_assigned_by'% instance.category)
+      instance.send_smart_email(recipient=settings.DEFAULT_FROM_EMAIL, template_name='review_%s_done_for_staff'% instance.category)
       
       logger.debug('review {pk:%s, category:%s} email sent to assignee {pk:%s}...' % (instance.pk, instance.category, instance.assignee.pk))
   
     except Exception as e:
       logger.exception(e)
-
+  else:
+    logger.debug('review@post_save {pk:%s, category:%s} done.'% (instance.pk, instance.category))
 

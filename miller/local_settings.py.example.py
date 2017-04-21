@@ -39,6 +39,9 @@ MILLER_DOMAIN_NAME   = 'localhost'
 MILLER_HOST          = 'http://localhost:8000'
 MILLER_HOST_PROTOCOL = 'http' # of https
 
+# signature (unicode)
+MILLER_SIGNEDBY    = u'The Editorial Team\nMiller – Université du Luxembourg\nWeb ' + MILLER_HOST
+
 # the absolute path for websocket, absolute without trailing slashes. Default: localhost for django debug
 MILLER_WS_HOST   = 'ws://localhost:8000/ws'
 

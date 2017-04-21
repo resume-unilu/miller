@@ -95,16 +95,13 @@ class ReviewTest(ApiMillerTestCase):
     response_user_D = self.client_user_D.post('/api/review/', {
       'story': self.story_A.pk,
       'assignee': self.user_B.pk,
-      'category': Review.DOUBLE_BLIND,
-      'contents': json.dumps({
-        'title': 'Indeed Very nice story',
-        'text': 'Very good. Please consider for publication'
-      })
+      'category': Review.DOUBLE_BLIND
     })
     self.assertEqual(response_user_D.status_code, 200)
-    self.assertEqual(response_user_D.json()['category'], Review.DOUBLE_BLIND)
+    response_user_D_json = response_user_D.json()
+    self.assertEqual(response_user_D_json['category'], Review.DOUBLE_BLIND)
 
-    review = Review.objects.get(pk=response_user_D.json()['id'])
+    review = Review.objects.get(pk=response_user_D_json['id'])
 
     self.assertEqual(review.assignee.username, self.user_B.username)
     self.assertEqual(review.assigned_by.username, self.user_D.username)
@@ -115,6 +112,45 @@ class ReviewTest(ApiMillerTestCase):
     # check the mail
     self.assertEqual(len(mail.outbox), 2)
     self.assertEqual(u''.join(mail.outbox[0].to), self.user_B.email)
+    
+    # Empty the test outbox
+    mail.outbox = []
+    
+    # user B finishes the review, cannot make PATCH for some reason.
+    # But it should send the emails correctly.
+    review.contents = 'Very good, it is perfect. The paper just misses the title and the text.'
+    review.status   = review.APPROVED
+    review.originality_score = 2
+    review.save()
+
+    self.assertEqual(len(mail.outbox), 3)
+    print '////////////////////////'
+    print 'primo:'
+    print mail.outbox[0].to
+    print mail.outbox[0].subject
+    print '------------------------'
+    print mail.outbox[0].body
+    print '////////////////////////'
+    self.assertEqual(u''.join(mail.outbox[0].to), self.user_B.email)
+    
+    print 'secondo:'
+    print mail.outbox[1].to
+    print mail.outbox[1].subject
+    print '------------------------'
+    print mail.outbox[1].body
+    print '////////////////////////'
+    self.assertEqual(u''.join(mail.outbox[1].to), self.user_D.email)
+    
+    print 'terzo:'
+    print mail.outbox[2].to
+    print mail.outbox[2].subject
+    print '------------------------'
+    print mail.outbox[2].body
+    print '////////////////////////'
+    self.assertEqual(u''.join(mail.outbox[2].to), settings.DEFAULT_FROM_EMAIL)
+    
+    # Empty the test outbox
+    mail.outbox = []
     
     # Now chief reviewer canc lose the review. A bad request:
     response_user_D = self.client_user_D.post('/api/review/close/', {
@@ -142,10 +178,16 @@ class ReviewTest(ApiMillerTestCase):
     self.assertEqual(review.status, Review.REFUSAL)
     self.assertEqual(review.story.status, Story.REVIEW_DONE)
 
-    self.assertEqual(len(mail.outbox), 3)
-    self.assertEqual(mail.outbox[2].subject, '%s - review completed for manuscript "%s"' % (settings.MILLER_TITLE,review.story.title,))
+    self.assertEqual(len(mail.outbox), 1)
+    self.assertEqual(u''.join(mail.outbox[0].to), settings.DEFAULT_FROM_EMAIL)
+    self.assertEqual(mail.outbox[0].subject, '%s - review completed for manuscript "%s"' % (settings.MILLER_TITLE,review.story.title,))
     
-    print mail.outbox[2].body
+    print 'ON Story.REVIEWDONE'
+    print mail.outbox[0].to
+    print mail.outbox[0].subject
+    print '------------------------'
+    print mail.outbox[0].body
+    print '////////////////////////'
 
 
 

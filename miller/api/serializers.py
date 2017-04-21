@@ -364,14 +364,24 @@ class MentionSerializer(serializers.ModelSerializer):
     fields = ('id', 'to_story', 'from_story')
 
 
+############
+# Reviews  #
+############
+class LiteReviewSerializer(serializers.ModelSerializer):
+  """
+  list of currernt reviews and their status
+  """
+  assignee = UserSerializer()
+  story = AnonymousLiteStorySerializer()
+  class Meta:
+    model = Review
+    fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'score', 'story')
 
-class ReviewSerializer(serializers.ModelSerializer):
+
+class ReviewSerializer(LiteReviewSerializer):
   """
   Single review. It ships the related story with full serializer.
   """
-  contents = JsonField()
-  assignee = UserSerializer()
-  story = AnonymousStorySerializer()
   class Meta:
     model = Review
     fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'story', 'thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdisciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
@@ -380,33 +390,21 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CreateReviewSerializer(serializers.ModelSerializer):
   assigned_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
-  contents = JsonField()
-
+  
   class Meta:
     model  = Review
     fields = ('id', 'story', 'assignee', 'assigned_by', 'contents', 'category', 'status', 'due_date')
 
-class LiteReviewSerializer(serializers.ModelSerializer):
-  """
-  list of currernt reviews and their status
-  """
-  contents = JsonField()
-  assignee = UserSerializer()
-  story = AnonymousLiteStorySerializer()
-  class Meta:
-    model = Review
-    fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'score', 'story')
 
 
 class AnonymousReviewSerializer(serializers.ModelSerializer):
   """
   Single review report, without assignee nor private comments. It ships the related story with full serializer.
   """
-  contents = JsonField()
   story = AnonymousStorySerializer()
   class Meta:
     model = Review
-    fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'story', 'thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdisciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
+    fields = ('id', 'contents', 'category', 'status', 'due_date', 'story', 'thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdisciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
       'structure_score','structure', 'references', 'references_score', 'pertinence','pertinence_score')
 
 
@@ -415,7 +413,6 @@ class AnonymousLiteReviewSerializer(serializers.ModelSerializer):
   """
   list of currernt reviews and their status
   """
-  contents = JsonField()
   story = AnonymousLiteStorySerializer()
 
   class Meta:

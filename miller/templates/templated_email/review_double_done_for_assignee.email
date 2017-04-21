@@ -1,0 +1,44 @@
+{% load miller_extras %}
+{% block subject %}{{site_name}} - Review of manuscript "{{review.story.title}}"{% endblock %}
+{% block plain %}
+Dear {% if recipient.first_name %}{{recipient.first_name}} {{recipient.last_name}}{% else %}{{recipient.username}}{% endif %},
+ 
+Your review of the manuscript “{{review.story.title}}” has been successfully **submitted** with the following assessment: 
+
+  **{{review.decision}}** (score: {{review.score}}/{{review.max_score}})
+
+and the following closing remarks:
+
+  > {{review.contents}}
+
+You can find the review in your "completed review" list:
+[{{site_url}}/login/?next=/reviews/complete]({{site_url}}/login/?next=/reviews/complete)
+
+We take the opportunity to thank you for your assistance and support to the RESuME project.
+Do not hesitate to contact us for any query or further information.
+ 
+Best regards,
+
+{% signedby %}
+{% endblock %}
+
+{% block html %}
+  <p>Dear {% if recipient.first_name %}{{recipient.first_name}} {{recipient.last_name}}{% else %}{{recipient.username}}{% endif %},</p>
+
+  <p>
+    Your review of the manuscript “{{review.story.title}}” has been successfully <b>submitted</b> with the following assessment: 
+    <blockquote><b>{{decision}}</b> (score: {{review.score}}/{{review.max_score}})</blockquote>
+    and the following closing remarks:
+    <blockquote>{{review.contents}}</blockquote>
+  </p>
+ 
+  <p>
+    You can find the review in your "completed review" list: {{site_url}}/login/?next=/reviews/complete
+  </p>
+    We take the opportunity to thank you for your assistance and support to the RESuME project.<br/>
+    Do not hesitate to contact us for any query or further information.
+  </p>
+
+  <p>Best regards,</p>
+  {% htmlsignedby %}
+{% endblock %}

@@ -333,7 +333,7 @@ LOGGING = {
             'propagate': True,
         },
         'miller.commands': {
-            'handlers': ['commands', 'console'],
+            'handlers': ['commands'],
             'level': 'DEBUG'
         },
         'miller': {
@@ -401,8 +401,9 @@ MILLER_WS_HOST = None # override in your localsettings with the full address for
 MILLER_HOST_PROTOCOL = 'http' # used by miller.sitemaps module
 MILLER_DEBUG = True
 
-MILLER_TITLE = 'RESuME'
-MILLER_DESCRIPTION = 'Developed by the University of Luxembourg, RESuME project aims to develop and disseminate an innovative and enriched set of scientific and educational resources and digital tools on the EU’s socio-economic model.'
+MILLER_TITLE = 'Miller'
+MILLER_DESCRIPTION = 'Developed by the University of Luxembourg'
+MILLER_SIGNEDBY = u'Miller Editorial Team\n'
 
 MILLER_LOCALE = os.path.join(BASE_DIR, 'client/src/locale/locale-all.csv')
 MILLER_LOCALE_ROOT = os.path.join(BASE_DIR, 'client/src/locale')

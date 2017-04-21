@@ -1,0 +1,34 @@
+{% load miller_extras %}
+{% block subject %}{{site_name}} - {{review.assignee.username}} just completed a review{% endblock %}
+{% block plain %}
+Dear Staff Member,
+
+The review of the manuscript “{{review.story.title}}” assigned by [{{review.assigned_by.username}}]({{site_url}}/login/?next=/author/{{review.assigned_by.username}}/publications/) has been successfully **completed** by [{{review.assignee.username}}]({{site_url}}/author/{{review.assignee.username}}/publications/) with the following assessment: 
+  
+  **{{review.decision}}** (score: {{review.score}}/{{review.max_score}})
+
+and the following closing remarks:
+
+  > {{review.contents}}
+
+Best regards,
+
+{% signedby %}
+
+{% endblock %}
+
+{% block html %}
+  <p>Dear Staff Member,</p>
+
+  <p>
+    Your review of the manuscript “{{review.story.title}}” assigned by <a href='{{site_url}}/author/{{review.assigned_by.username}}/publications/'>{{review.assigned_by.username}}</a> has been successfully <b>submitted</b> by <a href='{{site_url}}/author/{{review.assignee.username}}/publications/'>{{review.assignee.username}}</a> with the following assessment: 
+    <blockquote><b>{{decision}}</b> (score: {{review.score}}/{{review.max_score}})</blockquote>
+    and the following closing remarks:
+    <blockquote>{{review.contents}}</blockquote>
+  </p>
+
+
+  <p>Best regards,</p>
+  
+  {% htmlsignedby %}
+{% endblock %}
