@@ -115,8 +115,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     Only authors can access review report ;-)
     """
-    review = get_object_or_404(self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user) | Q(assignee=request.user)), pk=kwargs['pk'])
-    serializer = AnonymousReviewSerializer(review,
+    review = get_object_or_404(self.queryset.exclude(status__in=[Review.INITIAL, Review.DRAFT]).filter(Q(story__authors__user=request.user) | Q(assignee=request.user) | Q(assigned_by=request.user)), pk=kwargs['pk'])
+    serializer =  ReviewSerializer(review,
+      context={'request': request},
+    ) if review.assignee.username == request.user.username else AnonymousReviewSerializer(review,
       context={'request': request},
     )
     return Response(serializer.data)
