@@ -36,11 +36,11 @@ Best regards,
 
   <p>The manuscript “{{title}}” has been reviewed by many reviewers and the final assessment made by <a href='{{site_url}}/author/{{closingremarks.assignee.username}}/publications/'>{{closingremarks.assignee.username}}</a> is:
   
-    <blockquote>{{closingremarks.decision}}</blockquote>
+    <blockquote><b>{{closingremarks.decision}}</b></blockquote>
     
     with the following closing remarks:
 
-    <blockquote>{{closingremarks.content}}</blockquote>
+    <blockquote>{{closingremarks.contents}}</blockquote>
   </p>
 
   <p>
