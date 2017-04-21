@@ -36,7 +36,7 @@ def lookup(obj, path, language):
 @register.simple_tag()
 def signedby(html=False):
   text = settings.MILLER_SIGNEDBY
-  return mark_safe(markdown(text)) if html else text
+  return mark_safe(markdown(text, extensions=['markdown.extensions.nl2br'])) if html else text
 
 @register.simple_tag()
 def htmlsignedby():
