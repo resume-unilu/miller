@@ -382,6 +382,7 @@ class ReviewSerializer(LiteReviewSerializer):
   """
   Single review. It ships the related story with full serializer.
   """
+  story = AnonymousStorySerializer()
   class Meta:
     model = Review
     fields = ('id', 'contents', 'category', 'status', 'assignee', 'due_date', 'story', 'thematic','thematic_score','interest', 'interest_score', 'originality', 'originality_score', 'innovation', 'innovation_score', 'interdisciplinarity', 'interdisciplinarity_score', 'methodology_score', 'methodology', 'clarity', 'clarity_score', 'argumentation_score', 'argumentation',
