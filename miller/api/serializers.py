@@ -425,7 +425,7 @@ class LiteReviewWithoutStorySerializer(serializers.ModelSerializer):
   
   class Meta:
     model = Review
-    fields = ('id', 'category', 'status', 'due_date', 'score', 'assignee')
+    fields = ('id', 'category', 'contents', 'status', 'due_date', 'score', 'assignee')
 
 
 
