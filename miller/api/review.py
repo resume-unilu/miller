@@ -110,6 +110,27 @@ class ReviewViewSet(viewsets.ModelViewSet):
     return Response(serializer.data)
 
 
+  #detail_route(methods=['get'], url_path='acceptance/(?P<hash>[0-9a-zA-Z]+)/(?P<consent>[0-9a-f]+)')
+  @detail_route(methods=['get'], url_path='acceptance/(?P<assessment>(%s)+)' % '|'.join([i[0] for i in Review.ACCEPTANCE_CHOICES]))
+  def acceptance(self, request, pk, assessment, *args, **kwargs):
+    """
+    Authentified user can accept review if review has not been accepted.
+    Then the review assignee can follow the story.
+    """
+    review = get_object_or_404(Review.objects.filter(acceptance=Review.INITIAL).filter(assignee=request.user), pk=pk)
+
+    from actstream.actions import follow
+    review.acceptance = assessment;
+    review.save()
+    
+    follow(review.assignee, review.story, actor_only=False)
+
+    serializer = ReviewSerializer(review,
+      context={'request': request},
+    )
+    return Response(serializer.data)
+
+
   @detail_route(methods=['get'])
   def report(self, request, *args, **kwargs):
     """
