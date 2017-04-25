@@ -254,7 +254,7 @@ class StoryViewSet(viewsets.ModelViewSet):
       pass
     elif request.user.is_authenticated:
       # I amn the author of the ocomment OR I am the 
-      coms = coms.filter(Q(story__owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user)).distinct()
+      coms = coms.filter(Q(story__owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user) | Q(story__reviews__assignee__username=request.user.username)).distinct()
     else:
       coms = coms.filter(status=Comment.PUBLIC).filter(story__status=Story.PUBLIC).distinct()
     
