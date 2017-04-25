@@ -31,8 +31,8 @@ class StoryViewSet(viewsets.ModelViewSet):
   def _getUserAuthorizations(self, request):
     if request.user.is_staff:
       q = Story.objects.all()
-    elif request.user.is_authenticated and request.user.groups.filter(name='chief-reviewers').exists():
-      q = Story.objects.filter(Q(owner=request.user) | Q(authors__user=request.user) | Q(status__in=[Story.PUBLIC, Story.PENDING, Story.EDITING, Story.REVIEW])).distinct()
+    elif request.user.is_authenticated and request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
+      q = Story.objects.filter(Q(owner=request.user) | Q(authors__user=request.user) | Q(status__in=[Story.PUBLIC, Story.PENDING, Story.EDITING, Story.REVIEW, Story.REVIEW_DONE])).distinct()
     elif request.user.is_authenticated:
       q = Story.objects.filter(Q(owner=request.user) | Q(status=Story.PUBLIC) | Q(authors__user=request.user)).distinct()
     else:
