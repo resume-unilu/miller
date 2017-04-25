@@ -245,7 +245,8 @@ class AnonymousStorySerializer(AnonymousLiteStorySerializer):
       'contents',
       'date', 'date_created', 
       'status','owner',
-      'source'
+      'source',
+      'highlights'
     )
 
 

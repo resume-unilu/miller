@@ -18,7 +18,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     if request.user.is_staff:
       q = self.queryset
     elif request.user.is_authenticated:
-      q = self.queryset.filter(Q(owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user)).distinct()
+      q = self.queryset.filter(Q(owner=request.user) | Q(status=Comment.PUBLIC) | Q(story__authors__user=request.user) | Q(story__reviews__assignee=request.user)).distinct()
     else:
       q = self.queryset.filter(status=Comment.PUBLIC).distinct()
     return q
