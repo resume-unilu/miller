@@ -11,6 +11,8 @@ and the following closing remarks:
 
   > {{review.contents}}
 
+You can find the review [here]({{site_url}}/login/?next=/review/{{review.pk}}).
+
 Best regards,
 
 {% signedby %}
@@ -22,11 +24,12 @@ Best regards,
 
   <p>
     The review of the manuscript “{{review.story.title}}” assigned by <a href='{{site_url}}/author/{{review.assigned_by.username}}/publications/'>{{review.assigned_by.username}}</a> has been successfully <b>submitted</b> by <a href='{{site_url}}/author/{{review.assignee.username}}/publications/'>{{review.assignee.username}}</a> with the following assessment: 
-    <blockquote><b>{{decision}}</b> (score: {{review.score}}/{{review.max_score}})</blockquote>
+    <blockquote><b>{{review.decision}}</b> (score: {{review.score}}/{{review.max_score}})</blockquote>
     and the following closing remarks:
     <blockquote>{{review.contents}}</blockquote>
   </p>
-
+  <p>You can find the review <a href='{{site_url}}/login/?next=/review/{{review.pk}}'>here</a>.
+  </p>
 
   <p>Best regards,</p>
   
