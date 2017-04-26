@@ -23,7 +23,7 @@ from django.views.i18n import set_language
 
 from rest_framework import routers
 
-from miller import views, api
+from miller import views, services, api
 from miller.feeds import LatestEntriesFeed, AtomLatestEntriesFeed
 from miller.sitemaps import sitemaps
 from miller.views import _share
@@ -46,6 +46,7 @@ router.register(r'pulse', api.PulseViewSet)
 router.register(r'page', api.PageViewSet)
 
 
+
 urlpatterns = [
   url(r'^$', views.home, name='home'),
   url(r'^admin/', admin.site.urls),
@@ -57,6 +58,9 @@ urlpatterns = [
   url(r'^api/', include(router.urls)),
   url(r'^api-auth/', include('rest_framework.urls')),
 
+  # missing images service (e.g.crop)
+  url(r'^services/images', services.images),
+  
   url(r'^login/$', auth_views.login, {'template_name': 'miller/login.html'}, name='login_view'), # views.login_view, name='login_view'),
   # url(r'^login/$', views.login_view, name='login_view'),
   
