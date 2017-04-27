@@ -1,26 +1,26 @@
 import os, re, mimetypes
 
 from django.conf import settings
-from django.http import StreamingHttpResponse
+
 
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
 
 from wand.image import Image
 
-from wsgiref.util import FileWrapper
+from miller.helpers import streamHttpResponse
 
 
-def streamHttpResponse(filename):
-  mimetype    = mimetypes.guess_type(filenameout)[0]
-  response = StreamingHttpResponse(FileWrapper(open(filename), 8192), content_type=mimetype)
-  response['Content-Length'] = os.path.getsize(filename)
-  return response
+
+
 
 
 @api_view()
 def images(request):
+  if not request.user.is_authenticated:
+    raise NotAuthenticated()
   #_c[10,20,50,100]
   # before the last point.
   if not 'url' in request.GET:
@@ -43,7 +43,6 @@ def images(request):
   filenameout = os.path.join(settings.MEDIA_ROOT, '%s_%s.%s'% (basepath,functions,ext))
 
   if os.path.exists(filenameout):
-    print 'direct'
     return streamHttpResponse(filenameout)
 
   # get distinct wand methods

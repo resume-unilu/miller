@@ -1,12 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import shortuuid, os, json, logging, mimetypes
+
 from django.conf import settings
+from django.http import StreamingHttpResponse
 from django.utils.text import slugify
 from pyzotero import zotero
 
-import shortuuid, os, json, logging
+from wsgiref.util import FileWrapper
+
 
 logger = logging.getLogger('miller')
+
+
+
+def streamHttpResponse(filename):
+  """
+  Given an existing filename, 
+  """
+  mimetype    = mimetypes.guess_type(filename)[0]
+  response = StreamingHttpResponse(FileWrapper(open(filename), 8192), content_type=mimetype)
+  response['Content-Length'] = os.path.getsize(filename)
+  return response
+
 
 
 def generate_snapshot(filename, output, width=234, height=234):
