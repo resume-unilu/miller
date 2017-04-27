@@ -40,6 +40,33 @@ class StoryViewSet(viewsets.ModelViewSet):
     return q
 
 
+  def perform_create(self, serializer):
+    uploaded = self.request.FILES['source'] if 'source' in self.request.FILES else False
+    
+    if uploaded:
+      import pypandoc
+      from tempfile import NamedTemporaryFile
+      with NamedTemporaryFile() as f:
+        for chunk in uploaded.chunks():
+          f.write(chunk)
+        f.seek(0)  # go back to the beginning of the file
+        contents = pypandoc.convert_file(f.name, 'markdown', format='docx', extra_args=['--base-header-level=2'])
+        from django.core.files import File
+        serializer.save(owner=self.request.user, contents=contents)
+        # save file separately
+    else:
+      serializer.save()
+   
+    # for filename, file in self.request.FILES.iteritems():
+    #   print filename
+    #   name = .name
+    #   f = self.request.FILES[filename]
+    #   with open('some/file/name.txt', 'wb+') as destination:
+    #     for chunk in f.chunks():
+    #         destination.write(chunk)
+
+    
+
   # retrieve by PK or slug
   def retrieve(self, request, *args, **kwargs):
     q = self._getUserAuthorizations(request)
@@ -56,7 +83,8 @@ class StoryViewSet(viewsets.ModelViewSet):
     ckey = 'story.%s' % story.short_url
     #print 'nocache:', request.query_params.get('nocache', None)
     #anonymize if story status is pending or under review (e.g. for chief reviewer)
-    if story.status not in (Story.PUBLIC,) and request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
+    if story.status not in (Story.PUBLIC,) and not story.authors.filter(user=request.user).exists() and request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
+      print 'whahahhahahahahahahhaa' , story.authors.values_list('user__username')
       serializer = AnonymousStorySerializer(story,
         context={'request': request},
       )

@@ -274,9 +274,11 @@ class CreateStorySerializer(serializers.ModelSerializer):
     default=serializers.CurrentUserDefault()
   )
 
+  
   class Meta:
     model  = Story
-    fields = '__all__'
+    exclude = ('source',)
+    # fields = '__all__'
 
 
 
