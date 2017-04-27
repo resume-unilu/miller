@@ -18,7 +18,7 @@ from rest_framework.decorators import  api_view, permission_classes, detail_rout
 from miller.models import Story, Tag, Document, Caption, Comment, Review
 from miller.api.utils import Glue
 from miller.api.fields import OptionalFileField, JsonField
-from miller.api.serializers import LiteDocumentSerializer, AnonymousLiteStorySerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, PendingStorySerializer
+from miller.api.serializers import LiteDocumentSerializer, AnonymousStorySerializer, AnonymousLiteStorySerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, PendingStorySerializer
 
 from wsgiref.util import FileWrapper
 
@@ -55,6 +55,12 @@ class StoryViewSet(viewsets.ModelViewSet):
     
     ckey = 'story.%s' % story.short_url
     #print 'nocache:', request.query_params.get('nocache', None)
+    #anonymize if story status is pending or under review (e.g. for chief reviewer)
+    if story.status not in (Story.PUBLIC,) and request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
+      serializer = AnonymousStorySerializer(story,
+        context={'request': request},
+      )
+      return Response(serializer.data)
 
     if not request.query_params.get('nocache', None) and cache.has_key(ckey):
       #print 'serve cahced', ckey
@@ -123,7 +129,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     q = self.queryset.exclude(source__isnull=True)
     if not request.user.is_authenticated:
       raise PermissionDenied()
-    elif request.user.is_staff:
+    elif request.user.is_staff or request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
       pass
     else:
       q = self.queryset.filter(Q(owner=request.user) | Q(authors__user=request.user) | Q(reviews__assignee=request.user) | Q(reviews__assigned_by=request.user))
