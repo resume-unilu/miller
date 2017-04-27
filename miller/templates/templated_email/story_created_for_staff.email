@@ -1,0 +1,38 @@
+{% load miller_extras %}
+{% block subject %}{{site_name}} - {{story.owner.username}} create the manuscript "{{story.title}}"{% endblock %}
+{% block plain %}
+Dear Staff Member,
+
+[{{story.owner.username}}]({{site_url}}/author/{{story.owner.profile.slug}}/publications/) created this new **publication**:
+
+> {{story.title}}
+
+> {{story.abstract}}
+
+As staff member, you can view the publication here:
+[{{site_url}}/story/{{story.slug}}]({{site_url}}/story/{{story.slug}})
+
+Best regards,
+
+{% signedby %}
+
+{% endblock %}
+
+{% block html %}
+  <p>Dear Staff Member,</p>
+
+  <p><a href='{{site_url}}/author/{{story.owner.profile.slug}}/publications/'>{{story.owner.username}}</a> created this new <b>publication</b></p>
+
+  <p>
+    title:
+    <blockquote>{{story.title}}</blockquote>
+    abstract:
+    <blockquote>{{story.abstract}}</blockquote>
+  </p>
+
+  <p>As staff member, you can view the publication <a href='{{site_url}}/story/{{slug}}'>here</a></p>
+  
+  <p>Best regards,</p>
+  
+  {% htmlsignedby %}
+{% endblock %}

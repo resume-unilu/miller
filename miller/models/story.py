@@ -80,7 +80,7 @@ class Story(models.Model):
   }, indent=1),blank=True) # it will contain, JSON fashion
 
 
-  date               = models.DateTimeField(null=True, blank=True, db_index=True) # date displayed (metadata)
+  date               = models.DateTimeField(auto_now_add=True, db_index=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
@@ -94,10 +94,8 @@ class Story(models.Model):
 
   stories   = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_to')
 
-  # 1.x versions for DRAFT mode
-  # 2.x versions for EDITING mode
-  # 2.0 once version has been REVIEWED
-  version   = models.CharField(max_length=22, default='0.1')
+  # store the git hash for current gitted self.contents. Used for comments.
+  version   = models.CharField(max_length=22, default='', help_text='store the git hash for current gitted self.contents.', blank=True)
 
   # the leading document(s), e.g. an interview
   covers = models.ManyToManyField(Document, related_name='covers', blank=True)
@@ -161,6 +159,25 @@ class Story(models.Model):
       return self._isCollection
     else:
       return self._isCollection
+
+
+  @property
+  def diffs(self):
+    """
+    check if the saveable instance differs from the original stored one.
+    This model __init__ function produces the 'original' tuple
+    """
+    try:
+      return self._diffs
+    except AttributeError:
+      pass
+
+    self._diffs = []
+
+    for field, value in self._original:
+      if getattr(self, field, None) != value:
+        self._diffs.append(field)
+    return self._diffs
 
   # set the plural name and fix the default sorting order
   class Meta:
@@ -241,14 +258,18 @@ class Story(models.Model):
   # convert the content of in a suitable markdown file. to be used before store() and before create_working_md() are called
   # if force is true, it overrides the contents field.
   def convert(self, force=False):
-    if not contents:
-      # we force to use # headers by setting the threshold of 3 so that h1 "===" is transformed to h3 "###"
-      contents = pypandoc.convert_file(self.source.path, 'markdown',  extra_args=['--base-header-level=3'])
-      # ... but we have to transform them back, minus a level (e.g. transformed h1 becomes h2).
-      # We should check if we can use the pandoc options for that directly
-      self.contents = re.sub(r'#(#+)', r'\1', contents) 
-    else:
-      logger.debug('story {pk:%s} already contains contents. Skipped.' % self.pk)
+    pass
+
+    # logger.debug('story {pk:%s} convert called.' % self.pk)
+    # print self.source.path
+    # if not self.contents:
+    #   # we force to use # headers by setting the threshold of 3 so that h1 "===" is transformed to h2 "##"
+    #   contents = pypandoc.convert_file(self.source.path, 'markdown', extra_args=['--base-header-level=2'])
+    #   # ... but we have to transform them back, minus a level (e.g. transformed h1 becomes h2).
+    #   # We should check if we can use the pandoc options for that directly
+    #   # self.contents = re.sub(r'#(#+)', r'\1', contents)
+    # else:
+    #   logger.debug('story {pk:%s} already contains contents. Skipped.' % self.pk)
 
 
   def gitTag(self, tag):
@@ -303,41 +324,48 @@ class Story(models.Model):
     return file_contents
 
 
-
-  def gitCommit(self):
+  def write_contents(self):
     """
-    convenient function to commit the story
+    Write current Story contents to the filepath specified by self.get_path() 
     """
-    logger.debug('story {pk:%s} gitCommit: %s' % (self.pk, self.get_path()))
-  
     path = self.get_path()
-    dirpath = os.path.dirname(path)
 
-    # check that the dir path is accessible
-    if not os.path.exists(dirpath):
-      logger.debug('story {pk:%s} gitCommit: path "%s" not found, owner changed?' % (self.pk, path))
-      try:
-        owner_path = os.path.dirname(self.owner.profile.get_path())
-        os.makedirs(owner_path)
-        logger.debug('story {pk:%s} gitCommit: owner_path created at %s.' % (self.pk, owner_path))
-      
-      except OSError as e:
-        if e.errno != errno.EEXIST:
-          logger.exception(e)
-      except Exception as e:
-        logger.exception(e)
+    if not self.version:
+      # if self.version exists, the file has been saved before.
+      if not os.path.exists(path):
+        dirpath = os.path.dirname(path)
+        try:
+          # create directory path.
+          os.makedirs(dirpath)
+        except OSError as e:
+          if e.errno != errno.EEXIST:
+            raise e
 
-    try:   
+    try:
       f = codecs.open(path, encoding='utf-8', mode='w+')
       f.write(self.contents)
       f.seek(0)
       f.close()
-      logger.debug('story {pk:%s} gitCommit: md file "%s" written.' % (self.pk, path))
     except Exception as e:
       logger.exception(e)
+    else:
+      logger.debug('story {pk:%s} contents written.' % (self.pk))
 
-    if settings.TESTING:
-      logger.debug('story {pk:%s} gitCommit skipped, just testing!' % self.pk)
+
+  def commit_contents(self, force=False):
+    """
+    Convenient function to commit the Story contents filepath.
+    Internally it makes use of Story `diffs` property
+    and check if contents has changed before committing.
+    """
+    if not 'contents' in self.diffs:
+      logger.debug('story {pk:%s} commit_contents skipped, nothing new to commit.' % (self.pk))
+      return
+    
+    
+
+    if not force and settings.TESTING:
+      logger.debug('story {pk:%s} commit_contents git commit skipped, just testing!' % self.pk)
       return
     
     author = Actor(self.owner.username, self.owner.email)
@@ -349,13 +377,15 @@ class Story(models.Model):
     # add and commit JUST THIS FILE
     #tree = Tree(repo=repo, path=self.owner.profile.get_path())
     try:
-      repo.index.add([path])
+      repo.index.add([self.get_path()])
       c = repo.index.commit(message=u"saving %s" % self.title, author=author, committer=committer)
+      short_sha = repo.git.rev_parse(c, short=4)
     except IOError as e:
       logger.debug('story {pk:%s} gitCommit has errors.' % self.pk)
       logger.exception(e)
-
-    logger.debug('story {pk:%s} gitCommit done.' % self.pk)
+    print c
+    self.version = short_sha
+    logger.debug('story {pk:%s} gitCommit {hash:%s,short:%s} done.' % (self.pk, c, short_sha))
 
 
   # convert the last saved content (markdown file) to a specific format (default: docx)
@@ -403,6 +433,27 @@ class Story(models.Model):
 
     return outputfile
 
+
+  def send_smart_email(self, recipient, template_name, from_email=settings.DEFAULT_FROM_EMAIL, extra={}):
+    if not settings.EMAIL_HOST:
+      logger.warning('story {pk:%s} email %s cannot be send, settings.EMAIL_HOST is not set.' % (self.pk, template_name))
+      return
+    recipient_list = [recipient if isinstance(recipient, basestring) else recipient.email]
+    context = {
+      'recipient': recipient,
+      'story': self,
+      'site_name': settings.MILLER_TITLE,
+      'site_url':  settings.MILLER_SETTINGS['host'],
+    }
+    context.update(extra)
+    try:
+      send_templated_mail(template_name=template_name, from_email=from_email, recipient_list=recipient_list, context=context)
+    except Exception as e:
+      logger.exception(e)
+    else:
+      logger.debug('story {pk:%s} email %s sent' % (self.pk, template_name))
+  
+
   def send_email_to_staff(self, template_name, extra=None):
     """
     Send email to staff, to the settings.DEFAULT_FROM_EMAIL address.
@@ -449,80 +500,151 @@ class Story(models.Model):
       logger.debug('story {pk:%s} cannot send email to recipient, not found fo author {pk:%s}' % (self.pk,author.pk))
       
 
+  def create_first_author(self, created):
+    from django.db import transaction
+    if created:
+      author = self.owner.authorship.first()
+      transaction.on_commit(
+        lambda: self.authors.add(author)
+      )
+      self._dirty = True
+      logger.debug('story {pk:%s} create first author {fullname:%s}" done.' % (self.pk, author.fullname))
 
-  # hook init so that during save we won't keep data
+
+  def dispatch_status_changed(self, created):
+    """
+    this function dispatches messages whenever a story status changes.
+    e.g. from draft to pending
+    for editing to Review.
+    """
+    if created:
+      self.send_smart_email(recipient=settings.DEFAULT_FROM_EMAIL, template_name='story_created_for_staff')
+
+    if 'status' in self.diffs:
+      logger.debug('story {pk:%s} status changed from %s to %s' % (self.pk, self._original[0][1], self.status))
+
+      if self.status == Story.PUBLIC:
+        # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
+        action.send(self.owner, verb='got_published', target=self)
+      elif self.status == Story.PENDING:
+        # send email to staff
+        self.send_email_to_staff(template_name='story_pending_for_staff')
+        # send email to authors
+        authors = self.authors.exclude(user__email__isnull=True)
+      
+        for author in authors:
+          self.send_email_to_author(author=author, template_name='story_pending_for_author')
+        
+        # chief reviewer if not belonging to authors as well @todo
+        action.send(self.owner, verb='ask_for_publication', target=self)
+      elif self.status == Story.EDITING:
+        # DEPRECATED, not used.
+        action.send(self.owner, verb='ask_for_editing', target=self)
+      elif self.status == Story.REVIEW:
+        # story is under review.
+        self.send_email_to_staff(template_name='story_review_for_staff')
+        action.send(self.owner, verb='ask_for_review', target=self)
+      elif self.status == Story.REVIEW_DONE:
+        # chief reviewer has closed the review process.
+        closingremarks = self.reviews.filter(category='closing').select_related('assignee').first()
+        
+        self.send_email_to_staff(template_name='story_reviewdone_for_staff', extra={
+          #chief decision:
+          'closingremarks': closingremarks,
+          'reviews': instance.reviews.filter(category='double')
+        })
+        # send mail to chief reviewer @todo
+
+
   def __init__(self, *args, **kwargs):
+    """
+    Store original values internally.
+    used in Story method `dispatch_status_changed`
+    """
     super(Story, self).__init__(*args, **kwargs)
     self._original = (
       ('status', self.status),
       ('metadata', self.metadata),
       ('contents', self.contents),
-      ('date', self.date),
     )
 
-
-  # check if the saveable instance differs from the original stored one. Cfr the overriding of __init__ function
-  def has_diffs(self, exclude=None):
-    for field, value in self._original:
-      if exclude is not None and field == exclude:
-        continue
-      if getattr(self, field) != value:
-        return True
-    return False
-
-
-  # save hook
+  
   def save(self, *args, **kwargs):
-    if not hasattr(self, '_saved'):
-      self._saved = 1
-    else:
-      self._saved = self._saved + 1
+    """
+    perform save
+    """
+    self._saved = getattr(self, '_saved', 0)
+    self._saved = self._saved + 1
     logger.debug('story@save  {pk:%s} init save, time=%s' % (self.pk, self._saved))
     
     # check slug
     if not self.slug:
       self.slug = helpers.get_unique_slug(self, self.title, max_length=68)
       logger.debug('story@save {pk:%s, slug:%s} slug generated.' % (self.pk, self.slug))
-    else:
-      logger.debug('story@save {pk:%s} slug ok.' % self.pk)
 
     if self.date is None:
       logger.debug('story@save {slug:%s,pk:%s} not having a default date. Fixing...' % (self.slug, self.pk))
       self.date = self.date_last_modified
-    if not hasattr(self, 'filling_metadata'):
-      self.filling_metadata = True
-      try:
-        metadata = self.metadata if type(self.metadata) is dict else json.loads(self.metadata)
-        
-        if 'title' not in metadata:
-          metadata['title'] = {}
-        if 'abstract' not in metadata:
-          metadata['abstract'] = {}
 
-        for default_language_code, label, language_code in settings.LANGUAGES:
-          logger.debug('metadata filling lang:%s' % language_code)
-          if language_code not in metadata['title'] or not metadata['title'][language_code]:
-            metadata['title'][language_code] = self.title
-
-          if language_code not in metadata['abstract'] or not metadata['abstract'][language_code]:
-            metadata['abstract'][language_code] = self.abstract
-
-        logger.debug('metadata filled.')
-        self.metadata = json.dumps(metadata, ensure_ascii=False, indent=1)
-      except Exception as e:
-        logger.exception(e)
-
+    
 
     logger.debug('story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
 
 
-# handle redis cache correctly
 @receiver(pre_save, sender=Story)
 def clear_cache_on_save(sender, instance, **kwargs):
+  """
+  Clean current story from cache.
+  """
+  if getattr(instance, '_dirty', None) is not None:
+    return
   ckey = 'story.%s' % instance.short_url
   cache.delete(ckey)
   logger.debug('story@pre_save {pk:%s, short_url:%s} cache deleted.' % (instance.pk,instance.short_url))
+
+
+# create story file if it is not exists; if the story eists already, cfr the followinf story_ready
+@receiver(pre_save, sender=Story)
+def write_contents_to_path(sender, instance, **kwargs):
+  if getattr(instance, '_dirty', None) is not None:
+    return
+  try:
+    instance.convert()
+    instance.write_contents()
+    instance.commit_contents()
+  except Exception as e:
+    logger.exception(e)
+  else:
+    logger.debug('story@pre_save {pk:%s}: write_contents_to_path done.' % instance.pk)
+
+
+@receiver(pre_save, sender=Story)
+def fill_metadata(sender, instance, **kwargs):
+  if getattr(instance, '_dirty', None) is not None:
+    return
+  try:
+    metadata = instance.dmetadata
+    if 'title' not in metadata:
+      metadata['title'] = {}
+    if 'abstract' not in metadata:
+      metadata['abstract'] = {}
+    for default_language_code, label, language_code in settings.LANGUAGES:
+      if default_language_code not in metadata['title']:
+        metadata['title'][language_code] = instance.title
+      if default_language_code not in metadata['abstract']:
+        metadata['abstract'][language_code] = instance.abstract
+      if language_code not in metadata['title']:
+        metadata['title'][language_code] = ''
+      if language_code not in metadata['abstract']:
+        metadata['abstract'][language_code] = ''
+    instance.metadata = json.dumps(metadata, ensure_ascii=False, indent=1)
+  except Exception as e:
+    logger.exception(e)
+  else:
+    logger.debug('story@pre_save {pk:%s}: metadata ready.' % instance.pk)
+
+
 
 
 # generic story_ready handlers ;) store in whoosh
@@ -534,46 +656,52 @@ def dispatcher(sender, instance, created, **kwargs):
   """
   if kwargs['raw']:
     return
-  if not hasattr(instance, '_dispatcher'):
-    instance._dispatcher = True
-  else:
-    logger.debug('story@post_save {pk:%s} dispatching already dispatched. Skipping.' % instance.pk)
+  if getattr(instance, '_dirty', None) is not None:
     return
-  # dispatch (call). 
-  logger.debug('story@post_save {pk:%s} dispatching @story_ready...' % instance.pk)
+
+  if created:  
+    action.send(instance.owner, verb='created', target=instance)
+    follow(instance.owner, instance, actor_only=False)
   
-  story_ready.send_robust(sender=sender, instance=instance, created=created)
+  # create authorship.  
+  instance.create_first_author(created)
+
+  # send emails if status has changed.
+  instance.dispatch_status_changed(created)
+
+  # store in whoosh.
+  instance.store()
   
   if getattr(instance, '_dirty', None) is not None:
-    logger.debug('story@post_save {pk:%s} instance is dirty. Need to call instance.save()..' % instance.pk)
+    logger.debug('story@post_save  {pk:%s} save the instance again...' % instance.pk)
     instance.save()
   else:
     logger.debug('story@post_save  {pk:%s} no need to save the instance again.' % instance.pk)
   
-  if created:  
-    action.send(instance.owner, verb='created', target=instance)
-    follow(instance.owner, instance, actor_only=False)
-  elif instance.status != Story.DRAFT and instance.has_diffs(exclude='status'):
-    # something changed in a NON DRAFT document.
-    pass
-    # action.send(instance.owner, verb='updated', target=instance)
 
+  # return
 
-# store in whoosh
-@receiver(story_ready, sender=Story)
-def store_working_md(sender, instance, created, **kwargs):
-  instance.store()
-  logger.debug('story@story_ready {pk:%s} store_working_md: done' % instance.pk)
-
-
-@receiver(story_ready, sender=Story)
-def create_first_author(sender, instance, created, **kwargs):
-  if created:
-    author = instance.owner.authorship.first()
-    instance.authors.add(author)
-    instance._dirty = True
-    logger.debug('story@story_ready {pk:%s} add author {fullname:%s}" done.' % (instance.pk, author.fullname))
-
+  # if not hasattr(instance, '_dispatcher'):
+  #   instance._dispatcher = True
+  # else:
+  #   logger.debug('story@post_save {pk:%s} dispatching already dispatched. Skipping.' % instance.pk)
+  #   return
+  # # dispatch (call). 
+  # logger.debug('story@post_save {pk:%s} dispatching @story_ready...' % instance.pk)
+  
+  # story_ready.send_robust(sender=sender, instance=instance, created=created)
+  
+  # if getattr(instance, '_dirty', None) is not None:
+  #   logger.debug('story@post_save {pk:%s} instance is dirty. Need to call instance.save()..' % instance.pk)
+  #   instance.save()
+  # else:
+  #   logger.debug('story@post_save  {pk:%s} no need to save the instance again.' % instance.pk)
+  
+  
+  # elif instance.status != Story.DRAFT and not 'status' in instance.diffs:
+  #   # something changed in a NON DRAFT document.
+  #   pass
+  #   # action.send(instance.owner, verb='updated', target=instance)
 
 
 
@@ -583,86 +711,6 @@ def unstore_working_md(sender, instance, **kwargs):
   instance.unstore()
   logger.debug('story@pre_delete {pk:%s} unstore_working_md: done' % instance.pk)
 
-
-# check if there is a source file of type docx attached and transform it to content.
-@receiver(story_ready, sender=Story)
-def transform_source(sender, instance, created, **kwargs):
-  # print 'story is created?', instance.pk, created
-  if not created:
-    return
-  if bool(instance.source):
-    logger.debug('story@story_ready {pk:%s} transform_source: converting...' % instance.pk)
-    instance.convert()
-    instance._dirty = True
-  else:
-    logger.debug('story@story_ready {pk:%s} transform_source: skipping.' % instance.pk)
-  
-  
-  logger.debug('story@story_ready {pk:%s} transform_source: done' % instance.pk)
-
-
-
-
-# create story file if it is not exists; if the story eists already, cfr the followinf story_ready
-@receiver(story_ready, sender=Story)
-def create_working_md(sender, instance, created, **kwargs):
-  logger.debug('story@story_ready {pk:%s}: create_working_md...' % instance.pk)
-  try:
-    instance.gitCommit()
-  except Exception as e:
-    logger.exception(e)
-  logger.debug('story@story_ready {pk:%s}: create_working_md done.' % instance.pk)
-
-
-@receiver(story_ready, sender=Story)
-def if_status_changed(sender, instance, created, **kwargs):
-  """
-  this function enable actions for status change activity:e.g. from draft to editing
-  for editing to Review.
-  """
-  logger.debug('story@story_ready {pk:%s, status:%s} check if_status_changed' % (instance.pk, instance.status))
-
-  if created:
-    instance.send_email_to_staff(template_name='story_created')
-
-  # if status really changed.
-  if hasattr(instance, '_original') and instance.status != instance._original[0][1]:
-    logger.debug('(story@story_ready {pk:%s, status:%s} @story_ready if_status_changed from %s' % (instance.pk, instance.status, instance._original[0][1]))
-    if instance.status == Story.PUBLIC:
-      # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
-      action.send(instance.owner, verb='got_published', target=instance)
-    elif instance.status == Story.PENDING:
-      # send email to staff
-      instance.send_email_to_staff(template_name='story_pending_for_staff')
-
-      # send email to authors
-      authors = instance.authors.exclude(user__email__isnull=True)
-      
-      for author in authors:
-        instance.send_email_to_author(author=author, template_name='story_pending_for_author')
-      
-      # chief reviewer as well @todo
-
-
-      action.send(instance.owner, verb='ask_for_publication', target=instance)
-    elif instance.status == Story.EDITING:
-      # send email.
-      action.send(instance.owner, verb='ask_for_editing', target=instance)
-    elif instance.status == Story.REVIEW:
-      # send email.
-      instance.send_email_to_staff(template_name='story_review_for_staff')
-      action.send(instance.owner, verb='ask_for_review', target=instance)
-    elif instance.status == Story.REVIEW_DONE:
-      closingremarks = instance.reviews.filter(category='closing').select_related('assignee').first()
-      
-      try:
-        instance.send_email_to_staff(template_name='story_reviewdone_for_staff', extra={
-          #chief decision:
-          'closingremarks': closingremarks,
-          'reviews': instance.reviews.filter(category='double')
-        })
-      except Exception as e:
-        print e
 
 # clean makdown version and commit
 @receiver(pre_delete, sender=Story)
