@@ -82,6 +82,7 @@ class ApiMillerTestCase(TestCase):
     self.assertEqual(mail.outbox[0].to, [settings.DEFAULT_FROM_EMAIL])
 
     # check authorship
+    self.story_A.create_first_author()
     self.assertEqual(self.story_A.authors.count(), 1)
     # Empty the test outbox
     mail.outbox = []

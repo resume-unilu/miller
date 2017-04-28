@@ -7,13 +7,7 @@ from miller.models import Comment
 # python manage.py test miller.test.test_api_comments.CommentTest
 class CommentTest(ApiMillerTestCase):
 
-
-  def test_story(self):
-    response = self.client_user_A.get('/api/story/%s/' % self.story_A.slug)
-    self.assertEqual(response.json()['title'], self.story_A.title)
-
-
-  def test_create_comment(self):
+  def _test_create_comment(self):
     # normal user adds a comment to its own story
     response_user_A = self.client_user_A.post('/api/comment/', {
       'story': self.story_A.pk,
@@ -48,7 +42,7 @@ class CommentTest(ApiMillerTestCase):
     self.assertEqual(response_anonymous.json()['count'], 0)
 
 
-  def test_delete_comment(self):
+  def _test_delete_comment(self):
     """
     Rule: only owner or staff users can delete a comment. Not even coauthors
     """
@@ -78,6 +72,7 @@ class CommentTest(ApiMillerTestCase):
     self.assertEqual(response_user_C.status_code, 404)
 
     com.refresh_from_db()
+    self.assertEqual(com.version, com.story.version)
     self.assertEqual(com.status, Comment.PRIVATE) # the default is private
 
     # let the user delete its own comments:
@@ -96,3 +91,8 @@ class CommentTest(ApiMillerTestCase):
     action = any_stream(self.user_A).first()
 
     self.assertEqual(action.verb, 'uncommented')
+
+  def test_suite(self):
+    self._test_create_comment()
+    self._test_delete_comment()
+    self.cleanUp()

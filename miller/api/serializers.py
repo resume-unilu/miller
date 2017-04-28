@@ -42,14 +42,14 @@ class CommentSerializer(serializers.ModelSerializer):
   
   class Meta:
     model = Comment
-    fields = ('pk', 'owner', 'contents','date_created', 'highlights', 'short_url', 'status')
+    fields = ('pk', 'owner', 'contents', 'version', 'date_created', 'highlights', 'short_url', 'status')
 
 
 class ActionCommentSerializer(serializers.ModelSerializer):
   owner    = UserSerializer()
   class Meta:
     model = Comment
-    fields = ('pk', 'owner')
+    fields = ('pk', 'owner', 'version')
 
 # tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
@@ -179,7 +179,7 @@ class LiteMentionSerializer(serializers.ModelSerializer):
 class IncrediblyLiteStorySerializer(serializers.ModelSerializer):
   class Meta:
     model = Story
-    fields = ('id', 'short_url', 'slug', 'title', 'status')
+    fields = ('id', 'short_url', 'slug', 'title', 'status', 'version')
 
 
 
@@ -192,7 +192,7 @@ class AnonymousLiteStorySerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Story
-    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata', 'source')
+    fields = ('id', 'slug', 'short_url', 'date',  'version', 'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata', 'source')
 
 
 # Story Serializer to use in lists
@@ -223,7 +223,8 @@ class StorySerializer(LiteStorySerializer):
       'status', 
       'source',
       'authors','owner',
-      'highlights'
+      'highlights',
+      'version'
     )
 
 
@@ -277,8 +278,8 @@ class CreateStorySerializer(serializers.ModelSerializer):
   
   class Meta:
     model  = Story
-    exclude = ('source',)
-    # fields = '__all__'
+    #exclude = ('source',)
+    fields = '__all__'
 
 
 

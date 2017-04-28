@@ -33,7 +33,9 @@ class Comment(models.Model):
 
   short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
   
-  story = models.ForeignKey('miller.Story', related_name='comments')
+  story   = models.ForeignKey('miller.Story', related_name='comments')
+  version = models.CharField(max_length=22, default='', help_text='store the git hash for story self.contents.', blank=True)
+
   owner = models.ForeignKey('auth.User'); # at least the first author, the one who owns the file.
   
   # follows = model.foreignKey(self);
@@ -76,6 +78,7 @@ def complete_instance(sender, instance, **kwargs):
   Highlights are generated story property highlights
   """
   logger.debug('comment {pk:None, short_url:%s} @pre_save %s' % (instance.short_url, 'with highlights' if instance.highlights else 'without highlights'))
+  instance.version = instance.story.version
   if instance.highlights:
     instance.highlights = instance.highlights.replace('$highlight$', '$%s$' % instance.short_url)
 

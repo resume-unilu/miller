@@ -20,7 +20,6 @@ from actstream.models import Action
 logger = logging.getLogger('miller')
 
 
-
 @receiver(post_save, sender=Action)
 def add_action(sender, instance, created, **kwargs):
   try:
@@ -43,6 +42,8 @@ def add_action(sender, instance, created, **kwargs):
     if data['target_content_type'] == 'story':
       for u in instance.target.authors.values('user__username'):
         broadcast("pulse-%s"% u['user__username'], data)
+      for u in instance.target.reviews.values_list('assignee__username', flat=True):
+        broadcast("pulse-%s"% u, data)
     broadcast('pulse-staff', data)
 
   except Exception as e:

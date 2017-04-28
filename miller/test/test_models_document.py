@@ -25,7 +25,7 @@ class DocumentTest(TestCase):
       title=u'The happy story of the Promo', 
       url='http://ec.europa.eu/health/files/eudralex/vol-1/reg_2016_161/reg_2016_161_en.pdf',
       owner=self.user,
-      contents='{"html": "original content here"}',
+      data={"html": "original content here"},
       locked = True
     )
     self.doc.save()
@@ -43,13 +43,12 @@ class DocumentTest(TestCase):
     _doc  = Document(
       title=u'Bibtex parsing', 
       owner=self.user,
-      contents=u'{"html": "new content here", "bibtex":"@ARTICLE {article,\\n    author  = \\"Daniele Guido\\",\\n    title   = \\"Titolo\\",\\n    journal = \\"Journal\\",\\n    year    = \\"2016\\"\\n}"}'
+      data={"html": "new content here", "bibtex":"@ARTICLE {article,\n    author  = \"Daniele Guido\",\n    title   = \"Titolo\",\n    journal = \"Journal\",\n    year    = \"2016\"\n}"}
     )
 
     _doc.save()
-    metadata = json.loads(_doc.contents)
-    self.assertEqual(metadata['title'], u'Bibtex parsing')
-    self.assertEqual(metadata['details']['bibtex']['author'], u'Daniele Guido')
+    self.assertEqual(_doc.data['title'], u'Bibtex parsing')
+    self.assertEqual(_doc.data['details']['bibtex']['author'], u'Daniele Guido')
     # since there is a bibtex field, fill_from_metadata() should e called correctly
     
 
@@ -58,7 +57,7 @@ class DocumentTest(TestCase):
       title=u'The happy story of the Promo', 
       url='http://ec.europa.eu/health/files/eudralex/vol-1/reg_2016_161/reg_2016_161_en.pdf',
       owner=self.user,
-      contents='{"html": "new content here"}'
+      data={"html": "new content here"}
     )
     _doc.save()
     self.assertEqual(_doc.pk, self.doc.pk)
@@ -72,7 +71,7 @@ class DocumentTest(TestCase):
       title=u'The happy story of the Promo', 
       url='http://ec.europa.eu/health/files/eudralex/vol-1/reg_2016_161/reg_2016_161_en.pdf',
       owner=self.user,
-      contents='{"html": "very new content here"}'
+      data={"html": "very new content here"}
     )
     __doc.save()
     self.assertEqual(__doc.pk, self.doc.pk)
@@ -89,7 +88,7 @@ class DocumentTest(TestCase):
       _doc = Document(
         title=u'The happy story of the Promo, with avery very long title this time. How can Miller create a good slug for this?', 
         owner=self.user,
-        contents='{"html": "original content here"}',
+        data={"html": "original content here"},
         locked = True,
         mimetype='image/png',
         type= Document.IMAGE

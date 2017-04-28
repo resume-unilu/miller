@@ -35,7 +35,11 @@ class StoryTest(ApiMillerTestCase):
       response_json = json.loads(response.content)
       self.assertEqual(response_json[u'slug'], u'this-is-a-sad-old-story')
       self.assertEqual(response_json[u'contents'], u"## La compétitivité européenne :\\\ncompétition, coopération, solidarité\n\nVersion : 30 mai 2016\n\n### 1 L’exigence d’un engagement total\n\nLa compétitivité est une obsession[^1].\n\n[^1]: Krugman, Paul. Competitiveness : A Dangerous Obsession. *Foreign\n    Affairs*, mars-avril 1994, vol. 73, n°2, pp. 28-44 ; pour une\n    critique similaire du « diktat » de la compétitivité : Rinehart,\n    James. The ideology of competitiveness. *Monthly Review*, 1995,\n    vol. 47 n° 5, p. 14.\n")
-  
+      
+      story = Story.objects.get(pk=response_json[u'id'])
+      self.assertEqual(story.authors.count(), 1)
+
+
   def _test_story_publish(self):
     # user B asks for story publish. Nope!
     response = self.client_user_B.post('/api/story/%s/publish/' % self.story_A.slug)
@@ -125,12 +129,11 @@ class StoryTest(ApiMillerTestCase):
     response = self.client_user_A.post(url_document_list, {
       'title': 'Test video youtube',
       'type': 'video',
-      'metadata': '{"provider_url":"https://www.youtube.com/","description":"► Subscribe to the Financial Times on YouTube: http://bit.ly/FTimeSubs Jean-Claude Juncker, president of the European Commission, has provided details of the commission\'s plans to kickstart investment spending in Europe and seed growth. The FT\'s Ferdinando Giugliano provides a rundown of the scheme.","title":"Juncker\'s plan for Europe in 90 seconds | FT World","url":"http://www.youtube.com/watch?v=_gVDiBukGTE","author_name":"Financial Times","height":480,"thumbnail_width":480,"width":854,"html":"<iframe class=\\"embedly-embed\\" src=\\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F_gVDiBukGTE%3Ffeature%3Doembed&url=http%3A%2F%2Fw….jpg&key=28775d6020a142f1a3b7f24b77169194&type=text%2Fhtml&schema=youtube\\" width=\\"854\\" height=\\"480\\" scrolling=\\"no\\" frameborder=\\"0\\" allowfullscreen></iframe>","author_url":"https://www.youtube.com/user/FinancialTimesVideos","version":"1.0","provider_name":"YouTube","thumbnail_url":"https://i.ytimg.com/vi/_gVDiBukGTE/hqdefault.jpg","type":"video","thumbnail_height":360}',
-
+      'data': json.dumps({"provider_url":"https://www.youtube.com/","description":"► Subscribe to the Financial Times on YouTube: http://bit.ly/FTimeSubs Jean-Claude Juncker, president of the European Commission, has provided details of the commission\'s plans to kickstart investment spending in Europe and seed growth. The FT\'s Ferdinando Giugliano provides a rundown of the scheme.","title":"Juncker\'s plan for Europe in 90 seconds | FT World","url":"http://www.youtube.com/watch?v=_gVDiBukGTE","author_name":"Financial Times","height":480,"thumbnail_width":480,"width":854,"html":"<iframe class=\"embedly-embed\" src=\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F_gVDiBukGTE%3Ffeature%3Doembed&url=http%3A%2F%2Fw….jpg&key=28775d6020a142f1a3b7f24b77169194&type=text%2Fhtml&schema=youtube\" width=\"854\" height=\"480\" scrolling=\"no\" frameborder=\"0\" allowfullscreen></iframe>","author_url":"https://www.youtube.com/user/FinancialTimesVideos","version":"1.0","provider_name":"YouTube","thumbnail_url":"https://i.ytimg.com/vi/_gVDiBukGTE/hqdefault.jpg","type":"video","thumbnail_height":360}),
       'url': 'https://www.youtube.com/watch?v=_gVDiBukGTE'
     }, format='multipart')
     response_json = json.loads(response.content)
-    self.assertEqual(response_json['metadata']['title'], "Juncker's plan for Europe in 90 seconds | FT World")
+    self.assertEqual(response_json['data']['title'], "Juncker's plan for Europe in 90 seconds | FT World")
     #self.assertEqual(, 'test-video-youtube')
     self.assertEqual(response_json['slug'], 'test-video-youtube')
     
@@ -138,7 +141,7 @@ class StoryTest(ApiMillerTestCase):
     response = self.client_user_B.post(url_document_list, {
       'title': 'Test video youtube again',
       'type': 'video',
-      'metadata': '{"provider_url":"https://www.youtube.com/","description":"► Subscribe to the Financial Times on YouTube: http://bit.ly/FTimeSubs Jean-Claude Juncker, president of the European Commission, has provided details of the commission\'s plans to kickstart investment spending in Europe and seed growth. The FT\'s Ferdinando Giugliano provides a rundown of the scheme.","title":"Juncker\'s plan for Europe in 90 seconds | FT World","url":"http://www.youtube.com/watch?v=_gVDiBukGTE","author_name":"Financial Times","height":480,"thumbnail_width":480,"width":854,"html":"<iframe class=\\"embedly-embed\\" src=\\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F_gVDiBukGTE%3Ffeature%3Doembed&url=http%3A%2F%2Fw….jpg&key=28775d6020a142f1a3b7f24b77169194&type=text%2Fhtml&schema=youtube\\" width=\\"854\\" height=\\"480\\" scrolling=\\"no\\" frameborder=\\"0\\" allowfullscreen></iframe>","author_url":"https://www.youtube.com/user/FinancialTimesVideos","version":"1.0","provider_name":"YouTube","thumbnail_url":"https://i.ytimg.com/vi/_gVDiBukGTE/hqdefault.jpg","type":"video","thumbnail_height":360}',
+      'data': json.dumps({"provider_url":"https://www.youtube.com/","description":"► Subscribe to the Financial Times on YouTube: http://bit.ly/FTimeSubs Jean-Claude Juncker, president of the European Commission, has provided details of the commission\'s plans to kickstart investment spending in Europe and seed growth. The FT\'s Ferdinando Giugliano provides a rundown of the scheme.","title":"Juncker\'s plan for Europe in 90 seconds | FT World","url":"http://www.youtube.com/watch?v=_gVDiBukGTE","author_name":"Financial Times","height":480,"thumbnail_width":480,"width":854,"html":"<iframe class=\"embedly-embed\" src=\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F_gVDiBukGTE%3Ffeature%3Doembed&url=http%3A%2F%2Fw….jpg&key=28775d6020a142f1a3b7f24b77169194&type=text%2Fhtml&schema=youtube\" width=\"854\" height=\"480\" scrolling=\"no\" frameborder=\"0\" allowfullscreen></iframe>","author_url":"https://www.youtube.com/user/FinancialTimesVideos","version":"1.0","provider_name":"YouTube","thumbnail_url":"https://i.ytimg.com/vi/_gVDiBukGTE/hqdefault.jpg","type":"video","thumbnail_height":360}),
 
       'url': 'https://www.youtube.com/watch?v=_gVDiBukGTE'
     }, format='multipart')

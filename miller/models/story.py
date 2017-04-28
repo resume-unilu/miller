@@ -80,7 +80,7 @@ class Story(models.Model):
   }, indent=1),blank=True) # it will contain, JSON fashion
 
 
-  date               = models.DateTimeField(auto_now_add=True, db_index=True) # date displayed (metadata)
+  date               = models.DateTimeField(auto_now_add=True, db_index=True, blank=True, null=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
@@ -140,7 +140,7 @@ class Story(models.Model):
     """
     highlights 
     """
-    return filter(None, self.comments.exclude(status='deleted').values_list('highlights', flat=True))
+    return filter(None, self.comments.exclude(status='deleted').filter(version=self.version).values_list('highlights', flat=True))
 
 
   @property
@@ -255,23 +255,6 @@ class Story(models.Model):
     writer.commit()
 
 
-  # convert the content of in a suitable markdown file. to be used before store() and before create_working_md() are called
-  # if force is true, it overrides the contents field.
-  def convert(self, force=False):
-    pass
-
-    # logger.debug('story {pk:%s} convert called.' % self.pk)
-    # print self.source.path
-    # if not self.contents:
-    #   # we force to use # headers by setting the threshold of 3 so that h1 "===" is transformed to h2 "##"
-    #   contents = pypandoc.convert_file(self.source.path, 'markdown', extra_args=['--base-header-level=2'])
-    #   # ... but we have to transform them back, minus a level (e.g. transformed h1 becomes h2).
-    #   # We should check if we can use the pandoc options for that directly
-    #   # self.contents = re.sub(r'#(#+)', r'\1', contents)
-    # else:
-    #   logger.debug('story {pk:%s} already contains contents. Skipped.' % self.pk)
-
-
   def gitTag(self, tag):
     """
     Convenient function to handle GIT tagging
@@ -358,7 +341,7 @@ class Story(models.Model):
     Internally it makes use of Story `diffs` property
     and check if contents has changed before committing.
     """
-    if not 'contents' in self.diffs:
+    if self.pk and not 'contents' in self.diffs:
       logger.debug('story {pk:%s} commit_contents skipped, nothing new to commit.' % (self.pk))
       return
     
@@ -435,7 +418,7 @@ class Story(models.Model):
 
 
   def send_smart_email(self, recipient, template_name, from_email=settings.DEFAULT_FROM_EMAIL, extra={}):
-    if not settings.EMAIL_HOST:
+    if not settings.EMAIL_HOST and not settings.TESTING:
       logger.warning('story {pk:%s} email %s cannot be send, settings.EMAIL_HOST is not set.' % (self.pk, template_name))
       return
     recipient_list = [recipient if isinstance(recipient, basestring) else recipient.email]
@@ -500,15 +483,10 @@ class Story(models.Model):
       logger.debug('story {pk:%s} cannot send email to recipient, not found fo author {pk:%s}' % (self.pk,author.pk))
       
 
-  def create_first_author(self, created):
-    from django.db import transaction
-    if created:
-      author = self.owner.authorship.first()
-      transaction.on_commit(
-        lambda: self.authors.add(author)
-      )
-      self._dirty = True
-      logger.debug('story {pk:%s} create first author {fullname:%s}" done.' % (self.pk, author.fullname))
+  def create_first_author(self):
+    author = self.owner.authorship.first()
+    self.authors.add(author)
+    logger.debug('story {pk:%s} create first author {fullname:%s}" done.' % (self.pk, author.fullname))
 
 
   def dispatch_status_changed(self, created):
@@ -551,7 +529,7 @@ class Story(models.Model):
         self.send_email_to_staff(template_name='story_reviewdone_for_staff', extra={
           #chief decision:
           'closingremarks': closingremarks,
-          'reviews': instance.reviews.filter(category='double')
+          'reviews': self.reviews.filter(category='double')
         })
         # send mail to chief reviewer @todo
 
@@ -586,10 +564,21 @@ class Story(models.Model):
       logger.debug('story@save {slug:%s,pk:%s} not having a default date. Fixing...' % (self.slug, self.pk))
       self.date = self.date_last_modified
 
-    
+    # create story file if it is not exists; if the story eists already, cfr the followinf story_ready
+    if self._saved == 1:
+      try:
+        self.write_contents()
+        self.commit_contents()
+      except Exception as e:
+        logger.exception(e)
+      else:
+        logger.debug('story@save {pk:%s}: write_contents_to_path done.' % self.pk)
+
 
     logger.debug('story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
+    
+
 
 
 @receiver(pre_save, sender=Story)
@@ -604,19 +593,6 @@ def clear_cache_on_save(sender, instance, **kwargs):
   logger.debug('story@pre_save {pk:%s, short_url:%s} cache deleted.' % (instance.pk,instance.short_url))
 
 
-# create story file if it is not exists; if the story eists already, cfr the followinf story_ready
-@receiver(pre_save, sender=Story)
-def write_contents_to_path(sender, instance, **kwargs):
-  if getattr(instance, '_dirty', None) is not None:
-    return
-  try:
-    instance.convert()
-    instance.write_contents()
-    instance.commit_contents()
-  except Exception as e:
-    logger.exception(e)
-  else:
-    logger.debug('story@pre_save {pk:%s}: write_contents_to_path done.' % instance.pk)
 
 
 @receiver(pre_save, sender=Story)
@@ -654,55 +630,16 @@ def dispatcher(sender, instance, created, **kwargs):
   Generic post_save handler. Dispatch a story_ready signal.
   If receiver need to update the instance, they just need to put the property `_dirty`
   """
-  if kwargs['raw']:
-    return
-  if getattr(instance, '_dirty', None) is not None:
-    return
-
-  if created:  
+  if created and not kwargs['raw']:  
     action.send(instance.owner, verb='created', target=instance)
     follow(instance.owner, instance, actor_only=False)
   
-  # create authorship.  
-  instance.create_first_author(created)
+  if not kwargs['raw']:
+    # send emails if status has changed.
+    instance.dispatch_status_changed(created)
 
-  # send emails if status has changed.
-  instance.dispatch_status_changed(created)
-
-  # store in whoosh.
+  # always store in whoosh.
   instance.store()
-  
-  if getattr(instance, '_dirty', None) is not None:
-    logger.debug('story@post_save  {pk:%s} save the instance again...' % instance.pk)
-    instance.save()
-  else:
-    logger.debug('story@post_save  {pk:%s} no need to save the instance again.' % instance.pk)
-  
-
-  # return
-
-  # if not hasattr(instance, '_dispatcher'):
-  #   instance._dispatcher = True
-  # else:
-  #   logger.debug('story@post_save {pk:%s} dispatching already dispatched. Skipping.' % instance.pk)
-  #   return
-  # # dispatch (call). 
-  # logger.debug('story@post_save {pk:%s} dispatching @story_ready...' % instance.pk)
-  
-  # story_ready.send_robust(sender=sender, instance=instance, created=created)
-  
-  # if getattr(instance, '_dirty', None) is not None:
-  #   logger.debug('story@post_save {pk:%s} instance is dirty. Need to call instance.save()..' % instance.pk)
-  #   instance.save()
-  # else:
-  #   logger.debug('story@post_save  {pk:%s} no need to save the instance again.' % instance.pk)
-  
-  
-  # elif instance.status != Story.DRAFT and not 'status' in instance.diffs:
-  #   # something changed in a NON DRAFT document.
-  #   pass
-  #   # action.send(instance.owner, verb='updated', target=instance)
-
 
 
 # clean store in whoosh when deleted

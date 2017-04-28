@@ -49,7 +49,7 @@ class ReviewTest(TestCase):
     self.assertEqual(len(mail.outbox), 1)
 
     # Verify that the subject of the first message is correct.
-    self.assertEqual(mail.outbox[0].subject, u'A new publication has been created on %s' % settings.MILLER_TITLE)
+    self.assertEqual(mail.outbox[0].subject, u'%s - %s create the manuscript "%s"' % (settings.MILLER_TITLE, self.story.owner.username, self.story.title))
 
 
   def assign_review(self):
@@ -90,9 +90,13 @@ class ReviewTest(TestCase):
     review_dblind.save()
 
     # a receipt has been sent.
-    self.assertEqual(len(mail.outbox), 1)
+    self.assertEqual(len(mail.outbox), 3)
 
-    print mail.outbox[0].subject, mail.outbox[0].body 
+    
+    # email sent to assignee; to assigned_by and to staff members identified by DEFAULT_FROM_EMAIL
+    self.assertEqual(u''.join(mail.outbox[0].to), self.assignee.email)
+    self.assertEqual(u''.join(mail.outbox[1].to), self.assigned_by.email)
+    self.assertEqual(u''.join(mail.outbox[2].to), settings.DEFAULT_FROM_EMAIL)
 
     
 

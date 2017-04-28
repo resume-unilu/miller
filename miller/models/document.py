@@ -202,50 +202,49 @@ class Document(models.Model):
         logger.debug('url: %s for document {pk:%s} TIMEOUT...' % (self.url, self.pk))
           
 
-  def generate_metadata(self):
-    if getattr(self, '__metadata', None) is None:
-      r = {}
-      r.update(Document.DEFAULT_OEMBED)
-      try:
-        r.update(json.loads(self.contents))
-      except Exception, e:
-        logger.exception(e)
-        r['error'] = '%s'%e
-      self.__metadata = r
-      return r
-    else:
-      return self.__metadata
+  # def generate_metadata(self):
+  #   """
+  #   deprecated when using JSONField
+  #   """
+
+  #   if getattr(self, '__metadata', None) is None:
+  #     r = {}
+  #     r.update(Document.DEFAULT_OEMBED)
+  #     try:
+  #       r.update(json.loads(self.contents))
+  #     except Exception, e:
+  #       logger.exception(e)
+  #       r['error'] = '%s'%e
+  #     self.__metadata = r
+  #     return r
+  #   else:
+  #     return self.__metadata
 
 
 
   def fill_from_metadata(self):
-    self.generate_metadata()
-    
-    if 'error' in self.__metadata: # simply ignore filling from erroneous self.__metadata.
+    if 'error' in self.data: # simply ignore filling from erroneous self.__metadata.
       return
+      
+    if 'bibtex' in self.data:
+      self.data['details'] = self.data['details'] if 'details' in self.data else {}
 
-    if 'bibtex' in self.__metadata:
       try:
-        self.__metadata['details']['bibtex'] = bibtexparser.loads(self.__metadata['bibtex']).entries[0]
+        self.data['details']['bibtex'] = bibtexparser.loads(self.data['bibtex']).entries[0]
       except Exception, e:
         logger.exception(e)
         return
-      if not self.title and 'title' in self.__metadata['details']['bibtex']:
-        self.title = self.__metadata['details']['bibtex']['title']
+      if not self.title and 'title' in self.data['details']['bibtex']:
+        self.title = self.data['details']['bibtex']['title']
 
-    # complete self.__metadata section with title
-    if not 'title' in self.__metadata or not self.__metadata['title']:
-      self.__metadata['title'] = self.title
+    # complete self.data section with title
+    if not 'title' in self.data or not self.data['title']:
+      self.data['title'] = self.title
 
     # complete with rough reference
-    if not 'reference' in self.__metadata or not self.__metadata['reference']:
-      self.__metadata['reference'] = self.__metadata['title']
+    if not 'reference' in self.data or not self.data['reference']:
+      self.data['reference'] = self.data['title']
 
-
-    self.contents = json.dumps(self.__metadata, indent=1)
-
-      #bd.to_string('markdown')
-      # if not title, set title.
 
 
   # dep. brew install ghostscript, brew install imagemagick
@@ -343,12 +342,10 @@ class Document(models.Model):
     """
     logger.debug('document {pk:%s, mimetype:%s} init oembed' % (self.pk, self.mimetype))
     if self.mimetype == 'application/pdf' and self.attachment and hasattr(self.attachment, 'path'):
-      self.generate_metadata()
       url = '%s%s' %(settings.MILLER_SETTINGS['host'], self.attachment.url)
-      self.__metadata['html'] = "<iframe src='https://drive.google.com/viewerng/viewer?url=%s&embedded=true' width='300' height='200' style='border: none;'></iframe>" % url
-      self.__metadata['type'] = 'rich'
+      self.data['html'] = "<iframe src='https://drive.google.com/viewerng/viewer?url=%s&embedded=true' width='300' height='200' style='border: none;'></iframe>" % url
+      self.data['type'] = 'rich'
       self.type = Document.RICH # yep so that client can use the oembed correctly (rich, video, photo, image).
-      self.contents = json.dumps(self.__metadata, indent=1)
       self._dirty=True
       logger.debug('document {pk:%s} oembed done.' % self.pk)
       

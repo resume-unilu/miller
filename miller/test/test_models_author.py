@@ -38,10 +38,10 @@ class AuthorTest(TestCase):
     aut = Author.objects.filter(user=self.userB).first()
     self.assertEqual(self.userB.authorship.first().fullname, aut.fullname)
 
-    # we add another author for this user
+    # we add another author for this user, omonimous
     autOm = Author(user=self.user, fullname='jacob generic')
     autOm.save()
 
     self.assertEqual(self.user.authorship.count(), 2)
-    self.assertEqual(self.user.authorship.all()[1].slug, 'jacob-generic-1')
+    self.assertEqual(u','.join(sorted(self.user.authorship.values_list('slug', flat=True))), 'jacob-generic,jacob-generic-1')
     

@@ -50,12 +50,17 @@ class StoryViewSet(viewsets.ModelViewSet):
         for chunk in uploaded.chunks():
           f.write(chunk)
         f.seek(0)  # go back to the beginning of the file
-        contents = pypandoc.convert_file(f.name, 'markdown', format='docx', extra_args=['--base-header-level=2'])
+        contents = pypandoc.convert_file(f.name, 'markdown', format='docx', extra_args=['--base-header-level=2', '--atx-headers'])
         from django.core.files import File
-        serializer.save(owner=self.request.user, contents=contents)
+        #serializer.source.
+        story = serializer.save(owner=self.request.user, contents=contents, source=uploaded)
+        story.create_first_author()
+        story.save()
         # save file separately
     else:
-      serializer.save()
+      story = serializer.save()
+      story.create_first_author()
+      story.save()
    
     # for filename, file in self.request.FILES.iteritems():
     #   print filename
