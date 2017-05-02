@@ -2,7 +2,7 @@ from rest_framework import serializers,viewsets
 from rest_framework.decorators import list_route
 
 from django.shortcuts import get_object_or_404
-from django.db.models import Count
+from django.db.models import Count, Case, When, CharField
 from miller.api.serializers import AuthorSerializer, LiteAuthorSerializer
 from miller.api.utils import Glue
 from miller.models import Author, Story
@@ -35,6 +35,17 @@ class AuthorViewSet(viewsets.ModelViewSet):
     return q
 
 
+  def list(self, request):
+    authors = self.queryset.annotate(num_stories=Count(Case(
+        When(stories__status=Story.PUBLIC, then=1),
+        output_field=CharField(),
+    )))
+    g = Glue(request=request, queryset=authors, extra_ordering=['num_stories'])
+    page    = self.paginate_queryset(g.queryset)
+    serializer = self.list_serializer_class(page, many=True, context={'request': request})
+    return self.get_paginated_response(serializer.data)
+
+
   def retrieve(self, request, *args, **kwargs):
     if 'pk' in kwargs and not kwargs['pk'].isdigit():
       # by author.slug
@@ -56,7 +67,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
     g = Glue(queryset=stories, request=request)
     
     
-    print g.filters, g.filtersWaterfall
+    # print g.filters, g.filtersWaterfall
 
     ids = g.queryset.values('pk')
     

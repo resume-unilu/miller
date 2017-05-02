@@ -7,10 +7,11 @@ waterfallre = re.compile(r'^_*')
 
 
 class Glue():
-  def __init__(self, request, queryset):
+  def __init__(self, request, queryset, extra_ordering=[]):
     self.filters, self.filtersWaterfall = filtersFromRequest(request=request)
     self.excludes, self.excludesWaterfall = filtersFromRequest(request=request, field_name='exclude')
     self.ordering = orderbyFromRequest(request=request)
+    self.extra_ordering = extra_ordering
     self.queryset = queryset
     self.warnings = None
     try:
@@ -36,18 +37,20 @@ class Glue():
 
     if self.ordering is not None:
       self.queryset = self.queryset.order_by(*self.validated_ordering())
-      
+    
+    
   def validated_ordering(self):
     _validated_ordering = []
     for field in self.ordering:
       _field = field.replace('-', '')
       _reverse = field.startswith('-')
-      try:
-        self.queryset.model._meta.get_field(_field)
-      except Exception as e:
-        self.warnings = {
-          'ordering': '%s' % e
-        }
+      if _field not in self.extra_ordering:
+        try:
+          self.queryset.model._meta.get_field(_field)
+        except Exception as e:
+          self.warnings = {
+            'ordering': '%s' % e
+          }
       else:
        _validated_ordering.append('%s%s'%('-' if _reverse else '', _field))
     return _validated_ordering
