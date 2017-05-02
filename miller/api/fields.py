@@ -19,6 +19,16 @@ class OptionalFileField(serializers.FileField):
     return None
 
 
+class IfJsonField(serializers.Field):
+  def to_internal_value(self, data):
+    return data
+
+  def to_representation(self, obj):
+    if obj is dict:
+      return obj
+    return obj
+
+
 class JsonField(serializers.Field):
   def to_internal_value(self, data):
     return data

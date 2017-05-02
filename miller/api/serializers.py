@@ -2,7 +2,7 @@ from actstream.models import Action
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review, Page
-from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField
+from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField, IfJsonField
 from miller.api import utils
 
 
@@ -210,6 +210,7 @@ class LiteStorySerializer(AnonymousLiteStorySerializer):
 class StorySerializer(LiteStorySerializer):
   documents  = CaptionSerializer(source='caption_set', many=True)
   stories    = LiteMentionSerializer(many=True)
+  contents   = IfJsonField()
 
   class Meta:
     model = Story
@@ -235,6 +236,7 @@ class AnonymousStorySerializer(AnonymousLiteStorySerializer):
   """
   documents = CaptionSerializer(source='caption_set', many=True)
   stories = LiteMentionSerializer(many=True)
+  contents   = IfJsonField()
   
   class Meta:
     model = Story

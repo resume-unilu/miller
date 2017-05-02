@@ -185,12 +185,26 @@ class Story(models.Model):
     verbose_name_plural = 'stories'
 
   
-  # get story path based on random generated shorten url
+  def get_cache_key(self, extra=None):
+    """
+    get current cachekey name  based on random generated shorten url
+    (to be used in redis cache)
+    """
+    return 'story.%s.%s' % (self.short_url, extra) if extra else 'story.%s' % self.short_url
+
+
   def get_path(self):
-    return os.path.join(self.owner.profile.get_path(), self.short_url+ '.md')
+    """
+    get absolute md filepath based on random generated shorten url
+    """
+    return os.path.join(self.owner.profile.get_path(), self.short_url + '.md')
 
 
   def get_git_path(self):
+    """
+    get  md filepath relative to git root specified in settings.GIT_ROOT,
+    based on random generated shorten url
+    """
     return 'users/%s/%s.md' % (self.owner.profile.short_url, self.short_url)
 
   
@@ -588,8 +602,8 @@ def clear_cache_on_save(sender, instance, **kwargs):
   """
   if getattr(instance, '_dirty', None) is not None:
     return
-  ckey = 'story.%s' % instance.short_url
-  cache.delete(ckey)
+  # ckey = # 'story.%s' % instance.short_url
+  cache.delete_pattern('%s*' % instance.get_cache_key())
   logger.debug('story@pre_save {pk:%s, short_url:%s} cache deleted.' % (instance.pk,instance.short_url))
 
 
@@ -692,8 +706,7 @@ def delete_working_md(sender, instance, **kwargs):
 
 @receiver(pre_delete, sender=Story)
 def delete_cache_on_save(sender, instance, **kwargs):
-  ckey = 'story.%s' % instance.short_url
-  cache.delete(ckey)
+  cache.delete_pattern('%s*' % instance.get_cache_key())
   logger.debug('story@pre_delete {pk:%s} delete_cache_on_save: done' % instance.pk)
 
 

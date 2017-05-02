@@ -84,12 +84,26 @@ class StoryViewSet(viewsets.ModelViewSet):
       story = get_object_or_404(q, slug=kwargs['pk'])
     else:
       story = get_object_or_404(q, pk=kwargs['pk'])
+
+    ckey = story.get_cache_key()
+    #transform contents if required.
+    _parser = request.query_params.get('parser', None)
+    if _parser:
+      if _parser == 'yaml':
+        import yaml
+        try:
+          story.contents = yaml.load(story.contents)
+        except yaml.scanner.ScannerError as e:
+          return Response({
+            'parser': 'yaml',
+            'field': 'contents',
+            'error': '%s'%e
+          })
+        ckey = story.get_cache_key(extra=_parser)
     
-    ckey = 'story.%s' % story.short_url
     #print 'nocache:', request.query_params.get('nocache', None)
     #anonymize if story status is pending or under review (e.g. for chief reviewer)
-    if story.status not in (Story.PUBLIC,) and not story.authors.filter(user=request.user).exists() and request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
-      print 'whahahhahahahahahahhaa' , story.authors.values_list('user__username')
+    if story.status in (Story.PENDING, Story.REVIEW) and not story.authors.filter(user=request.user).exists() and request.user.groups.filter(name=Review.GROUP_CHIEF_REVIEWERS).exists():
       serializer = AnonymousStorySerializer(story,
         context={'request': request},
       )
@@ -103,7 +117,7 @@ class StoryViewSet(viewsets.ModelViewSet):
         context={'request': request},
     )
     #print 'set cache', ckey
-    cache.set('story.%s' % story.short_url, serializer.data)
+    cache.set(ckey, serializer.data)
     
     return Response(serializer.data)
   
