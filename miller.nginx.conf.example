@@ -31,6 +31,12 @@ server {
     # your Django project's media files, cfr miller/settings.js MEDIA_ROOT
     location /media {
       alias /path/to/miller/media;
+
+      location ~ /media/image{
+        # cropping service, root instead of alias;
+        root /path/to/miller;
+        try_files $uri $uri/ /services/images?url=$uri;
+      }
     }
 
     # the websocket config if daphne is using these args: 
