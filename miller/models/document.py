@@ -49,6 +49,9 @@ class Document(models.Model):
   RICH    = 'rich'
   LINK    = 'link'
   AV      = 'audiovisual'
+
+  ENTITY      = 'entity'
+
   TYPE_CHOICES = (
     (BIBLIOGRAPHIC_REFERENCE, 'bibtex'),
     (CROSSREF_REFERENCE, 'bibtex'),
@@ -61,7 +64,9 @@ class Document(models.Model):
     (PHOTO, 'photo'),
     (RICH, 'rich'),
     (LINK, 'link'),
-    (AV, 'audiovisual')
+    (AV, 'audiovisual'),
+
+    (ENTITY, 'entity: see data type property'), # use the type field inside data JsonField.
   )
 
   DEFAULT_OEMBED = {
@@ -94,6 +99,8 @@ class Document(models.Model):
 
   locked     = models.BooleanField(default=False) # prevent accidental override when it is not needed.
 
+  # undirected
+  documents  = models.ManyToManyField("self")
   # documents  = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_with')
 
 

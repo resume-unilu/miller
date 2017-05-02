@@ -133,9 +133,11 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
 # Serializers define the API representation.
 class DocumentSerializer(LiteDocumentSerializer):
   src   = OptionalFileField(source='attachment')
+  documents = LiteDocumentSerializer(many=True)
+
   class Meta:
     model = Document
-    fields = ('id', 'url', 'src',  'data', 'type', 'slug', 'title', 'snapshot', 'copyrights', 'attachment')
+    fields = ('id', 'url', 'src',  'data', 'type', 'slug', 'title', 'snapshot', 'copyrights', 'attachment', 'documents', 'locked')
 
 
 class MatchingDocumentSerializer(serializers.ModelSerializer):

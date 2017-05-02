@@ -15,8 +15,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
   queryset = Document.objects.all()
   serializer_class = CreateDocumentSerializer
   list_serializer_class = LiteDocumentSerializer
+
   # retrieve by PK or slug
   def retrieve(self, request, *args, **kwargs):
+
     if 'pk' in kwargs and not kwargs['pk'].isdigit():
       doc = get_object_or_404(Document, slug=kwargs['pk'])  
       # save, then return tagged items according to tagform
@@ -24,7 +26,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
           context={'request': request},
       )
       return Response(serializer.data)
-    
+    self.serializer_class = DocumentSerializer
     return super(DocumentViewSet, self).retrieve(request, *args, **kwargs)
     
 
