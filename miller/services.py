@@ -41,6 +41,9 @@ def images(request):
   # input filename (original) and output filename (modified)
   filename    = os.path.join(settings.MEDIA_ROOT, '%s.%s'% (basepath,ext))
   filenameout = os.path.join(settings.MEDIA_ROOT, '%s_%s.%s'% (basepath,functions,ext))
+  
+  if not os.path.exists(filename):
+    return Response({"error": "requested image was not found"}, status=status.HTTP_404_NOT_FOUND)
 
   if os.path.exists(filenameout):
     return streamHttpResponse(filenameout)
