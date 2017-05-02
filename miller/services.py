@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from wand.image import Image
 
-from miller.helpers import streamHttpResponse
+from miller.helpers import streamHttpResponse, generate_snapshot
 
 
 
@@ -19,6 +19,15 @@ from miller.helpers import streamHttpResponse
 
 @api_view()
 def images(request):
+  """
+  request sample
+  for thumbnail: 
+  ?url=<filebasename>_T[width,height].<extension>
+  for cropping (http://docs.wand-py.org/en/0.4.1/wand/image.html)
+  ?url=<filebasename>_c[300,300,310,310].<extension>
+  or
+  ?url=<filebasename>_c[300,300].<extension>
+  """
   if not request.user.is_authenticated:
     raise NotAuthenticated()
   #_c[10,20,50,100]
@@ -28,7 +37,7 @@ def images(request):
 
   # search for something like ?url=/media/image/2162934893_b053386d3f_o_c[100,20,500,200].jpg
   # where the original image is this part: /media/image/2162934893_b053386d3f_o.jpg
-  ms = re.search(r'\/media\/(?P<path>[_\/a-z\d\-]+)_(?P<funcs>[a-z\[\],\d]+)\.(?P<ext>jpg|gif|jpeg)$', request.GET['url'])
+  ms = re.search(r'\/media\/(?P<path>[_\/a-z\d\-]+)_(?P<funcs>[a-zA-Z\[\],\d\!\^%]+)\.(?P<ext>jpg|gif|jpeg)$', request.GET['url'])
 
   if ms is None:
     return Response({"error": "invalid url param"},  status=status.HTTP_422_UNPROCESSABLE_ENTITY)
@@ -49,17 +58,27 @@ def images(request):
     return streamHttpResponse(filenameout)
 
   # get distinct wand methods
-  funcs = re.findall(r'(?P<func>[a-z])\[(?P<args>[\d,]+)\]',functions)
+  funcs = re.findall(r'(?P<func>[a-zA-Z])\[(?P<args>[\d,%x]+)\]',functions)
   
   available_funcs = {
-    'c': 'crop'
+    'c': 'crop',
+    't': 'transform', # crop and resize
+    'T': 'thumbnail',
+    'r': 'resize'
   }
 
   with Image(filename=filename) as img:
     for a,b in funcs:
+      args = map(lambda x: int(x) if x.isnumeric() else x,b.split(','))
+      
+      if a == 'T':
+        generate_snapshot(filename, filenameout, *args)
+        return streamHttpResponse(filenameout)
       try:
-        getattr(img,available_funcs[a])(*map(int,b.split(',')))
+        getattr(img,available_funcs[a])(*args)
         img.save(filename=filenameout)
+      except TypeError as e:
+        return Response({"exception": '%s' % e, 'type': 'TypeError'},  status=status.HTTP_400_BAD_REQUEST)
       except KeyError as e:
         return Response({"exception": '%s' % e, 'type': 'KeyError'},  status=status.HTTP_400_BAD_REQUEST)
       except ValueError as e:
