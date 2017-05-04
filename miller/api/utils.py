@@ -51,6 +51,8 @@ class Glue():
           self.warnings = {
             'ordering': '%s' % e
           }
+        else:
+          _validated_ordering.append('%s%s'%('-' if _reverse else '', _field))
       else:
        _validated_ordering.append('%s%s'%('-' if _reverse else '', _field))
     return _validated_ordering
