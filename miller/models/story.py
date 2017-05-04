@@ -52,6 +52,7 @@ class Story(models.Model):
   EDITING      = 'editing' # only staff and editors access this
   REVIEW       = 'review'  # staff, editors and reviewer acces this
   REVIEW_DONE  = 'reviewdone'
+  PRE_PRINT    = 'preprint' # in this status and whenever is public, we ask the author to comment his commit on each save to better trace history
 
   DELETED  = 'deleted' # will be sent to the bin
   # REFUSED  = 'refused' # will be sent to the bin
@@ -65,7 +66,8 @@ class Story(models.Model):
     (PENDING,     'pending review'),  # ask for publication, pending review
     (EDITING,     'editing'), # ask for editing review
     (REVIEW,      'review'),             # under review
-    (REVIEW_DONE, 'review done')
+    (REVIEW_DONE, 'review done'),
+    (PRE_PRINT,   'pre print')
   )
 
   short_url = models.CharField(max_length=22, db_index=True, default=helpers.create_short_url, unique=True)
@@ -269,13 +271,15 @@ class Story(models.Model):
     writer.commit()
 
 
-  def gitTag(self, tag):
+  def gitTag(self, tag, versioned=True):
     """
     Convenient function to handle GIT tagging
     """
-    repo = Repo.init(settings.GIT_ROOT)
-    repo.tag(tag)
-
+    try:
+      repo = Repo.init(settings.GIT_ROOT)
+      new_tag = repo.create_tag('%s.%s' % (tag, self.version) if versioned else tag)
+    except Exception as e:
+      logger.exception(e)
 
   def gitLog(self, limit=4, offset=0):
     from django.utils import timezone
@@ -292,6 +296,7 @@ class Story(models.Model):
       logs.append({
         'hexsha': commit.hexsha,
         'author': commit.author.email,
+
         'date': datetime.fromtimestamp(commit.authored_date),
         'diff': repo.git.diff(commit, cnext, path) if cnext else None
       })
@@ -516,6 +521,7 @@ class Story(models.Model):
       logger.debug('story {pk:%s} status changed from %s to %s' % (self.pk, self._original[0][1], self.status))
 
       if self.status == Story.PUBLIC:
+        self.gitTag(Story.PUBLIC)
         # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
         action.send(self.owner, verb='got_published', target=self)
       elif self.status == Story.PENDING:
@@ -537,6 +543,9 @@ class Story(models.Model):
         self.send_email_to_staff(template_name='story_review_for_staff')
         action.send(self.owner, verb='ask_for_review', target=self)
       elif self.status == Story.REVIEW_DONE:
+        # tag as reviewed
+        self.gitTag(Story.REVIEW_DONE)
+
         # chief reviewer has closed the review process.
         closingremarks = self.reviews.filter(category='closing').select_related('assignee').first()
         
@@ -546,6 +555,8 @@ class Story(models.Model):
           'reviews': self.reviews.filter(category='double')
         })
         # send mail to chief reviewer @todo
+      elif self.status == Story.PRE_PRINT:
+        self.gitTag(Story.PRE_PRINT)
 
 
   def __init__(self, *args, **kwargs):

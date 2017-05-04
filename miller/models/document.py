@@ -100,7 +100,7 @@ class Document(models.Model):
   locked     = models.BooleanField(default=False) # prevent accidental override when it is not needed.
 
   # undirected
-  documents  = models.ManyToManyField("self")
+  documents  = models.ManyToManyField("self", blank=True)
   # documents  = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_with')
 
 
