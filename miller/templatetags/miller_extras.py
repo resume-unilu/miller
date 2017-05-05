@@ -79,15 +79,17 @@ def coverage(cover):
       settings.MILLER_SETTINGS['host'],
       cover.snapshot.url
     ])
-
-  if hasattr(cover, 'dmetadata'):
-    url = cover.dmetadata['thumbnail_url'] if 'thumbnail_url' in cover.dmetadata else None
-    if not url:
-      url = cover.dmetadata['preview'] if 'preview' in cover.dmetadata else None
-    if not url:
-      url = cover.snapshot if cover.snapshot else cover.attachment
-    if not url:
-      url = cover.dmetadata['url'] if 'url' in cover.dmetadata else None
+  
+  url = cover.data['thumbnail_url'] if 'thumbnail_url' in cover.data else None
+  if not url:
+    url = cover.dmetadata['preview'] if 'preview' in cover.data else None
+  if not url:
+    url = cover.snapshot if cover.snapshot else cover.attachment
+  if not url:
+    url = cover.data['media_url'] if 'media_ur' in cover.data else None
+ 
+  if not url:
+    url = cover.dmetadata['url'] if 'url' in cover.dmetadata else None
     # || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview')  || cover.snapshot || cover.attachment || cover.metadata.url;
   if not url:
     url = cover.snapshot if cover.snapshot else cover.attachment
