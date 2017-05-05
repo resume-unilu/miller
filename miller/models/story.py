@@ -82,7 +82,7 @@ class Story(models.Model):
   }, indent=1),blank=True) # it will contain, JSON fashion
 
 
-  date               = models.DateTimeField(auto_now_add=True, db_index=True, blank=True, null=True) # date displayed (metadata)
+  date               = models.DateTimeField(db_index=True, blank=True, null=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
 
@@ -309,6 +309,20 @@ class Story(models.Model):
     return logs
 
         
+  def get_git_contents_at_tag(self, tag):
+    pass
+    # repo = Repo.init(settings.GIT_ROOT)
+    
+    # sorted(repo.tags, key=lambda t: t.commit.committed_date)
+
+    # path = self.get_git_path()
+
+    # print repo.git.log('--follow', '--pretty=%h%d','--decorate=full', path).splitlines()
+
+    # tag  = repo.tag(tag)
+    # print tag.commit
+    # return 'ooo'
+
 
   def gitBlob(self, commit_id):
     repo = Repo.init(settings.GIT_ROOT)
@@ -521,6 +535,7 @@ class Story(models.Model):
       logger.debug('story {pk:%s} status changed from %s to %s' % (self.pk, self._original[0][1], self.status))
 
       if self.status == Story.PUBLIC:
+        print 'publishedddddd'
         self.gitTag(Story.PUBLIC)
         # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
         action.send(self.owner, verb='got_published', target=self)
