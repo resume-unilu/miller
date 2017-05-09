@@ -336,6 +336,10 @@ LOGGING = {
             'handlers': ['commands'],
             'level': 'DEBUG'
         },
+        'console': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
         'miller': {
             'handlers': ['file'],
             'level': 'DEBUG',

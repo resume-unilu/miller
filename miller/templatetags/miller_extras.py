@@ -89,7 +89,7 @@ def coverage(cover):
     url = cover.data['media_url'] if 'media_ur' in cover.data else None
  
   if not url:
-    url = cover.dmetadata['url'] if 'url' in cover.dmetadata else None
+    url = cover.data['url'] if 'url' in cover.data else None
     # || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview')  || cover.snapshot || cover.attachment || cover.metadata.url;
   if not url:
     url = cover.snapshot if cover.snapshot else cover.attachment
