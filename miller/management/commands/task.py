@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Tasks on models
-import os, logging, json, re
+import os, logging, json, re, requests, StringIO, datetime
 
 from miller.helpers import get_whoosh_index
-from miller.models import Document, Story
+from miller.models import Document, Story, Profile
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.core.cache import cache
 
-logger = logging.getLogger('miller.commands')
+logger = logging.getLogger('console')
 
 
 class Command(BaseCommand):
@@ -30,7 +31,7 @@ class Command(BaseCommand):
     'update_whoosh',
     'update_localisation',
     'update_localisation_gs',
-
+    'bulk_import_gs_as_documents',
     # tasks migration related.
     'migrate_documents'
   )
@@ -45,6 +46,29 @@ class Command(BaseCommand):
         default=False,
         help='primary key of the instance',
     )
+
+    parser.add_argument(
+        '--url',
+        dest='url',
+        default=False,
+        help='google spreadsheet url',
+    )
+
+    parser.add_argument(
+        '--sheet',
+        dest='sheet',
+        default=False,
+        help='google spreadsheet url sheeet name',
+    )
+
+
+    parser.add_argument(
+        '--cache',
+        dest='cache',
+        default=False,
+        help='enable redis caching for offline jobs',
+    )
+
 
   def handle(self, *args, **options):
     if options['taskname'] in self.available_tasks:
@@ -69,6 +93,137 @@ class Command(BaseCommand):
     logger.debug('task: clean_cache')
     from django.core.cache import cache
     cache.clear();
+
+
+  def bulk_import_gs_as_documents(self,  **options):
+    if not 'url' in options:
+      raise Exception('no google spreadsheet link. Please pass a valid --url option')
+
+    if not 'sheet' in options:
+      raise Exception('please provide the sheet to load')
+
+    logger.debug('using cache: %s' % options['cache'])
+    
+
+    url   = options['url']
+    sheet = options['sheet']
+
+    m = re.match(r'https://docs.google.com/spreadsheets/d/([^/]*)', url)
+    if not m:
+      raise Exception('bad url! Must meet the https://docs.google.com/spreadsheets/d/ format and it should be reachable by link')
+
+    key  = m.group(1)
+    ckey = 'gs:%s:%s' % (key,sheet)
+
+    
+
+    if options['cache'] and cache.has_key(ckey):
+      #print 'serve cahced', ckey
+      logger.debug('getting csv from cache: %s' % ckey)
+      contents = json.loads(cache.get(ckey))
+    else:
+      logger.debug('getting csv from https://docs.google.com/spreadsheets/d/%(key)s/gviz/tq?tqx=out:csv&sheet=%(sheet)s' % {
+        'key': key, 
+        'sheet': sheet
+      })
+      response = requests.get('https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:json&sheet=%s' % (key, sheet), stream=True)
+      response.encoding = 'utf8'
+      m = re.search(r'google\.visualization\.Query\.setResponse\((.*)\)[^\)]*$', response.content);
+      cache.set(ckey, m.group(1), timeout=None)
+      contents = json.loads(m.group(1))
+
+    
+
+    # _headers = contents['table']['cols'][0] if contents['table']['cols'][0]["label"] else contents['table']['rows'][0]['c'] 
+    has_headers_in_cols = len(contents['table']['cols'][0]["label"].strip()) > 0 
+    headers = map(lambda x:x[u'label'] if type(x) is dict else None, contents['table']['cols']) if has_headers_in_cols else map(lambda x:x[u'v'] if type(x) is dict else None, contents['table']['rows'][0]['c'] );
+    logger.debug('headers: %s' % headers)
+    
+    numrows = len(contents['table']['rows']);
+    rows = []
+
+    if not 'slug' in headers or not 'type' in headers:
+      raise Exception('the first row of the google spreadsheet should be dedicated to headers. This script looks for at least two columns named "slug" and type respectively that have not been found. Go back here once done :D')
+
+    for i in range(0 if has_headers_in_cols else 1, numrows):
+      
+
+      row = map(lambda x:x[u'v'] if type(x) is dict else None, contents['table']['rows'][i]['c'])
+      rows.append(dict(filter(lambda x:x[0] is not None, zip(headers, row))))
+    
+    # owner is the first staff user
+    owner = Profile.objects.filter(user__is_staff=True).first()
+
+    if not owner:
+      raise Exception('no Profile object defined in the database!')
+
+    data_paths =  [(x, x.split('|')[0].split('__'), x.split('|')[-1] == 'list') for x in filter(lambda x: isinstance(x, basestring) and x.startswith('data__'), headers)]
+
+    # basic data structure based on headers column
+    data_structure = {}
+    
+
+    def nested_set(dic, keys, value, as_list=False):
+      for key in keys[:-1]:
+        dic = dic.setdefault(key, {})
+      if not as_list:
+        if not value:
+          dic[keys[-1]] = None
+        elif keys[-1] in ('start_date', 'end_date'):
+          m = re.search(r'(^Date\(?)(\d{4})[,\-](\d{1,2})[,\-](\d{1,2})\)', value)
+          if m is not None:
+            if m.group(1) is not None:
+              # this makes use of Date(1917,4,21) google spreadsheet dateformat.
+              # also note that month 4 is not April but is May (wtf)
+              logger.debug('parsing date field: %s, value: %s' % (keys[-1],value))
+              dic[keys[-1]] = datetime.datetime(year=int(m.group(2)), month=int(m.group(3)) + 1, day=int(m.group(4))).isoformat()
+            else:
+              # 0 padded values, 1917-05-21
+              dic[keys[-1]] = datetime.datetime.strptime('%s-%s-%s' % (m.group(2), m.group(3), m.group(4)), '%Y-%M-%d').isoformat()
+          else:
+            dic[keys[-1]] = value
+        else:
+          dic[keys[-1]] = value
+      else:
+        # it is a list, comma separated ;)
+        dic[keys[-1]] = map(lambda x:x.strip(), filter(None, [] if not value else value.split(',')))
+
+
+    for i, path, is_list in data_paths:
+      nested_set(data_structure, path, {})
+
+    logger.debug('data__* fields have been transformed to: %s' % data_structure)
+
+    for i, row in enumerate(rows):
+      if not row['slug']:
+        logger.debug('line %s: empty "slug", skipping.' % i)
+        continue
+      _slug = row['slug'].strip()
+      _type = row['type'].strip()
+
+      doc, created = Document.objects.get_or_create(slug=_slug, type=_type, defaults={
+        'owner': owner.user
+      })
+      doc.title = row['title'].strip()
+
+      _data = data_structure.copy()
+      
+      for key, path, is_list in data_paths:
+        nested_set(_data, path, row[key], as_list=is_list)
+      
+      doc.data = _data['data']
+      
+      doc.save()
+      logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {
+        'line': i,
+        'slug': _slug,
+        'type': _type,
+        'pk': doc.pk,
+        'created': created
+      })
+
+
+
 
   def update_localisation_gs(self,  **options):
     """ 
@@ -102,6 +257,7 @@ class Command(BaseCommand):
     
     logger.debug('now updating localisation...')
     self.update_localisation(**options)
+
 
   def update_localisation(self,  **options):
     """ 
