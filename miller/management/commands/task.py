@@ -195,8 +195,8 @@ class Command(BaseCommand):
     logger.debug('data__* fields have been transformed to: %s' % data_structure)
 
     for i, row in enumerate(rows):
-      if not row['slug']:
-        logger.debug('line %s: empty "slug", skipping.' % i)
+      if not row['slug'] or not row['type']:
+        logger.debug('line %s: empty "slug" or empty "type", skipping.' % i)
         continue
       _slug = row['slug'].strip()
       _type = row['type'].strip()
@@ -213,6 +213,9 @@ class Command(BaseCommand):
       
       doc.data = _data['data']
       
+      if 'attachment' in row and len(row['attachment'].strip()) > 0:
+        doc.attachment.name = row['attachment']
+
       doc.save()
       logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {
         'line': i,
