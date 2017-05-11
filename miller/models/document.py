@@ -93,8 +93,8 @@ class Document(models.Model):
 
   url        = models.URLField(max_length=500, null=True, blank=True)
   owner      = models.ForeignKey(User); # at least the first author, the one who owns the file.
-  attachment = models.FileField(upload_to=attachment_file_name, null=True, blank=True)
-  snapshot   = models.FileField(upload_to=snapshot_attachment_file_name, null=True, blank=True)
+  attachment = models.FileField(upload_to=attachment_file_name, null=True, blank=True, max_length=200)
+  snapshot   = models.FileField(upload_to=snapshot_attachment_file_name, null=True, blank=True, max_length=200)
   mimetype   = models.CharField(max_length=127, blank=True, default='')
 
   locked     = models.BooleanField(default=False) # prevent accidental override when it is not needed.

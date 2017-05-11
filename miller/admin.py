@@ -4,6 +4,7 @@ import json
 from codemirror import CodeMirrorTextarea
 
 from django import forms
+from django.db.models import Count
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
@@ -136,10 +137,63 @@ class DocumentAdminForm(forms.ModelForm):
     
     return self.cleaned_data['contents']
 
+
+
+class DataTypeListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('data type')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'data__type'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        from collections import Counter
+        from django.contrib.postgres.fields.jsonb import KeyTextTransform 
+
+        qs = model_admin.get_queryset(request).annotate(types=KeyTextTransform('type', 'data')).values_list('types', flat=True)
+        return ( (x, _('%s'%x)) for x in set([q for q in qs]))
+          # print q
+
+        # if qs.filter(birthday__gte=date(1980, 1, 1),
+        #               birthday__lte=date(1989, 12, 31)).exists():
+        #     yield ('80s', _('in the eighties'))
+        # if qs.filter(birthday__gte=date(1990, 1, 1),
+        #               birthday__lte=date(1999, 12, 31)).exists():
+        #     yield ('90s', _('in the nineties'))
+
+        return (
+            ('event', _('event')),
+            ('person', _('person')),
+            ('letter', _('letter')),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value (either '80s' or '90s')
+        # to decide how to filter the queryset.
+        if self.value():
+          return queryset.filter(data__type=self.value())
+        else:
+          return queryset
+
+
+
 class DocumentAdmin(admin.ModelAdmin):
   search_fields = ['title', 'contents', 'url', 'slug']
   exclude=['copyright']
-  list_filter = ('type',)
+  list_filter = ('type', DataTypeListFilter,)
   form = DocumentAdminForm
 
 class CaptionAdmin(admin.ModelAdmin):

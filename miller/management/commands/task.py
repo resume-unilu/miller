@@ -214,7 +214,7 @@ class Command(BaseCommand):
       doc.data = _data['data']
       
       if 'attachment' in row and len(row['attachment'].strip()) > 0:
-        doc.attachment.name = row['attachment']
+         doc.attachment.name = row['attachment']
 
       doc.save()
       logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {
