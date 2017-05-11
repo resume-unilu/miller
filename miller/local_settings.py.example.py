@@ -83,6 +83,8 @@ MILLER_OEMBEDS = {
   }
 }
 
+MILLER_REVIEW_DEFAULT_DUE_DATE_DAYS = 30
+
 
 # """
 # 2. Django registration app
