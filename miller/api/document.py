@@ -124,7 +124,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         o = urlparse(url)
         provider_url = o.netloc
 
-      return Response({
+      d = {
         "url": url,
         "provider_url": provider_url, 
         "title": "", 
@@ -137,7 +137,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
         "info": {
           'service': 'miller',
         }
-      })
+      }
+
+      cache.set(ckey, d)
+      return Response(d)
 
 
     # check noembed! e.g; for flickr. We should check if the url is in the pattern specified.
@@ -157,7 +160,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     import opengraph
     og = opengraph.OpenGraph(html=res.text)
     ogd = dict(og.items())
-    print ogd
+    
     d = {
       "url": url,
       "encoding": res.encoding,
@@ -165,6 +168,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
       "title": ogd.get('title'),
       "description": ogd.get('description'),
       "type": "link",
+      "html": ''
     }
 
     if ogd.get('image'): 
@@ -174,7 +178,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         "thumbnail_height" : ogd.get('image:height'),
       })
 
-
+    cache.set(ckey, d)
     # custom from og
     return Response(d)
 
