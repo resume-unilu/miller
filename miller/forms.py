@@ -26,3 +26,6 @@ class SignupForm(RegistrationFormUniqueEmail):
   first_name  = forms.CharField(min_length=3, max_length=128, widget=forms.TextInput)
   last_name   = forms.CharField(min_length=3, max_length=128, widget=forms.TextInput)
   affiliation = forms.CharField(required=False, max_length=500, widget=forms.TextInput)
+
+class URLForm(forms.Form):
+  url = forms.URLField()
