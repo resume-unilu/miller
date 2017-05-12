@@ -3,6 +3,7 @@ asgi-redis==1.0.0
 asgiref==1.0.0
 autobahn==0.16.1
 BeautifulSoup==3.2.1
+beautifulsoup4==4.6.0
 bibtexparser==0.6.2
 channels==0.17.3
 constantly==15.1.0
@@ -43,6 +44,7 @@ msgpack-python==0.4.8
 MySQL-python==1.2.5
 oauthlib==1.1.2
 olefile==0.44
+opengraph==0.5
 packaging==16.8
 Pillow==4.1.0
 psycopg2==2.7.1
