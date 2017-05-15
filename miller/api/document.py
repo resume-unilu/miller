@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers,viewsets
 from rest_framework.decorators import list_route
-from rest_framework.exceptions import ValidationError, PermissionDenied, ParseError
+from rest_framework.exceptions import ValidationError, PermissionDenied, ParseError, NotFound
 from rest_framework.response import Response
 
 from miller.models import Document
@@ -95,7 +95,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     ckey = 'oembed:%s' % url
 
-    if cache.has_key(ckey):
+    if not request.query_params.get('nocache', None) and cache.has_key(ckey):
       return Response(cache.get(ckey))
 
     def perform_request(url, headers={}, params=None, timeout=5):
@@ -109,6 +109,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
       try:
         res.raise_for_status()
       except HTTPError as e:
+        if e.response.status_code == 404:
+          raise NotFound({
+            'error': '%s' % e
+          })
+
         raise ParseError({
           'error': '%s' % e
         })
@@ -160,7 +165,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     import opengraph
     og = opengraph.OpenGraph(html=res.text)
     ogd = dict(og.items())
-    
+
     d = {
       "url": url,
       "encoding": res.encoding,
@@ -178,14 +183,22 @@ class DocumentViewSet(viewsets.ModelViewSet):
         "thumbnail_height" : ogd.get('image:height'),
       })
 
+    if not d['title']:
+      from bs4 import BeautifulSoup
+      doc = BeautifulSoup(res.text)
+      tag = doc.html.head.findAll('meta', attrs={"name":"description"})
+      if not tag:
+        tag = doc.html.head.findAll('meta', attrs={"name":"Description"})
+
+      d.update({
+        'title': og.scrape_title(doc),
+        'description': "".join([t['content'] for t in tag])
+      })
+
+      
+
     cache.set(ckey, d)
     # custom from og
     return Response(d)
-
-   
-
-    # check embedly!
-
-
 
 
