@@ -308,7 +308,33 @@ class Story(models.Model):
     #     print repo.git.diff(com, cnext, path)
     return logs
 
-        
+  
+  def get_git_tags(self):
+    from django.utils import timezone
+    from datetime import datetime
+
+    repo = Repo.init(settings.GIT_ROOT)
+    tags = sorted(repo.tags, key=lambda t: t.commit.committed_date)
+    _tags = {}
+
+    for t in tags:
+      # get the status:
+      try:
+        _s = re.search(r'(' + '|'.join(x for x,_ in Story.STATUS_CHOICES) +')', t.path).group(0)
+      except:
+        _s = 'tags'
+
+      if not _s in _tags:
+        _tags[_s] = []
+
+      _tags[_s].append({
+        'hexsha': repo.git.rev_parse(t.commit, short=4),
+        'author': t.commit.author.email,
+        'date': datetime.fromtimestamp(t.commit.authored_date),
+        'tag': t.path.replace('refs/tags/', '')
+      })
+    return _tags
+
   def get_git_contents_at_tag(self, tag):
     pass
     # repo = Repo.init(settings.GIT_ROOT)

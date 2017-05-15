@@ -318,6 +318,8 @@ class StoryViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
 
+
+
   @detail_route(methods=['get'], url_path='git/diffs')
   def gitdiffs(self, request, pk): 
     q = self._getUserAuthorizations(request)
@@ -335,6 +337,8 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     return Response(d)
 
+  
+
 
   @detail_route(methods=['get'], url_path='git/blob/(?P<commit_id>[0-9a-f]+)')
   def gitblob(self, request, pk, commit_id=None):
@@ -347,6 +351,55 @@ class StoryViewSet(viewsets.ModelViewSet):
       story = get_object_or_404(q, slug=pk)
     else:
       story = get_object_or_404(q, pk=pk)
+
+    contents = story.gitBlob(commit_id)
+
+    serializer = StorySerializer(story,
+      context={'request': request},
+    )
+    
+    d = serializer.data
+    d['contents'] = contents
+    return Response(d)
+
+
+  @detail_route(methods=['get'], url_path='git/tag')
+  def git_tags(self, request, pk): 
+    q = self._getUserAuthorizations(request)
+    
+    if not pk.isdigit():
+      story = get_object_or_404(q, slug=pk)
+    else:
+      story = get_object_or_404(q, pk=pk)
+
+    ckey = story.get_cache_key(extra='git_tags')
+    if cache.has_key(ckey):
+      return Response(cache.get(ckey))
+    
+    d = story.get_git_tags()
+
+    cache.set(ckey, d)
+    
+    return Response(d)
+
+
+
+  @detail_route(methods=['get'], url_path='git/tag/(?P<tag>[0-9a-z\.]+)')
+  def git_blob_by_tag(self, request, pk, tag): 
+    """
+    Note: this accepts tag patterns and 
+    """
+    q = self._getUserAuthorizations(request)
+    
+    if not pk.isdigit():
+      story = get_object_or_404(q, slug=pk)
+    else:
+      story = get_object_or_404(q, pk=pk)
+
+    ckey = story.get_cache_key(extra='git_blob:%s' % tag)
+    if cache.has_key(ckey):
+      return Response(cache.get(ckey))
+    # if tag is . something, try to get the 
 
     contents = story.gitBlob(commit_id)
 
