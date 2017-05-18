@@ -1,0 +1,13 @@
+[uwsgi]
+chdir        = /home/youruser/miller
+module       = miller.wsgi:application
+home         = /home/youruser/.virtualenvs/miller
+master       = true
+processes    = 2
+runtime_dir  = /var/www/uwsgi
+safe-pidfile = %(runtime_dir)/miller.pid
+socket       = %(runtime_dir)/miller.sock
+chmod-socket = 664
+vacuum       = true
+#daemonize    = /var/www/miller/uwsgi.log
+harakiri     = 20
