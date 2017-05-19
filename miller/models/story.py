@@ -676,9 +676,9 @@ def fill_metadata(sender, instance, **kwargs):
       metadata['abstract'] = {}
     for default_language_code, label, language_code in settings.LANGUAGES:
       if default_language_code not in metadata['title']:
-        metadata['title'][language_code] = instance.title
+        metadata['title'][default_language_code] = instance.title
       if default_language_code not in metadata['abstract']:
-        metadata['abstract'][language_code] = instance.abstract
+        metadata['abstract'][default_language_code] = instance.abstract
       if language_code not in metadata['title']:
         metadata['title'][language_code] = ''
       if language_code not in metadata['abstract']:
