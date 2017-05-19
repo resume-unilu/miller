@@ -190,4 +190,7 @@ sudo supervisorctl update
 reread
 
 
+# run postgresql
+postgres -D /usr/local/var/postgres
+
 

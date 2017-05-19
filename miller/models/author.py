@@ -3,6 +3,7 @@
 import logging, json
 
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
@@ -20,6 +21,7 @@ class Author(models.Model):
     'firstname': '',
     'lastname': ''
   }, indent=1))
+  data        = JSONField(default=dict)
   slug        = models.CharField(max_length=140, unique=True, blank=True)
   user        = models.ForeignKey(User, related_name='authorship', blank=True, null=True, on_delete=models.CASCADE)
 
@@ -55,6 +57,13 @@ class Author(models.Model):
     super(Author, self).save(*args, **kwargs)
 
 
+  def updatePublishedStories(self):
+    num_stories = self.stories.filter(status='public').count()
+    self.data.update({
+      'num_stories': num_stories
+    })
+    self.save()
+
 # create an author whenever a Profile is created.
 @receiver(post_save, sender=Profile)
 def create_author(sender, instance, created, **kwargs):
@@ -62,10 +71,10 @@ def create_author(sender, instance, created, **kwargs):
     return
   if created:
     fullname = u'%s %s' % (instance.user.first_name, instance.user.last_name) if instance.user.first_name else instance.user.username
-    aut = Author(user=instance.user, fullname=fullname, metadata=json.dumps({
+    aut = Author(user=instance.user, fullname=fullname, data={
       'firstname': instance.user.first_name,
       'lastname': instance.user.last_name
-    }, indent=1))
+    }, indent=1)
     aut.save()
     logger.debug('(user {pk:%s}) @post_save: author created.' % instance.pk)
 

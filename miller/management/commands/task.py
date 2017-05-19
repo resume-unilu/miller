@@ -4,7 +4,7 @@
 import os, logging, json, re, requests, StringIO, datetime
 
 from miller.helpers import get_whoosh_index
-from miller.models import Document, Story, Profile
+from miller.models import Author, Document, Story, Profile
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -33,7 +33,8 @@ class Command(BaseCommand):
     'update_localisation_gs',
     'bulk_import_gs_as_documents',
     # tasks migration related.
-    'migrate_documents'
+    'migrate_documents',
+    'migrate_authors'
   )
 
 
@@ -88,6 +89,22 @@ class Command(BaseCommand):
       d.update({})
       doc.data = d
       doc.save()
+
+
+  def migrate_authors(self, **options):
+    logger.debug('task: migrate_authors')
+    authors = Author.objects.all()
+    
+    for author in authors.iterator():
+      logger.debug('task: migrate_authors for authorument {pk:%s}' % author.pk)
+      d = author.dmetadata
+      d.update({})
+      author.data = d
+      author.updatePublishedStories()
+      # count!
+      #author.data['num_publication'] = Story.objects.filter(status=PUBLIC)
+      author.save()
+
 
   def clean_cache(self, **options):
     logger.debug('task: clean_cache')

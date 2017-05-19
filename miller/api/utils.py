@@ -34,8 +34,10 @@ class Glue():
       except TypeError as e:
         pass
 
+    print self.warnings, self.excludes
 
     if self.ordering is not None:
+      #print self.ordering, '--', self.validated_ordering()
       self.queryset = self.queryset.order_by(*self.validated_ordering())
     
     
@@ -44,6 +46,18 @@ class Glue():
     for field in self.ordering:
       _field = field.replace('-', '')
       _reverse = field.startswith('-')
+      # placeolder for data relate ordering.
+      if _field.startswith('data__'):
+        # print 'data ordering '
+        parts = _field.split('__')
+        from django.db.models.expressions import RawSQL, OrderBy
+        # last field startwith a numeric value (num_)?
+        if parts[-1].startswith('num_'):
+          _validated_ordering.append(OrderBy(RawSQL("cast(data->>%s as integer)", (parts[1],)), descending=_reverse), )
+        else:
+          # _validated_ordering.append(OrderBy(RawSQL("data->>%s", (parts[1],)), descending=True ))
+          _validated_ordering.append(OrderBy(RawSQL("LOWER(data->>%s)", (parts[1],)), descending=_reverse))
+
       if _field not in self.extra_ordering:
         try:
           self.queryset.model._meta.get_field(_field)
@@ -62,6 +76,7 @@ class Glue():
 # qs = stories.objects.filter(**filters).order_by(*orderby)
 def filtersFromRequest(request, field_name='filters'):
   filters = request.query_params.get(field_name, None)
+  print filters
   waterfall = []
   if filters is not None:
     try:

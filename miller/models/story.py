@@ -563,6 +563,9 @@ class Story(models.Model):
       if self.status == Story.PUBLIC:
         print 'publishedddddd'
         self.gitTag(Story.PUBLIC)
+        # increase/recalculate authors stories
+        for author in self.authors.all():
+          author.updatePublishedStories()
         # send email to the authors profile emails and a confirmation email to the current address: the story has been published!!!
         action.send(self.owner, verb='got_published', target=self)
       elif self.status == Story.PENDING:

@@ -36,15 +36,25 @@ class AuthorViewSet(viewsets.ModelViewSet):
 
 
   def list(self, request):
-    authors = self.queryset.annotate(num_stories=Count(Case(
-        When(stories__status=Story.PUBLIC, then=1),
-        output_field=CharField(),
-    )))
-    g = Glue(request=request, queryset=authors, extra_ordering=['num_stories'])
+    # authors = self.queryset.annotate(num_stories=Count(Case(
+    #     When(stories__status=Story.PUBLIC, then=1),
+    #     output_field=CharField(),
+    # ),distinct=True))
+
+    authors = self.queryset.distinct()
+
+    g = Glue(request=request, queryset=authors, extra_ordering=['num_stories', 'stories__date_last_modified'])
+
     page    = self.paginate_queryset(g.queryset)
+    #print g.queryset.query
     serializer = self.list_serializer_class(page, many=True, context={'request': request})
     return self.get_paginated_response(serializer.data)
-
+# def list(self, request):
+#     authors = self.queryset.annotate(num_stories=Count('stories', distinct=True))
+#     g = Glue(request=request, queryset=authors, extra_ordering=['num_stories'])
+#     page    = self.paginate_queryset(g.queryset)
+#     serializer = self.list_serializer_class(page, many=True, context={'request': request})
+#     return self.get_paginated_response(serializer.data)
 
   def retrieve(self, request, *args, **kwargs):
     if 'pk' in kwargs and not kwargs['pk'].isdigit():
