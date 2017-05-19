@@ -1,0 +1,5 @@
+[uwsgi]
+uid          = nginx
+gid          = nginx
+emperor      = /etc/uwsgi/vassals
+
