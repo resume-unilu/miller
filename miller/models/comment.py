@@ -78,7 +78,8 @@ def complete_instance(sender, instance, **kwargs):
   Highlights are generated story property highlights
   """
   logger.debug('comment {pk:None, short_url:%s} @pre_save %s' % (instance.short_url, 'with highlights' if instance.highlights else 'without highlights'))
-  instance.version = instance.story.version
+  if not instance.version:
+    instance.version = instance.story.version
   if instance.highlights:
     instance.highlights = instance.highlights.replace('$highlight$', '$%s$' % instance.short_url)
 

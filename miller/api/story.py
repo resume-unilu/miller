@@ -373,14 +373,16 @@ class StoryViewSet(viewsets.ModelViewSet):
       story = get_object_or_404(q, pk=pk)
 
     ckey = story.get_cache_key(extra='git_tags')
-    if cache.has_key(ckey):
-      return Response(cache.get(ckey))
-    
+    # if cache.has_key(ckey):
+    #   return Response(cache.get(ckey))
+    # print 'oooallalala'
     d = story.get_git_tags()
 
     cache.set(ckey, d)
     
-    return Response(d)
+    return Response({
+      'results': d
+    })
 
 
 
@@ -397,16 +399,16 @@ class StoryViewSet(viewsets.ModelViewSet):
       story = get_object_or_404(q, pk=pk)
 
     ckey = story.get_cache_key(extra='git_blob:%s' % tag)
-    if cache.has_key(ckey):
-      return Response(cache.get(ckey))
-    # if tag is . something, try to get the 
-
-    contents = story.gitBlob(commit_id)
+    # if cache.has_key(ckey):
+    #   return Response(cache.get(ckey))
+    # # if tag is . something, try to get the 
 
     serializer = StorySerializer(story,
       context={'request': request},
     )
     
     d = serializer.data
-    d['contents'] = contents
+    d['version']    = tag.split('.')[-1]
+    d['contents']   = story.get_git_contents_by_commit(tag);
+    d['highlights'] = story.get_highlights_by_commit(tag)
     return Response(d)

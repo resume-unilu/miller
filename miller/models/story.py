@@ -142,8 +142,10 @@ class Story(models.Model):
     """
     highlights 
     """
-    return filter(None, self.comments.exclude(status='deleted').filter(version=self.version).values_list('highlights', flat=True))
+    return self.get_highlights_by_commit(commit_id=self.version)
+    #filter(None, self.comments.exclude(status='deleted').filter(version=self.version).values_list('highlights', flat=True))
 
+  
 
   @property
   def ogcover(self):
@@ -310,44 +312,42 @@ class Story(models.Model):
 
   
   def get_git_tags(self):
-    from django.utils import timezone
+    from django.utils import timezone, dateparse
     from datetime import datetime
-
+    
+    path = self.get_git_path()
     repo = Repo.init(settings.GIT_ROOT)
-    tags = sorted(repo.tags, key=lambda t: t.commit.committed_date)
-    _tags = {}
+    # tags = sorted(repo.tags, key=lambda t: t.commit.committed_date)
+    _tags = []
+    logs = repo.git.log('--follow', '--date=iso-strict','--no-walk', '--tags','--pretty=%h%d %cd', path).splitlines()
+    for l in logs:
+      # parse log
+      parts = re.match(r'(?P<hexsha>[a-f0-9]+)\s+\((?P<refs>[^\)]*)\)\s+(?P<date>.*)$', l)
+      if not parts:
+        continue
 
-    for t in tags:
-      # get the status:
-      try:
-        _s = re.search(r'(' + '|'.join(x for x,_ in Story.STATUS_CHOICES) +')', t.path).group(0)
-      except:
-        _s = 'tags'
-
-      if not _s in _tags:
-        _tags[_s] = []
-
-      _tags[_s].append({
-        'hexsha': repo.git.rev_parse(t.commit, short=4),
-        'author': t.commit.author.email,
-        'date': datetime.fromtimestamp(t.commit.authored_date),
-        'tag': t.path.replace('refs/tags/', '')
+      _tags.append({
+        'tag': parts.group('refs').split(' ')[-1],
+        'refs': parts.group('refs'),
+        'hexsha': parts.group('hexsha'),
+        'date': dateparse.parse_datetime(parts.group('date'))
       })
     return _tags
 
-  def get_git_contents_at_tag(self, tag):
-    pass
-    # repo = Repo.init(settings.GIT_ROOT)
-    
-    # sorted(repo.tags, key=lambda t: t.commit.committed_date)
+  def get_git_contents_by_commit(self, commit_id):
+    repo = Repo.init(settings.GIT_ROOT)
+    path = self.get_git_path()
+    try:
+      file_contents = repo.git.show('%s:%s'%(commit_id, path))
+    except Exception as e:
+      logger.exception(e)
+      return None
+    return file_contents
 
-    # path = self.get_git_path()
 
-    # print repo.git.log('--follow', '--pretty=%h%d','--decorate=full', path).splitlines()
-
-    # tag  = repo.tag(tag)
-    # print tag.commit
-    # return 'ooo'
+  def get_highlights_by_commit(self, commit_id):
+    version = commit_id.split('.')[-1]
+    return filter(None, self.comments.exclude(status='deleted').filter(version=version).values_list('highlights', flat=True))
 
 
   def gitBlob(self, commit_id):
