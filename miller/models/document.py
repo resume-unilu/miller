@@ -257,7 +257,7 @@ class Document(models.Model):
   def create_snapshot(self):
     logger.debug('document {pk:%s, mimetype:%s, type:%s} init snapshot' % (self.pk, self.mimetype, self.type))
     
-    if not self.attachment or getattr(self.attachment, 'path', None):
+    if not self.attachment or not getattr(self.attachment, 'path', None):
       logger.debug('document {pk:%s} snapshot cannot be generated.' % self.pk)
       return
 
