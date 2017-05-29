@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django.db.models import Count
 from django.db.models.expressions import RawSQL
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import FieldError
 
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
@@ -31,17 +32,28 @@ class FacetedPagination(LimitOffsetPagination):
       out_facets = {}
 
       for facet in facets:
+          # JSONField detection
+          # see: https://stackoverflow.com/questions/34325096/how-to-aggregate-min-max-etc-over-django-jsonfield-data
+          # see: https://code.djangoproject.com/ticket/25828
           json_field = False
           pieces = facet.split("__")
           if len(pieces) > 1:
             fieldname = pieces[0]
-            field_instance = self.facets_queryset.model._meta.get_field(fieldname)
-            if isinstance(field_instance, JSONField):
+            try:
+              field_instance = self.facets_queryset.model._meta.get_field(fieldname)
+              if isinstance(field_instance, JSONField):
                 json_field = True
+            except FieldError:
+              continue
+
           if json_field:
-            rawsql_field = "((%s->>%%s))" % fieldname
-            subfield = ("__").join(pieces[1:])
-            annotate_dict = { facet : RawSQL(rawsql_field, (subfield,)) }
+            rawsql_field = "%s" % fieldname
+            #rawsql_field += "->%s"
+            for p in pieces[1:]:
+                rawsql_field += "->%s"
+            rawsql_field = "(%s)" % rawsql_field
+            #subfield = ("__").join(pieces[1:])
+            annotate_dict = { facet : RawSQL(rawsql_field, pieces[1:]) }
             counts = self.facets_queryset.annotate(**annotate_dict)\
                 .values(facet).annotate(count=Count(facet)).order_by(facet)
           else:
