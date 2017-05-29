@@ -26,7 +26,7 @@ class Glue():
 
     # apply filters progressively
     for fil in self.filtersWaterfall:
-      print fil
+      # print fil
       try:
         self.queryset = self.queryset.filter(**fil)
       except FieldError as e:
@@ -34,7 +34,7 @@ class Glue():
       except TypeError as e:
         pass
 
-    print self.warnings, self.excludes
+    # print self.warnings, self.excludes
 
     if self.ordering is not None:
       #print self.ordering, '--', self.validated_ordering()
@@ -76,14 +76,14 @@ class Glue():
 # qs = stories.objects.filter(**filters).order_by(*orderby)
 def filtersFromRequest(request, field_name='filters'):
   filters = request.query_params.get(field_name, None)
-  print filters
+  #print filters
   waterfall = []
   if filters is not None:
     try:
       filters = json.loads(filters)
       # print "filters,",filters
     except Exception, e:
-      print e
+      #print e
       filters = {}
   else:
     filters = {}
