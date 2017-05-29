@@ -415,6 +415,12 @@ MILLER_LOCALE_ROOT = os.path.join(BASE_DIR, 'client/src/locale')
 MILLER_LOCALISATION_TABLE = os.path.join(BASE_DIR, 'client/src/locale/locale-all.csv')
 
 MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
+
+# default width value for helpers generate_snapshot. Set width OR height to None or to 0 means following the original image ratio.
+MILLER_SNAPSHOT_WIDTH = 234
+MILLER_SNAPSHOT_HEIGHT = None
+
+
 # feel free to add your own oembed service in localsettings.
 MILLER_OEMBEDS = {
   'vimeo':  {

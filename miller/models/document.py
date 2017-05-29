@@ -31,7 +31,6 @@ def private_attachment_file_name(instance, filename):
   return os.path.join(settings.MEDIA_PRIVATE_ROOT, instance.type, filename)
 
 def snapshot_attachment_file_name(instance, filename):
-  print 'generating', os.path.join(instance.type, 'snapshots', filename)
   return os.path.join(instance.type, 'snapshots', filename)
 
 
@@ -277,8 +276,10 @@ class Document(models.Model):
         
         
         # generate snapshot
-        helpers.generate_snapshot(filename=self.attachment.path, output=outfile, width=234)
-           
+        d = helpers.generate_snapshot(filename=self.attachment.path, output=outfile, width=settings.MILLER_SNAPSHOT_WIDTH, height=settings.MILLER_SNAPSHOT_HEIGHT)
+        if d:
+          self.data.update(d)
+
         self.snapshot = snapshot_attachment_file_name(self, filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
         self._dirty = True
         logger.debug('document {pk:%s, mimetype:%s, type:%s} IMAGE thumbnail done.' % (self.pk, self.mimetype, self.type))
