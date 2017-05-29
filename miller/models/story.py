@@ -81,7 +81,6 @@ class Story(models.Model):
     'abstract':language_dict
   }, indent=1),blank=True) # it will contain, JSON fashion
 
-
   date               = models.DateTimeField(db_index=True, blank=True, null=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
   date_last_modified = models.DateTimeField(auto_now=True)
@@ -544,6 +543,7 @@ class Story(models.Model):
 
   def create_first_author(self):
     author = self.owner.authorship.first()
+    print self.owner.authorship.first(), self.owner.is_superuser
     self.authors.add(author)
     logger.debug('story {pk:%s} create first author {fullname:%s}" done.' % (self.pk, author.fullname))
 
@@ -674,11 +674,17 @@ def fill_metadata(sender, instance, **kwargs):
       metadata['title'] = {}
     if 'abstract' not in metadata:
       metadata['abstract'] = {}
-    for default_language_code, label, language_code in settings.LANGUAGES:
-      if default_language_code not in metadata['title']:
-        metadata['title'][default_language_code] = instance.title
-      if default_language_code not in metadata['abstract']:
-        metadata['abstract'][default_language_code] = instance.abstract
+    for lowercase_language_code, label, language_code in settings.LANGUAGES:
+      # LANGUAGES = [
+      #   ('fr-fr', _('French'), 'fr_FR'),
+      #   ('de-de', _('German'), 'de_DE'),
+      #   ('en-us', _('US English'), 'en_US'),
+      #   ('en-gb', _('British English'), 'en_GB'),
+      # ]
+      # if lowercase_language_code not in metadata['title']:
+      #   metadata['title'][lowercase_language_code] = instance.title
+      # if lowercase_language_code not in metadata['abstract']:
+      #   metadata['abstract'][lowercase_language_code] = instance.abstract
       if language_code not in metadata['title']:
         metadata['title'][language_code] = ''
       if language_code not in metadata['abstract']:

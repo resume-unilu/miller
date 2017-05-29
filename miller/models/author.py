@@ -74,7 +74,7 @@ def create_author(sender, instance, created, **kwargs):
     aut = Author(user=instance.user, fullname=fullname, data={
       'firstname': instance.user.first_name,
       'lastname': instance.user.last_name
-    }, indent=1)
+    })
     aut.save()
     logger.debug('(user {pk:%s}) @post_save: author created.' % instance.pk)
 
