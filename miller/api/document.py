@@ -162,38 +162,78 @@ class DocumentViewSet(viewsets.ModelViewSet):
       })
       return Response(d)
 
-    import opengraph
-    og = opengraph.OpenGraph(html=res.text)
-    ogd = dict(og.items())
-
     d = {
       "url": url,
       "encoding": res.encoding,
-      "provider_name":  ogd.get('site_name'),
-      "title": ogd.get('title'),
-      "description": ogd.get('description'),
+      #"provider_name":  ogd.get('site_name'),
+      #"description": ogd.get('description'),
       "type": "link",
       "html": ''
     }
 
-    if ogd.get('image'): 
-      d.update({
-        "thumbnail_url" : ogd.get('image'),
-        "thumbnail_width" : ogd.get('image:width'),
-        "thumbnail_height" : ogd.get('image:height'),
+    def quickmeta(doc, name, attrs={}):
+      attrs.update({
+        'name': name
       })
 
-    if not d['title']:
-      from bs4 import BeautifulSoup
-      doc = BeautifulSoup(res.text)
+      m = doc.html.head.findAll('meta', attrs=attrs)
+      
+      return None if not m else u"".join([t['content'] for t in m])
+    
+    
+
+    # get opengraph data
+    from bs4 import BeautifulSoup
+    doc = BeautifulSoup(res.text)
+    
+    d['description']      = quickmeta(doc=doc, name='og:description')
+    d['title']            = quickmeta(doc=doc, name='og:title')
+    d['thumbnail_url']    = quickmeta(doc=doc, name='og:image:secure_url')
+    d['thumbnail_width']  = quickmeta(doc=doc, name='og:image:width')
+    d['thumbnail_height'] = quickmeta(doc=doc, name='og:image:width')
+    d['provider_name']    = quickmeta(doc=doc, name='twitter:site')
+
+    if not d['description']:
+      # get normal desxcription tag.
       tag = doc.html.head.findAll('meta', attrs={"name":"description"})
       if not tag:
         tag = doc.html.head.findAll('meta', attrs={"name":"Description"})
+      
+      d['description'] = '' if not tag else u"".join([t['content'] for t in tag]) 
+    
+    if not d['title']:
+      d['title'] = doc.html.head.title.text
 
-      d.update({
-        'title': og.scrape_title(doc),
-        'description': "".join([t['content'] for t in tag])
-      })
+    if not d['thumbnail_url']:
+      d['thumbnail_url'] = quickmeta(doc=doc, name='og:image')
+
+    
+    #import opengraph
+
+
+    # og = opengraph.OpenGraph(html=res.text)
+    # ogd = dict(og.items())
+    # print "hehehehehehehehehe"
+    # print og.items()
+    # d = {
+    #   "url": url,
+    #   "encoding": res.encoding,
+    #   "provider_name":  ogd.get('site_name'),
+    #   "title": ogd.get('title'),
+    #   "description": ogd.get('description'),
+    #   "type": "link",
+    #   "html": ''
+    # }
+    # print ogd
+    # if ogd.get('image'): 
+    #   d.update({
+    #     "thumbnail_url" : ogd.get('image'),
+    #     "thumbnail_width" : ogd.get('image:width'),
+    #     "thumbnail_height" : ogd.get('image:height'),
+    #   })
+
+    # if not d['title']:
+      
 
       
 
