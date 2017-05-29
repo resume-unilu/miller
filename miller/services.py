@@ -37,10 +37,10 @@ def images(request):
 
   # search for something like ?url=/media/image/2162934893_b053386d3f_o_c[100,20,500,200].jpg
   # where the original image is this part: /media/image/2162934893_b053386d3f_o.jpg
-  ms = re.search(r'\/media\/(?P<path>[_\/a-z\d\-]+)_(?P<funcs>[a-zA-Z\[\],\d\!\^%]+)\.(?P<ext>jpg|gif|jpeg)$', request.GET['url'])
+  ms = re.search(r'\/media\/(?P<path>[a-zA-Z_\/\d\-]+)_(?P<funcs>[a-zA-Z\[\]\-\d\!\^%]+)\.(?P<ext>jpg|gif|jpeg|jpe)$', request.GET['url'])
 
   if ms is None:
-    return Response({"error": "invalid url param"},  status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    return Response({"error": "invalid url param", "url": request.GET['url']},  status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
   # get the groups from our regex
   basepath  = os.path.normpath(ms.group('path'))
@@ -58,8 +58,11 @@ def images(request):
     return streamHttpResponse(filenameout)
 
   # get distinct wand methods
-  funcs = re.findall(r'(?P<func>[a-zA-Z])\[(?P<args>[\d,%x]+)\]',functions)
-  
+  funcs = re.findall(r'(?P<func>[a-zA-Z])\[?(?P<args>[\d\-%x]+)\]?',functions)
+
+  if not funcs:
+    return Response({"error": "invalid url param - url does not contain any valid resize function.", "url": request.GET['url']},  status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
   available_funcs = {
     'c': 'crop',
     't': 'transform', # crop and resize
@@ -69,10 +72,9 @@ def images(request):
 
   with Image(filename=filename) as img:
     for a,b in funcs:
-      args = map(lambda x: int(x) if x.isnumeric() else x,b.split(','))
-      
+      args = map(lambda x: int(x) if x.isnumeric() else x,b.split('-'))
       if a == 'T':
-        generate_snapshot(filename, filenameout, *args)
+        generate_snapshot(filename, filenameout, width=args[0], height=args[-1], crop=True)
         return streamHttpResponse(filenameout)
       try:
         getattr(img,available_funcs[a])(*args)

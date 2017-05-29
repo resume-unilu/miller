@@ -25,7 +25,7 @@ def streamHttpResponse(filename):
 
 
 
-def generate_snapshot(filename, output, width=settings.MILLER_SNAPSHOT_WIDTH, height=settings.MILLER_SNAPSHOT_HEIGHT):
+def generate_snapshot(filename, output, width, height, crop=False):
   """
   Use liquid_rescale to scale down snapshots to the desired dimension
   """
@@ -55,24 +55,29 @@ def generate_snapshot(filename, output, width=settings.MILLER_SNAPSHOT_WIDTH, he
     # resize to the minimum, then crop
     if not height:
       height = width / ratio
-
+    
     if not width:
       width = ratio*height
 
-    if img.width > img.height :
-      # width greated than height
-      img.transform(resize='x%s'%width)
-    elif img.width < img.height:
-      img.transform(resize='%sx'%width)
-    else:
+    if not crop:
       img.transform(resize='%sx%s'% (width, height))
+    else:
+      print 'ici', img.width, img.height
+      if img.width > img.height :
+        # width greated than height
+        img.transform(resize='x%s'%width)
+      elif img.width < img.height:
+        print 'ici', img.width, img.height
+        img.transform(resize='%sx'%height)
+      else:
+        img.transform(resize='%sx%s'% (width, height))
+      img.crop(width=width, height=height, gravity='center')
 
 
     d['thumbnail_width']  = img.width
     d['thumbnail_height'] = img.height
     
-    img.crop(width=img.width, height=img.height, gravity='center')
-
+    
     
     img.save(filename=output)
     return d      

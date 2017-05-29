@@ -256,10 +256,11 @@ class Document(models.Model):
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):
     logger.debug('document {pk:%s, mimetype:%s, type:%s} init snapshot' % (self.pk, self.mimetype, self.type))
-    if not self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
+    if getattr(self.attachment, 'path', None):
       # generate mimetype on the fly
       mimetype, encoding =  mimetypes.guess_type(self.attachment.path, strict=True)
-      self.mimetype = mimetype
+      if mimetype:
+        self.mimetype = mimetype
       # import m
     #print mimetypes.guess_type(self.attachment.path, strict=True)
     if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
@@ -276,7 +277,7 @@ class Document(models.Model):
         pass
 
       # generate thumbnail
-      if self.mimetype == 'image/png' or self.mimetype == 'image/jpeg' or self.mimetype == 'image/gif' or self.type == Document.IMAGE or self.type == Document.PHOTO:
+      if self.mimetype.split('/')[0] == 'image' or self.type == Document.IMAGE or self.type == Document.PHOTO:
         logger.debug('document {pk:%s, mimetype:%s, type:%s} generating IMAGE thumbnail...' % (self.pk, self.mimetype, self.type))
         
         
