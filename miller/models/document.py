@@ -256,81 +256,87 @@ class Document(models.Model):
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):
     logger.debug('document {pk:%s, mimetype:%s, type:%s} init snapshot' % (self.pk, self.mimetype, self.type))
-    if getattr(self.attachment, 'path', None):
-      # generate mimetype on the fly
-      mimetype, encoding =  mimetypes.guess_type(self.attachment.path, strict=True)
-      if mimetype:
-        self.mimetype = mimetype
-      # import m
-    #print mimetypes.guess_type(self.attachment.path, strict=True)
-    if self.mimetype and self.attachment and hasattr(self.attachment, 'path'):
-      logger.debug('document {pk:%s, mimetype:%s, type:%s} snapshot can be generated' % (self.pk, self.mimetype, self.type))
+    
+    if not self.attachment or getattr(self.attachment, 'path', None):
+      logger.debug('document {pk:%s} snapshot cannot be generated.' % self.pk)
+      return
+
+    if not os.path.exists(self.attachment.path):
+      logger.debug('document {pk:%s} snapshot cannot be generated, attached file does not exist.' % self.pk)
+      return
+    
+    # reconsider mimetype
+    mimetype, encoding =  mimetypes.guess_type(self.attachment.path, strict=True)
+    if mimetype:
+      self.mimetype = mimetype
+
+    logger.debug('document {pk:%s, mimetype:%s, type:%s} snapshot can be generated' % (self.pk, self.mimetype, self.type))
+    
+    filename = '%s.snapshot.png' % self.short_url
+    outfile = os.path.join(settings.MEDIA_ROOT, snapshot_attachment_file_name(self, filename))
+
+    # generate dir if there is none
+    try:
+      os.makedirs(os.path.dirname(outfile))
+    except OSError:
+      logger.debug('document {pk:%s, mimetype:%s, type:%s} creating folder for snapshot' % (self.pk, self.mimetype, self.type))
+      pass
+
+    # generate thumbnail
+    if self.mimetype.split('/')[0] == 'image' or self.type == Document.IMAGE or self.type == Document.PHOTO:
+      logger.debug('document {pk:%s, mimetype:%s, type:%s} generating IMAGE thumbnail...' % (self.pk, self.mimetype, self.type))
       
-      filename = '%s.snapshot.png' % self.short_url
-      outfile = os.path.join(settings.MEDIA_ROOT, snapshot_attachment_file_name(self, filename))
+      
+      # generate snapshot
+      d = helpers.generate_snapshot(filename=self.attachment.path, output=outfile, width=settings.MILLER_SNAPSHOT_WIDTH, height=settings.MILLER_SNAPSHOT_HEIGHT)
+      if d:
+        self.data.update(d)
 
-      # generate dir if there is none
+      self.snapshot = snapshot_attachment_file_name(self, filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
+      self._dirty = True
+      logger.debug('document {pk:%s, mimetype:%s, type:%s} IMAGE thumbnail done.' % (self.pk, self.mimetype, self.type))
+      # remove tempfile
+      
+
+    # print mimetype
+    elif self.mimetype == 'application/pdf':
+      logger.debug('document {pk:%s, mimetype:%s, type:%s} generating PDF snapshot...' % (self.pk, self.mimetype, self.type))
+      
+      pdffile = self.attachment.path
+      pdf_im = PyPDF2.PdfFileReader(pdffile)
+
+      # get page
+      page = 0
       try:
-        os.makedirs(os.path.dirname(outfile))
-      except OSError:
-        logger.debug('document {pk:%s, mimetype:%s, type:%s} creating folder for snapshot' % (self.pk, self.mimetype, self.type))
-        pass
-
-      # generate thumbnail
-      if self.mimetype.split('/')[0] == 'image' or self.type == Document.IMAGE or self.type == Document.PHOTO:
-        logger.debug('document {pk:%s, mimetype:%s, type:%s} generating IMAGE thumbnail...' % (self.pk, self.mimetype, self.type))
-        
-        
-        # generate snapshot
-        d = helpers.generate_snapshot(filename=self.attachment.path, output=outfile, width=settings.MILLER_SNAPSHOT_WIDTH, height=settings.MILLER_SNAPSHOT_HEIGHT)
-        if d:
-          self.data.update(d)
+        metadata = json.loads(self.contents)
+        page = int( metadata['thumbnail_page']) if 'thumbnail_page' in metadata else 0
+      except Exception as e:
+        logger.exception(e)
+      
+      try:
+        # Converting first page into JPG
+        with Image(filename='%s[%s]'%(pdffile,page), resolution=150) as img:
+          img.format = 'png'
+          img.background_color = Color('white') # Set white background.
+          img.alpha_channel = 'remove'
+          img.save(filename=outfile)
 
         self.snapshot = snapshot_attachment_file_name(self, filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
         self._dirty = True
-        logger.debug('document {pk:%s, mimetype:%s, type:%s} IMAGE thumbnail done.' % (self.pk, self.mimetype, self.type))
-        # remove tempfile
-        
+      
 
-      # print mimetype
-      elif self.mimetype == 'application/pdf':
-        logger.debug('document {pk:%s, mimetype:%s, type:%s} generating PDF snapshot...' % (self.pk, self.mimetype, self.type))
-        
-        pdffile = self.attachment.path
-        pdf_im = PyPDF2.PdfFileReader(pdffile)
+        # with open(self.attachment.path + '.png') as f:
+        #   self.snapshot.save(os.path.basename(self.attachment.path)[:100] + '.png', files.images.ImageFile(f), save=False)
+        #   self._dirty = True
+        #   logger.debug('document {pk:%s, type:%s} PDF snapshot done.' % (self.pk,self.type))
 
-        # get page
-        page = 0
-        try:
-          metadata = json.loads(self.contents)
-          page = int( metadata['thumbnail_page']) if 'thumbnail_page' in metadata else 0
-        except Exception as e:
-          logger.exception(e)
-        
-        try:
-          # Converting first page into JPG
-          with Image(filename='%s[%s]'%(pdffile,page), resolution=150) as img:
-            img.format = 'png'
-            img.background_color = Color('white') # Set white background.
-            img.alpha_channel = 'remove'
-            img.save(filename=outfile)
+      except Exception as e:
+        logger.exception(e)
+        print 'could not save snapshot of the required resource', self.pk
+      else:
+        logger.debug('snapshot generated for document {pk:%s}, page %s' % (self.pk, page))
 
-          self.snapshot = snapshot_attachment_file_name(self, filename)#outfile# .save(os.path.basename(outfile), files.images.ImageFile(f), save=False)
-          self._dirty = True
-        
-
-          # with open(self.attachment.path + '.png') as f:
-          #   self.snapshot.save(os.path.basename(self.attachment.path)[:100] + '.png', files.images.ImageFile(f), save=False)
-          #   self._dirty = True
-          #   logger.debug('document {pk:%s, type:%s} PDF snapshot done.' % (self.pk,self.type))
-
-        except Exception as e:
-          logger.exception(e)
-          print 'could not save snapshot of the required resource', self.pk
-        else:
-          logger.debug('snapshot generated for document {pk:%s}, page %s' % (self.pk, page))
-    else:
-      logger.debug('document {pk:%s} snapshot cannot be generated.' % self.pk)
+    
       
 
   def noembed(self):
