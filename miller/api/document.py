@@ -14,18 +14,20 @@ from miller.api.serializers import MatchingDocumentSerializer, LiteDocumentSeria
 from miller.api.utils import Glue
 
 from requests.exceptions import HTTPError, Timeout
+from .pagination import FacetedPagination
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
   queryset = Document.objects.all()
   serializer_class = CreateDocumentSerializer
   list_serializer_class = LiteDocumentSerializer
+  pagination_class = FacetedPagination
 
   # retrieve by PK or slug
   def retrieve(self, request, *args, **kwargs):
 
     if 'pk' in kwargs and not kwargs['pk'].isdigit():
-      doc = get_object_or_404(Document, slug=kwargs['pk'])  
+      doc = get_object_or_404(Document, slug=kwargs['pk'])
       # save, then return tagged items according to tagform
       serializer = DocumentSerializer(doc,
           context={'request': request},
@@ -33,7 +35,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
       return Response(serializer.data)
     self.serializer_class = DocumentSerializer
     return super(DocumentViewSet, self).retrieve(request, *args, **kwargs)
-    
+
 
   def list(self, request):
     g = Glue(request=request, queryset=self.queryset.distinct())
@@ -52,13 +54,13 @@ class DocumentViewSet(viewsets.ModelViewSet):
       return Response(form.errors, status=status.HTTP_201_CREATED)
     # get the results
     results = search_whoosh_index(form.cleaned_data['q'], classname=u'document')
-    
+
     filters = {
       'short_url__in': [hit['short_url'] for hit in results]
     }
     # check if the user is allowed this content
     docs = self.queryset.filter(**filters)
-    
+
     def mapper(d):
       d.matches = []
       for hit in results:
@@ -83,12 +85,12 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     """
     check if a document url exists in our system;
-    if not, load 
+    if not, load
     # do a request to intercept 404 requests. Otherwise: go to iframely; or embed.ly
     """
     form = URLForm(request.GET)
     if not form.is_valid():
-      raise ValidationError(form.errors)  
+      raise ValidationError(form.errors)
 
     # check if there is no document
     url = form.cleaned_data['url']
@@ -117,7 +119,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         raise ParseError({
           'error': '%s' % e
         })
-      
+
       return res
 
     res = perform_request(url, headers={'Range':'bytes=0-20000'})
@@ -131,13 +133,13 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
       d = {
         "url": url,
-        "provider_url": provider_url, 
-        "title": "", 
-        "height": 780, 
-        "width": 600, 
-        "html": "<iframe src=\"https://drive.google.com/viewerng/viewer?url=%s&embedded=true\" width=\"600\" height=\"780\" style=\"border: none;\"></iframe>" % url, 
-        "version": "1.0", 
-        "provider_name": res.headers.get('server', ''), 
+        "provider_url": provider_url,
+        "title": "",
+        "height": 780,
+        "width": 600,
+        "html": "<iframe src=\"https://drive.google.com/viewerng/viewer?url=%s&embedded=true\" width=\"600\" height=\"780\" style=\"border: none;\"></iframe>" % url,
+        "version": "1.0",
+        "provider_name": res.headers.get('server', ''),
         "type": "rich",
         "info": {
           'service': 'miller',
@@ -177,15 +179,15 @@ class DocumentViewSet(viewsets.ModelViewSet):
       })
 
       m = doc.html.head.findAll('meta', attrs=attrs)
-      
+
       return None if not m else u"".join([t['content'] for t in m])
-    
-    
+
+
 
     # get opengraph data
     from bs4 import BeautifulSoup
     doc = BeautifulSoup(res.text)
-    
+
     d['description']      = quickmeta(doc=doc, name='og:description')
     d['title']            = quickmeta(doc=doc, name='og:title')
     d['thumbnail_url']    = quickmeta(doc=doc, name='og:image:secure_url')
@@ -198,16 +200,16 @@ class DocumentViewSet(viewsets.ModelViewSet):
       tag = doc.html.head.findAll('meta', attrs={"name":"description"})
       if not tag:
         tag = doc.html.head.findAll('meta', attrs={"name":"Description"})
-      
-      d['description'] = '' if not tag else u"".join([t['content'] for t in tag]) 
-    
+
+      d['description'] = '' if not tag else u"".join([t['content'] for t in tag])
+
     if not d['title']:
       d['title'] = doc.html.head.title.text
 
     if not d['thumbnail_url']:
       d['thumbnail_url'] = quickmeta(doc=doc, name='og:image')
 
-    
+
     #import opengraph
 
 
@@ -225,7 +227,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     #   "html": ''
     # }
     # print ogd
-    # if ogd.get('image'): 
+    # if ogd.get('image'):
     #   d.update({
     #     "thumbnail_url" : ogd.get('image'),
     #     "thumbnail_width" : ogd.get('image:width'),
@@ -233,12 +235,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
     #   })
 
     # if not d['title']:
-      
 
-      
+
+
 
     cache.set(ckey, d)
     # custom from og
     return Response(d)
-
-
