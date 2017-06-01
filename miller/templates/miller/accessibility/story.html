@@ -23,7 +23,7 @@
   <meta property='og:description' content='{% lookup story.dmetadata path="abstract" language=language %}'>
   {% if story.ogcover.type == "video" %}
     <meta property='og:video' content='{{story.ogcover|coverage}}'>
-  {% elif story.ogcover.type == "photo" or story.ogcover.type == "image" %}
+  {% elif story.ogcover %}
     <meta property='og:image' content='{{story.ogcover|coverage}}'>
   {% endif %}
   {% if story.ogcover.type %}
