@@ -142,12 +142,12 @@ class DocumentSerializer(LiteDocumentSerializer):
 
 class MatchingDocumentSerializer(serializers.ModelSerializer):
   matches = HitField()
-  metadata = JsonField(source='contents')
+  # metadata = JsonField(source='contents')
   src   = OptionalFileField(source='attachment')
 
   class Meta:
     model = Document
-    fields = ('id', 'url', 'src', 'metadata', 'type', 'slug', 'title', 'metadata', 'matches')
+    fields = ('id', 'url', 'src', 'data', 'type', 'slug', 'title', 'matches')
 
 
 # define the 

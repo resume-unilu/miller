@@ -1,4 +1,5 @@
 import json, re
+from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldError
 
@@ -10,12 +11,16 @@ class Glue():
   def __init__(self, request, queryset, extra_ordering=[]):
     self.filters, self.filtersWaterfall = filtersFromRequest(request=request)
     self.excludes, self.excludesWaterfall = filtersFromRequest(request=request, field_name='exclude')
+    self.overlaps = overlapsFromRequest(request=request)
     self.ordering = orderbyFromRequest(request=request)
     self.extra_ordering = extra_ordering
     self.queryset = queryset
     self.warnings = None
     try:
       self.queryset = self.queryset.exclude(**self.excludes).filter(**self.filters)
+      if self.overlaps:
+        self.queryset = self.queryset.filter(self.overlaps)
+        
     except FieldError as e:
       self.warnings = {
         'filters': '%s' % e
@@ -23,7 +28,7 @@ class Glue():
       pass
     except TypeError as e:
       pass
-
+    
     # apply filters progressively
     for fil in self.filtersWaterfall:
       # print fil
@@ -97,6 +102,33 @@ def filtersFromRequest(request, field_name='filters'):
       filters.pop(k, None)
 
   return filters, waterfall
+
+
+def overlapsFromRequest(request, field_name='overlaps'):
+  """
+  Handle date range overlaps with django Q, since filters like `start_date__gt` and `end_date__lt` do not handle range verlaps
+
+  Translate in dango Q
+  
+  case 1: left overlap (or outer) aka lov
+       S |------------>| T 
+    OS|----------->OT ..........--> OT?
+
+  case 2: right overlap (or inner) aka rov
+       S |------------>| T 
+             OS|--->OT ..........--> OT?
+
+
+  """
+  overlaps = request.query_params.get(field_name, None)
+  if not overlaps:
+    return None
+  start_date, end_date = zip(overlaps.split(','))
+
+  lov  = Q(data__start_date__lte = start_date[0]) & Q(data__end_date__gte  = start_date[0])
+  rov  = Q(data__start_date__gte = start_date[0]) & Q(data__start_date__lte = end_date[0])
+
+  return lov | rov
 
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
