@@ -138,6 +138,45 @@ class DocumentAdminForm(forms.ModelForm):
     return self.cleaned_data['contents']
 
 
+class DataProviderListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('data provider')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'data__provider'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        from collections import Counter
+        from django.contrib.postgres.fields.jsonb import KeyTextTransform 
+
+        qs = model_admin.get_queryset(request).annotate(types=KeyTextTransform('provider', 'data')).values_list('types', flat=True)
+        q = [(x, _('%s'%x)) for x in set(filter(None,[q for q in qs]))]
+        return  q + [(u'not-defined',_('no provider defined'))]
+
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value (either '80s' or '90s')
+        # to decide how to filter the queryset.
+        if self.value():
+          print self.value()
+          return queryset.filter(data__provider__isnull=True) if self.value() == 'not-defined' else queryset.filter(data__provider=self.value())
+        else:
+          return queryset
+
+
 
 class DataTypeListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
@@ -254,21 +293,13 @@ class PageAdmin(admin.ModelAdmin):
 class TagAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
     super(TagAdminForm, self).__init__(*args, **kwargs)
-    self.fields['metadata'].widget = codemirror_json_widget
+    self.fields['data'].widget = codemirror_json_widget
 
-  def clean_contents(self):
-    try:
-      contents = json.loads(self.cleaned_data['metadata'])
-    except ValueError as e:
-      raise forms.ValidationError(u'%s'%e)
-      # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
-    
-    return self.cleaned_data['metadata']
-
+  
 
 class TagAdmin(admin.ModelAdmin):
-  search_fields = ['name', 'metadata']
-  list_filter = ('category',)
+  search_fields = ['name']
+  list_filter = ('category', DataProviderListFilter)
   form = TagAdminForm
 
 

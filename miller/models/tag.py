@@ -3,6 +3,7 @@
 import os,codecs,json
 
 from django.core.validators import RegexValidator
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from miller import helpers
@@ -39,7 +40,7 @@ class Tag(models.Model):
   category   = models.CharField(max_length=32, choices=CATEGORY_CHOICES, default=KEYWORD) # e.g. 'actor' or 'institution'
   status     = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PUBLIC)
 
-  metadata   = models.TextField(null=True, blank=True, default=json.dumps({'name': helpers.get_languages_dict()}, ensure_ascii=False, indent=1)) # it will contain, JSON fashion
+  data       = JSONField(default=dict)
 
   def __unicode__(self):
     return '%s (%s)' % (self.name, self.category)
@@ -48,5 +49,4 @@ class Tag(models.Model):
     if not self.slug:
       self.slug = slugify(self.name)
 
-    self.metadata = helpers.fill_with_metadata(self, (u'name',))
     super(Tag, self).save(*args, **kwargs)
