@@ -145,6 +145,13 @@ class Command(BaseCommand):
     )
 
     parser.add_argument(
+        '--model',
+        dest='model',
+        default=False,
+        help='miller model name',
+    )
+
+    parser.add_argument(
         '--url',
         dest='url',
         default=False,
@@ -349,7 +356,7 @@ class Command(BaseCommand):
       rows = csv.DictReader(f, encoding='utf-8')
       translations = {}
       for row in rows:
-        for lang, t, language_code in settings.LANGUAGES:
+        for lang, t, language_code, idx in settings.LANGUAGES:
           if not language_code in translations:
             translations[language_code] = {}
           
@@ -369,39 +376,46 @@ class Command(BaseCommand):
     pass
 
   def update_whoosh(self,  **options):
-    logger.debug('looking for a whoosh index')
+    logger.debug('looking for a whoosh index...')
     ix = get_whoosh_index(force_create=True)
-    logger.debug('whoosh index available! Updating ...')
-    
-    stories = Story.objects.all()
 
-    # # The `iterator()` method ensures only a few rows are fetched from
-    # # the database at a time, saving memory.
-    for story in stories.iterator():
-      logger.debug('task: update_whoosh for story {pk:%s}' % story.pk)
-      try:
-        story.store(ix=ix)
-      except Exception as e:
-        logger.exception(e)
-        break
-      else:
-        logger.debug('task: update_whoosh for story {pk:%s} success' % story.pk)
+    _model = options.get('model', None)
+    logger.debug('whoosh index for --model: %s...'% _model)
+    
+    if _model == 'story':
+      stories = Story.objects.filter(pk=options.get('pk')) if options.get('pk', None) is not None else Story.objects.all()
+
       
 
-    docs = Document.objects.all()
+      # # The `iterator()` method ensures only a few rows are fetched from
+      # # the database at a time, saving memory.
+      for story in stories.iterator():
+        logger.debug('task: update_whoosh for story {pk:%s}' % story.pk)
+        try:
+          story.store(ix=ix)
+        except Exception as e:
+          logger.exception(e)
+          break
+        else:
+          logger.debug('task: update_whoosh for story {pk:%s} success' % story.pk)
+      
+    elif _model == 'document':
+      docs =  Document.objects.filter(pk=options.get('pk')) if options.get('pk', None) is not None else Document.objects.all()
 
-    # The `iterator()` method ensures only a few rows are fetched from
-    # the database at a time, saving memory.
-    for doc in docs.iterator():
-      logger.debug('task: update_whoosh for doc {pk:%s}...' % doc.pk)
-      try:
-        doc.store(ix=ix)
-      except Exception as e:
-        logger.exception(e)
-        break
-      else:
-        logger.debug('task: update_whoosh for doc {pk:%s} success' % doc.pk)
-    
+      # The `iterator()` method ensures only a few rows are fetched from
+      # the database at a time, saving memory.
+      for doc in docs.iterator():
+        logger.debug('task: update_whoosh for doc {pk:%s}...' % doc.pk)
+        try:
+          doc.store(ix=ix)
+        except Exception as e:
+          logger.exception(e)
+          break
+        else:
+          logger.debug('task: update_whoosh for doc {pk:%s} success' % doc.pk)
+    else:
+      logger.debug('task: please provide a valid model to update_whoosh: "document" or "story"...')
+        
 
   def noembed(self, **options):
     logger.debug('task: noembed!')

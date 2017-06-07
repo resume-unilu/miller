@@ -239,8 +239,8 @@ class Story(models.Model):
       return
 
     # multilingual abstract, reduced
-    abstracts = u"\n".join(filter(None,list(set([metadata['abstract'][language_code] if language_code in metadata['abstract'] else None for dlc, l, language_code in settings.LANGUAGES]))))
-    titles    = u"\n".join(filter(None,list(set([metadata['title'][language_code] if language_code in metadata['title'] else None for dlc, l, language_code in settings.LANGUAGES]))))
+    abstracts = u"\n".join(filter(None,list(set([metadata['abstract'][language_code] if language_code in metadata['abstract'] else None for dlc, l, language_code, idx in settings.LANGUAGES]))))
+    titles    = u"\n".join(filter(None,list(set([metadata['title'][language_code] if language_code in metadata['title'] else None for dlc, l, language_code, idx in settings.LANGUAGES]))))
 
     writer.update_document(
       title     = titles,
@@ -390,7 +390,7 @@ class Story(models.Model):
     except Exception as e:
       logger.exception(e)
     else:
-      logger.debug('story {pk:%s} contents written.' % (self.pk))
+      logger.debug('story {pk:%s} contents written in %s.' % (self.pk, path))
 
 
   def commit_contents(self, force=False):
@@ -424,7 +424,7 @@ class Story(models.Model):
     except IOError as e:
       logger.debug('story {pk:%s} gitCommit has errors.' % self.pk)
       logger.exception(e)
-    print c
+    
     self.version = short_sha
     logger.debug('story {pk:%s} gitCommit {hash:%s,short:%s} done.' % (self.pk, c, short_sha))
 

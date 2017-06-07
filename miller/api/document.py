@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError, PermissionDenied, ParseEr
 from rest_framework.response import Response
 
 from miller.models import Document
-from miller.forms import URLForm
+from miller.forms import URLForm, SearchQueryForm
 from miller.api.serializers import MatchingDocumentSerializer, LiteDocumentSerializer, DocumentSerializer, CreateDocumentSerializer
 from miller.api.utils import Glue
 
@@ -44,9 +44,14 @@ class DocumentViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
 
-
+  
   @list_route(methods=['get'])
   def search(self, request):
+    """
+    Deprecated in favor of using simpler q in http request
+    /api/document/?q=world
+    cfr. utils.Glue class
+    """
     from miller.forms import SearchQueryForm
     from miller.helpers import search_whoosh_index
     form = SearchQueryForm(request.query_params)
@@ -58,8 +63,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     filters = {
       'short_url__in': [hit['short_url'] for hit in results]
     }
+
+    
     # check if the user is allowed this content
-    docs = self.queryset.filter(**filters)
+    g = Glue(request=request, queryset=self.queryset.filter(**filters).distinct())
+    docs = g.queryset
 
     def mapper(d):
       d.matches = []
@@ -69,13 +77,35 @@ class DocumentViewSet(viewsets.ModelViewSet):
           break
       return d
     # enrich docs items (max 10 items)
-    docs = map(mapper, docs)
-    page    = self.paginate_queryset(docs)
+    #docs = map(mapper, docs)
+    page = self.paginate_queryset(docs)
 
-    serializer = MatchingDocumentSerializer(docs, many=True,
+    serializer = MatchingDocumentSerializer(map(mapper,page), many=True,
       context={'request': request}
     )
     return self.get_paginated_response(serializer.data)
+
+
+  @list_route(methods=['get'])
+  def suggest(self, request):
+    """
+    quggest querystring based on this model search 
+    """
+    form = SearchQueryForm(request.query_params)
+    if not form.is_valid():
+      return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    from django.contrib.postgres.search import SearchVector
+
+    # queryset = self.queryset.annotate(
+    #   sv=SearchVector('data__title'),
+    # ).filter(sv=form.cleaned_data['q'])
+    queryset = self.queryset.filter(Q(title__icontains=form.cleaned_data['q']) | Q(data__title__en_US__icontains=form.cleaned_data['q']))
+
+    return Response({
+      'results': queryset.values_list('title', flat=True)
+    })
+
 
 
   @list_route(methods=['get'])

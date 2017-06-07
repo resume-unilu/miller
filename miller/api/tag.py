@@ -6,7 +6,7 @@ from rest_framework import serializers,viewsets
 
 from miller.api.fields import JsonField
 from miller.api.serializers import TagSerializer
-from miller.api.utils import Glue, filtersFromRequest
+from miller.api.utils import Glue, filters_from_request
 from miller.models import Tag, Story
 
 from rest_framework.decorators import api_view, list_route
@@ -24,16 +24,14 @@ class TagViewSet(viewsets.ModelViewSet):
   serializer_class = TagSerializer
 
   def list(self, request):
-    filters, _filters = filtersFromRequest(request=self.request)
-    
-    if request.user.is_authenticated() and request.user.is_staff:
-      tags = Tag.objects.filter(**filters)
-    else:
-      tags = Tag.objects.filter(category=Tag.KEYWORD).filter(**filters)
+    tags = Tag.objects.all()
+    if not request.user.is_staff:
+      tags = tags.filter(category=Tag.KEYWORD)
 
-    page    = self.paginate_queryset(tags)
+    g = Glue(request=request, queryset=tags)
+    page    = self.paginate_queryset(g.queryset)
 
-    serializer = TagSerializer(tags, many=True,
+    serializer = TagSerializer(page, many=True,
         context={'request': request}
     )
     return self.get_paginated_response(serializer.data)
@@ -49,7 +47,7 @@ class TagViewSet(viewsets.ModelViewSet):
     # horrible workaround.
     ids = g.queryset.values('pk')
     # print ids
-    tag__filters, tf = filtersFromRequest(request=self.request, field_name='tag__filters')
+    tag__filters, tf = filters_from_request(request=self.request, field_name='tag__filters')
 
     if g.ordering is None:
       g.ordering = ['-num_stories']

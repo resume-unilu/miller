@@ -16,6 +16,9 @@ from django.dispatch import receiver, Signal
 from django.utils.text import slugify
 
 from miller import helpers
+
+from pydash import py_
+
 from wand.image import Image, Color
 
 
@@ -125,41 +128,45 @@ class Document(models.Model):
   def __unicode__(self):
     return '%s (%s)' % (self.slug, self.type)
 
+
+  @staticmethod
+  def get_search_Q(query):
+    """
+    Return search queryset for this model. No ranking for the moment.
+    """
+    return models.Q(data__icontains=query)
+
   # store into the whoosh index
   def store(self, ix=None):
     if ix is None:
       ix = helpers.get_whoosh_index()
     writer = ix.writer()
 
-    try:
-      _metadata = json.loads(self.contents)
+    _fields = {}
+    # get title and description in different languages
+    for k in ['title', 'description', 'details.caption']:
+      _fields[k] = [ self.data[k] if k in self.data and isinstance(self.data[k], basestring) else '']
+      
+      for lang in settings.LANGUAGES:
+        _fields[k].append(py_.get(self.data, '%s.%s' % (k,lang[2]), ''))
 
-      metadata = u"\n".join(filter(None, [
-        _metadata.get('author_name'),
-        u"\n".join(filter(None, [
-          _metadata['details']['title'].get('en'), 
-          _metadata['details']['title'].get('fr')
-        ])) if 'details' in _metadata and 'title' in _metadata['details'] else _metadata.get('title'),
-        _metadata.get('description'),
-        u"\n".join(filter(None, [
-          _metadata['details']['caption'].get('en'),
-          _metadata['details']['caption'].get('fr')
-        ])) if 'details' in _metadata and 'caption' in _metadata['details'] else _metadata.get('caption')
-      ]))
-    except TypeError:
-      metadata = self.title
-    except ValueError:
-      metadata = self.title
-
-    content = u"\n".join(filter(None, [metadata, self.url]))
-    
+      _fields[k] = ' '.join(_fields[k]).strip()
+    # create multilanguage content by squashing stuff
     writer.update_document(
-      title = self.title,
+      title = _fields['title'],
       path = u"%s"% self.short_url,
-      content =  content,
+      content =  u"\n".join(filter(None,[
+        self.url, 
+        self.data.get('url', None),
+        self.data.get('provider_name', None),
+        self.data.get('provider_url', None),
+        _fields['description'], 
+        _fields['details.caption'],
+      ])),
+      typeahead = _fields['title'],
       classname = u"document")
-    writer.commit()
 
+    writer.commit()
 
   # download remote pdfs allowing to produce snapshots. This should be followed by save() :)
   def fill_from_url(self):

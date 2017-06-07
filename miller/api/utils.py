@@ -9,15 +9,24 @@ waterfallre = re.compile(r'^_*')
 
 class Glue():
   def __init__(self, request, queryset, extra_ordering=[]):
-    self.filters, self.filtersWaterfall = filtersFromRequest(request=request)
-    self.excludes, self.excludesWaterfall = filtersFromRequest(request=request, field_name='exclude')
-    self.overlaps = overlapsFromRequest(request=request)
-    self.ordering = orderbyFromRequest(request=request)
+    self.filters, self.filtersWaterfall = filters_from_request(request=request)
+    self.excludes, self.excludesWaterfall = filters_from_request(request=request, field_name='exclude')
+    
+    self.overlaps = overlaps_from_request(request=request)
+    self.ordering = orderby_from_request(request=request)
     self.extra_ordering = extra_ordering
     self.queryset = queryset
     self.warnings = None
+
+    self.search_query = search_from_request(request=request, klass=queryset.model)
+
+
     try:
       self.queryset = self.queryset.exclude(**self.excludes).filter(**self.filters)
+      
+      if self.search_query:
+        self.queryset = self.queryset.filter(self.search_query)
+
       if self.overlaps:
         self.queryset = self.queryset.filter(self.overlaps)
         
@@ -77,9 +86,9 @@ class Glue():
     return _validated_ordering
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
-# filters = filtersFromRequest(request=self.request) 
+# filters = filters_from_request(request=self.request) 
 # qs = stories.objects.filter(**filters).order_by(*orderby)
-def filtersFromRequest(request, field_name='filters'):
+def filters_from_request(request, field_name='filters'):
   filters = request.query_params.get(field_name, None)
   #print filters
   waterfall = []
@@ -104,7 +113,24 @@ def filtersFromRequest(request, field_name='filters'):
   return filters, waterfall
 
 
-def overlapsFromRequest(request, field_name='overlaps'):
+
+def search_from_request(request, klass):
+  print klass
+  # understand if request has a search query
+  search_query = request.query_params.get('q', None) 
+  if search_query is None:
+    return None
+
+  try:
+    q = klass.get_search_Q(query=search_query)
+  except AttributeError:
+    # method not found on the model specified
+    return None
+  print q
+  return q
+
+
+def overlaps_from_request(request, field_name='overlaps'):
   """
   Handle date range overlaps with django Q, since filters like `start_date__gt` and `end_date__lt` do not handle range verlaps
 
@@ -132,9 +158,9 @@ def overlapsFromRequest(request, field_name='overlaps'):
 
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
-# orderby = orderbyFromRequest(request=self.request) 
+# orderby = orderby_from_request(request=self.request) 
 # qs = stories.objects.all().order_by(*orderby)
-def orderbyFromRequest(request):
+def orderby_from_request(request):
   orderby = request.query_params.get('orderby', None)
   return orderby.split(',') if orderby is not None else None
 

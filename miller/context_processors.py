@@ -13,6 +13,12 @@ def default(request):
   # pages = [fname.replace('.md', '') for fname in os.listdir(settings.PAGES_ROOT) if fname.endswith('.md')]
   pages = settings.MILLER_STATIC_PAGES
 
+  # add languages
+  settings.MILLER_SETTINGS.update({
+    'languages': [lang[2] for lang in settings.LANGUAGES]
+  })
+
+
   context_settings = {
     'title': settings.MILLER_TITLE,
     'debug': settings.MILLER_DEBUG,
@@ -23,4 +29,5 @@ def default(request):
     'language': translation.get_language(),
     'pages': pages
   }
+
   return context_settings

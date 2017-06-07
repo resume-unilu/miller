@@ -9,7 +9,11 @@ from pyzotero import zotero
 
 from wsgiref.util import FileWrapper
 
+from whoosh import qparser, analysis
 
+from whoosh.qparser import MultifieldParser
+from whoosh.query import Term, And, Every
+    
 logger = logging.getLogger('miller')
 
 
@@ -81,7 +85,7 @@ def generate_snapshot(filename, output, width, height, crop=False):
     
     img.save(filename=output)
     return d      
-        
+
 
 
 def get_previous_and_next(iterable):
@@ -144,23 +148,26 @@ def create_short_url():
   return shortuuid.uuid()[:7]
 
 
+
 def get_whoosh_index(force_create=False):
   from whoosh.index import create_in, exists_in, open_dir
   from whoosh.fields import Schema, TEXT, KEYWORD, ID, STORED
-  from whoosh.analysis import CharsetFilter, StemmingAnalyzer
+  from whoosh.analysis import CharsetFilter, StemmingAnalyzer, NgramWordAnalyzer
   from whoosh.support.charset import accent_map
 
   analyzer = StemmingAnalyzer() | CharsetFilter(accent_map)
+  ngramAnalyzer = NgramWordAnalyzer( minsize=2, maxsize=4)
 
   schema = Schema(
-    title     = TEXT(analyzer=analyzer, stored=True, field_boost=3.0, ), 
+    title     = TEXT(analyzer=analyzer, spelling=True, stored=True, field_boost=3.0), 
     abstract  = TEXT(analyzer=analyzer, stored=True, field_boost=2.0), 
     path      = ID(unique=True, stored=True), 
     authors   = TEXT(analyzer=analyzer, sortable=True, field_boost=1.5), 
     content   = TEXT(analyzer=analyzer, stored=True), 
     tags      = KEYWORD(sortable=True, commas=True, field_boost=1.5, lowercase=True), 
     status    = KEYWORD,
-    classname = KEYWORD
+    classname = KEYWORD,
+    typeahead = TEXT(spelling=True, stored=True, phrase=False)
   )
     
   if not os.path.exists(settings.WHOOSH_ROOT):
@@ -173,9 +180,28 @@ def get_whoosh_index(force_create=False):
   return index
 
 
+def typeahead_whoosh_index(query):
+  ix = get_whoosh_index()
+  parser = MultifieldParser(['content', 'title'], ix.schema)
+  a = analysis.SimpleAnalyzer()
+
+  with ix.searcher() as searcher:
+    corrector = searcher.corrector("typeahead")
+    for token in [token.text for token in a(u'photographie de p')]:
+      suggestionList = corrector.suggest(token, limit=10)
+      print suggestionList      
+
+
+    #print list(ix.searcher().search(parser.parse('serge*')))
+
+  # q = parser.parse(query)
+
+  # with ix.searcher() as s:
+  #   correction = s.correct_query(q, query)
+  #   print correction.string
+    
+
 def search_whoosh_index(query, *args, **kwargs):
-    from whoosh.qparser import MultifieldParser
-    from whoosh.query import Term, And, Every
     ix = get_whoosh_index()
     parser = MultifieldParser(['content', 'authors', 'tags', 'title', 'abstract'], ix.schema)
     # user query
@@ -219,7 +245,7 @@ def fill_with_metadata(instance, fields=(u'title',u'abstract')):
 
 # used for metadata multilanguage mapping
 def get_languages_dict():
-  return dict((language_code,u'') for default_language_code, label, language_code in settings.LANGUAGES)
+  return dict((language_code,u'') for default_language_code, label, language_code, language_config in settings.LANGUAGES)
 
 # Our starting point for zotero related stuffs.
 # for a given username, get or create the proper zotero collection.
@@ -259,3 +285,14 @@ def fill_zotero_collection(filename, collection, zotero):
     logger.warn('no zotero instance found, cfr get_or_create_zotero_collection')
     return
   pass
+
+
+  
+def tokenize(content):
+  words = set()                                                       #C
+  for match in WORDS_RE.finditer(content.lower()):                    #D
+      word = match.group().strip("'")                                 #E
+      if len(word) >= 2:                                              #F
+          words.add(word)                                             #F
+  return words
+

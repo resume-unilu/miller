@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'django.contrib.postgres.search',
     'social.apps.django_app.default',
     'channels',
     'oauth2_provider',
@@ -142,14 +143,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization. Restrict the list of availble language for the website.
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
-
+# THe forth element in each tuple item is the indexing language to be used with to_vector in portgresql.
+# cfr. https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/
+# since it dinamically adds language-related search fields to models
 LANGUAGE_CODE = 'en-us'
 
 LANGUAGES = [
-    ('fr-fr', _('French'), 'fr_FR'),
-    ('de-de', _('German'), 'de_DE'),
-    ('en-us', _('US English'), 'en_US'),
-    ('en-gb', _('British English'), 'en_GB'),
+    ('fr-fr', _('French'), 'fr_FR', 'french'),
+    ('de-de', _('German'), 'de_DE', 'german'),
+    ('en-us', _('US English'), 'en_US', 'english'),
+    # ('en-gb', _('British English'), 'en_GB', 'english'),
 ]
 
 

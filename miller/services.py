@@ -14,8 +14,16 @@ from miller.helpers import streamHttpResponse, generate_snapshot
 
 
 
+@api_view()
+def suggest(request):
+  if not request.user.is_authenticated:
+    raise NotAuthenticated()
 
+  if not 'q' in request.GET:
+    return Response({"error": "missing url param"},  status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
+  # q = request.GET.
+  
 
 @api_view()
 def images(request):

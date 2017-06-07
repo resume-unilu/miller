@@ -1,6 +1,6 @@
 from actstream.models import Action
 from django.contrib.auth.models import User, Group
-from rest_framework import serializers
+from rest_framework import serializers, validators
 from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review, Page
 from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField, IfJsonField
 from miller.api import utils
@@ -51,13 +51,27 @@ class ActionCommentSerializer(serializers.ModelSerializer):
     model = Comment
     fields = ('pk', 'owner', 'version')
 
+
 # tag represnetation in many to many
 class TagSerializer(serializers.ModelSerializer):
+
   stories = serializers.IntegerField(read_only=True, source='num_stories')
+  created = serializers.BooleanField(read_only=True, source='is_created')
 
   class Meta:
     model = Tag
-    fields = ('id', 'category', 'slug', 'name', 'status', 'stories')
+    fields = ('id', 'category', 'slug', 'name', 'status', 'data', 'stories', 'created')
+
+  def run_validators(self, value):
+    for validator in self.validators:
+      if isinstance(validator, validators.UniqueTogetherValidator):
+          self.validators.remove(validator)
+    super(TagSerializer, self).run_validators(value)
+
+  def create(self, validated_data):
+    instance, created = Tag.objects.get_or_create(name=validated_data['name'].lower(), category=validated_data['category'], defaults={'data': validated_data['data']})
+    instance.is_created = created
+    return instance
 
 
 
