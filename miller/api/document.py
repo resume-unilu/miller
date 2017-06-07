@@ -228,14 +228,22 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     if not d['description']:
       # get normal desxcription tag.
-      tag = doc.html.head.findAll('meta', attrs={"name":"description"})
-      if not tag:
-        tag = doc.html.head.findAll('meta', attrs={"name":"Description"})
+      tag = None
+      try:
+        tag = doc.html.head.findAll('meta', attrs={"name":"description"})
+        if not tag:
+          tag = doc.html.head.findAll('meta', attrs={"name":"Description"})
+      except AttributeError:
+        pass
 
       d['description'] = '' if not tag else u"".join([t['content'] for t in tag])
 
     if not d['title']:
-      d['title'] = doc.html.head.title.text
+      
+      try:
+        d['title'] = doc.html.head.title.text
+      except AttributeError:
+        pass
 
     if not d['thumbnail_url']:
       d['thumbnail_url'] = quickmeta(doc=doc, name='og:image')
