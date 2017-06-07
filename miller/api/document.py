@@ -207,9 +207,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
       attrs.update({
         'name': name
       })
-
-      m = doc.html.head.findAll('meta', attrs=attrs)
-
+      try:
+        m = doc.html.head.findAll('meta', attrs=attrs)
+      except AttributeError:
+        return None
       return None if not m else u"".join([t['content'] for t in m])
 
 
