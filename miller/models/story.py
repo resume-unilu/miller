@@ -674,7 +674,7 @@ def fill_metadata(sender, instance, **kwargs):
       metadata['title'] = {}
     if 'abstract' not in metadata:
       metadata['abstract'] = {}
-    for lowercase_language_code, label, language_code in settings.LANGUAGES:
+    for lowercase_language_code, label, language_code, idx in settings.LANGUAGES:
       # LANGUAGES = [
       #   ('fr-fr', _('French'), 'fr_FR'),
       #   ('de-de', _('German'), 'de_DE'),
