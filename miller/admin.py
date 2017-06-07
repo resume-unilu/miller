@@ -298,7 +298,7 @@ class TagAdminForm(forms.ModelForm):
   
 
 class TagAdmin(admin.ModelAdmin):
-  search_fields = ['name']
+  search_fields = ['name', 'slug']
   list_filter = ('category', DataProviderListFilter)
   form = TagAdminForm
 
