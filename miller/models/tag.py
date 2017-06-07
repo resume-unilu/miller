@@ -60,7 +60,10 @@ class Tag(models.Model):
     """
     Return search queryset for this model. Generate Q fields for each language This follows: https://stackoverflow.com/questions/852414/how-to-dynamically-compose-an-or-query-filter-in-django
     """
-    queries = [models.Q(**{'data__name__%s__icontains' % lang[2]: query}) for lang in settings.LANGUAGES]
+    queries = [models.Q(**{'data__name__%s__icontains' % lang[2]: query}) for lang in settings.LANGUAGES] + [
+      models.Q(slug__icontains=query),
+      models.Q(name__icontains=query)
+    ]
     q = queries.pop()
     for item in queries:
       q |= item
