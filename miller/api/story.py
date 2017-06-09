@@ -19,14 +19,18 @@ from miller.models import Story, Tag, Document, Caption, Comment, Review
 from miller.api.utils import Glue
 from miller.api.fields import OptionalFileField, JsonField
 from miller.api.serializers import LiteDocumentSerializer, AnonymousStorySerializer, AnonymousLiteStorySerializer, MatchingStorySerializer, AuthorSerializer, TagSerializer, StorySerializer, LiteStorySerializer, CreateStorySerializer, CommentSerializer, PendingStorySerializer
+from miller.api.pagination import VerbosePagination
 
 from wsgiref.util import FileWrapper
 
 
 # ViewSets define the view behavior. Filter by status
 class StoryViewSet(viewsets.ModelViewSet):
+  
   queryset = Story.objects.all()
   serializer_class = CreateStorySerializer
+  pagination_class = VerbosePagination
+
 
   def _getUserAuthorizations(self, request):
     if request.user.is_staff:
@@ -131,8 +135,10 @@ class StoryViewSet(viewsets.ModelViewSet):
     if 'status' not in g.filters:
       stories = stories.exclude(status=Story.DELETED)
 
-    # add orderby
-    # print stories.query
+    if g.warnings is not None:
+      # this comes from the VerbosePagination class
+      self.paginator.set_queryset_warnings(g.warnings)
+
     page    = self.paginate_queryset(stories)
     
     if page is not None:
@@ -363,7 +369,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     return Response(d)
 
 
-  @detail_route(methods=['get'], url_path='git/tag')
+  @detail_route(methods=['get', 'post'], url_path='git/tag')
   def git_tags(self, request, pk): 
     q = self._getUserAuthorizations(request)
     
@@ -371,6 +377,9 @@ class StoryViewSet(viewsets.ModelViewSet):
       story = get_object_or_404(q, slug=pk)
     else:
       story = get_object_or_404(q, pk=pk)
+
+    if request.method == 'POST':
+      pass
 
     ckey = story.get_cache_key(extra='git_tags')
     # if cache.has_key(ckey):

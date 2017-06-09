@@ -9,7 +9,34 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 
-class FacetedPagination(LimitOffsetPagination):
+class VerbosePagination(LimitOffsetPagination):
+  """
+  E.g. Use in `rest_framework.viewsets.ModelViewSet` classes/subclasses or other classes inheriting `rest_framework.generics.GenericAPIView`:
+  This lets you add a 'warnings' dicts to the paginated response.
+  ```
+  
+    self.paginator.set_queryset_warnings({
+      "custom_warning": "custom_message"
+    })
+  ```
+  """
+  queryset_warnings = None
+  
+  
+  def set_queryset_warnings(self, warnings):
+    self.queryset_warnings = warnings
+
+  def get_paginated_response(self, data):
+    return Response(OrderedDict(filter(None,[
+        ('count', self.count),
+        ('next', self.get_next_link()),
+        ('previous', self.get_previous_link()),
+        ('results', data),
+        ('warnings', self.queryset_warnings)
+    ])))
+
+
+class FacetedPagination(VerbosePagination):
 
     facets_queryset = None
 
@@ -18,13 +45,14 @@ class FacetedPagination(LimitOffsetPagination):
       return super(FacetedPagination, self).paginate_queryset(queryset, request, view=view)
 
     def get_paginated_response(self, data):
-      return Response(OrderedDict([
+      return Response(OrderedDict(filter(None,[
           ('count', self.count),
           ('next', self.get_next_link()),
           ('previous', self.get_previous_link()),
           ('results', data),
           ('facets', self.get_facets()),
-      ]))
+          ('warnings', self.queryset_warnings)
+      ])))
 
     def get_facets(self):
 

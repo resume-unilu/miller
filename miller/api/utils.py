@@ -1,10 +1,10 @@
-import json, re
+import json, re, types
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldError
 
-
-waterfallre = re.compile(r'^_*')
+WATERFALL_IN = '__all'
+waterfallre = re.compile(WATERFALL_IN + r'$')
 
 
 class Glue():
@@ -37,7 +37,7 @@ class Glue():
       pass
     except TypeError as e:
       pass
-    
+    # print self.warnings
     # apply filters progressively
     for fil in self.filtersWaterfall:
       # print fil
@@ -101,12 +101,19 @@ def filters_from_request(request, field_name='filters'):
       filters = {}
   else:
     filters = {}
-  # filter filters having AND__ prefixes (cascade stuffs)
+  # filter filters having _ prefixes (cascade stuffs)
   for k,v in filters.items():
-    if k.startswith('_'):
-      waterfall.append({
-        waterfallre.sub('', k): v
-      })
+    if k.endswith(WATERFALL_IN):
+      if not isinstance(v, types.StringTypes):
+        #print v
+        for f in v:
+          waterfall.append({
+            waterfallre.sub('', k): f
+          })
+      else:
+        waterfall.append({
+          waterfallre.sub('', k): v
+        })
       # get rifd of dirty filters
       filters.pop(k, None)
 
@@ -126,7 +133,6 @@ def search_from_request(request, klass):
   except AttributeError:
     # method not found on the model specified
     return None
-  print q
   return q
 
 

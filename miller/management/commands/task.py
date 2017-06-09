@@ -294,7 +294,7 @@ class Command(BaseCommand):
         break;
 
       tag, created = Tag.objects.get_or_create(slug=_slug, category=options.get('category', Tag.KEYWORD))
-      print tag.slug, '- created:', created
+      print tag.slug, '- created:', created, '- name:', tag.name
       tag.name = row.get('name', '').strip()
 
       _data = data_structure.copy()
