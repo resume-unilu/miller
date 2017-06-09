@@ -17,7 +17,7 @@
   <meta name='twitter:image' content='{{story.ogcover|coverage}}'>
   {% endif %}
 
-  <meta property='og:url' content='{{accessibility_story_url|urled}}'>
+  <meta property='og:url' content='{{host}}{{accessibility_story_url|urled}}'>
   <meta property='og:type' content='article'>
   <meta property='og:title' content='{% lookup story.dmetadata path="title" language=language %}'>
   <meta property='og:description' content='{% lookup story.dmetadata path="abstract" language=language %}'>
