@@ -85,7 +85,7 @@ class ProfileSerializer(serializers.ModelSerializer):
   class Meta:
     model = Profile
     lookup_field = 'user__username'
-    fields = ('pk', 'bio', 'picture', 'username', 'user', 'newsletter')
+    fields = ('id', 'bio', 'picture', 'username', 'user', 'newsletter')
 
 
 

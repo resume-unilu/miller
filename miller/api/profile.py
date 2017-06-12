@@ -1,5 +1,10 @@
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+
 from rest_framework import serializers,viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from miller.api.serializers import ProfileSerializer, LiteAuthorSerializer
 from miller.models import Profile, Author
@@ -23,3 +28,15 @@ class ProfileViewSet(viewsets.ModelViewSet):
   def pulse(self, request, pk):
     print 'here'
     pass
+
+
+  @list_route(methods=['get'], permission_classes=[IsAuthenticated])
+  def me(self, request):
+    pro = get_object_or_404(self.queryset, user__username=request.user.username)
+    serializer =  self.serializer_class(pro)
+    _d = serializer.data
+
+    _d.update({
+      'settings': settings.MILLER_SETTINGS
+    })
+    return Response(_d)
