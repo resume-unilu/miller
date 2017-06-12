@@ -199,9 +199,11 @@ def typeahead_whoosh_index(query):
   # with ix.searcher() as s:
   #   correction = s.correct_query(q, query)
   #   print correction.string
-    
 
-def search_whoosh_index(query, *args, **kwargs):
+
+
+
+def search_whoosh_index(query, offset=0, limit=10, *args, **kwargs):
     ix = get_whoosh_index()
     parser = MultifieldParser(['content', 'authors', 'tags', 'title', 'abstract'], ix.schema)
     # user query
@@ -214,19 +216,31 @@ def search_whoosh_index(query, *args, **kwargs):
     allow_q = And([Term(key, value) for key, value in kwargs.iteritems()])
     # parse remaining args
     res = []
+    count = 0
+    offset = int(offset)
+    limit = int(limit)
+    right = offset + limit
     # restrict_q = Or([Term("path", u'%s' % d.id) for d in qs])
     #print 'query', q, allow_q, kwargs
     with ix.searcher() as searcher:
-      results = searcher.search(q, filter=allow_q, limit=10, terms=True)
-        
-      for hit in results:
+      # From WHOOSH documentation: 
+      # > Currently, searching for page 100 with pagelen of 10 takes the same amount of time as using Searcher.search() 
+      #   to find the first 1000 results
+      results = searcher.search(q, filter=allow_q, limit=right, terms=True)
+      count = len(results)
+
+      
+      for hit in list(results)[offset:]:
         res.append({
-          'title': hit['title'],
+          # 'title': hit['title'],
           'short_url': hit['path'],
           'highlights': hit.highlights("content", top=5)
         })
     # @todo filter by empty highlight strings
-    return res 
+    return {
+      'results': res,
+      'count': count
+    }
 
 
 # fill a dictionary with metadata according to the languages specified in settings.py file

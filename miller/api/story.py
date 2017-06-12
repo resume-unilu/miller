@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json, os, mimetypes
+
+from collections import OrderedDict
+
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import Q
@@ -204,6 +207,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     form = SearchQueryForm(request.query_params)
     if not form.is_valid():
       return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     # get the results
     filters = {
       'classname': u'story',
@@ -218,29 +222,43 @@ class StoryViewSet(viewsets.ModelViewSet):
     if not request.user.is_staff:
       filters['status'] = Story.PUBLIC
 
-    results = search_whoosh_index(form.cleaned_data['q'], **filters)
+    _limit = 10
+    self.paginator.default_limit = 10
+    _offset = self.paginator.get_offset(request)
+
+    whres = search_whoosh_index(form.cleaned_data['q'], limit=_limit,  offset=_offset, **filters)
     
     # check if the user is allowed this content
     # if request.user.is_authenticated():
     #   stories = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
     # else:
-    stories = self.queryset.filter(short_url__in = [hit['short_url'] for hit in results]).distinct()
+    stories = self.queryset.filter(short_url__in=[hit['short_url'] for hit in whres.get('results', [])]).distinct()
+
 
 
     def mapper(d):
       d.matches = []
-      for hit in results:
+      for hit in whres.get('results', []):
         if d.short_url == hit['short_url']:
           d.matches = hit
           break
       return d
     # enrich stories items (max 10 items)
     stories = map(mapper, stories)
-    page    = self.paginate_queryset(stories)
-
+    self.paginator.count = whres.get('count', 0)
+    self.paginator.limit = _limit
+    self.paginator.offset = _offset
+    self.paginator.request = request
     serializer = MatchingStorySerializer(stories, many=True,
       context={'request': request}
     )
+    return Response(OrderedDict(filter(None,[
+          ('count', self.paginator.count),
+          ('next', self.paginator.get_next_link()),
+          ('previous', self.paginator.get_previous_link()),
+          ('results', serializer.data),
+          
+      ])))
     return self.get_paginated_response(serializer.data)
 
 
