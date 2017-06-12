@@ -138,6 +138,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     if g.warnings is not None:
       # this comes from the VerbosePagination class
       self.paginator.set_queryset_warnings(g.warnings)
+      self.paginator.set_queryset_verbose(g.get_verbose_info())
 
     page    = self.paginate_queryset(stories)
     

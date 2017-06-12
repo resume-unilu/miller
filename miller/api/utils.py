@@ -53,8 +53,17 @@ class Glue():
     if self.ordering is not None:
       #print self.ordering, '--', self.validated_ordering()
       self.queryset = self.queryset.order_by(*self.validated_ordering())
-    
-    
+
+  def get_verbose_info(self):
+    _d = {
+      "orderby": self.validated_ordering(),
+      "filters": filter(None, [ self.filters ] + self.filtersWaterfall),
+      "exclude": filter(None, [ self.excludes ] + self.excludesWaterfall)
+    }
+    print _d
+    return _d
+
+  
   def validated_ordering(self):
     _validated_ordering = []
     for field in self.ordering:

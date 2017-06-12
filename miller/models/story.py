@@ -25,6 +25,8 @@ from markdown import markdown
 from miller import helpers
 from miller.models import Tag, Document, Author
 
+from pydash import py_
+
 # from simplemde.fields import SimpleMDEField
 from templated_email import send_templated_mail
       
@@ -238,9 +240,10 @@ class Story(models.Model):
       logger.exception(e)
       return
 
+
     # multilingual abstract, reduced
-    abstracts = u"\n".join(filter(None,list(set([metadata['abstract'][language_code] if language_code in metadata['abstract'] else None for dlc, l, language_code, idx in settings.LANGUAGES]))))
-    titles    = u"\n".join(filter(None,list(set([metadata['title'][language_code] if language_code in metadata['title'] else None for dlc, l, language_code, idx in settings.LANGUAGES]))))
+    abstracts = u"\n".join(filter(None,list(set(py_.get(metadata, 'abstract.%s' % lang[2], None) for lang in settings.LANGUAGES))))
+    titles    = u"\n".join(filter(None,list(set(py_.get(metadata, 'title.%s' % lang[2], None) for lang in settings.LANGUAGES))))
 
     writer.update_document(
       title     = titles,

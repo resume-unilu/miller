@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import shutil,os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2, bibtexparser
+import shutil,os,codecs, mimetypes, json, requests, tempfile, logging, PyPDF2, bibtexparser, errno
 
 from actstream import action
 from actstream.actions import follow
@@ -101,9 +101,34 @@ class Document(models.Model):
 
   locked     = models.BooleanField(default=False) # prevent accidental override when it is not needed.
 
+  # add last modified date
+  
   # undirected
   documents  = models.ManyToManyField("self", blank=True)
   # documents  = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_with')
+
+  def download(self, outputFormat='iiif'):
+    """
+    write/rewrite metadata file according to outputformat, then add attachment.
+    Return the zippath, or raise an exception.
+    """
+    import zipfile
+
+    zf  = os.path.join(settings.ZIP_ROOT, '%s.zip' % self.slug)
+    if not os.path.exists(settings.ZIP_ROOT):
+      try:
+        os.makedirs(settings.ZIP_ROOT)
+      except OSError as e:
+        if e.errno != errno.EEXIST:
+          raise e
+    # write/rewrite data file according to outputformat
+
+    # add attachment (if allowed) and data file
+    with zipfile.ZipFile(zf, 'w') as z:
+      if self.data.get('downloadable', False) and self.attachment: #getattr(self.attachment, 'path', None) is not None:
+        z.write(self.attachment.path)
+    # write zip file
+    return zf
 
 
   @property

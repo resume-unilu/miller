@@ -1,10 +1,11 @@
-import json, requests
+import os, json, requests, mimetypes
 
 from django.core.cache import cache
+from django.http import StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers,viewsets
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from rest_framework.exceptions import ValidationError, PermissionDenied, ParseError, NotFound
 from rest_framework.response import Response
 
@@ -16,12 +17,32 @@ from miller.api.utils import Glue
 from requests.exceptions import HTTPError, Timeout
 from .pagination import FacetedPagination
 
+from wsgiref.util import FileWrapper
+
 
 class DocumentViewSet(viewsets.ModelViewSet):
   queryset = Document.objects.all()
   serializer_class = CreateDocumentSerializer
   list_serializer_class = LiteDocumentSerializer
   pagination_class = FacetedPagination
+
+
+  @detail_route(methods=['get'])
+  def download(self, request, pk):
+    """
+    Given a document pk, download as ZIP files a data file descriptor + text file data format.
+    """
+    doc = get_object_or_404(self.queryset, pk=pk)
+    # create ZIP containing the media (if available) and the text document
+    attachment = doc.download(outputFormat='iiif')
+    # should be ZIP
+    mimetype = mimetypes.guess_type(attachment)[0]
+    
+    response = StreamingHttpResponse(FileWrapper( open(attachment), 8192), content_type=mimetype)
+    response['Content-Length'] = os.path.getsize(attachment)  
+    response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (doc.slug, mimetypes.guess_extension(mimetype))
+
+    return response
 
   # retrieve by PK or slug
   def retrieve(self, request, *args, **kwargs):

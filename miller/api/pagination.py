@@ -13,27 +13,42 @@ class VerbosePagination(LimitOffsetPagination):
   """
   E.g. Use in `rest_framework.viewsets.ModelViewSet` classes/subclasses or other classes inheriting `rest_framework.generics.GenericAPIView`:
   This lets you add a 'warnings' dicts to the paginated response.
-  ```
   
+  ```
     self.paginator.set_queryset_warnings({
       "custom_warning": "custom_message"
     })
   ```
+  To add verbose info, e.g filters used or order by, add them as:
+  ```
+    self.paginator.set_queryset_verbose({
+      "custom_warning": "custom_message"
+    })
+  ```
+
   """
+  queryset_verbose  = None
   queryset_warnings = None
-  
-  
+
   def set_queryset_warnings(self, warnings):
     self.queryset_warnings = warnings
 
+
+  def set_queryset_verbose(self, verbose):
+    self.queryset_verbose = verbose
+
+
   def get_paginated_response(self, data):
-    return Response(OrderedDict(filter(None,[
+    _verbose = filter(None,[
         ('count', self.count),
         ('next', self.get_next_link()),
         ('previous', self.get_previous_link()),
         ('results', data),
-        ('warnings', self.queryset_warnings)
-    ])))
+    ] + [
+        ('warnings', self.queryset_warnings) if self.queryset_warnings else None,
+        ('verbose', self.queryset_verbose) if self.queryset_verbose else None
+    ])
+    return Response(OrderedDict(_verbose))
 
 
 class FacetedPagination(VerbosePagination):
@@ -51,7 +66,7 @@ class FacetedPagination(VerbosePagination):
           ('previous', self.get_previous_link()),
           ('results', data),
           ('facets', self.get_facets()),
-          ('warnings', self.queryset_warnings)
+          ('warnings', self.queryset_warnings) if self.queryset_warnings else None
       ])))
 
     def get_facets(self):
