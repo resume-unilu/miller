@@ -140,7 +140,7 @@ class Command(BaseCommand):
     parser.add_argument(
         '--pk',
         dest='pk',
-        default=False,
+        default=None,
         help='primary key of the instance',
     )
 
@@ -294,7 +294,7 @@ class Command(BaseCommand):
         break;
 
       tag, created = Tag.objects.get_or_create(slug=_slug, category=options.get('category', Tag.KEYWORD))
-      print tag.slug, '- created:', created, '- name:', tag.name
+      logger.debug('tag saved {slug:%s, created:%s, name:%s}' % (tag.slug, created, tag.name))
       tag.name = row.get('name', '').strip()
 
       _data = data_structure.copy()
@@ -320,7 +320,7 @@ class Command(BaseCommand):
     if not url:
       raise Exception('no google spreadsheet link in settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET')
     
-    print url
+    #print url
 
     m = re.match(r'https://docs.google.com/spreadsheets/d/([^/]*)', url)
     if not m:
@@ -384,8 +384,8 @@ class Command(BaseCommand):
     
     if _model == 'story':
       stories = Story.objects.filter(pk=options.get('pk')) if options.get('pk', None) is not None else Story.objects.all()
-
-      
+      print  options.get('pk', None)
+      logger.debug('stories: %s' % stories.count())
 
       # # The `iterator()` method ensures only a few rows are fetched from
       # # the database at a time, saving memory.
