@@ -165,7 +165,8 @@ class Document(models.Model):
     """
     Return search queryset for this model. No ranking for the moment.
     """
-    return models.Q(data__icontains=query)
+    from django.contrib.postgres.search import SearchQuery
+    return models.Q(search_vector=SearchQuery(query, config='simple'))
 
 
   def update_search_vector(self):
@@ -191,7 +192,7 @@ class Document(models.Model):
       """,[A_weighted, B_weighted, self.id])
 
     # this is searchable as SELECT id FROM miller_document WHERE search_vector @@ to_tsquery('simple', 'descript:*')
-    
+
   # store into the whoosh index
   def store(self, ix=None):
     if ix is None:
