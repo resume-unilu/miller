@@ -8,6 +8,8 @@ from actstream.actions import follow
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.search import SearchVectorField
+
 from django.core import files
 from django.core.cache import cache
 from django.db import models
@@ -101,8 +103,12 @@ class Document(models.Model):
 
   locked     = models.BooleanField(default=False) # prevent accidental override when it is not needed.
 
+  # add search field
+  search_vector = SearchVectorField(null=True, blank=True)
+
   # add last modified date
   
+
   # undirected
   documents  = models.ManyToManyField("self", blank=True)
   # documents  = models.ManyToManyField("self", through='Mention', symmetrical=False, related_name='mentioned_with')
@@ -161,6 +167,31 @@ class Document(models.Model):
     """
     return models.Q(data__icontains=query)
 
+
+  def update_search_vector(self):
+    A_weighted    = u"\n".join(filter(None,[
+      self.data.get('title', None)] + list(
+        set(
+          py_.get(self.data, 'title.%s' % lang[2], None) for lang in settings.LANGUAGES)
+        )))
+    B_weighted = u"\n".join(filter(None,list(set(py_.get(self.data, 'description.%s' % lang[2], None) for lang in settings.LANGUAGES))))
+    
+    from django.db import connection
+    with connection.cursor() as cursor:
+      cursor.execute("""
+        UPDATE miller_document SET search_vector = x.weighted_tsv FROM (  
+          SELECT id,
+                setweight(to_tsvector('simple', COALESCE(%s,'')), 'A') ||
+                setweight(to_tsvector('simple', COALESCE(%s,'')), 'B')
+                AS weighted_tsv
+            FROM miller_document
+          WHERE miller_document.id=%s
+        ) AS x
+        WHERE x.id = miller_document.id
+      """,[A_weighted, B_weighted, self.id])
+
+    # this is searchable as SELECT id FROM miller_document WHERE search_vector @@ to_tsquery('simple', 'descript:*')
+    
   # store into the whoosh index
   def store(self, ix=None):
     if ix is None:

@@ -124,6 +124,7 @@ class Command(BaseCommand):
     'cleanbin',
     'clean_cache',
     'update_whoosh',
+    'update_search_vectors',
     'update_localisation',
     'update_localisation_gs',
     'bulk_import_gs_as_documents',
@@ -182,6 +183,29 @@ class Command(BaseCommand):
     logger.debug('command finished.')
   
   
+  def update_search_vectors(self, pk=None, **options):
+    logger.debug('task: update_search_vectors')
+
+    docs = Document.objects.all()
+    if pk:
+      docs = docs.filter(pk=pk)
+
+    for doc in docs.iterator():
+      doc.update_search_vector()
+      logger.debug('task: update_search_vectors for document {pk:%s}' % doc.pk)
+
+#     UPDATE miller_document SET search_vector = x.weighted_tsv 
+# FROM (  
+#     SELECT id,
+#            setweight(to_tsvector('simple', 'what the foooooock A index'), 'A') ||
+#            setweight(to_tsvector('simple', 'what the foooooock B foo'), 'B')
+#            AS weighted_tsv
+#      FROM miller_document
+#      WHERE miller_document.id=1533
+# ) AS x
+# WHERE x.id = miller_document.id
+
+
   def migrate_documents(self, **options):
     logger.debug('task: migrate_documents')
     docs = Document.objects.filter(data={})
