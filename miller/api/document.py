@@ -174,8 +174,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
       return res
 
     res = perform_request(url, headers={'Range':'bytes=0-20000'})
-
-    if res.headers.get('content-type') in ("application/pdf", "application/x-pdf",):
+    # we can have the case content-type is 'application/pdf;charset=UTF-8'
+    if res.headers.get('content-type', '').split(';')[0] in ("application/pdf", "application/x-pdf",):
       provider_url = self.headers.get('Host', None)
       if not provider_url:
         from urlparse import urlparse
@@ -224,15 +224,16 @@ class DocumentViewSet(viewsets.ModelViewSet):
       "html": ''
     }
 
-    def quickmeta(doc, name, attrs={}):
-      attrs.update({
-        'name': name
-      })
+    def quickmeta(doc, name, attrs={}, key='name'):
+      attrs = {
+        key: name
+      } if not attrs else attrs
       try:
         m = doc.html.head.findAll('meta', attrs=attrs)
       except AttributeError:
         return None
-      return None if not m else u"".join([t['content'] for t in m])
+      #print m, attrs
+      return None if not m else u"".join(filter(None, [t.get('content', None) for t in m]))
 
 
 
@@ -269,6 +270,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     if not d['thumbnail_url']:
       d['thumbnail_url'] = quickmeta(doc=doc, name='og:image')
 
+    if not d['thumbnail_url']:
+      d['thumbnail_url'] = quickmeta(doc=doc, name='og:image', key='property')
+
+    if not d['provider_name']:
+      d['provider_name'] = quickmeta(doc=doc, name='og:site_name', key='property')
 
     #import opengraph
 
@@ -295,7 +301,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     #   })
 
     # if not d['title']:
-
+    print d
 
 
 
