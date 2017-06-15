@@ -54,7 +54,7 @@ class Glue():
       #print self.ordering, '--', self.validated_ordering()
       self.queryset = self.queryset.order_by(*self.validated_ordering())
 
-    print self.queryset.query
+    #print self.queryset.query
     
   def get_verbose_info(self):
     _d = {
@@ -62,7 +62,6 @@ class Glue():
       "filters": filter(None, [ self.filters ] + self.filtersWaterfall),
       "exclude": filter(None, [ self.excludes ] + self.excludesWaterfall)
     }
-    print _d
     return _d
 
   
@@ -133,7 +132,7 @@ def filters_from_request(request, field_name='filters'):
 
 
 def search_from_request(request, klass):
-  print klass
+  #print klass
   # understand if request has a search query
   search_query = request.query_params.get('q', None) 
   if search_query is None:
