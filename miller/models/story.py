@@ -9,6 +9,8 @@ from actstream.actions import follow
 from BeautifulSoup import BeautifulSoup
 
 from django.conf import settings
+from django.contrib.postgres.search import SearchVectorField
+
 from django.core.signals import request_finished
 from django.core.cache import cache
 from django.db import models
@@ -116,6 +118,9 @@ class Story(models.Model):
 
   # fileField (usually a zotero-friendly importable file)
   bibliography = models.FileField(upload_to=user_path, blank=True, null=True)
+
+  # add huge search field
+  search_vector = SearchVectorField(null=True, blank=True)
 
 
   @property
@@ -259,6 +264,71 @@ class Story(models.Model):
     # print "saving",  u",".join([u'%s' % t.slug for t in self.tags.all()])
     writer.commit()
     logger.debug('story {pk:%s} whoosh completed %s' % (self.pk, receiver))
+
+
+  @staticmethod
+  def get_search_Q(query, raw=False):
+    """
+    Return search queryset for this model, ranked by weight. Check update_search_vector function for more info
+    """
+    from miller.postgres import RawSearchQuery
+    
+
+    #' & '.join(map(lambda x: x if x.endswith(':*') else '%s:*' % x, query.split(' ')))
+    return models.Q(search_vector=RawSearchQuery(query, config='simple'))
+
+
+  def update_search_vector(self):
+    """
+    Fill the search_vector using self.data:
+    e.g. get data['title'] if is a basestring or data['title']['en_US'] according to the values contained into settings.LANGUAGES
+    Note that a language configuration can be done as well, in this case consider the last value in settings.LANGUAGES (e.g. 'english')
+    Then fill search_vector with authors and tags.
+    """
+    from django.db import connection
+    fields = (('title', 'A'), ('abstract', 'B'))
+    contents = []
+
+    for _field, _weight in fields:
+      default_value = self.dmetadata.get(_field, None)
+      value = u"\n".join(filter(None,[
+        default_value if isinstance(default_value, basestring) else None
+      ] + list(
+        set(
+          py_.get(self.dmetadata, '%s.%s' % (_field, lang[2]), None) for lang in settings.LANGUAGES)
+        )
+      ))
+      contents.append((value, _weight, 'simple'))
+ 
+    authors   =  u", ".join([u'%s' % t.fullname for t in self.authors.all()])
+    # well, quite complex.
+    tags      =  u", ".join(set(filter(None, py_.flatten([ 
+      [py_.get(tag.data, 'name.%s' % lang[2], None) for lang in settings.LANGUAGES] + [tag.slug, tag.name] for tag in self.tags.only('slug', 'name', 'data')
+    ]))))
+    # 
+    contents.append((authors, 'A', 'simple'))
+    contents.append((tags, 'C', 'simple'))
+    contents.append((u"\n".join(BeautifulSoup(markdown(u"\n\n".join(filter(None,[
+        self.contents,
+      ])), extensions=['footnotes'])).findAll(text=True)), 'B', 'simple'))
+    
+    q = ' || '.join(["setweight(to_tsvector('simple', COALESCE(%%s,'')), '%s')" % weight for value, weight, _config in contents])
+
+
+
+    with connection.cursor() as cursor:
+      cursor.execute(''.join(["""
+        UPDATE miller_story SET search_vector = x.weighted_tsv FROM (  
+          SELECT id,""",
+            q,
+          """
+                AS weighted_tsv
+            FROM miller_story
+          WHERE miller_story.id=%s
+        ) AS x
+        WHERE x.id = miller_story.id
+      """]), [value for value, _w, _c in contents] +  [self.id])
+    return contents
 
   # unstore (usually when deleted)
   def unstore(self, ix=None):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Tasks on models
-import os, logging, json, re, requests, StringIO, datetime
+import os, logging, json, re, requests, StringIO, datetime, time
 
 from miller.helpers import get_whoosh_index
 from miller.models import Author, Document, Story, Profile, Tag
@@ -176,34 +176,35 @@ class Command(BaseCommand):
 
 
   def handle(self, *args, **options):
+    start = time.time()
     if options['taskname'] in self.available_tasks:
       getattr(self, options['taskname'])(**options)
     else:
       logger.debug('command NOT FOUND, tasks availables: ["%s"]' % '","'.join(self.available_tasks))
-    logger.debug('command finished.')
+    end = time.time()
+    logger.debug('command finished in %s seconds.' % (end - start))
   
   
-  def update_search_vectors(self, pk=None, **options):
+  def update_search_vectors(self, pk=None, model=False, **options):
     logger.debug('task: update_search_vectors')
 
-    docs = Document.objects.all()
-    if pk:
-      docs = docs.filter(pk=pk)
-
-    for doc in docs.iterator():
-      doc.update_search_vector()
-      logger.debug('task: update_search_vectors for document {pk:%s}' % doc.pk)
-
-#     UPDATE miller_document SET search_vector = x.weighted_tsv 
-# FROM (  
-#     SELECT id,
-#            setweight(to_tsvector('simple', 'what the foooooock A index'), 'A') ||
-#            setweight(to_tsvector('simple', 'what the foooooock B foo'), 'B')
-#            AS weighted_tsv
-#      FROM miller_document
-#      WHERE miller_document.id=1533
-# ) AS x
-# WHERE x.id = miller_document.id
+    if model == 'document':
+      docs = Document.objects.all()
+      if pk:
+        docs = docs.filter(pk=pk)
+      for doc in docs.iterator():
+        doc.update_search_vector()
+        logger.debug('task: update_search_vectors for document {pk:%s, slug:%s}' % (doc.pk, doc.slug))
+    elif model == 'story':
+      stories = Story.objects.exclude(status=Story.DELETED)
+      if pk:
+        stories = stories.filter(pk=pk)
+      for story in stories.iterator():
+        story.update_search_vector()
+        logger.debug('task: update_search_vectors for story {pk:%s, slug:%s}' % (story.pk, story.slug))
+    else:
+      logger.error('task: please provide a valid model to update_whoosh: "document" or "story"...')
+    
 
 
   def migrate_documents(self, **options):

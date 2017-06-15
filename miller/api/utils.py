@@ -54,6 +54,8 @@ class Glue():
       #print self.ordering, '--', self.validated_ordering()
       self.queryset = self.queryset.order_by(*self.validated_ordering())
 
+    print self.queryset.query
+    
   def get_verbose_info(self):
     _d = {
       "orderby": self.validated_ordering(),

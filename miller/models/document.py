@@ -165,31 +165,46 @@ class Document(models.Model):
     """
     Return search queryset for this model. No ranking for the moment.
     """
-    from django.contrib.postgres.search import SearchQuery
-    return models.Q(search_vector=SearchQuery(query, config='simple'))
+    from miller.postgres import RawSearchQuery
+    return models.Q(search_vector=RawSearchQuery(query, config='simple'))
 
 
   def update_search_vector(self):
-    A_weighted    = u"\n".join(filter(None,[
-      self.data.get('title', None)] + list(
-        set(
-          py_.get(self.data, 'title.%s' % lang[2], None) for lang in settings.LANGUAGES)
-        )))
-    B_weighted = u"\n".join(filter(None,list(set(py_.get(self.data, 'description.%s' % lang[2], None) for lang in settings.LANGUAGES))))
-    
+    """
+    Fill the search_vector using self.data:
+    e.g. get data['title'] if is a basestring or data['title']['en_US'] according to the values contained into settings.LANGUAGES
+    Note that a language configuration can be done as well, in this case consider the last value in settings.LANGUAGES (e.g. 'english')
+    """
     from django.db import connection
+    
+    fields = (('title', 'A'), ('description', 'B'))
+    contents = []
+
+    for _field, _weight in fields:
+      default_value = self.data.get(_field, None)
+      value = u"\n".join(filter(None,[
+        default_value if isinstance(default_value, basestring) else None
+      ] + list(
+        set(
+          py_.get(self.data, '%s.%s' % (_field, lang[2]), None) for lang in settings.LANGUAGES)
+        )
+      ))
+      contents.append((value, _weight, 'simple'))
+
+    q = ' || '.join(["setweight(to_tsvector('simple', COALESCE(%%s,'')), '%s')" % weight for value, weight, _config in contents])
+
     with connection.cursor() as cursor:
-      cursor.execute("""
+      cursor.execute(''.join(["""
         UPDATE miller_document SET search_vector = x.weighted_tsv FROM (  
-          SELECT id,
-                setweight(to_tsvector('simple', COALESCE(%s,'')), 'A') ||
-                setweight(to_tsvector('simple', COALESCE(%s,'')), 'B')
+          SELECT id,""",
+            q,
+          """
                 AS weighted_tsv
             FROM miller_document
           WHERE miller_document.id=%s
         ) AS x
         WHERE x.id = miller_document.id
-      """,[A_weighted, B_weighted, self.id])
+      """]), [value for value, _w, _c in contents] +  [self.id])
 
     # this is searchable as SELECT id FROM miller_document WHERE search_vector @@ to_tsquery('simple', 'descript:*')
 
