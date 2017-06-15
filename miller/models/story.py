@@ -298,7 +298,8 @@ class Story(models.Model):
           py_.get(self.dmetadata, '%s.%s' % (_field, lang[2]), None) for lang in settings.LANGUAGES)
         )
       ))
-      contents.append((value, _weight, 'simple'))
+      if value:
+        contents.append((value, _weight, 'simple'))
  
     authors   =  u", ".join([u'%s' % t.fullname for t in self.authors.all()])
     # well, quite complex.
@@ -306,8 +307,11 @@ class Story(models.Model):
       [py_.get(tag.data, 'name.%s' % lang[2], None) for lang in settings.LANGUAGES] + [tag.slug, tag.name] for tag in self.tags.only('slug', 'name', 'data')
     ]))))
     # 
-    contents.append((authors, 'A', 'simple'))
-    contents.append((tags, 'C', 'simple'))
+    if authors:
+      contents.append((authors, 'A', 'simple'))
+    if tags:
+      contents.append((tags, 'C', 'simple'))
+
     contents.append((u"\n".join(BeautifulSoup(markdown(u"\n\n".join(filter(None,[
         self.contents,
       ])), extensions=['footnotes'])).findAll(text=True)), 'B', 'simple'))

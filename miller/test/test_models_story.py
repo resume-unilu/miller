@@ -38,8 +38,13 @@ class StoryTest(TestCase):
     )
     self.story.save()
     self.story.authors.add(coauthor)
-    print [a.fullname for a in self.story.authors.all()]
     self.assertTrue(os.path.exists(self.story.get_path()))
+
+
+  def _test_postgres_full_search(self):
+    search_vector_contents = self.story.update_search_vector()
+    self.assertEquals(len(search_vector_contents), 2)
+    self.assertEquals(search_vector_contents[1][0], u'Basic\n\n\nWith a nice paragraph\n1\n and some footnotes.\n\n\nthis is a third level\n\n\nsome text...\n\n\n\n\n\n\n\n\n\n\nfootnote content&#160;\n&#8617;\n\n\n\n\n\n')
 
 
   def test_comment(self):
@@ -73,6 +78,7 @@ class StoryTest(TestCase):
    
     
   def test_suite(self):
+    self._test_postgres_full_search()
     self._test_download_pdf()
     self._test_delete()
     self._test_delete_user()
