@@ -4,7 +4,7 @@
 import os, logging, json, re, requests, StringIO, datetime, time
 
 from miller.helpers import get_whoosh_index
-from miller.models import Author, Document, Story, Profile, Tag
+from miller.models import Author, Document, Story, Profile, Tag, Ngrams
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -123,6 +123,7 @@ class Command(BaseCommand):
     'snapshots404',
     'cleanbin',
     'clean_cache',
+    'update_ngrams_table',
     'update_whoosh',
     'update_search_vectors',
     'update_localisation',
@@ -204,7 +205,33 @@ class Command(BaseCommand):
         logger.debug('task: update_search_vectors for story {pk:%s, slug:%s}' % (story.pk, story.slug))
     else:
       logger.error('task: please provide a valid model to update_whoosh: "document" or "story"...')
-    
+  
+
+  def update_ngrams_table(self, pk=None, model=False, **options):
+    """
+    Example usage:
+    python manage.py task update_ngrams_table --model=document --pk=123
+    """
+    logger.debug('task: update_ngrams_table')
+    if model == 'document':
+      docs = Document.objects.all()
+
+      if pk:
+        docs = docs.filter(pk=pk)
+      for doc in docs.iterator():
+        logger.debug('task: update_search_vectors for document {pk:%s, slug:%s}' % (doc.pk, doc.slug))
+        indexed_contents = doc.update_search_vector()
+
+        words = Ngrams.tokenize(u' '.join([idx[0] for idx in indexed_contents]))
+        ngs   = Ngrams.find_ngrams(words=words, n=2) + Ngrams.find_ngrams(words=words, n=3)
+        slugs = Ngrams.slugify(ngs)
+        
+        for idx, slug in enumerate(slugs):
+          
+          ng, created = Ngrams.objects.get_or_create(slug=slug, defaults={
+            'segment': u' '.join(ngs[idx])
+          })
+          print idx, slug, created
 
 
   def migrate_documents(self, **options):

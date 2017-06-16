@@ -205,7 +205,7 @@ class Document(models.Model):
         ) AS x
         WHERE x.id = miller_document.id
       """]), [value for value, _w, _c in contents] +  [self.id])
-
+    return contents
     # this is searchable as SELECT id FROM miller_document WHERE search_vector @@ to_tsquery('simple', 'descript:*')
 
   # store into the whoosh index

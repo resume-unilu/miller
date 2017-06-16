@@ -11,6 +11,7 @@ from mention import Mention
 from comment import Comment
 from review import Review
 from page import Page
+from ngrams import Ngrams
 
 from miller.consumers import broadcast
 from django.db.models.signals import post_save
