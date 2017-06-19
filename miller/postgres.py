@@ -23,7 +23,7 @@ class RawSearchQuery(SearchQuery):
       return ' | '.join(map(lambda x: self.qparse(x), ors))
 
     # substitute :* or * if they are at the end of a word
-    query = ':* '.join(re.split(r'\:\*\s+|\*\s+', query, flags=re.IGNORECASE))
+    query = ':* '.join(re.split(r'\:\*|\*', query, flags=re.IGNORECASE)).strip()
     # clean
     query = re.sub(r'[\?\(\)\|\&]', '', query)
 
