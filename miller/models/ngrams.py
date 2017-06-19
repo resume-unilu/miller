@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from miller.models import Document
-
+from django.contrib.postgres.indexes import GinIndex
 #PUNCTUATION = re.compile(r'[.;]' % re.escape(string.punctuation))
 
 class Ngrams(models.Model):
@@ -20,13 +20,14 @@ class Ngrams(models.Model):
 
   class Meta:
     verbose_name_plural = 'a lot of ngrams'
+    indexes = [ GinIndex(['segment'])]
 
   def __unicode__(self):
     return self.segment
 
   @staticmethod
   def tokenize(text):
-    return re.split(r'[\s\-,;\.\?\!]+', text) #.translate(dict.fromkeys(map(ord, string.punctuation))))
+    return re.split(r'[\s\-,;\.\?\!\|]+', text) #.translate(dict.fromkeys(map(ord, string.punctuation))))
 
   @staticmethod
   def find_ngrams(words, n=2):
@@ -37,4 +38,4 @@ class Ngrams(models.Model):
     """
     slugify and cluster ngrams, ready to be stored
     """
-    return map(lambda x:slugify(x if isinstance(x, basestring) else u' '.join(x))[:max_length], ngrams)
+    return filter(None, map(lambda x:slugify(x if isinstance(x, basestring) else u' '.join(x))[:max_length], ngrams))

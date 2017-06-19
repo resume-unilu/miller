@@ -8,7 +8,7 @@ waterfallre = re.compile(WATERFALL_IN + r'$')
 
 
 class Glue():
-  def __init__(self, request, queryset, extra_ordering=[]):
+  def __init__(self, request, queryset, extra_ordering=[], perform_q=True):
     self.filters, self.filtersWaterfall = filters_from_request(request=request)
     self.excludes, self.excludesWaterfall = filters_from_request(request=request, field_name='exclude')
     
@@ -18,13 +18,14 @@ class Glue():
     self.queryset = queryset
     self.warnings = None
 
-    self.search_query = search_from_request(request=request, klass=queryset.model)
+    if perform_q:
+      self.search_query = search_from_request(request=request, klass=queryset.model)
 
 
     try:
       self.queryset = self.queryset.exclude(**self.excludes).filter(**self.filters)
       
-      if self.search_query:
+      if perform_q and self.search_query:
         self.queryset = self.queryset.filter(self.search_query)
 
       if self.overlaps:
@@ -55,7 +56,14 @@ class Glue():
       self.queryset = self.queryset.order_by(*self.validated_ordering())
 
     #print self.queryset.query
+  
+  def get_hash(self, request):
+    import hashlib
+    m = hashlib.md5()
+    m.update(json.dumps(request.query_params, ensure_ascii=False))
+    return m.hexdigest()
     
+
   def get_verbose_info(self):
     _d = {
       "orderby": self.validated_ordering(),

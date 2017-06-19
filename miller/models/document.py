@@ -235,7 +235,6 @@ class Document(models.Model):
         _fields['description'], 
         _fields['details.caption'],
       ])),
-      typeahead = _fields['title'],
       classname = u"document")
 
     writer.commit()

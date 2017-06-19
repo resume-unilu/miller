@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from miller.models import Document
 from miller.forms import URLForm, SearchQueryForm
 from miller.api.serializers import MatchingDocumentSerializer, LiteDocumentSerializer, DocumentSerializer, CreateDocumentSerializer
-from miller.api.utils import Glue
+from miller.api.utils import Glue, filters_from_request
 
 from requests.exceptions import HTTPError, Timeout
 from .pagination import FacetedPagination
@@ -116,16 +116,40 @@ class DocumentViewSet(viewsets.ModelViewSet):
     if not form.is_valid():
       return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    g = Glue(request=request, queryset=self.queryset, perform_q=False)
+
+    ckey = g.get_hash(request=request)
+    print ckey
+    if cache.has_key(ckey):
+      return Response(cache.get(ckey))
+
     from django.contrib.postgres.search import SearchVector
+    from django.contrib.postgres.search import TrigramSimilarity
+    # provided a q 
 
-    # queryset = self.queryset.annotate(
-    #   sv=SearchVector('data__title'),
-    # ).filter(sv=form.cleaned_data['q'])
-    queryset = self.queryset.filter(Q(title__icontains=form.cleaned_data['q']) | Q(data__title__en_US__icontains=form.cleaned_data['q']))
+    
+    queryset = g.queryset.annotate(
+      similarity=TrigramSimilarity('ngrams__segment', form.cleaned_data['q']),
+    ).filter(similarity__gt=0.25).order_by('-similarity').values_list('ngrams__segment', flat=True).distinct()[:20]
+    # SELECT DISTINCT "miller_ngrams"."segment", 
+    #     SIMILARITY("miller_ngrams"."segment", europeenne) 
+    #     FROM "miller_document" LEFT OUTER JOIN "miller_ngrams_documents" 
+    #     ON ("miller_document"."id" = "miller_ngrams_documents"."document_id") 
+    #     LEFT OUTER JOIN "miller_ngrams" 
+    #     ON ("miller_ngrams_documents"."ngrams_id" = "miller_ngrams"."id") 
+    #     WHERE SIMILARITY("miller_ngrams"."segment", europeenne) > 0.25 
+    # ORDER BY SIMILARITY("miller_ngrams"."segment", europeenne) 
+    # DESC LIMIT 20
+    # print queryset.query
+    d = {
+      'results': queryset
+    }
 
-    return Response({
-      'results': queryset.values_list('title', flat=True)
+    cache.set(ckey, d)
+    d.update({
+      'cached': False
     })
+    return Response(d)
 
 
 

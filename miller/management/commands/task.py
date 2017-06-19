@@ -223,15 +223,22 @@ class Command(BaseCommand):
         indexed_contents = doc.update_search_vector()
 
         words = Ngrams.tokenize(u' '.join([idx[0] for idx in indexed_contents]))
-        ngs   = Ngrams.find_ngrams(words=words, n=2) + Ngrams.find_ngrams(words=words, n=3)
+        ngs   = Ngrams.find_ngrams(words=words, n=1) + Ngrams.find_ngrams(words=words, n=2)
         slugs = Ngrams.slugify(ngs)
-        
+        print slugs
         for idx, slug in enumerate(slugs):
-          
-          ng, created = Ngrams.objects.get_or_create(slug=slug, defaults={
-            'segment': u' '.join(ngs[idx])
-          })
-          print idx, slug, created
+          if slug:
+            try:
+              ng, created = Ngrams.objects.get_or_create(slug=slug, defaults={
+                'segment': u' '.join(ngs[idx])
+              })
+              doc.ngrams_set.add(ng)
+            except Exception as e:
+              print idx, slug, 'not working'
+            else:
+              print idx, slug, created
+        if slugs:
+          doc.save()
 
 
   def migrate_documents(self, **options):
