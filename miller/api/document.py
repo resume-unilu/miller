@@ -69,39 +69,34 @@ class DocumentViewSet(viewsets.ModelViewSet):
   @list_route(methods=['get'])
   def search(self, request):
     """
-    Deprecated in favor of using simpler q in http request
+    Add matches to the list of matching document.
     /api/document/?q=world
     cfr. utils.Glue class
     """
     from miller.forms import SearchQueryForm
-    from miller.helpers import search_whoosh_index
+    from miller.helpers import search_whoosh_index_headline
     form = SearchQueryForm(request.query_params)
     if not form.is_valid():
       return Response(form.errors, status=status.HTTP_201_CREATED)
-    # get the results
-    results = search_whoosh_index(form.cleaned_data['q'], classname=u'document')
-
-    filters = {
-      'short_url__in': [hit['short_url'] for hit in results]
-    }
-
     
-    # check if the user is allowed this content
-    g = Glue(request=request, queryset=self.queryset.filter(**filters).distinct())
-    docs = g.queryset
+    # get the results
+    g = Glue(request=request, queryset=self.queryset)
+    
+    # queryset = g.queryset.annotate(matches=RawSQL("SELECT 
+    page    = self.paginate_queryset(g.queryset.distinct())
+
+    # get hort_url to get results out of whoosh
+    highlights = search_whoosh_index_headline(query=form.cleaned_data['q'], paths=map(lambda x:x.short_url, page))
 
     def mapper(d):
       d.matches = []
-      for hit in results:
+      for hit in highlights:
         if d.short_url == hit['short_url']:
           d.matches = hit
           break
       return d
-    # enrich docs items (max 10 items)
-    #docs = map(mapper, docs)
-    page = self.paginate_queryset(docs)
 
-    serializer = MatchingDocumentSerializer(map(mapper,page), many=True,
+    serializer = MatchingDocumentSerializer(map(mapper, page), many=True,
       context={'request': request}
     )
     return self.get_paginated_response(serializer.data)

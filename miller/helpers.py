@@ -12,7 +12,7 @@ from wsgiref.util import FileWrapper
 from whoosh import qparser, analysis
 
 from whoosh.qparser import MultifieldParser
-from whoosh.query import Term, And, Every
+from whoosh.query import Term, And, Or, Every
     
 logger = logging.getLogger('miller')
 
@@ -201,7 +201,27 @@ def typeahead_whoosh_index(query):
   #   correction = s.correct_query(q, query)
   #   print correction.string
 
+def search_whoosh_index_headline(query, paths):
+  if not paths:
+    return []
+  ix = get_whoosh_index()
+  parser = MultifieldParser(['content', 'title', 'abstract'], ix.schema)
+  q = parser.parse(query)
 
+  allow_q = Or([Term('path', path) for path in paths])
+
+  res = []
+
+  with ix.searcher() as searcher:
+    results = searcher.search(q, filter=allow_q, limit=len(paths), terms=True)
+    for hit in results:
+      res.append({
+        # 'title': hit['title'],
+        'short_url': hit['path'],
+        'highlights': u' [...] '.join(filter(None, [hit.highlights("title", top=5), hit.highlights("abstract", top=5), hit.highlights("content", top=5)]))
+      })
+
+  return res
 
 
 def search_whoosh_index(query, offset=0, limit=10, *args, **kwargs):

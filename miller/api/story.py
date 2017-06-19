@@ -202,64 +202,40 @@ class StoryViewSet(viewsets.ModelViewSet):
   
   @list_route(methods=['get'])
   def search(self, request):
+    """
+    Add matches to the list of matching story.
+    /api/document/?q=world
+    cfr. utils.Glue class
+    """
     from miller.forms import SearchQueryForm
-    from miller.helpers import search_whoosh_index
+    from miller.helpers import search_whoosh_index_headline
     form = SearchQueryForm(request.query_params)
     if not form.is_valid():
-      return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+      return Response(form.errors, status=status.HTTP_201_CREATED)
     
+    stories = self._getUserAuthorizations(request)
     # get the results
-    filters = {
-      'classname': u'story',
-    }
-
-    if form.cleaned_data['tags']:
-      filters['tags'] = form.cleaned_data['tags']
+    g = Glue(request=request, queryset=stories)
     
-    if form.cleaned_data['authors']:
-      filters['authors'] = form.cleaned_data['authors']
-    
-    if not request.user.is_staff:
-      filters['status'] = Story.PUBLIC
+    # queryset = g.queryset.annotate(matches=RawSQL("SELECT 
+    page    = self.paginate_queryset(g.queryset.distinct())
 
-    _limit = 10
-    self.paginator.default_limit = 10
-    _offset = self.paginator.get_offset(request)
-
-    whres = search_whoosh_index(form.cleaned_data['q'], limit=_limit,  offset=_offset, **filters)
-    
-    # check if the user is allowed this content
-    # if request.user.is_authenticated():
-    #   stories = self.queryset.filter(Q(owner=request.user) | Q(authors__in=request.user.authorship.all()) | Q(status=Story.PUBLIC)).filter(**filters).distinct()
-    # else:
-    stories = self.queryset.filter(short_url__in=[hit['short_url'] for hit in whres.get('results', [])]).distinct()
-
-
+    # get hort_url to get results out of whoosh
+    highlights = search_whoosh_index_headline(query=form.cleaned_data['q'], paths=map(lambda x:x.short_url, page))
 
     def mapper(d):
       d.matches = []
-      for hit in whres.get('results', []):
+      for hit in highlights:
         if d.short_url == hit['short_url']:
           d.matches = hit
           break
       return d
-    # enrich stories items (max 10 items)
-    stories = map(mapper, stories)
-    self.paginator.count = whres.get('count', 0)
-    self.paginator.limit = _limit
-    self.paginator.offset = _offset
-    self.paginator.request = request
-    serializer = MatchingStorySerializer(stories, many=True,
+
+    serializer = MatchingStorySerializer(map(mapper, page), many=True,
       context={'request': request}
     )
-    return Response(OrderedDict(filter(None,[
-          ('count', self.paginator.count),
-          ('next', self.paginator.get_next_link()),
-          ('previous', self.paginator.get_previous_link()),
-          ('results', serializer.data),
-          
-      ])))
     return self.get_paginated_response(serializer.data)
+
 
 
   @detail_route(methods=['post'])
