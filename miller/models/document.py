@@ -166,7 +166,12 @@ class Document(models.Model):
     Return search queryset for this model. No ranking for the moment.
     """
     from miller.postgres import RawSearchQuery
-    return models.Q(search_vector=RawSearchQuery(query, config='simple'))
+    search_query = RawSearchQuery(query, config='simple')
+    logger.debug('search query: %s - parsed: %s' %(
+      query,
+      search_query.parsed_query
+    ))
+    return models.Q(search_vector=search_query)
 
 
   def update_search_vector(self):

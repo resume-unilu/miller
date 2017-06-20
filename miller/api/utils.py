@@ -146,15 +146,18 @@ def search_from_request(request, klass):
   #print klass
   # understand if request has a search query
   search_query = request.query_params.get('q', None) 
-  if search_query is None:
+  if search_query is None or len(search_query) < 2: #ignore less than two letters.
     return None
+  else:
+    try:
+      q = klass.get_search_Q(query=search_query)
+    except AttributeError:
+      # method not found on the model specified
+      return None
+    else:
+      return q
 
-  try:
-    q = klass.get_search_Q(query=search_query)
-  except AttributeError:
-    # method not found on the model specified
-    return None
-  return q
+  
 
 
 def overlaps_from_request(request, field_name='overlaps'):

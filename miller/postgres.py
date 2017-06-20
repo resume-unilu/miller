@@ -10,8 +10,10 @@ class RawSearchQuery(SearchQuery):
     # then throw away all punctuation and AND and OR
     # substitute * with :*
   parsed_value = ''
+  parsed_query = ''
 
   def qparse(self, query):
+    #print query
     query = query.strip()
     # 1 check for ANDS or &
     ands = re.split(r'\s+or\s+|\s+&\s+', query, flags=re.IGNORECASE)
@@ -22,13 +24,22 @@ class RawSearchQuery(SearchQuery):
     if len(ors)>1:
       return ' | '.join(map(lambda x: self.qparse(x), ors))
 
+    # get rid of quotes at the beginning and at the end
+    query = re.sub(r'^\'+|\'+$|\'\*|\'\:\*', '', query).strip()
+
     # substitute :* or * if they are at the end of a word
     query = ':* '.join(re.split(r'\:\*|\*', query, flags=re.IGNORECASE)).strip()
-    # clean
-    query = re.sub(r'[\?\(\)\|\&\'\"]', '', query)
+    
+    
+    # substitute escaped chars with spaces, then strip
+    query = re.sub(r'\'+', ' ', query).strip()
 
+    query = re.sub(r'[\?\(\)\|\&]', '', query)
+    #print query
+    self.parsed_query = ' & '.join(filter(None, re.split(r'\s+', query)))
     # concat spaces.
-    return ' & '.join(re.split(r'\s+', query))
+    #print self.parsed_query
+    return self.parsed_query
 
   def as_sql(self, compiler, connection):
     if not self.parsed_value:
