@@ -349,15 +349,21 @@ class Story(models.Model):
     writer.commit()
 
 
-  def gitTag(self, tag, versioned=True):
+  def gitTag(self, tag, message='', versioned=True, raise_eception=False):
     """
     Convenient function to handle GIT tagging
     """
+    from datetime import datetime
+    date_tag_created = datetime.utcnow().isoformat()
+    
     try:
       repo = Repo.init(settings.GIT_ROOT)
-      new_tag = repo.create_tag('%s.%s' % (tag, self.version) if versioned else tag)
+      new_tag = repo.create_tag('%s.%s' % (tag, self.version) if versioned else tag, message=u'%sZ - %s'% (date_tag_created, message))
     except Exception as e:
-      logger.exception(e)
+      if raise_eception:
+        raise e
+      else:
+        logger.exception(e)
 
   def gitLog(self, limit=4, offset=0):
     from django.utils import timezone
@@ -397,17 +403,23 @@ class Story(models.Model):
     _tags = []
     logs = repo.git.log('--follow', '--date=iso-strict','--no-walk', '--tags','--pretty=%h%d %cd', path).splitlines()
     for l in logs:
-      # parse log
       parts = re.match(r'(?P<hexsha>[a-f0-9]+)\s+\((?P<refs>[^\)]*)\)\s+(?P<date>.*)$', l)
       if not parts:
         continue
+      # for matching each tag in git log like:
+      # ebc38e3 (HEAD -> master, tag: vaz3.0.ebc3, tag: vaz2.0.ebc3, tag: vaz1.0.ebc3, tag: v1.0.ebc3) 2017-06-20T09:40:54+00:00
+      for i in re.finditer(r'tag\: (?P<path>[^,]+)', parts.group('refs')):
+        # get tag reference which MAY contain a message,
+        ref = repo.tags[i.group('path')]
 
-      _tags.append({
-        'tag': parts.group('refs').split(' ')[-1],
-        'refs': parts.group('refs'),
-        'hexsha': parts.group('hexsha'),
-        'date': dateparse.parse_datetime(parts.group('date'))
-      })
+        # then append it to the response.
+        _tags.append({
+          'tag': i.group('path'),
+          'message': ref.tag.message if ref.tag is not None else '',
+          'refs': parts.group('refs'),
+          'hexsha': parts.group('hexsha'),
+          'date': dateparse.parse_datetime(parts.group('date'))
+        })
     return _tags
 
   def get_git_contents_by_commit(self, commit_id):

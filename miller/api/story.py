@@ -12,12 +12,13 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAdminUser
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
+from miller.forms import GitTagForm
 from miller.models import Story, Tag, Document, Caption, Comment, Review
 from miller.api.utils import Glue
 from miller.api.fields import OptionalFileField, JsonField
@@ -366,6 +367,11 @@ class StoryViewSet(viewsets.ModelViewSet):
 
   @detail_route(methods=['get', 'post'], url_path='git/tag')
   def git_tags(self, request, pk): 
+    if request.method == 'POST':
+      form = GitTagForm(request.data)
+      if not form.is_valid():
+        raise ValidationError(form.errors)
+
     q = self._getUserAuthorizations(request)
     
     if not pk.isdigit():
@@ -373,15 +379,21 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       story = get_object_or_404(q, pk=pk)
 
-    if request.method == 'POST':
-      pass
-
     ckey = story.get_cache_key(extra='git_tags')
-    # if cache.has_key(ckey):
-    #   return Response(cache.get(ckey))
+
+    if request.method == 'POST':
+      # form is valid, and we have the right story loaded.
+      try:
+        story.gitTag(tag=form.cleaned_data['tag'], message=form.cleaned_data['message'], raise_eception=True)
+      except Exception as e:
+        raise ValidationError({
+          'tag': 'a version with this name exists already'
+        })
+      pass
+    #elif cache.has_key(ckey):
+    #  return Response(cache.get(ckey))
     # print 'oooallalala'
     d = story.get_git_tags()
-
     cache.set(ckey, d)
     
     return Response({
