@@ -25,7 +25,7 @@ class RawSearchQuery(SearchQuery):
     # substitute :* or * if they are at the end of a word
     query = ':* '.join(re.split(r'\:\*|\*', query, flags=re.IGNORECASE)).strip()
     # clean
-    query = re.sub(r'[\?\(\)\|\&]', '', query)
+    query = re.sub(r'[\?\(\)\|\&\'\"]', '', query)
 
     # concat spaces.
     return ' & '.join(re.split(r'\s+', query))

@@ -125,7 +125,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     
     queryset = g.queryset.annotate(
       similarity=TrigramSimilarity('ngrams__segment', form.cleaned_data['q']),
-    ).filter(similarity__gt=0.25).order_by('-similarity').values_list('ngrams__segment', flat=True).distinct()[:20]
+    ).filter(similarity__gt=0.35).order_by('-similarity').values_list('ngrams__segment', flat=True).distinct()[:5]
     # SELECT DISTINCT "miller_ngrams"."segment", 
     #     SIMILARITY("miller_ngrams"."segment", europeenne) 
     #     FROM "miller_document" LEFT OUTER JOIN "miller_ngrams_documents" 

@@ -31,6 +31,7 @@ class Glue():
       if self.overlaps:
         self.queryset = self.queryset.filter(self.overlaps)
         
+
     except FieldError as e:
       self.warnings = {
         'filters': '%s' % e
@@ -48,6 +49,8 @@ class Glue():
         pass
       except TypeError as e:
         pass
+
+    # @todo add rank annotation
 
     # print self.warnings, self.excludes
 
