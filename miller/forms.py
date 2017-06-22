@@ -31,5 +31,5 @@ class URLForm(forms.Form):
   url = forms.URLField()
 
 class GitTagForm(forms.Form):
-  tag = forms.RegexField(max_length=24, regex=r'^[a-z\.\d]+$', required=True)
+  tag = forms.RegexField(max_length=24, regex=r'^[a-zA-Z\-\_\.\d]+$', required=True)
   message = forms.CharField(max_length=128, required=False)

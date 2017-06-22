@@ -349,7 +349,7 @@ class Story(models.Model):
     writer.commit()
 
 
-  def gitTag(self, tag, message='', versioned=True, raise_eception=False):
+  def gitTag(self, tag, message='', versioned=True, raise_eception=False, author=None):
     """
     Convenient function to handle GIT tagging
     """
@@ -358,7 +358,7 @@ class Story(models.Model):
     
     try:
       repo = Repo.init(settings.GIT_ROOT)
-      new_tag = repo.create_tag('%s.%s' % (tag, self.version) if versioned else tag, message=u'%sZ - %s'% (date_tag_created, message))
+      new_tag = repo.create_tag('%s.%s' % (tag, self.version) if versioned else tag, message=u'%sZ - %s - %s'% (date_tag_created, author if author else '', message))
     except Exception as e:
       if raise_eception:
         raise e
@@ -393,6 +393,18 @@ class Story(models.Model):
     return logs
 
   
+  def get_git_diff(self, commit_id):
+    """
+    get git diff from the current version to the commit_id sha1
+    """
+    path = self.get_git_path()
+    repo = Repo.init(settings.GIT_ROOT)
+    results = []
+    diff = repo.git.diff('--unified=0','%s:%s' % (commit_id,path),path)
+    results = re.split(r'(@@ \-\d+,?\d* \+\d+,?\d* @@)', diff)
+    return results
+
+
   def get_git_tags(self):
     from django.utils import timezone, dateparse
     from datetime import datetime
@@ -400,27 +412,46 @@ class Story(models.Model):
     path = self.get_git_path()
     repo = Repo.init(settings.GIT_ROOT)
     # tags = sorted(repo.tags, key=lambda t: t.commit.committed_date)
-    _tags = []
+    results = []
     logs = repo.git.log('--follow', '--date=iso-strict','--no-walk', '--tags','--pretty=%h%d %cd', path).splitlines()
+    
     for l in logs:
       parts = re.match(r'(?P<hexsha>[a-f0-9]+)\s+\((?P<refs>[^\)]*)\)\s+(?P<date>.*)$', l)
       if not parts:
         continue
+      _log = {
+        'hexsha': parts.group('hexsha'),
+        'date': dateparse.parse_datetime(parts.group('date')),
+        'tags': []
+      }
       # for matching each tag in git log like:
       # ebc38e3 (HEAD -> master, tag: vaz3.0.ebc3, tag: vaz2.0.ebc3, tag: vaz1.0.ebc3, tag: v1.0.ebc3) 2017-06-20T09:40:54+00:00
       for i in re.finditer(r'tag\: (?P<path>[^,]+)', parts.group('refs')):
+        _tag = {
+          'tag': '.'.join(i.group('path').split('.')[:-1]),
+          'message': None,
+          'username': None,
+          'date': None
+        }
         # get tag reference which MAY contain a message,
         ref = repo.tags[i.group('path')]
-
+        
+        if ref.tag:
+          parts = re.match(r'^(?P<date>[^\s]*) - (?P<username>[^\s]*) - (?P<message>.*)$', ref.tag.message)
+          if not parts:
+            _tag['message'] = ref.tag.message
+          else:
+            _tag.update({
+              'date': parts.group('date'),
+              'username' : parts.group('username'),
+              'message' : parts.group('message')
+            })
         # then append it to the response.
-        _tags.append({
-          'tag': i.group('path'),
-          'message': ref.tag.message if ref.tag is not None else '',
-          'refs': parts.group('refs'),
-          'hexsha': parts.group('hexsha'),
-          'date': dateparse.parse_datetime(parts.group('date'))
-        })
-    return _tags
+        _log['tags'].append(_tag)
+        _log['tags'] = sorted(_log['tags'], key=lambda x: (x['date'],), reverse=True)
+      results.append(_log)
+    return results
+
 
   def get_git_contents_by_commit(self, commit_id):
     repo = Repo.init(settings.GIT_ROOT)
@@ -431,6 +462,25 @@ class Story(models.Model):
       logger.exception(e)
       return None
     return file_contents
+
+
+  def get_git_tags_by_commit(self, commit_id):
+    repo = Repo.init(settings.GIT_ROOT)
+    path = self.get_git_path()
+    results = []
+    logs = repo.git.tag('-l', '-n1000', '--points-at', commit_id).splitlines()
+    for l in logs:
+      parts = re.match(r'(?P<tag>[A-Za-z0-9\.\_\-]+)\s+(?P<date>[^\s]*) - (?P<username>[^\s]*) - (?P<message>.*)$', l)
+      if not parts:
+        continue
+      results.append({
+        'hexsha': parts.group('tag').split('.')[-1],
+        'tag': '.'.join(parts.group('tag').split('.')[:-1]),
+        'date': parts.group('date'),
+        'username' : parts.group('username'),
+        'message' : parts.group('message')
+      })
+    return results
 
 
   def get_highlights_by_commit(self, commit_id):
@@ -509,7 +559,7 @@ class Story(models.Model):
     try:
       repo.index.add([self.get_path()])
       c = repo.index.commit(message=u"saving %s" % self.title, author=author, committer=committer)
-      short_sha = repo.git.rev_parse(c, short=4)
+      short_sha = repo.git.rev_parse(c, short=7)
     except IOError as e:
       logger.debug('story {pk:%s} gitCommit has errors.' % self.pk)
       logger.exception(e)
@@ -651,7 +701,7 @@ class Story(models.Model):
 
       if self.status == Story.PUBLIC:
         print 'publishedddddd'
-        self.gitTag(Story.PUBLIC)
+        self.gitTag(Story.PUBLIC, author='staff')
         # increase/recalculate authors stories
         for author in self.authors.all():
           author.updatePublishedStories()
@@ -677,7 +727,7 @@ class Story(models.Model):
         action.send(self.owner, verb='ask_for_review', target=self)
       elif self.status == Story.REVIEW_DONE:
         # tag as reviewed
-        self.gitTag(Story.REVIEW_DONE)
+        self.gitTag(Story.REVIEW_DONE, author='staff')
 
         # chief reviewer has closed the review process.
         closingremarks = self.reviews.filter(category='closing').select_related('assignee').first()
@@ -689,7 +739,7 @@ class Story(models.Model):
         })
         # send mail to chief reviewer @todo
       elif self.status == Story.PRE_PRINT:
-        self.gitTag(Story.PRE_PRINT)
+        self.gitTag(Story.PRE_PRINT, author='staff')
 
 
   def __init__(self, *args, **kwargs):

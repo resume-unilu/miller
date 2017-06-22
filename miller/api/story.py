@@ -365,6 +365,26 @@ class StoryViewSet(viewsets.ModelViewSet):
     return Response(d)
 
 
+  @detail_route(methods=['get'], url_path='git/diff/(?P<commit_id>[0-9a-f]+)')
+  def git_diff(self, request, pk, commit_id=None):
+    """
+    Return a list of diffs
+    e.g. http://localhost:8000/api/story/populism/git/diff/538d1420fbb0da6be027317d963c059e71b45de5/
+    """
+    q = self._getUserAuthorizations(request)
+    
+    if not pk.isdigit():
+      story = get_object_or_404(q, slug=pk)
+    else:
+      story = get_object_or_404(q, pk=pk)
+
+    results = story.get_git_diff(commit_id)
+    return Response({
+      'raw': story.get_git_contents_by_commit(commit_id),
+      'results': results
+    })
+
+
   @detail_route(methods=['get', 'post'], url_path='git/tag')
   def git_tags(self, request, pk): 
     if request.method == 'POST':
@@ -383,8 +403,10 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     if request.method == 'POST':
       # form is valid, and we have the right story loaded.
+      if not request.user.is_authenticated:
+        raise PermissionDenied()
       try:
-        story.gitTag(tag=form.cleaned_data['tag'], message=form.cleaned_data['message'], raise_eception=True)
+        story.gitTag(tag=form.cleaned_data['tag'], message=form.cleaned_data['message'], raise_eception=True, author=request.user.username)
       except Exception as e:
         raise ValidationError({
           'tag': 'a version with this name exists already'
@@ -425,6 +447,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     
     d = serializer.data
     d['version']    = tag.split('.')[-1]
+    d['logs']       = story.get_git_tags_by_commit(commit_id=d['version'])
     d['contents']   = story.get_git_contents_by_commit(tag);
     d['highlights'] = story.get_highlights_by_commit(tag)
     return Response(d)
