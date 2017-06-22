@@ -264,7 +264,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     d['title']            = quickmeta(doc=doc, name='og:title')
     d['thumbnail_url']    = quickmeta(doc=doc, name='og:image:secure_url')
     d['thumbnail_width']  = quickmeta(doc=doc, name='og:image:width')
-    d['thumbnail_height'] = quickmeta(doc=doc, name='og:image:width')
+    d['thumbnail_height'] = quickmeta(doc=doc, name='og:image:height')
     d['provider_name']    = quickmeta(doc=doc, name='twitter:site')
 
     if not d['description']:
