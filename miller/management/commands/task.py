@@ -331,8 +331,13 @@ class Command(BaseCommand):
       })
 
 
-  def bulk_import_gs_as_tags(self, **options):
-    rows, headers = _bulk_import_gs(url=options.get('url', None), sheet=options.get('sheet', None), use_cache=options.get('cache', False), required_headers=['slug', 'data__provider'])
+  def bulk_import_gs_as_tags(self, url=None, sheet=None, use_cache=False, **options):
+    if not url:
+      raise Exception('please specify a google spreadsheet url with the --url parameter')
+
+    logger.debug('loading %s' % url)
+
+    rows, headers = _bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'data__provider'])
     
     data_paths =  _data_paths(headers=headers) 
     data_structure = {}
@@ -348,6 +353,7 @@ class Command(BaseCommand):
         continue
 
       _slug = row['slug'].strip()
+
       if len(_slug) > 100:
         logger.debug('line %s: "slug" length is excessive, BREAK!' % i)
         break;
