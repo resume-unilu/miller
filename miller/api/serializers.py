@@ -236,7 +236,7 @@ class StorySerializer(LiteStorySerializer):
       'documents', 'tags', 'covers', 'stories',
       'metadata',
       'contents',
-      'date', 'date_created', 
+      'date', 'date_created', 'date_last_modified',
       'status', 
       'source',
       'authors','owner',

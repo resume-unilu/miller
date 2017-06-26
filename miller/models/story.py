@@ -470,7 +470,7 @@ class Story(models.Model):
     results = []
     logs = repo.git.tag('-l', '-n1000', '--points-at', commit_id).splitlines()
     for l in logs:
-      parts = re.match(r'(?P<tag>[A-Za-z0-9\.\_\-]+)\s+(?P<date>[^\s]*) - (?P<username>[^\s]*) - (?P<message>.*)$', l)
+      parts = re.match(r'(?P<tag>[A-Za-z0-9\.\_\-]+)\s+(?P<date>[^\s]*) - (?P<username>[^\s]*) -\s*(?P<message>.*)$', l)
       if not parts:
         continue
       results.append({
