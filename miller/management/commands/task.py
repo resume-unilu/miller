@@ -280,8 +280,13 @@ class Command(BaseCommand):
 
   
 
-  def bulk_import_gs_as_documents(self,  **options):
-    rows, headers = _bulk_import_gs(url=options.get('url', None), sheet=options.get('sheet', None), required_headers=['slug', 'type'])
+  def bulk_import_gs_as_documents(self, url=None, sheet=None, use_cache=False, **options):
+    if not url:
+      raise Exception('please specify a google spreadsheet url with the --url parameter')
+
+    logger.debug('loading %s' % url)
+
+    rows, headers = _bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'type'])
     
     # owner is the first staff user
     owner = Profile.objects.filter(user__is_staff=True).first()
@@ -289,8 +294,8 @@ class Command(BaseCommand):
     if not owner:
       raise Exception('no Profile object defined in the database!')
 
-    data_paths =  _data_paths(headers) 
-
+    data_paths =  _data_paths(headers=headers) 
+    print data_paths
     # basic data structure based on headers column
     data_structure = {}
 

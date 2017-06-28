@@ -547,8 +547,8 @@ def dispatcher(sender, instance, created, **kwargs):
 @receiver(document_ready, sender=Document)
 def store_working_md(sender, instance, created, **kwargs):
   logger.debug('document@document_ready {pk:%s}: storing in whoosh' % instance.pk)
-  instance.store()
-
+  # instance.store()
+  
 
 @receiver(document_ready, sender=Document)
 def create_snapshot(sender, instance, created, **kwargs):
