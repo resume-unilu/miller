@@ -291,26 +291,6 @@ class Document(models.Model):
         logger.debug('url: %s for document {pk:%s} TIMEOUT...' % (self.url, self.pk))
           
 
-  # def generate_metadata(self):
-  #   """
-  #   deprecated when using JSONField
-  #   """
-
-  #   if getattr(self, '__metadata', None) is None:
-  #     r = {}
-  #     r.update(Document.DEFAULT_OEMBED)
-  #     try:
-  #       r.update(json.loads(self.contents))
-  #     except Exception, e:
-  #       logger.exception(e)
-  #       r['error'] = '%s'%e
-  #     self.__metadata = r
-  #     return r
-  #   else:
-  #     return self.__metadata
-
-
-
   def fill_from_metadata(self):
     if 'error' in self.data: # simply ignore filling from erroneous self.__metadata.
       return
@@ -471,7 +451,7 @@ class Document(models.Model):
       self.fill_from_metadata()
       
       if self.url:
-        print 'verify the url:', self.url
+        #print 'verify the url:', self.url
         try:
           doc = Document.objects.get(url=self.url)
           
@@ -506,6 +486,9 @@ class Document(models.Model):
        
     else:
       super(Document, self).save(*args, **kwargs)
+
+    if self._saved == 1:
+      self.update_search_vector()
 
 
 @receiver(pre_save, sender=Document)
@@ -543,12 +526,6 @@ def dispatcher(sender, instance, created, **kwargs):
     follow(instance.owner, instance)
 
 
-# store in whoosh
-@receiver(document_ready, sender=Document)
-def store_working_md(sender, instance, created, **kwargs):
-  logger.debug('document@document_ready {pk:%s}: storing in whoosh' % instance.pk)
-  # instance.store()
-  
 
 @receiver(document_ready, sender=Document)
 def create_snapshot(sender, instance, created, **kwargs):

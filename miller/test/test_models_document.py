@@ -25,10 +25,16 @@ class DocumentTest(TestCase):
       title=u'The happy story of the Promo', 
       url='http://ec.europa.eu/health/files/eudralex/vol-1/reg_2016_161/reg_2016_161_en.pdf',
       owner=self.user,
-      data={"html": "original content here"},
+      data={
+        "html": "original content here", 
+        "title":"The happy story of the Promo", 
+        "description":"The happy story of the Turtle."
+      },
       locked = True
     )
     self.doc.save()
+    self.doc.refresh_from_db()
+    self.assertEqual('%s'%self.doc.search_vector, "'happy':2A,8B 'of':4A,10B 'promo':6A 'story':3A,9B 'the':1A,5A,7B,11B 'turtle':12B")
     self.assertEqual(self.doc.slug, 'the-happy-story-of-the-promo')
     self.assertEqual(self.doc.locked, True)
     
