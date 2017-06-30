@@ -124,10 +124,17 @@ class StoryViewSet(viewsets.ModelViewSet):
     serializer = StorySerializer(story,
         context={'request': request},
     )
+    d = serializer.data
     #print 'set cache', ckey
-    cache.set(ckey, serializer.data)
+    cache.set(ckey, d)
+
+    if request.query_params.get('nocache', None) and request.query_params.get('with-git-logs', None):
+      d.update({
+        'logs': story.get_git_tags_by_commit(commit_id=story.version)
+      })
     
-    return Response(serializer.data)
+    
+    return Response(d)
   
 
   def list(self, request):
@@ -377,10 +384,10 @@ class StoryViewSet(viewsets.ModelViewSet):
       story = get_object_or_404(q, slug=pk)
     else:
       story = get_object_or_404(q, pk=pk)
-
+    
     results = story.get_git_diff(commit_id)
     return Response({
-      'raw': story.get_git_contents_by_commit(commit_id),
+      # 'raw': story.get_git_contents_by_commit(commit_id),
       'results': results
     })
 

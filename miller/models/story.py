@@ -399,10 +399,23 @@ class Story(models.Model):
     """
     path = self.get_git_path()
     repo = Repo.init(settings.GIT_ROOT)
-    results = []
-    diff = repo.git.diff('--unified=0','%s:%s' % (commit_id,path),path)
+    results = [],
+    _r = {};
+
+    # produce:  git diff --no-color --word-diff 68a03a1:users/k8CxmWi/ALAgdn8.md users/k8CxmWi/ALAgdn8.md
+    diff = repo.git.diff('--no-color', '--word-diff', '%s:%s' % (commit_id,path),path)
+    
+    print '%s:%s' % (commit_id,path)
+    # return results
+    # diff = repo.git.diff('--unified=0','%s:%s' % (commit_id,path),path)
     results = re.split(r'(@@ \-\d+,?\d* \+\d+,?\d* @@)', diff)
-    return results
+
+    if results:
+      _r['headers'] = results.pop(0);
+      _r['diff']  = dict(zip(results[::2], results[1::2]))
+
+
+    return _r
 
 
   def get_git_tags(self):
