@@ -180,6 +180,7 @@ class CreateDocumentSerializer(serializers.ModelSerializer):
 
 class LiteMentionSerializer(serializers.ModelSerializer):
   slug     = serializers.ReadOnlyField()
+  data     = JsonField()
   # covers   = LiteDocumentSerializer(many=True)
   tags     = TagSerializer(many=True)
   authors  = AuthorSerializer(many=True)
