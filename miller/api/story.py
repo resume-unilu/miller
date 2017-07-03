@@ -66,7 +66,7 @@ class StoryViewSet(viewsets.ModelViewSet):
         story.save()
         # save file separately
     else:
-      story = serializer.save()
+      story = serializer.save(owner=self.request.user)
       story.create_first_author()
       story.save()
    
@@ -159,13 +159,6 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     serializer = LiteStorySerializer(page, many=True, context={'request': request})
     return Response(serializer.data)
-
-
-  # for some tags require the request user to be staff user
-  # @permission_classes((IsAdminUser, ))
-  def partial_update(self, request, *args, **kwargs):
-    # print request.user
-    return super(StoryViewSet, self).partial_update(request, *args, **kwargs)
 
 
   @detail_route(methods=['get'])
@@ -384,7 +377,7 @@ class StoryViewSet(viewsets.ModelViewSet):
       story = get_object_or_404(q, slug=pk)
     else:
       story = get_object_or_404(q, pk=pk)
-    
+
     results = story.get_git_diff(commit_id)
     return Response({
       # 'raw': story.get_git_contents_by_commit(commit_id),

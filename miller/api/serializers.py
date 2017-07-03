@@ -96,7 +96,7 @@ class LiteAuthorSerializer(serializers.ModelSerializer):
   lite Serializer for an author, i.e. without profile info.
   """
   stories = serializers.IntegerField(read_only=True, source='num_stories')
-  # metadata = JsonField()
+
   class Meta:
     model = Author
     fields = ('id', 'fullname', 'affiliation', 'data', 'slug', 'stories')
@@ -156,7 +156,6 @@ class DocumentSerializer(LiteDocumentSerializer):
 
 class MatchingDocumentSerializer(serializers.ModelSerializer):
   matches = HitField()
-  # metadata = JsonField(source='contents')
   src   = OptionalFileField(source='attachment')
 
   class Meta:
@@ -166,7 +165,6 @@ class MatchingDocumentSerializer(serializers.ModelSerializer):
 
 # define the 
 class CreateDocumentSerializer(serializers.ModelSerializer):
-  # metadata = JsonField(source='contents')
   owner = serializers.HiddenField(
     default=serializers.CurrentUserDefault()
   )
@@ -182,13 +180,12 @@ class CreateDocumentSerializer(serializers.ModelSerializer):
 
 class LiteMentionSerializer(serializers.ModelSerializer):
   slug     = serializers.ReadOnlyField()
-  metadata = JsonField()
   # covers   = LiteDocumentSerializer(many=True)
   tags     = TagSerializer(many=True)
   authors  = AuthorSerializer(many=True)
   class Meta:
     model = Mention
-    fields = ('id', 'slug', 'metadata', 'tags', 'authors')
+    fields = ('id', 'slug', 'data', 'tags', 'authors')
 
 
 # Story Serializer to use in action lists
@@ -203,12 +200,11 @@ class IncrediblyLiteStorySerializer(serializers.ModelSerializer):
 class AnonymousLiteStorySerializer(serializers.ModelSerializer):
   tags     = TagSerializer(many=True)
   covers   = LiteDocumentSerializer(many=True)
-  metadata = JsonField()
   source   = serializers.BooleanField(source='isSourceAvailable')
 
   class Meta:
     model = Story
-    fields = ('id', 'slug', 'short_url', 'date',  'version', 'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata', 'source')
+    fields = ('id', 'slug', 'short_url', 'date',  'version', 'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'data', 'source')
 
 
 # Story Serializer to use in lists
@@ -218,7 +214,7 @@ class LiteStorySerializer(AnonymousLiteStorySerializer):
   
   class Meta:
     model = Story
-    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner', 'metadata')
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner',  'data')
 
 
 
@@ -234,7 +230,7 @@ class StorySerializer(LiteStorySerializer):
       'id','url','slug','short_url',
       'title', 'abstract',
       'documents', 'tags', 'covers', 'stories',
-      'metadata',
+      'data',
       'contents',
       'date', 'date_created', 'date_last_modified',
       'status', 
@@ -260,7 +256,7 @@ class AnonymousStorySerializer(AnonymousLiteStorySerializer):
       'id','url','slug','short_url',
       'title', 'abstract',
       'documents', 'tags', 'covers', 'stories',
-      'metadata',
+      'data',
       'contents',
       'date', 'date_created', 
       'status','owner',
@@ -276,28 +272,21 @@ class MatchingStorySerializer(serializers.HyperlinkedModelSerializer):
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
   matches = HitField()
-  metadata = JsonField()
 
   def is_named_bar(self, foo):
       return foo.name == "bar" 
 
   class Meta:
     model = Story
-    fields = ('id', 'url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'covers', 'metadata', 'authors', 'tags', 'owner', 'matches')
+    fields = ('id', 'url', 'slug', 'short_url', 'title', 'abstract', 'date',  'date_created', 'status', 'covers', 'data', 'authors', 'tags', 'owner', 'matches')
 
 
 
 # Serializer when creating stories. It automatically add the owner as author
 class CreateStorySerializer(serializers.ModelSerializer):
-  owner = serializers.HiddenField(
-    default=serializers.CurrentUserDefault()
-  )
-
-  
   class Meta:
     model  = Story
-    #exclude = ('source',)
-    fields = '__all__'
+    exclude = ('owner',)
 
 
 
@@ -340,11 +329,11 @@ class CollectionSerializer(serializers.ModelSerializer):
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
   documents = CaptionSerializer(source='caption_set', many=True)
-  metadata = JsonField()
+
 
   class Meta:
     model = Story
-    fields = ('id', 'status', 'slug', 'title', 'covers', 'authors', 'owner', 'tags', 'documents', 'stories', 'metadata', 'contents')
+    fields = ('id', 'status', 'slug', 'title', 'covers', 'authors', 'owner', 'tags', 'documents', 'stories', 'data', 'contents')
 
 
 
@@ -509,11 +498,10 @@ class LitePageSerializer(serializers.HyperlinkedModelSerializer):
 class PendingStorySerializer(serializers.ModelSerializer):
   tags = TagSerializer(many=True)
   covers = LiteDocumentSerializer(many=True)
-  metadata = JsonField()
   reviews = LiteReviewWithoutStorySerializer(many=True)
   class Meta:
     model = Story
-    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'metadata', 'reviews')
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'tags',  'data', 'reviews')
 
 
 

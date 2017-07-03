@@ -249,7 +249,7 @@ class StoryAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
     super(StoryAdminForm, self).__init__(*args, **kwargs)
     self.fields['contents'].widget = codemirror_md_widget
-    self.fields['metadata'].widget = codemirror_json_widget
+    self.fields['data'].widget = codemirror_json_widget
 
 
   def clean_metadata(self):
@@ -265,7 +265,7 @@ class StoryAdminForm(forms.ModelForm):
 
 class StoryAdmin(admin.ModelAdmin):
   # inlines = (CaptionInline,)
-  exclude=['cover', 'cover_copyright', 'watchers', 'stories']
+  exclude=['cover', 'cover_copyright', 'watchers', 'stories', 'metadata']
   search_fields = ['title']
   list_filter = ('status', WritingTagsListFilter, BlogTagsListFilter)
   list_display = ['__str__', 'date', 'priority']

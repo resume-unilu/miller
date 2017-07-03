@@ -132,6 +132,7 @@ class Command(BaseCommand):
     'bulk_import_gs_as_tags',
     # tasks migration related.
     'migrate_documents',
+    'migrate_stories',
     'migrate_authors'
   )
 
@@ -251,6 +252,18 @@ class Command(BaseCommand):
       d.update({})
       doc.data = d
       doc.save()
+
+  def migrate_stories(self, **options):
+    logger.debug('task: migrate_stories')
+    stories = Story.objects.filter(data={})
+    
+    logger.debug('task: migrate_stories for %s stories with empty data' % stories.count())
+    for story in stories.iterator():
+      logger.debug('task: migrate_stories for document {pk:%s}' % story.pk)
+      d = story.dmetadata
+      d.update({})
+      story.data = d
+      story.save()
 
 
   def migrate_authors(self, **options):

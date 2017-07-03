@@ -9,6 +9,7 @@ from actstream.actions import follow
 from BeautifulSoup import BeautifulSoup
 
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.search import SearchVectorField
 
 from django.core.signals import request_finished
@@ -84,6 +85,8 @@ class Story(models.Model):
     'title': language_dict,
     'abstract':language_dict
   }, indent=1),blank=True) # it will contain, JSON fashion
+
+  data      = JSONField(verbose_name=u'metadata contents', help_text='JSON format', default=dict(), blank=True)
 
   date               = models.DateTimeField(db_index=True, blank=True, null=True) # date displayed (metadata)
   date_created       = models.DateTimeField(auto_now_add=True)
@@ -290,12 +293,12 @@ class Story(models.Model):
     contents = []
 
     for _field, _weight in fields:
-      default_value = self.dmetadata.get(_field, None)
+      default_value = self.data.get(_field, None)
       value = u"\n".join(filter(None,[
         default_value if isinstance(default_value, basestring) else None
       ] + list(
         set(
-          py_.get(self.dmetadata, '%s.%s' % (_field, lang[2]), None) for lang in settings.LANGUAGES)
+          py_.get(self.data, '%s.%s' % (_field, lang[2]), None) for lang in settings.LANGUAGES)
         )
       ))
       if value:
@@ -554,12 +557,12 @@ class Story(models.Model):
     if self.pk and not 'contents' in self.diffs:
       logger.debug('story {pk:%s} commit_contents skipped, nothing new to commit.' % (self.pk))
       return
+    logger.debug('story {pk:%s} diffs: %s' % (self.pk, json.dumps(self.diffs)))
     
-    
-
-    if not force and settings.TESTING:
-      logger.debug('story {pk:%s} commit_contents git commit skipped, just testing!' % self.pk)
-      return
+    # NOTE: COMMIT needs to be tested for multi-user writing
+    # if not force and settings.TESTING:
+    #   logger.debug('story {pk:%s} commit_contents git commit skipped, just testing!' % self.pk)
+    #   return
     
     author = Actor(self.owner.username, self.owner.email)
     committer = Actor(settings.GIT_COMMITTER['name'], settings.GIT_COMMITTER['email'])
@@ -785,6 +788,8 @@ class Story(models.Model):
       logger.debug('story@save {slug:%s,pk:%s} not having a default date. Fixing...' % (self.slug, self.pk))
       self.date = self.date_last_modified
 
+    # this is the woner
+    print 'owner', self.owner
     # create story file if it is not exists; if the story eists already, cfr the followinf story_ready
     if self._saved == 1:
       try:
@@ -818,34 +823,52 @@ def clear_cache_on_save(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Story)
 def fill_metadata(sender, instance, **kwargs):
-  if getattr(instance, '_dirty', None) is not None:
-    return
-  try:
-    metadata = instance.dmetadata
-    if 'title' not in metadata:
-      metadata['title'] = {}
-    if 'abstract' not in metadata:
-      metadata['abstract'] = {}
-    for lowercase_language_code, label, language_code, idx in settings.LANGUAGES:
+  if 'title' not in instance.data:
+    instance.data['title'] = {}
+  if 'abstract' not in instance.data:
+    instance.data['abstract'] = {}
+
+  for lowercase_language_code, label, language_code, idx in settings.LANGUAGES:
       # LANGUAGES = [
-      #   ('fr-fr', _('French'), 'fr_FR'),
-      #   ('de-de', _('German'), 'de_DE'),
-      #   ('en-us', _('US English'), 'en_US'),
-      #   ('en-gb', _('British English'), 'en_GB'),
+      #   ('fr-fr', _('French'), 'fr_FR', 'french'),
+      #   ('de-de', _('German'), 'de_DE', 'german'),
+      #   ('en-us', _('US English'), 'en_US', 'english'),
+      #   ('en-gb', _('British English'), 'en_GB', 'english'),
       # ]
-      # if lowercase_language_code not in metadata['title']:
-      #   metadata['title'][lowercase_language_code] = instance.title
-      # if lowercase_language_code not in metadata['abstract']:
-      #   metadata['abstract'][lowercase_language_code] = instance.abstract
-      if language_code not in metadata['title']:
-        metadata['title'][language_code] = ''
-      if language_code not in metadata['abstract']:
-        metadata['abstract'][language_code] = ''
-    instance.metadata = json.dumps(metadata, ensure_ascii=False, indent=1)
-  except Exception as e:
-    logger.exception(e)
-  else:
-    logger.debug('story@pre_save {pk:%s}: metadata ready.' % instance.pk)
+    if language_code not in instance.data['title']:
+      instance.data['title'][language_code] = ''
+    if language_code not in instance.data['abstract']:
+      instance.data['abstract'][language_code] = ''
+
+  logger.debug('story@pre_save {pk:%s}: metadata ready.' % instance.pk)
+  # if getattr(instance, '_dirty', None) is not None:
+  #   return
+  # try:
+  #   metadata = instance.dmetadata
+  #   if 'title' not in metadata:
+  #     metadata['title'] = {}
+  #   if 'abstract' not in metadata:
+  #     metadata['abstract'] = {}
+  #   for lowercase_language_code, label, language_code, idx in settings.LANGUAGES:
+  #     # LANGUAGES = [
+  #     #   ('fr-fr', _('French'), 'fr_FR'),
+  #     #   ('de-de', _('German'), 'de_DE'),
+  #     #   ('en-us', _('US English'), 'en_US'),
+  #     #   ('en-gb', _('British English'), 'en_GB'),
+  #     # ]
+  #     # if lowercase_language_code not in metadata['title']:
+  #     #   metadata['title'][lowercase_language_code] = instance.title
+  #     # if lowercase_language_code not in metadata['abstract']:
+  #     #   metadata['abstract'][lowercase_language_code] = instance.abstract
+  #     if language_code not in metadata['title']:
+  #       metadata['title'][language_code] = ''
+  #     if language_code not in metadata['abstract']:
+  #       metadata['abstract'][language_code] = ''
+  #   instance.metadata = json.dumps(metadata, ensure_ascii=False, indent=1)
+  # except Exception as e:
+  #   logger.exception(e)
+  # else:
+  #   logger.debug('story@pre_save {pk:%s}: metadata ready.' % instance.pk)
 
 
 
@@ -866,14 +889,15 @@ def dispatcher(sender, instance, created, **kwargs):
     instance.dispatch_status_changed(created)
 
   # always store in whoosh.
-  instance.store()
+  # instance.store()
 
 
 # clean store in whoosh when deleted
-@receiver(pre_delete, sender=Story)
-def unstore_working_md(sender, instance, **kwargs):
-  instance.unstore()
-  logger.debug('story@pre_delete {pk:%s} unstore_working_md: done' % instance.pk)
+# DEPRECATED
+# @receiver(pre_delete, sender=Story)
+# def unstore_working_md(sender, instance, **kwargs):
+#   instance.unstore()
+#   logger.debug('story@pre_delete {pk:%s} unstore_working_md: done' % instance.pk)
 
 
 # clean makdown version and commit
@@ -901,9 +925,9 @@ def delete_working_md(sender, instance, **kwargs):
 
   logger.debug('story@pre_delete {pk:%s} markdown removed.' % instance.pk)
 
-  if settings.TESTING:
-    logger.debug('story@pre_delete {pk:%s} delete_working_md skipped commit, just testing!' % instance.pk)
-    return
+  # if settings.TESTING:
+  #   logger.debug('story@pre_delete {pk:%s} delete_working_md skipped commit, just testing!' % instance.pk)
+  #   return
 
   # commit if there are any differences
   repo = Repo.init(settings.GIT_ROOT)

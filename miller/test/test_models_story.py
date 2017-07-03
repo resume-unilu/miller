@@ -47,6 +47,10 @@ class StoryTest(TestCase):
     self.assertEquals(search_vector_contents[1][0], u'Basic\n\n\nWith a nice paragraph\n1\n and some footnotes.\n\n\nthis is a third level\n\n\nsome text...\n\n\n\n\n\n\n\n\n\n\nfootnote content&#160;\n&#8617;\n\n\n\n\n\n')
 
 
+  #def _test_git_tag(self):
+
+
+
   def test_comment(self):
     # add comment
     com = Comment(story=self.story, contents=u'{}', owner=self.user)
