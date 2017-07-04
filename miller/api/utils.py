@@ -69,7 +69,7 @@ class Glue():
 
   def get_verbose_info(self):
     _d = {
-      "orderby": self.validated_ordering(),
+      # "orderby": self.validated_ordering(),
       "filters": filter(None, [ self.filters ] + self.filtersWaterfall),
       "exclude": filter(None, [ self.excludes ] + self.excludesWaterfall)
     }
@@ -91,9 +91,9 @@ class Glue():
           _validated_ordering.append(OrderBy(RawSQL("cast(data->>%s as integer)", (parts[1],)), descending=_reverse), )
         else:
           # _validated_ordering.append(OrderBy(RawSQL("data->>%s", (parts[1],)), descending=True ))
-          _validated_ordering.append(OrderBy(RawSQL("LOWER(data->>%s)", (parts[1],)), descending=_reverse))
+          _validated_ordering.append(OrderBy(RawSQL("LOWER(%s.data->>%%s)" % (self.queryset.model._meta.db_table), (parts[1],)), descending=_reverse))
 
-      if _field not in self.extra_ordering:
+      elif _field not in self.extra_ordering:
         try:
           self.queryset.model._meta.get_field(_field)
         except Exception as e:
