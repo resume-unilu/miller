@@ -193,14 +193,15 @@ class DocumentViewSet(viewsets.ModelViewSet):
       return res
 
     res = perform_request(url, headers={'Range':'bytes=0-20000'})
-    # we can have the case content-type is 'application/pdf;charset=UTF-8'
-    if res.headers.get('content-type', '').split(';')[0] in ("application/pdf", "application/x-pdf",):
-      provider_url = self.headers.get('Host', None)
-      if not provider_url:
-        from urlparse import urlparse
-        o = urlparse(url)
-        provider_url = o.netloc
+    content_type  = res.headers.get('content-type', '').split(';')[0]
+    provider_url = self.headers.get('Host', None)
+    if not provider_url:
+      from urlparse import urlparse
+      o = urlparse(url)
+      provider_url = o.netloc
 
+    # we can have the case content-type is 'application/pdf;charset=UTF-8'
+    if content_type in ("application/pdf", "application/x-pdf",):
       d = {
         "url": url,
         "provider_url": provider_url,
@@ -209,7 +210,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         "width": 600,
         "html": "<iframe src=\"https://drive.google.com/viewerng/viewer?url=%s&embedded=true\" width=\"600\" height=\"780\" style=\"border: none;\"></iframe>" % url,
         "version": "1.0",
-        "provider_name": res.headers.get('server', ''),
+        "provider_name": provider_url,
         "type": "rich",
         "info": {
           'service': 'miller',
@@ -219,6 +220,25 @@ class DocumentViewSet(viewsets.ModelViewSet):
       cache.set(ckey, d)
       return Response(d)
 
+    elif content_type.startswith('image/'):
+      d = {
+        "url": url,
+        "provider_url": provider_url,
+        "title": "",
+        "height": 780,
+        "width": 600,
+        "version": "1.0",
+        "provider_name": provider_url,
+        "type": "photo",
+        "info": {
+          'service': 'miller',
+        }
+      }
+      cache.set(ckey, d)
+      return Response(d)
+
+      # is it an image or similar?
+      # https://www.hdg.de/lemo/img_hd/bestand/objekte/biografien/schaeuble-wolfgang_foto_LEMO-F-5-051_bbst.jpg
 
     # check noembed! e.g; for flickr. We should check if the url is in the pattern specified.
     noembed = perform_request('https://noembed.com/embed', params={
