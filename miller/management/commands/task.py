@@ -59,8 +59,13 @@ def _bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
     response = requests.get('https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:json&sheet=%s' % (key, sheet), stream=True)
     response.encoding = 'utf8'
     m = re.search(r'google\.visualization\.Query\.setResponse\((.*)\)[^\)]*$', response.content);
-    cache.set(ckey, m.group(1), timeout=None)
-    contents = json.loads(m.group(1))
+    try:
+      cache.set(ckey, m.group(1), timeout=None)
+      contents = json.loads(m.group(1))
+    except Exception as e:
+      logger.debug('cannot find contents... Did you share the google spreadsheet as viewable LINK?')
+      raise e
+   
 
   # _headers = contents['table']['cols'][0] if contents['table']['cols'][0]["label"] else contents['table']['rows'][0]['c'] 
   has_headers_in_cols = len(contents['table']['cols'][0]["label"].strip()) > 0 
@@ -130,6 +135,7 @@ class Command(BaseCommand):
     'update_localisation_gs',
     'bulk_import_gs_as_documents',
     'bulk_import_gs_as_tags',
+    'bulk_import_gs_as_biographies',
     # tasks migration related.
     'migrate_documents',
     'migrate_stories',
@@ -174,6 +180,13 @@ class Command(BaseCommand):
         dest='cache',
         default=False,
         help='enable redis caching for offline jobs',
+    )
+
+    parser.add_argument(
+        '--owner',
+        dest='owner',
+        default=False,
+        help='miller username',
     )
 
 
@@ -289,8 +302,79 @@ class Command(BaseCommand):
   
 
 
-  
+  def bulk_import_gs_as_biographies(self, url=None, owner=None, sheet=None, **options):
+    """
+    usage:
+    python -W ignore manage.py task bulk_import_gs_as_biographies --owner=<your username> --url=<your url> --sheet=people
+    """
+    logger.debug('loading %s' % url)
+    print owner, options
+    
+    owner = Profile.objects.filter(user__username=owner).first()
+    if not owner:
+      raise Exception('specify a **valid** miller username with the --owner parameter.')
+    
+    logger.debug('with owner: %s' % owner)
 
+    biotag = Tag.objects.get(category=Tag.WRITING, slug='biography')
+
+
+    rows, headers = _bulk_import_gs(url=url, sheet=sheet, use_cache=options['cache'], required_headers=['slug', 'type'])
+    
+    # create ---stories---
+    logger.debug('saving stories with related document...')
+    for i, row in enumerate(rows):
+      if not row['slug'] or not row['type'] or not row['title']:
+        logger.debug('line %s: empty "slug", skipping.' % i)
+        continue
+
+      _slug = row['slug'].strip()
+      _type = row['type'].strip()
+
+      story, created = Story.objects.get_or_create(slug=_slug, defaults={
+        'owner': owner.user,
+        'title': row['title'].strip()
+      })
+      # print story.slug, not story.title, created
+      if not story.title:
+        story.title = row['title'].strip()
+
+      if not story.abstract:
+        story.abstract = row['data__description__en_US'] if 'data__description__en_US' in row else ''
+
+      # create data
+      if not story.data:
+        story.data = {
+          'title': {
+            'en_US': story.title
+          }
+        }
+
+      if not story.data.get('title').get('en_US', None):
+        story.data['title']['en_US'] = story.title
+
+      if not story.data.get('abstract').get('en_US', None):
+        story.data['abstract']['en_US'] = story.title
+      
+      # create or get a document of type 'entity'
+      doc, dcreated = Document.objects.get_or_create(slug=_slug, type=Document.ENTITY, defaults={
+        'owner': owner.user
+      })
+
+      if not doc.title:
+        doc.title = row['title'].strip()
+
+      logger.debug('- with cover document {slug:%s, type:%s, created:%s}' % (doc.slug, doc.type, dcreated))
+      
+      story.tags.add(biotag)
+      story.covers.add(doc)
+      story.authors.add(owner.user.authorship.first())
+      story.save()
+
+      logger.debug('ok - story {slug:%s, created:%s} saved' % (story.slug, created))
+    logger.debug('updating document data...')
+    self.bulk_import_gs_as_documents(url=url, sheet=sheet, use_cache=True, required_headers=['slug', 'type'])
+    
   
 
   def bulk_import_gs_as_documents(self, url=None, sheet=None, use_cache=False, **options):
