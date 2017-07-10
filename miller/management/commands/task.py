@@ -328,33 +328,39 @@ class Command(BaseCommand):
         logger.debug('line %s: empty "slug", skipping.' % i)
         continue
 
-      _slug = row['slug'].strip()
-      _type = row['type'].strip()
+      _slug = row.get('slug', '')
+      _type = row.get('type', '')
 
       story, created = Story.objects.get_or_create(slug=_slug, defaults={
         'owner': owner.user,
-        'title': row['title'].strip()
+        'title': row.get('title', '')
       })
       # print story.slug, not story.title, created
       if not story.title:
-        story.title = row['title'].strip()
+        story.title = row.get('title', '')
 
       if not story.abstract:
-        story.abstract = row['data__description__en_US'] if 'data__description__en_US' in row else ''
+        story.abstract = row.get('data__description__en_US', '')
 
       # create data
-      if not story.data:
-        story.data = {
+      #print row
+      if not story.data or not 'title' in story.data:
+        story.data.update({
           'title': {
-            'en_US': story.title
+            'en_US': row.get('title', '')
+          },
+          'abstract': {
+            'en_US': row.get('data__description__en_US', '')
           }
-        }
+        })
+
+      #print story.title, row['title'].strip()
 
       if not story.data.get('title').get('en_US', None):
-        story.data['title']['en_US'] = story.title
+        story.data['title']['en_US'] = row.get('title', '')
 
       if not story.data.get('abstract').get('en_US', None):
-        story.data['abstract']['en_US'] = story.title
+        story.data['abstract']['en_US'] = row.get('data__description__en_US', '')
       
       # create or get a document of type 'entity'
       doc, dcreated = Document.objects.get_or_create(slug=_slug, type=Document.ENTITY, defaults={
