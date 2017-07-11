@@ -31,8 +31,39 @@ class Command(TaskCommand):
   )
 
 
-  def bulk_import_dbpedia_for_biographies():
-      pass
+  def bulk_import_dbpedia_for_biographies(self,  **options):
+    docs = Document.objects.filter(data__type='person', data__wiki_id__isnull=False)
+    print docs.count()
+
+    for doc in docs.iterator():
+      logger.debug('document {slug:%s, wiki_id:%s}' % (doc.slug, doc.data['wiki_id']))
+      
+      if not doc.data['wiki_id']:
+        logger.debug('skipping, BAD wiki_id.')
+        continue
+
+      contents = utils.dbpedia(wiki_id=doc.data['wiki_id'])
+      #      doc.save()
+      try:
+        resource = contents['http://dbpedia.org/resource/%s' % doc.data['wiki_id']]
+      except KeyError as e:
+        logger.debug('skipping, wiki_id: %s gives empty results' % doc.data['wiki_id'])
+        continue
+      # print resource
+
+      doc.data['thumbnail'] = pyd.get(resource.get('http://dbpedia.org/ontology/thumbnail'), '[0].value')
+      doc.data['url']       = pyd.get(resource.get('http://xmlns.com/foaf/0.1/depiction'), '[0].value')
+
+      if not doc.data['thumbnail'] and not doc.data['url']:
+        logger.debug('skipping, no data need to be updated.')
+        continue
+
+
+      doc.save()
+      #resource = pyd.get(contents, 'http://dbpedia.org/resource/%s' % doc.data['wiki_id'])
+      #print resource
+      #print pyd.get(contents, 'http://dbpedia.org/resource/%s.http://dbpedia.org/ontology/thumbnail'%doc.data['wiki_id'])
+      
   
 
   def bulk_import_gs_as_biographies_activities(self, url=None, owner=None, sheet=None, **options):

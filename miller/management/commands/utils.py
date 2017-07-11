@@ -7,6 +7,36 @@ from django.core.cache import cache
 logger = logging.getLogger('console')
 
 
+def dbpedia(wiki_id, use_cache=True):
+  """
+  Return dbpedia info about the resource
+  """
+  if not wiki_id:
+    print wiki_id
+    raise Exception('dbpedia wiki_id should be a valid string, none received.')
+
+  ckey = 'dbpedia:%s' % wiki_id
+  logger.debug('dbpedia: loading contents for {wiki_id:%s}' % wiki_id)
+    
+  if use_cache and cache.has_key(ckey):
+    logger.debug('dbpedia: returning cached contents.')
+    return json.loads(cache.get(ckey))
+  
+  # perform the resuestto dbpedia json endpoint
+  res = requests.get('https://dbpedia.org/data/%s.json' % wiki_id)
+  res.raise_for_status()
+  
+  contents  = res.json()
+
+  if use_cache:
+    cache.set(ckey, res.text, timeout=None)
+  
+
+  logger.debug('dbpedia: {status_code:%s, wiki_id:%s}, url: https://dbpedia.org/data/%s.json' % (res.status_code, wiki_id, wiki_id))
+  
+  return contents
+
+
 def data_paths(headers):
   """
   rebuild the structure of data JSON onject based on __ concatenation of headers
