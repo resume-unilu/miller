@@ -5,6 +5,7 @@ import os, logging, json, re, requests, StringIO, datetime, time
 
 from miller.helpers import get_whoosh_index
 from miller.models import Author, Document, Story, Profile, Tag, Ngrams
+from miller.management.commands import utils
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -14,103 +15,6 @@ from django.db import transaction
 
 logger = logging.getLogger('console')
 
-
-
-def _data_paths(headers):
-  """
-  rebuild the structure of data JSON onject based on __ concatenation of headers
-  """
-  return [(x, x.split('|')[0].split('__'), x.split('|')[-1] == 'list') for x in filter(lambda x: isinstance(x, basestring) and x.startswith('data__'), headers)]
-
-
-def _bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
-  """
-  return rows and headers from the CSV representation of a google spreadsheet.
-  This requires:
-  
-  url   = options['url']
-  sheet = options['sheet']
-
-  """
-  if not 'url':
-    raise Exception('no google spreadsheet link. Please pass a valid --url option')
-
-  if not 'sheet':
-    raise Exception('please provide the sheet to load')
-
-  logger.debug('using cache: %s' % use_cache)
-  
-  m = re.match(r'https://docs.google.com/spreadsheets/d/([^/]*)', url)
-  if not m:
-    raise Exception('bad url! Must meet the https://docs.google.com/spreadsheets/d/ format and it should be reachable by link')
-
-  key  = m.group(1)
-  ckey = 'gs:%s:%s' % (key,sheet)
-
-  if use_cache and cache.has_key(ckey):
-    #print 'serve cahced', ckey
-    logger.debug('getting csv from cache: %s' % ckey)
-    contents = json.loads(cache.get(ckey))
-  else:
-    logger.debug('getting csv from https://docs.google.com/spreadsheets/d/%(key)s/gviz/tq?tqx=out:csv&sheet=%(sheet)s' % {
-      'key': key, 
-      'sheet': sheet
-    })
-    response = requests.get('https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:json&sheet=%s' % (key, sheet), stream=True)
-    response.encoding = 'utf8'
-    m = re.search(r'google\.visualization\.Query\.setResponse\((.*)\)[^\)]*$', response.content);
-    try:
-      cache.set(ckey, m.group(1), timeout=None)
-      contents = json.loads(m.group(1))
-    except Exception as e:
-      logger.debug('cannot find contents... Did you share the google spreadsheet as viewable LINK?')
-      raise e
-   
-
-  # _headers = contents['table']['cols'][0] if contents['table']['cols'][0]["label"] else contents['table']['rows'][0]['c'] 
-  has_headers_in_cols = len(contents['table']['cols'][0]["label"].strip()) > 0 
-  headers = map(lambda x:x[u'label'] if type(x) is dict else None, contents['table']['cols']) if has_headers_in_cols else map(lambda x:x[u'v'] if type(x) is dict else None, contents['table']['rows'][0]['c'] );
-  logger.debug('headers: %s' % headers)
-  
-  numrows = len(contents['table']['rows']);
-  rows = []
-  # deis 
-  if bool(set(required_headers) - set(headers)):
-    raise Exception('the first row of the google spreadsheet should be dedicated to headers. This script looks for at least two columns named [%s] that have not been found. Go back here once done :D' % ','.join(required_headers))
-
-  for i in range(0 if has_headers_in_cols else 1, numrows):
-    
-
-    row = map(lambda x:x[u'v'] if type(x) is dict else None, contents['table']['rows'][i]['c'])
-    rows.append(dict(filter(lambda x:x[0] is not None, zip(headers, row))))
-
-  return rows, headers
-
-
-def _nested_set(dic, keys, value, as_list=False):
-  for key in keys[:-1]:
-    dic = dic.setdefault(key, {})
-  if not as_list:
-    if not value:
-      dic[keys[-1]] = None
-    elif keys[-1] in ('start_date', 'end_date'):
-      m = re.search(r'(^Date\(?)(\d{4})[,\-](\d{1,2})[,\-](\d{1,2})\)', value)
-      if m is not None:
-        if m.group(1) is not None:
-          # this makes use of Date(1917,4,21) google spreadsheet dateformat.
-          # also note that month 4 is not April but is May (wtf)
-          logger.debug('parsing date field: %s, value: %s' % (keys[-1],value))
-          dic[keys[-1]] = datetime.datetime(year=int(m.group(2)), month=int(m.group(3)) + 1, day=int(m.group(4))).isoformat()
-        else:
-          # 0 padded values, 1917-05-21
-          dic[keys[-1]] = datetime.datetime.strptime('%s-%s-%s' % (m.group(2), m.group(3), m.group(4)), '%Y-%M-%d').isoformat()
-      else:
-        dic[keys[-1]] = value
-    else:
-      dic[keys[-1]] = value
-  else:
-    # it is a list, comma separated ;)
-    dic[keys[-1]] = map(lambda x:x.strip(), filter(None, [] if not value else value.split(',')))
 
 
 class Command(BaseCommand):
@@ -301,86 +205,6 @@ class Command(BaseCommand):
 
   
 
-
-  def bulk_import_gs_as_biographies(self, url=None, owner=None, sheet=None, **options):
-    """
-    usage:
-    python -W ignore manage.py task bulk_import_gs_as_biographies --owner=<your username> --url=<your url> --sheet=people
-    """
-    logger.debug('loading %s' % url)
-    print owner, options
-    
-    owner = Profile.objects.filter(user__username=owner).first()
-    if not owner:
-      raise Exception('specify a **valid** miller username with the --owner parameter.')
-    
-    logger.debug('with owner: %s' % owner)
-
-    biotag = Tag.objects.get(category=Tag.WRITING, slug='biography')
-
-
-    rows, headers = _bulk_import_gs(url=url, sheet=sheet, use_cache=options['cache'], required_headers=['slug', 'type'])
-    
-    # create ---stories---
-    logger.debug('saving stories with related document...')
-    for i, row in enumerate(rows):
-      if not row['slug'] or not row['type'] or not row['title']:
-        logger.debug('line %s: empty "slug", skipping.' % i)
-        continue
-
-      _slug = row.get('slug', '')
-      _type = row.get('type', '')
-
-      story, created = Story.objects.get_or_create(slug=_slug, defaults={
-        'owner': owner.user,
-        'title': row.get('title', '')
-      })
-      # print story.slug, not story.title, created
-      if not story.title:
-        story.title = row.get('title', '')
-
-      if not story.abstract:
-        story.abstract = row.get('data__description__en_US', '')
-
-      # create data
-      #print row
-      if not story.data or not 'title' in story.data:
-        story.data.update({
-          'title': {
-            'en_US': row.get('title', '')
-          },
-          'abstract': {
-            'en_US': row.get('data__description__en_US', '')
-          }
-        })
-
-      #print story.title, row['title'].strip()
-
-      if not story.data.get('title').get('en_US', None):
-        story.data['title']['en_US'] = row.get('title', '')
-
-      if not story.data.get('abstract').get('en_US', None):
-        story.data['abstract']['en_US'] = row.get('data__description__en_US', '')
-      
-      # create or get a document of type 'entity'
-      doc, dcreated = Document.objects.get_or_create(slug=_slug, type=Document.ENTITY, defaults={
-        'owner': owner.user
-      })
-
-      if not doc.title:
-        doc.title = row['title'].strip()
-
-      logger.debug('- with cover document {slug:%s, type:%s, created:%s}' % (doc.slug, doc.type, dcreated))
-      
-      story.tags.add(biotag)
-      story.covers.add(doc)
-      story.authors.add(owner.user.authorship.first())
-      story.save()
-
-      logger.debug('ok - story {slug:%s, created:%s} saved' % (story.slug, created))
-    logger.debug('updating document data...')
-    self.bulk_import_gs_as_documents(url=url, sheet=sheet, use_cache=True, required_headers=['slug', 'type'])
-    
   
 
   def bulk_import_gs_as_documents(self, url=None, sheet=None, use_cache=False, **options):
@@ -389,7 +213,7 @@ class Command(BaseCommand):
 
     logger.debug('loading %s' % url)
 
-    rows, headers = _bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'type'])
+    rows, headers = utils.bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'type'])
     
     # owner is the first staff user
     owner = Profile.objects.filter(user__is_staff=True).first()
@@ -397,13 +221,13 @@ class Command(BaseCommand):
     if not owner:
       raise Exception('no Profile object defined in the database!')
 
-    data_paths =  _data_paths(headers=headers) 
+    data_paths =  utils.data_paths(headers=headers) 
     print data_paths
     # basic data structure based on headers column
     data_structure = {}
 
     for i, path, is_list in data_paths:
-      _nested_set(data_structure, path, {})
+      utils.nested_set(data_structure, path, {})
 
     logger.debug('data__* fields have been transformed to: %s' % data_structure)
 
@@ -422,7 +246,7 @@ class Command(BaseCommand):
       _data = data_structure.copy()
       
       for key, path, is_list in data_paths:
-        _nested_set(_data, path, row[key], as_list=is_list)
+        utils.nested_set(_data, path, row[key], as_list=is_list)
       
       doc.data = _data['data']
       
@@ -445,13 +269,13 @@ class Command(BaseCommand):
 
     logger.debug('loading %s' % url)
 
-    rows, headers = _bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'data__provider'])
+    rows, headers = utils.bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'data__provider'])
     
-    data_paths =  _data_paths(headers=headers) 
+    data_paths =  utils.data_paths(headers=headers) 
     data_structure = {}
 
     for i, path, is_list in data_paths:
-      _nested_set(data_structure, path, {})
+      utils.nested_set(data_structure, path, {})
 
     logger.debug('data__* fields have been transformed to: %s' % data_structure)
 
@@ -473,7 +297,7 @@ class Command(BaseCommand):
       _data = data_structure.copy()
       
       for key, path, is_list in data_paths:
-        _nested_set(_data, path, row[key], as_list=is_list)
+        utils.nested_set(_data, path, row[key], as_list=is_list)
       
       tag.data = _data['data']
       tag.save()
