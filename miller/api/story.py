@@ -200,7 +200,41 @@ class StoryViewSet(viewsets.ModelViewSet):
     
     return response
 
-  
+
+  @detail_route(methods=['get'])
+  def neighbors(self, request, pk):
+    """
+    gives a list of previous/next published story
+    based onto filters
+    """
+    qpk = {'pk': pk} if pk.isdigit() else {'slug': pk}
+    
+    # get current story
+    story = get_object_or_404(Story, **qpk)
+
+    stories = Story.objects.exclude(**qpk).filter(status=Story.PUBLIC)
+    
+    # based on writing category only.
+    tags = [t for t in story.tags.filter(category=Tag.WRITING).values_list('pk', flat=True)]
+
+    # get filtering
+    # g = Glue(request=request, queryset=stories)
+    # get current date
+
+    next_in_context = stories.filter(tags__pk__in=tags).filter(date__gte=story.date).order_by('date').first()
+    prev_in_context = stories.filter(tags__pk__in=tags).filter(date__lte=story.date).order_by('-date').first()
+    
+    next_story = LiteStorySerializer(next_in_context, context={'request': request}) if next_in_context else None
+    prev_story = LiteStorySerializer(prev_in_context, context={'request': request}) if prev_in_context else None
+
+ 
+    return Response({
+      # 'slugs': [ t for t in stories.filter(tags__pk__in=tags).order_by('-date').values_list('slug', flat=True)] ,
+      'next_sibling': next_story.data  if next_story else None,
+      'previous_sibling': prev_story.data if prev_story else None
+    })
+
+
   @list_route(methods=['get'])
   def search(self, request):
     """
@@ -385,12 +419,14 @@ class StoryViewSet(viewsets.ModelViewSet):
     })
 
 
-  @detail_route(methods=['get', 'post'], url_path='git/tag')
+  @detail_route(methods=['get', 'post', 'delete'], url_path='git/tag')
   def git_tags(self, request, pk): 
-    if request.method == 'POST':
+    if request.method != 'GET':
       form = GitTagForm(request.data)
       if not form.is_valid():
         raise ValidationError(form.errors)
+
+    
 
     q = self._getUserAuthorizations(request)
     
@@ -411,7 +447,17 @@ class StoryViewSet(viewsets.ModelViewSet):
         raise ValidationError({
           'tag': 'a version with this name exists already'
         })
-      pass
+      
+    if request.method == "DELETE" and pk is not None:
+      try:
+        story.remove_git_tag(tag=form.cleaned_data['tag'])
+      except Exception as e:
+        raise ValidationError({
+          'error': '%s' % e
+        })
+      
+
+
     #elif cache.has_key(ckey):
     #  return Response(cache.get(ckey))
     # print 'oooallalala'

@@ -352,6 +352,23 @@ class Story(models.Model):
     writer.commit()
 
 
+  def remove_git_tag(self, tag):
+    print self.get_git_path()
+
+    try:
+      repo = Repo.init(settings.GIT_ROOT)
+      #repo.delete_tag(tag)
+      print repo.git.log('--follow', '--date=iso-strict','--no-walk', '--tags','--pretty=%h%d %cd', '--',self.get_git_path())
+    
+    except Exception as e:
+      if raise_eception:
+        raise e
+      else:
+        logger.exception(e)
+    logger.debug('story {pk:%s, version:%s} REMOVED git tag %s' % (self.pk, self.version, tag))
+
+
+
   def gitTag(self, tag, message='', versioned=True, raise_eception=False, author=None):
     """
     Convenient function to handle GIT tagging
@@ -367,6 +384,7 @@ class Story(models.Model):
         raise e
       else:
         logger.exception(e)
+    logger.debug('story {pk:%s, version:%s} git tagged as %s by %s' % (self.pk, self.version, self.tag, author))
 
   def gitLog(self, limit=4, offset=0):
     from django.utils import timezone
@@ -408,7 +426,7 @@ class Story(models.Model):
     # produce:  git diff --no-color --word-diff 68a03a1:users/k8CxmWi/ALAgdn8.md users/k8CxmWi/ALAgdn8.md
     diff = repo.git.diff('--no-color', '--word-diff', '%s:%s' % (commit_id,path),path)
     
-    print '%s:%s' % (commit_id,path)
+    logger.debug('story {pk:%s} exec: git diff --no-color --word-diff %s:%s %s' % (self.pk, commit_id, path, path))
     # return results
     # diff = repo.git.diff('--unified=0','%s:%s' % (commit_id,path),path)
     results = re.split(r'(@@ \-\d+,?\d* \+\d+,?\d* @@)', diff)
@@ -429,7 +447,7 @@ class Story(models.Model):
     repo = Repo.init(settings.GIT_ROOT)
     # tags = sorted(repo.tags, key=lambda t: t.commit.committed_date)
     results = []
-    logs = repo.git.log('--follow', '--date=iso-strict','--no-walk', '--tags','--pretty=%h%d %cd', path).splitlines()
+    logs = repo.git.log('--follow', '--date=iso-strict','--no-walk', '--tags','--pretty=%h%d %cd', '--',path).splitlines()
     
     for l in logs:
       parts = re.match(r'(?P<hexsha>[a-f0-9]+)\s+\((?P<refs>[^\)]*)\)\s+(?P<date>.*)$', l)
@@ -535,6 +553,7 @@ class Story(models.Model):
           os.makedirs(dirpath)
         except OSError as e:
           if e.errno != errno.EEXIST:
+            logger.exception(e)
             raise e
 
     try:
@@ -789,7 +808,7 @@ class Story(models.Model):
       self.date = self.date_last_modified
 
     # this is the woner
-    print 'owner', self.owner
+    # print 'owner', self.owner
     # create story file if it is not exists; if the story eists already, cfr the followinf story_ready
     if self._saved == 1:
       try:
