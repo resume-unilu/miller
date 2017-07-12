@@ -221,15 +221,21 @@ class StoryViewSet(viewsets.ModelViewSet):
     # g = Glue(request=request, queryset=stories)
     # get current date
 
-    next_in_context = stories.filter(tags__pk__in=tags).filter(date__gte=story.date).order_by('date').first()
-    prev_in_context = stories.filter(tags__pk__in=tags).filter(date__lte=story.date).order_by('-date').first()
-    
+    next_in_context = stories.filter(tags__pk__in=tags).filter(date__gt=story.date).order_by('-date','-pk').last()
+    prev_in_context = stories.filter(tags__pk__in=tags).filter(date__lt=story.date).order_by('-date','-pk').first()
+
     next_story = LiteStorySerializer(next_in_context, context={'request': request}) if next_in_context else None
     prev_story = LiteStorySerializer(prev_in_context, context={'request': request}) if prev_in_context else None
 
  
     return Response({
-      # 'slugs': [ t for t in stories.filter(tags__pk__in=tags).order_by('-date').values_list('slug', flat=True)] ,
+      # 'gteslugs': [ t for t in stories.filter(tags__pk__in=tags).filter(date__gte=story.date).order_by('-date','-pk').values('slug','date','pk')] ,
+      # 'ltslugs': [ t for t in stories.filter(tags__pk__in=tags).filter(date__lt=story.date).order_by('-date','-pk').values('slug','date','pk')] ,
+      # 'idem': {
+      #   'date': story.date,
+      #   'pk': story.pk,
+      #   'slug': story.slug
+      # },
       'next_sibling': next_story.data  if next_story else None,
       'previous_sibling': prev_story.data if prev_story else None
     })
