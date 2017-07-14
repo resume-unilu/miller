@@ -4,21 +4,17 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers, viewsets, status
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from miller.api.fields import OptionalFileField, JsonField
 from miller.models import Document, Story, Caption
+from miller.forms import CaptionForm
 
 
-
-class DocumentSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Document
-    lookup_field = 'slug'
-    fields = ('slug',)
 
 # Serializers define the API representation.
 class CaptionSerializer(serializers.ModelSerializer):
-  document = DocumentSerializer()
+  # document = DocumentSerializer()
   
   class Meta:
     model = Caption
@@ -50,18 +46,22 @@ class CaptionViewSet(viewsets.ModelViewSet):
 
   def create(self, request, *args, **kwargs):
     # get the document id from the slug
-    print ''
-    print '------'
-    print request.data
+    form = CaptionForm(request.data)
 
-    doc = get_object_or_404(Document, slug=request.data['document']['slug']);
-    story = get_object_or_404(Story, pk=request.data['story'])
+    if not form.is_valid():
+      raise ValidationError(form.errors) 
+
+    god  = { 'pk': form.cleaned_data['document']} if form.cleaned_data['document'].isdigit() else { 'slug': form.cleaned_data['document'] }
+    gos  = { 'pk': form.cleaned_data['story']} if form.cleaned_data['story'].isdigit() else { 'slug': form.cleaned_data['story'] }
+    
+    doc = get_object_or_404(Document, **god);
+    story = get_object_or_404(Story, **gos)
 
     # Create the book instance
     caption, created = Caption.objects.get_or_create(document=doc, story=story)
     # print caption, created
 
-    serializer = NestedCaptionSerializer(caption)
+    serializer = CaptionSerializer(caption)
     return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
     #return caption
 

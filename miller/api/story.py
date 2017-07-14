@@ -202,7 +202,6 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       xml = m.retrieve()
 
-    print 'XML',xml
     return HttpResponse(xml, content_type='text/xml')
 
 

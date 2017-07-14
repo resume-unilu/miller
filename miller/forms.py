@@ -17,6 +17,9 @@ class SearchQueryForm(forms.Form):
 class UploadDocxForm(forms.Form):
   docx = forms.FileField()
 
+class CaptionForm(forms.Form):
+  document = forms.RegexField(max_length=150, regex=r'^[a-zA-Z\-\_\.\d]+$', required=True)
+  story    = forms.RegexField(max_length=150, regex=r'^[a-zA-Z\-\_\.\d]+$', required=True)
 
 class SignupForm(RegistrationFormUniqueEmail):
   captcha     = CaptchaField()
