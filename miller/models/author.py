@@ -40,6 +40,26 @@ class Author(models.Model):
     else:
       return self._dmetadata
 
+  def asXMLCreator(self):
+    """
+    serialize as XML <creator> for doi metadata 
+    """
+    cre = u"""
+        <creator>
+          <creatorName>%(creatorName)s</creatorName>
+          <givenName>%(givenName)s</givenName>
+          <familyName>%(familyName)s</familyName>%(ORCID)s
+          <affiliation>%(affiliation)s</affiliation>
+        </creator>
+        """ %{
+        'creatorName': u', '.join(filter(None, (self.data.get('lastname'),self.data.get('firstname')))),
+        'givenName': self.data.get('firstname', ''),
+        'familyName': self.data.get('lastname', ''),
+        'ORCID': '' if not self.data.get('orcid', None) else '<nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">%s</nameIdentifier>'% self.data.get('orcid'),
+        'affiliation': self.affiliation
+    }
+
+    return cre
 
   class Meta:
     app_label="miller"

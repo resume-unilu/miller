@@ -7,7 +7,7 @@ from collections import OrderedDict
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import Q
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -159,6 +159,52 @@ class StoryViewSet(viewsets.ModelViewSet):
 
     serializer = LiteStorySerializer(page, many=True, context={'request': request})
     return Response(serializer.data)
+
+
+  @detail_route(methods=['get', 'post'])
+  def doi(self, request, pk):
+    """
+    proxy for DOI services. Only available for PUBLIC resources.
+    """
+    qpk = {'pk': pk} if pk.isdigit() else {'slug': pk}
+    story = get_object_or_404(Story.objects.filter(status=Story.PUBLIC), **qpk)
+    
+    
+    # from miller.doi import DataciteDOI, DataciteDOIMetadata
+
+    # doi = DataciteDOIMetadata(story=story)
+    # print doi.create()
+
+    # serializer = LiteStorySerializer(story, context={'request': request})
+
+    # res = serializer.data
+
+    # res.update({
+    #   '__DOI': doi.config(),
+    #   'd': doi.format()
+    # })
+
+    return Response(res)
+
+
+  @detail_route(methods=['get', 'post'], url_path='doi/metadata')
+  def doi_metadata(self, request, pk):
+    from miller.doi import DataciteDOIMetadata
+
+    qpk = {'pk': pk} if pk.isdigit() else {'slug': pk}
+    story = get_object_or_404(Story.objects.filter(status=Story.PUBLIC), **qpk)
+    
+    # initialize DOIMetadata
+    m = DataciteDOIMetadata(story=story)
+      
+    if request.method == 'POST':
+      xml = m.create()
+    else:
+      xml = m.retrieve()
+
+    print 'XML',xml
+    return HttpResponse(xml, content_type='text/xml')
+
 
 
   @detail_route(methods=['get'])

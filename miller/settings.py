@@ -313,6 +313,12 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'logs', 'commands.log'),
             'formatter': 'lite'
         },
+        'doi': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'doi.log'),
+            'formatter': 'lite'
+        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -338,6 +344,10 @@ LOGGING = {
         },
         'miller.commands': {
             'handlers': ['commands'],
+            'level': 'DEBUG'
+        },
+        'miller.doi': {
+            'handlers': ['doi'],
             'level': 'DEBUG'
         },
         'console': {
@@ -424,6 +434,13 @@ MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 MILLER_SNAPSHOT_WIDTH = 234
 MILLER_SNAPSHOT_HEIGHT = None
 
+# DOI creation, used in `api/story/<pk>/doi` GET(read) or POST (create) endpoint. 
+# If `MILLER_DOI_ENABLED=True`, you should have a DOI prefix cfr.https://mds.datacite.org/
+MILLER_DOI_ENABLED   = False
+MILLER_DOI_PREFIX    = 'XX.YYYY'
+MILLER_DOI_PUBLISHER = 'Miller'
+MILLER_DOI_ENDPOINT  = 'https://mds.test.datacite.org'
+MILLER_DOI_AUTH      = ('username', 'password')
 
 # feel free to add your own oembed service in localsettings.
 MILLER_OEMBEDS = {
