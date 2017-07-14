@@ -14,28 +14,10 @@ from miller.forms import CaptionForm
 
 # Serializers define the API representation.
 class CaptionSerializer(serializers.ModelSerializer):
-  # document = DocumentSerializer()
-  
   class Meta:
     model = Caption
     fields = ('document', 'story', 'date_created')
     
-
-class NestedCaptionSerializer(serializers.HyperlinkedModelSerializer):
-  document_id    = serializers.ReadOnlyField(source='document.id')
-  type  = serializers.ReadOnlyField(source='document.type')
-  title = serializers.ReadOnlyField(source='document.title')
-  slug  = serializers.ReadOnlyField(source='document.slug')
-  src   = OptionalFileField(source='document.attachment')
-  short_url = serializers.ReadOnlyField(source='document.short_url')
-  copyrights = serializers.ReadOnlyField(source='document.copyrights')
-  caption = serializers.ReadOnlyField(source='contents')
-  metadata = JsonField(source='document.contents')
-  snapshot = OptionalFileField(source='document.snapshot', read_only=True)
-
-  class Meta:
-    model = Caption
-    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'metadata')
 
 
 # ViewSets define the view behavior. Filter by status
