@@ -197,6 +197,9 @@ class Story(models.Model):
     ordering = ('-date_last_modified',)
     verbose_name_plural = 'stories'
 
+
+
+
   
   def get_cache_key(self, extra=None):
     """
@@ -227,6 +230,47 @@ class Story(models.Model):
 
   def __unicode__(self):
     return '%s - by %s' % (self.title, self.owner.username)
+
+
+  def save_captions_from_contents(self, key='pk', parser='json'):
+    """
+    Analyse contents looking for document slug or pk, based on your current settings.
+    Return a tuple
+    """
+    expecting   = [] # list of keys we expect to find in the db
+    missing     = [] # list of keys not found in the db
+    saved       = [] # Caption relationships saved
+
+    docs        = [] # documents to be saved
+
+    if parser == 'json':
+      try:
+        json_contents = json.loads(self.contents)
+      except Exception as e:
+        # handle this at API level
+        raise e
+
+      # look for the keys based on your settings
+      expecting = helpers.get_values_from_dict(json_contents, key=key)
+
+      # save relationships, handle errors
+      docs = Document.objects.filter(**{'%s__in' % key: expecting})
+
+      if docs.count() != len(expecting):
+        # calculate diff!    
+        missing = list(set(expecting) - set(docs.values_list(key, flat=True)))
+
+    # clear list of captions
+    captions = self.caption_set.all().delete()
+
+    # model (so we don't reference to Caption here ;)
+    ThroughModel = Story.documents.through
+
+    # save captions
+    saved = ThroughModel.objects.bulk_create([ThroughModel(document=d, story=self) for d in docs])
+
+    return saved, missing, expecting
+
 
   # store into the whoosh index
   def store(self, ix=None, receiver=None):

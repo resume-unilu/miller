@@ -119,6 +119,25 @@ def get_previous_and_next(iterable):
   return izip(prevs, items, nexts)
 
 
+def get_values_from_dict(obj, key):
+  """
+  Given a obj, recursively look for values given the key specified.
+  Return a flat 
+  """
+  out = []
+  if type(obj) == dict:
+     for x in obj.keys():
+         if x == key:
+             out.append(obj[x])
+         out.extend(get_values_from_dict(obj[x], key=key))
+
+  if type(obj) == list:
+     for x in obj:
+         out.extend(get_values_from_dict(x, key=key))
+
+  return out
+
+
 def get_unique_slug(instance, trigger, max_length=140):
   """
   generate a slug that do not exists in db, incrementing the number. usage sample:
