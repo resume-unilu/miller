@@ -5,6 +5,12 @@ from captcha.fields import CaptchaField
 from django.contrib.auth.models import User
 from registration.forms import RegistrationFormUniqueEmail
 
+
+class ExtractCaptionFromStory(forms.Form):
+  key    = forms.ChoiceField(choices=[('slug','slug'), ('pk','pk'), ('id','id')], required=True)
+  parser = forms.ChoiceField(choices=[('json','json')], required=True)
+
+
 class LoginForm(forms.Form):
   username = forms.CharField(max_length=128, widget=forms.TextInput)
   password = forms.CharField(max_length=64, label='Password', widget=forms.PasswordInput(render_value=False))
