@@ -212,7 +212,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     if request.method == 'POST':
       xml = m.create()
     else:
-      xml = m.retrieve()
+      xml = m.retrieve() if not request.query_params.get('test', None) else m.serialize()
 
     return HttpResponse(xml, content_type='text/xml')
 

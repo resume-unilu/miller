@@ -131,25 +131,34 @@ class DataciteDOIMetadata(DataciteDOI):
     """
     Return a serialized version of the dictionary given
     """
+    authors = self.story.authors.all()
+
+    supervisors = self.story.owner.authorship.exclude(pk__in=authors.values_list('pk',flat=True))[0:1]
+
     xml = u"""
         <?xml version="1.0" encoding="UTF-8"?>
       <resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd">
         <identifier identifierType="DOI">%(DOI)s</identifier>
         <creators>%(creators)s</creators>
+        <contributors>%(contributors)s</contributors>
         <titles>
           <title>%(title)s</title>
         </titles>
         <publisher>%(publisher)s</publisher>
         <publicationYear>%(publicationYear)s</publicationYear>
         <resourceType resourceTypeGeneral="%(resourceTypeGeneral)s">%(resourceType)s</resourceType>
-        <dates/>
+        <dates>
+          <date dateType="Updated">%(lastUpdate)s</date>
+        </dates>
         <descriptions><description descriptionType="Abstract">%(abstract)s</description></descriptions>
       </resource> """ % {
         'DOI': self._id,
-        'creators': u''.join([author.asXMLCreator() for author in self.story.authors.all()]),
+        'creators': u''.join([author.asXMLCreator() for author in authors]),
+        'contributors': u''.join([author.asXMLContributor(contributorType="Supervisor") for author in supervisors]),
         'title': self.story.title,
         'publisher': self.publisher,
         'publicationYear': '%s' % self.story.date.year,
+        'lastUpdate': '%s' % self.story.date_last_modified.strftime('%Y-%m-%d'),
         'resourceTypeGeneral': 'Text',
         'resourceType': 'article',
         'abstract': self.story.abstract
