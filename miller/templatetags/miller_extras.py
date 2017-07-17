@@ -26,15 +26,20 @@ def lookup(obj, path, language):
 
   contents = obj.get(path, {})
 
-  if isinstance(contents, dict):
-    if desiredLanguage in contents:
-      return contents[desiredLanguage]
-    if defaultLanguage in contents:
-      return contents[defaultLanguage]
+  if isinstance(contents, basestring):
+    return contents
 
-    return contents.itervalues().next()
+  if desiredLanguage in contents:
+    return contents.get(desiredLanguage, '')
+  if defaultLanguage in contents:
+    return contents.get(defaultLanguage)
+
+  keys = list(contents)
+  if not keys:
+    return ''
+  return contents.get(keys[0], '')
  
-  return contents
+  
 
 
 
