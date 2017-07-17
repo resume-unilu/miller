@@ -166,6 +166,9 @@ class StoryViewSet(viewsets.ModelViewSet):
     """
     proxy for DOI services. Only available for PUBLIC resources.
     """
+    if request.method == 'POST' and not request.user.is_staff:
+      raise PermissionDenied()
+
     qpk = {'pk': pk} if pk.isdigit() else {'slug': pk}
     story = get_object_or_404(Story.objects.filter(status=Story.PUBLIC), **qpk)
     
@@ -175,7 +178,9 @@ class StoryViewSet(viewsets.ModelViewSet):
     d = DataciteDOI(story=story)
     if request.method == 'POST':
       d.create()
-
+      story.data['doi'] = d.format()
+      story.save()
+      
     doi = d.retrieve()
     # serializer = LiteStorySerializer(story, context={'request': request})
 
@@ -193,6 +198,9 @@ class StoryViewSet(viewsets.ModelViewSet):
 
   @detail_route(methods=['get', 'post'], url_path='doi/metadata')
   def doi_metadata(self, request, pk):
+    if request.method == 'POST' and not request.user.is_staff:
+      raise PermissionDenied()
+
     from miller.doi import DataciteDOIMetadata
 
     qpk = {'pk': pk} if pk.isdigit() else {'slug': pk}

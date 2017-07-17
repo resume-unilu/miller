@@ -1,7 +1,11 @@
 {% load miller_extras %}
 {% if cover.type == "video" or cover.type == "rich" %}
-  <a href='{{cover.dmetadata.url}}'>{{cover.dmetadata.title}}</a>
-  by <a href='{{cover.dmetadata.author_url}}'> {{cover.dmetadata.author_name}}</a>
-  (<a href='{{cover.dmetadata.provider_url}}'> {{cover.dmetadata.provider_name}}</a>)
+  <a href='{{cover.data.url}}'>{{cover.data.title}}</a>
+  by <a href='{{cover.data.author_url}}'> {{cover.data.author_name}}</a>
+  (<a href='{{cover.data.provider_url}}'> {{cover.data.provider_name}}</a>)
+{% else %}
+<img src='{{cover|coverage}}' alt='{{cover.title}}'>
 {% endif %}
-{{cover|coverage}}
+<a href='{{cover|coverage}}'>{{cover.data.title}}</a> 
+
+

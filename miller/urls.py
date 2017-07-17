@@ -104,9 +104,14 @@ urlpatterns = urlpatterns + [
   url(r'^accessibility/sitemap-(?P<section>.+)\.xml$', sitemaps_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.section.html'},
     name='django.contrib.sitemaps.views.sitemap'),
 
-
+  # doi access (redirection) for search engine.
+  url(r'^accessibility/doi/(?P<prefix>[\d\.A-Za-z\-]+)/(?P<short_url>[A-Za-z\d]+)-(?P<publication_year>\d+)$', views.accessibility_doi, name='accessibility_doi'),
+  
   url(r'^accessibility/(?P<page>[A-Za-z\-]+)$', views.accessibility_page, name='accessibility_page'),
   
+
+
+
   # oaht2 toolkit here
   url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
      

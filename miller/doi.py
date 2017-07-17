@@ -2,7 +2,7 @@ import requests, logging, re
 
 from django.conf import settings
 from requests.exceptions import ConnectionError, HTTPError
-from rest_framework.exceptions import ValidationError, AuthenticationFailed
+from rest_framework.exceptions import ValidationError, AuthenticationFailed, NotFound, PermissionDenied
 
 
 logger = logging.getLogger('miller.doi')
@@ -62,7 +62,7 @@ class DataciteDOI():
       "Content-Type":"text/plain;charset=UTF-8"
     })
 
-    print res.text
+    #print res.text
     return res
 
 
@@ -101,18 +101,21 @@ class DataciteDOI():
     try:
       res.raise_for_status()
     except HTTPError as e:
-      if res.status_code == 401:
-        raise AuthenticationFailed({
-          'details': 'unable to authenticate against `datacite.org` DOI service',
-          'config': self.config()
-        })
-      elif res.status_code == 400:
+      
+      if res.status_code == 400:
         logger.error('%s error:"%s"' % (self._log_prefix(), res.text))
         raise ValidationError({
             'error': res.text,
             'value': data,
             'endpoint': url
           })
+      elif res.status_code == 401:
+        raise AuthenticationFailed({
+          'details': 'unable to authenticate against `datacite.org` DOI service',
+          'config': self.config()
+        })
+      elif res.status_code == 404:
+        raise NotFound()
       else:
         logger.exception(e)
         raise e

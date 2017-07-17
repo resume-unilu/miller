@@ -183,6 +183,12 @@ def signup_view(request):
   })
 
   
+# accessible doi
+def accessibility_doi(request, prefix, short_url, publication_year):
+  story = get_object_or_404(Story.objects.filter(status=Story.PUBLIC), short_url=short_url)
+  content = _share(request)
+  content['story'] = story
+  return render(request, "miller/accessibility/story.html", content)
 
 
 def logout_view( request ):

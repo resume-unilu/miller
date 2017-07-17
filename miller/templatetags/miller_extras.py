@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from markdown import markdown
 from markdown.extensions import Extension
+from markdown.extensions.toc import TocExtension
 
 
 register = template.Library()
@@ -25,12 +26,16 @@ def lookup(obj, path, language):
 
   contents = obj.get(path, {})
 
-  if desiredLanguage in contents:
-    return contents[desiredLanguage]
-  if defaultLanguage in contents:
-    return contents[defaultLanguage]
+  if isinstance(contents, dict):
+    if desiredLanguage in contents:
+      return contents[desiredLanguage]
+    if defaultLanguage in contents:
+      return contents[defaultLanguage]
 
-  return contents.itervalues().next()
+    return contents.itervalues().next()
+ 
+  return contents
+
 
 
 @register.simple_tag()
@@ -67,7 +72,7 @@ def markdownit(text, language):
       text = d.itervalues().next()
 
 
-  return mark_safe(markdown(text, extensions=['footnotes', MagicLinks()]))
+  return mark_safe(markdown(text, extensions=['footnotes', TocExtension(baselevel=2), MagicLinks()]))
 
 
 @register.filter()
