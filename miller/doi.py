@@ -2,7 +2,7 @@ import requests, logging, re
 
 from django.conf import settings
 from requests.exceptions import ConnectionError, HTTPError
-from rest_framework.exceptions import ValidationError, AuthenticationFailed, NotFound, PermissionDenied
+from rest_framework.exceptions import ValidationError, AuthenticationFailed, NotFound, PermissionDenied, ParseError
 
 
 logger = logging.getLogger('miller.doi')
