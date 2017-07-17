@@ -82,9 +82,9 @@ class DataciteDOI():
     Perform request against dooi api endpoint and raise REST Framework exceptions
     """
     if not settings.MILLER_DOI_ENABLED:
-      raise ParseError({
-        'error': 'check settings.MILLER_DOI_ENABLED' % e
-      })
+      logger.warning('Unable to load DOI, check settings.MILLER_DOI_ENABLED')
+      raise NotFound()
+
     url = urlize(self.endpoint, path)
     #logger.debug('%s: %s %s' % (self._log_prefix(), method.upper(), url))
     
