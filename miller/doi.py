@@ -16,7 +16,7 @@ class DataciteDOI():
   publisher = settings.MILLER_DOI_PUBLISHER
   endpoint  = urlize(settings.MILLER_DOI_ENDPOINT, 'doi')
   auth      = settings.MILLER_DOI_AUTH
-  baseurl   = '/'.join(s.strip('/') for s in (settings.MILLER_HOST, 'doi')) 
+  baseurl   = settings.MILLER_DOI_HOST 
 
   def __init__(self, story):
     self.story   = story
@@ -52,14 +52,13 @@ class DataciteDOI():
     Return a doi representation, if any was created. 
     Raise exception otherwise.
     """
-    logger.debug('%s'%self._log_prefix())
-
-    data = u'#Content-Type:text/plain;charset=UTF-8\ndoi= %s\nurl= http://example.org/' % self._id
-    logger.debug(data)
-    res = self.perform_request(path=self._id, method='put', data={
-      'doi': self._id,
-      'url': self._url
-    }, headers={
+    logger.debug('%s with data: {doi: %s, url:%s}'% (self._log_prefix(), self._id, self._url))
+    data = '#Content-Type:text/plain;charset=UTF-8\ndoi= %s\nurl= %s'% (self._id, self._url)
+    # {
+    #  'doi': self._id,
+    #  'url': self._url
+    #}
+    res = self.perform_request(path=self._id, method='put', data=data, headers={
       "Content-Type":"text/plain;charset=UTF-8"
     })
 
@@ -68,8 +67,15 @@ class DataciteDOI():
 
 
   def retrieve(self):
-
-    pass
+    """
+    Retrieve XML metadata.
+    """
+    res = self.perform_request(path=self._id, headers={
+      'Content-Type': 'application/xml',
+      'charset': 'UTF-8'
+    }, method='GET')
+    return res.text
+    
 
   def perform_request(self, data=None, method='get', headers=None, path=None):
     """
@@ -90,7 +96,7 @@ class DataciteDOI():
       logger.exception(e)
       raise e
     else:
-      logger.debug('%s: %s %s received %s' % (self._log_prefix(), method.upper(), url, res.status_code))
+      logger.debug('%s %s %s received %s' % (self._log_prefix(), method.upper(), url, res.status_code))
 
     try:
       res.raise_for_status()
@@ -101,7 +107,7 @@ class DataciteDOI():
           'config': self.config()
         })
       elif res.status_code == 400:
-        
+        logger.error('%s error:"%s"' % (self._log_prefix(), res.text))
         raise ValidationError({
             'error': res.text,
             'value': data,
@@ -160,13 +166,5 @@ class DataciteDOIMetadata(DataciteDOI):
     }, method='POST')
     return res.text
 
-  def retrieve(self):
-    """
-    Retrieve XML metadata.
-    """
-    res = self.perform_request(path=self._id, headers={
-      'Content-Type': 'application/xml',
-      'charset': 'UTF-8'
-    }, method='GET')
-    return res.text
+
 

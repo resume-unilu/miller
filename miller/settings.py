@@ -441,6 +441,7 @@ MILLER_DOI_PREFIX    = 'XX.YYYY'
 MILLER_DOI_PUBLISHER = 'Miller'
 MILLER_DOI_ENDPOINT  = 'https://mds.test.datacite.org'
 MILLER_DOI_AUTH      = ('username', 'password')
+MILLER_DOI_HOST      = 'https://your-doi-registerd-domain.org' # check your DOI provider.
 
 # feel free to add your own oembed service in localsettings.
 MILLER_OEMBEDS = {

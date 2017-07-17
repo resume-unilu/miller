@@ -170,11 +170,13 @@ class StoryViewSet(viewsets.ModelViewSet):
     story = get_object_or_404(Story.objects.filter(status=Story.PUBLIC), **qpk)
     
     
-    # from miller.doi import DataciteDOI, DataciteDOIMetadata
+    from miller.doi import DataciteDOI, DataciteDOIMetadata
 
-    # doi = DataciteDOIMetadata(story=story)
-    # print doi.create()
+    d = DataciteDOI(story=story)
+    if request.method == 'POST':
+      d.create()
 
+    doi = d.retrieve()
     # serializer = LiteStorySerializer(story, context={'request': request})
 
     # res = serializer.data
@@ -184,7 +186,9 @@ class StoryViewSet(viewsets.ModelViewSet):
     #   'd': doi.format()
     # })
 
-    return Response(res)
+    return Response({
+      'doi': doi
+    })
 
 
   @detail_route(methods=['get', 'post'], url_path='doi/metadata')
