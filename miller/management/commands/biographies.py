@@ -88,10 +88,15 @@ class Command(TaskCommand):
     def mapper(d):
       #print d
       _d = {
-        u'sorting': pyd.get(d, u'data__activity__sorting'),
+        'sorting': pyd.get(d, u'data__activity__sorting', ''),
+        'type': pyd.get(d, u'data__activity__type', ''),
         'description': {
-          'en_US': pyd.get(d, u'data__activity__description__en_US'),
-          'fr_FR': pyd.get(d, u'data__activity__description__fr_FR')
+          'en_US': pyd.get(d, u'data__activity__description__en_US', ''),
+          'fr_FR': pyd.get(d, u'data__activity__description__fr_FR', '')
+        },
+        'date': {
+          'en_US': pyd.get(d, u'data__activity__date__en_US', ''),
+          'fr_FR': pyd.get(d, u'data__activity__date__fr_FR', '')
         },
         'start_date':  pyd.get(d, u'data__activity__start_date'),
         'end_date':  pyd.get(d, u'data__activity__end_date')
