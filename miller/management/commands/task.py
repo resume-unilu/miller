@@ -248,8 +248,8 @@ class Command(BaseCommand):
       for key, path, is_list in data_paths:
         utils.nested_set(_data, path, row[key], as_list=is_list)
       
-      doc.data = _data['data']
-      
+      doc.data.update(_data['data'])
+      # print doc.data
       if 'attachment' in row and len(row['attachment'].strip()) > 0:
          doc.attachment.name = row['attachment']
 

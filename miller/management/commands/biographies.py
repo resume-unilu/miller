@@ -31,9 +31,16 @@ class Command(TaskCommand):
   )
 
 
-  def bulk_import_dbpedia_for_biographies(self,  **options):
+  def bulk_import_dbpedia_for_biographies(self, pk=None, **options):
+   
+
     docs = Document.objects.filter(data__type='person', data__wiki_id__isnull=False)
-    print docs.count()
+
+    if pk:
+      god = {'pk': pk} if pk.isdigit() else {'slug':pk}
+      logger.debug('USING %s' % god)
+      docs = Document.objects.filter(**god).filter(data__type='person', data__wiki_id__isnull=False)
+    logger.debug('documents: %s' % docs.count())
 
     for doc in docs.iterator():
       logger.debug('document {slug:%s, wiki_id:%s}' % (doc.slug, doc.data['wiki_id']))
@@ -43,6 +50,7 @@ class Command(TaskCommand):
         continue
 
       contents = utils.dbpedia(wiki_id=doc.data['wiki_id'])
+
       #      doc.save()
       try:
         resource = contents['http://dbpedia.org/resource/%s' % doc.data['wiki_id']]
@@ -57,6 +65,12 @@ class Command(TaskCommand):
       if not doc.data['thumbnail'] and not doc.data['url']:
         logger.debug('skipping, no data need to be updated.')
         continue
+      else:
+        doc.data['provider_name'] = 'dbpedia'
+        doc.data['provider_url']  = 'dbpedia.org' 
+
+        logger.debug('thumbnail: %s' % doc.data['thumbnail'])
+        logger.debug('imageurl: %s' % doc.data['url'])
 
 
       doc.save()

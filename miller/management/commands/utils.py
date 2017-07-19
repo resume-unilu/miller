@@ -16,7 +16,7 @@ def dbpedia(wiki_id, use_cache=True):
     raise Exception('dbpedia wiki_id should be a valid string, none received.')
 
   ckey = 'dbpedia:%s' % wiki_id
-  logger.debug('dbpedia: loading contents for {wiki_id:%s}' % wiki_id)
+  logger.debug('dbpedia: loading contents for {wiki_id:%s, url: https://dbpedia.org/data/%s.json}' % (wiki_id, wiki_id))
     
   if use_cache and cache.has_key(ckey):
     logger.debug('dbpedia: returning cached contents.')
