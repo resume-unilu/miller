@@ -30,7 +30,7 @@ Best regards,
     <blockquote>{{story.abstract}}</blockquote>
   </p>
 
-  <p>As staff member, you can view the publication <a href='{{site_url}}/story/{{slug}}'>here</a></p>
+  <p>As staff member, you can view the publication <a href='{{site_url}}/story/{{story.slug}}'>here</a></p>
   
   <p>Best regards,</p>
   
