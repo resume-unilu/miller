@@ -22,7 +22,7 @@ class DataciteDOI():
     self.story   = story
     self.id      = None
     self._id     = self.format()
-    self._url = urlize(self.baseurl, self._id)
+    self._url = urlize(self.baseurl, 'story', story.slug)
     
 
 
@@ -151,6 +151,10 @@ class DataciteDOIMetadata(DataciteDOI):
           <date dateType="Updated">%(lastUpdate)s</date>
         </dates>
         <descriptions><description descriptionType="Abstract">%(abstract)s</description></descriptions>
+        <alternateIdentifiers>
+          <alternateIdentifier alternateIdentifierType="URL">%(url)s
+          </alternateIdentifier>
+        </alternateIdentifiers>
       </resource> """ % {
         'DOI': self._id,
         'creators': u''.join([author.asXMLCreator() for author in authors]),
@@ -161,7 +165,8 @@ class DataciteDOIMetadata(DataciteDOI):
         'lastUpdate': '%s' % self.story.date_last_modified.strftime('%Y-%m-%d'),
         'resourceTypeGeneral': 'Text',
         'resourceType': 'article',
-        'abstract': self.story.abstract
+        'abstract': self.story.abstract,
+        'url': self._url
       }
 
     return re.sub(r'\n\s+','', xml.strip().encode('utf-8'))

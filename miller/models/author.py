@@ -72,7 +72,7 @@ class Author(models.Model):
         'givenName': self.data.get('firstname', ''),
         'familyName': self.data.get('lastname', ''),
         'ORCID': '' if not self.orcid else '<nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">%s</nameIdentifier>'% self.orcid,
-        'affiliation': self.affiliation
+        'affiliation': self.affiliation if self.affiliation else ''
     }
 
     return cre
@@ -94,7 +94,7 @@ class Author(models.Model):
         'givenName': self.data.get('firstname', ''),
         'familyName': self.data.get('lastname', ''),
         'ORCID': '' if not self.orcid else '<nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">%s</nameIdentifier>'% self.orcid,
-        'affiliation': self.affiliation
+        'affiliation': self.affiliation if self.affiliation else ''
     }
 
     return cre
