@@ -21,9 +21,33 @@ class DataciteDOI():
   def __init__(self, story):
     self.story   = story
     self.id      = None
-    self._id     = self.format()
+    self._id     = story.data.get('doi', self.format())
     self._url = '%s/' % urlize(self.baseurl, 'story', story.slug)
     
+  def cite(self, contentType="text/x-bibliography" ,style='apa'):
+    """
+    Return a formatted version of the doi, if the doi is registered.
+    Check https://citation.crosscite.org/docs.html for the different versions
+    """
+    url = urlize(settings.MILLER_DOI_RESOLVER, self._id)
+    try:
+      res = requests.get(url=url, headers={
+        'accept': '%s; style=%s' % (contentType, style)
+      })
+    except ConnectionError as e:
+      logger.exception(e)
+      raise e
+    else:
+      logger.debug('%s GET %s received %s' % (self._log_prefix(), url, res.status_code))
+    
+
+    try:
+      res.raise_for_status()
+    except HTTPError as e:
+      raise e
+    logger.debug('%s'% res.headers)
+    return res.text
+
 
 
   def config(self):
@@ -115,7 +139,10 @@ class DataciteDOI():
           'config': self.config()
         })
       elif res.status_code == 404:
-        raise NotFound()
+        raise NotFound({
+          'error': 'NotFound',
+          'doi': self._id
+        })
       else:
         logger.exception(e)
         raise e
