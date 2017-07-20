@@ -181,12 +181,17 @@ class Command(TaskCommand):
       #if not story.data or not 'title' in story.data:
       story.data.update({
         'title': {
-          'en_US': '\n'.join(filter(None,[row.get('title', '')]))
+          'en_US': '\n'.join(filter(None,[row.get('data__title__en_US', '')])),
+          'fr_FR': '\n'.join(filter(None,[row.get('data__title__fr_FR', '')]))
         },
         'abstract': {
           'en_US': '\n'.join(filter(None, [
             row.get('data__description__en_US', ''),
             row.get('data__date__en_US','')
+          ])).strip(),
+          'fr_FR': '\n'.join(filter(None, [
+            row.get('data__description__fr_FR', ''),
+            row.get('data__date__fr_FR','')
           ])).strip()
         }
       })
