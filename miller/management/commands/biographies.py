@@ -186,12 +186,10 @@ class Command(TaskCommand):
         },
         'abstract': {
           'en_US': '\n'.join(filter(None, [
-            row.get('data__description__en_US', ''),
-            row.get('data__date__en_US','')
+            row.get('data__description__en_US', '')
           ])).strip(),
           'fr_FR': '\n'.join(filter(None, [
-            row.get('data__description__fr_FR', ''),
-            row.get('data__date__fr_FR','')
+            row.get('data__description__fr_FR', '')
           ])).strip()
         }
       })
