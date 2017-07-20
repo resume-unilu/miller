@@ -22,7 +22,7 @@ class DataciteDOI():
     self.story   = story
     self.id      = None
     self._id     = self.format()
-    self._url = urlize(self.baseurl, 'story', story.slug)
+    self._url = '%s/' % urlize(self.baseurl, 'story', story.slug)
     
 
 
