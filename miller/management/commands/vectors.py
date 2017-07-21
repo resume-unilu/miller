@@ -20,7 +20,7 @@ logger = logging.getLogger('console')
 class Command(TaskCommand):
   """
   Usage sample: 
-  python manage.py task snapshot --pk=991
+  python manage.py vectors snapshot --pk=991
   """
   help = 'A lot of tasks dealing with ngrams and Postgres vectors'
   
@@ -29,7 +29,9 @@ class Command(TaskCommand):
     'search_ngrams_table',
     'update_search_vectors',
     'update_ngrams_table',
-    'clean_ngrams_table'
+    'clean_ngrams_table',
+    'clean_leaves_ngrams_table',
+    'read_ngrams_table'
   )
 
   def add_arguments(self, parser):
@@ -44,29 +46,54 @@ class Command(TaskCommand):
 
   def clean_ngrams_table(self, **options):
     """
-    Remove unused ngrams from ngrams table.
+    Remove all ngrams from ngrams table.
     Usage: 
-    python manage.py task clean_ngrams_table
+    python manage.py vectors clean_ngrams_table
     """
     logger.debug('task: clean_ngrams_table')
     logger.debug('... total: %s ngrams' % Ngrams.objects.count())
+    print Ngrams.objects.all().delete()
     
+
+  def clean_leaves_ngrams_table(self, **options):
+    """
+    Remove unused ngrams from ngrams table. use only in case of emergency.
+    Usage: 
+    python manage.py vectors clean_leaves_ngrams_table
+    """
+    logger.debug('task: clean_leaves_ngrams_table')
+    logger.debug('... total: %s ngrams' % Ngrams.objects.count())
+    # Ngrams.objects.all().delete()
     ngr = Ngrams.objects.annotate(num_documents=Count('documents'))
 
-    print ngr.filter(num_documents=0).delete()
+    print ngr.filter(num_documents__lte=1).delete()
     # logger.debug('... deleting ngrams, %s' % 
     logger.debug('... now %s ngrams in table after deleting leaves.' % Ngrams.objects.count())
 
-    for ngr in ngr.order_by('-num_documents')[:100]:
-      print ngr.segment, ngr.slug, ngr.num_documents
 
+
+  def read_ngrams_table(self, model, **options):
+    """
+    Remove unused ngrams from ngrams table.
+    Usage: 
+    python manage.py vectors read_ngrams_table
+    """
+    logger.debug('task: read_ngrams_table')
+    if model == 'document':
+      logger.debug('... total: %s ngrams' % Ngrams.objects.count())
+      
+      ngr = Ngrams.objects.annotate(num_documents=Count('documents'))
+
+      logger.debug('... top 500')
+      for ngr in ngr.order_by('-num_documents', 'slug')[:500]:
+        print '     ... ', ngr.segment, ngr.slug, ngr.num_documents
 
 
   def search_ngrams_table(self, query=None, model=False, **options):
     """
     Test ngrams table contents.
     Usage: 
-    python manage.py task search_ngrams_table --query=alaska
+    python manage.py vectors search_ngrams_table --query=alaska
     """
     logger.debug('task: search_ngrams_table')
     if not query:
@@ -81,12 +108,11 @@ class Command(TaskCommand):
       ngrams = Document.objects.annotate(
         similarity=TrigramSimilarity('ngrams__segment', query),
       ).filter(similarity__gt=0.35).order_by('-similarity').values('ngrams__segment', 'ngrams__slug').distinct()[:10]
-
-      for n in ngrams:
-        logger.debug(u'- %s (%s)' % (n.get('ngrams__segment'), n.get('ngrams__slug')))
+      if not ngrams:
+        logger.debug('not found!')
       
-
-
+      logger.debug('ngrams found: [%s]' % u' / '.join([u'%s (%s)' % (n.get('ngrams__segment'), n.get('ngrams__slug')) for n in ngrams]))
+      
 
   def update_search_vectors(self, pk=None, model=False, **options):
     logger.debug('task: update_search_vectors')
@@ -112,7 +138,7 @@ class Command(TaskCommand):
   def update_ngrams_table(self, pk=None, model=False, **options):
     """
     Example usage:
-    python manage.py task update_ngrams_table --model=document --pk=984
+    python manage.py vectors update_ngrams_table --model=document --pk=984
     """
     logger.debug('task: update_ngrams_table')
     if model == 'document':
@@ -132,33 +158,52 @@ class Command(TaskCommand):
         if pk:
           print sentences
 
+        dupes   = 0
+        newly   = 0
+        saved   = 0
+
         for ids, s in enumerate(sentences):
           words = Ngrams.tokenize(s)
+          #print words
 
-
-          ngs   = Ngrams.find_ngrams(words=words, n=1) + Ngrams.find_ngrams(words=words, n=2)# + Ngrams.find_ngrams(words=words, n=3)
+          ngs   = Ngrams.find_ngrams(words=words, n=1) + Ngrams.find_ngrams(words=words, n=2) + Ngrams.find_ngrams(words=words, n=3)
           ngs   = Ngrams.prepare(ngs)
 
           logger.debug('  ... %s/%s, found %s ngrams' % (ids+1, len(sentences), len(ngs)))
+          
           # pseudo bulk_create
+          slugs = []
+          
           for idx, ngram in enumerate(ngs):
             # stopwords? or directly in grams slugify function
-            if ngram['slug'] in Ngrams.COMMON_STOPWORDS:
-              print ' skipping, is a stopword', ngram['segment'], ngram['slug']
+            if ngram['slug'] in slugs:
+              if pk:
+                logger.debug('    %s %s (%s) SKIPPING, already done!' % (idx, ngram['segment'], ngram['slug']))
+              dupes = dupes +1
               continue
 
             if pk:
               logger.debug('    %s %s (%s)' % (idx, ngram['segment'], ngram['slug']))
             
+            # add to local list of slugs
+            slugs.append(ngram['slug'])
+
             try:
               ng, created = Ngrams.objects.get_or_create(slug=ngram['slug'], defaults={
                 'segment': ngram['segment']
               })
               doc.ngrams_set.add(ng)
+              saved = saved + 1
+              if created:
+                newly = newly + 1
             except Exception as e:
               raise e
               #else:
               #  logger.debug('  ... idx: %s, slug:%s, created:%s' % (idx, slug, created))
+        logger.debug('  ... ngrams duplicates: %s' % dupes)
+        logger.debug('  ... ngrams newly created: %s' % newly)
+        logger.debug('  ... ngrams saved: %s' % saved)
+
         if sentences:
           doc.save()
 
