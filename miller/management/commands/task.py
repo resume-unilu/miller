@@ -4,7 +4,7 @@
 import os, logging, json, re, requests, StringIO, datetime, time
 
 from miller.helpers import get_whoosh_index
-from miller.models import Author, Document, Story, Profile, Tag, Ngrams
+from miller.models import Author, Document, Story, Profile, Tag
 from miller.management.commands import utils
 
 from django.conf import settings
@@ -104,59 +104,7 @@ class Command(BaseCommand):
     logger.debug('command finished in %s seconds.' % (end - start))
   
   
-  def update_search_vectors(self, pk=None, model=False, **options):
-    logger.debug('task: update_search_vectors')
-
-    if model == 'document':
-      docs = Document.objects.all()
-      if pk:
-        docs = docs.filter(pk=pk)
-      for doc in docs.iterator():
-        doc.update_search_vector()
-        logger.debug('task: update_search_vectors for document {pk:%s, slug:%s}' % (doc.pk, doc.slug))
-    elif model == 'story':
-      stories = Story.objects.exclude(status=Story.DELETED)
-      if pk:
-        stories = stories.filter(pk=pk)
-      for story in stories.iterator():
-        story.update_search_vector()
-        logger.debug('task: update_search_vectors for story {pk:%s, slug:%s}' % (story.pk, story.slug))
-    else:
-      logger.error('task: please provide a valid model to update_whoosh: "document" or "story"...')
   
-
-  def update_ngrams_table(self, pk=None, model=False, **options):
-    """
-    Example usage:
-    python manage.py task update_ngrams_table --model=document --pk=123
-    """
-    logger.debug('task: update_ngrams_table')
-    if model == 'document':
-      docs = Document.objects.all()
-
-      if pk:
-        docs = docs.filter(pk=pk)
-      for doc in docs.iterator():
-        logger.debug('task: update_search_vectors for document {pk:%s, slug:%s}' % (doc.pk, doc.slug))
-        indexed_contents = doc.update_search_vector()
-
-        words = Ngrams.tokenize(u' '.join([idx[0] for idx in indexed_contents]))
-        ngs   = Ngrams.find_ngrams(words=words, n=1) + Ngrams.find_ngrams(words=words, n=2)
-        slugs = Ngrams.slugify(ngs)
-        print slugs
-        for idx, slug in enumerate(slugs):
-          if slug:
-            try:
-              ng, created = Ngrams.objects.get_or_create(slug=slug, defaults={
-                'segment': u' '.join(ngs[idx])
-              })
-              doc.ngrams_set.add(ng)
-            except Exception as e:
-              print idx, slug, 'not working'
-            else:
-              print idx, slug, created
-        if slugs:
-          doc.save()
 
 
   def migrate_documents(self, **options):
