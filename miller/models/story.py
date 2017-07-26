@@ -1029,7 +1029,7 @@ def delete_cache_on_save(sender, instance, **kwargs):
 @receiver(m2m_changed, sender=Story.tags.through)
 def store_tags(sender, instance, **kwargs):
   if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
-    instance.store(receiver='m2m_changed tags')
+    # instance.store(receiver='m2m_changed tags')
     ckey = 'story.%s' % instance.short_url
     cache.delete(ckey)
     cache.delete('story.featured')
@@ -1045,7 +1045,7 @@ def store_covers(sender, instance, **kwargs):
 @receiver(m2m_changed, sender=Story.authors.through)
 def store_authors(sender, instance, **kwargs):
   if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
-    instance.store(receiver='m2m_changed authors')
+    # instance.store(receiver='m2m_changed authors')
     ckey = 'story.%s' % instance.short_url
     cache.delete(ckey)
 
