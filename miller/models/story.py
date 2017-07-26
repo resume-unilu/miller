@@ -1036,7 +1036,7 @@ def store_tags(sender, instance, **kwargs):
 
 
 @receiver(m2m_changed, sender=Story.covers.through)
-def store_tags(sender, instance, **kwargs):
+def store_covers(sender, instance, **kwargs):
   if kwargs['action'] == 'post_add' or kwargs['action'] == 'post_remove':
     ckey = 'story.%s' % instance.short_url
     cache.delete(ckey)
