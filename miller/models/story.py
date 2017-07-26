@@ -439,7 +439,7 @@ class Story(models.Model):
         raise e
       else:
         logger.exception(e)
-    logger.debug('story {pk:%s, version:%s} git tagged as %s by %s' % (self.pk, self.version, self.tag, author))
+    logger.debug('story {pk:%s, version:%s} git tagged as %s by %s' % (self.pk, self.version, tag, author))
 
   def gitLog(self, limit=4, offset=0):
     from django.utils import timezone
