@@ -26,12 +26,12 @@ stdout_logfile=/var/log/supervisor/miller-dapnhe-stdout.log
 user=devuser
 startretries=3
 
-[program:prerender]
-command=node server.js
-directory=/path/to/prerender  
-autostart=true  
-autorestart=true  
-environment=NODE_ENV=production  
-stderr_logfile=/var/log/supervisor/prerender.error.log  
-stdout_logfile=/var/log/supervisor/prerender.out.log  
-user=devuser  
+[program:celery]
+command=/path/to/.virtualenvs/yourvenv/bin/celery -A miller worker --loglevel=info
+directory=/path/to/miller
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/supervisor/celery.log
+stdout_logfile=/var/log/supervisor/celery.log
+user=devuser
+startretries=3
