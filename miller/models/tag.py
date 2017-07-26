@@ -29,7 +29,7 @@ class Tag(models.Model):
     (WRITING, 'writing'),
     (COLLECTION, 'collection'),
     (PUBLISHING, 'publishing')
-  )
+  ) + settings.MILLER_TAG_CATEGORY_CHOICES
 
   HIDDEN  = 'hidden'
   PUBLIC  = 'public' # everyone can access that.

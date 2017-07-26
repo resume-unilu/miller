@@ -506,6 +506,9 @@ MILLER_URL_REQUEST_TIMEOUT = 15
 MILLER_STATIC_PAGES = ['guide-for-authors', 'people', 'project', 'terms-of-use']
 MILLER_STATIC_PAGES_ROOT = os.path.join(BASE_DIR, 'client/src/pages')
 
+# feel free to add as many category you wish in local_settings!
+MILLER_TAG_CATEGORY_CHOICES = (('static', 'static page'), )
+
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:
     from local_settings import *

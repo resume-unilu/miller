@@ -217,7 +217,7 @@ class Command(BaseCommand):
 
     logger.debug('loading %s' % url)
 
-    rows, headers = utils.bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'data__provider'])
+    rows, headers = utils.bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'category', 'data__provider'])
     
     data_paths =  utils.data_paths(headers=headers) 
     data_structure = {}
@@ -227,10 +227,20 @@ class Command(BaseCommand):
 
     logger.debug('data__* fields have been transformed to: %s' % data_structure)
 
+    CATEGORIES = [item[0] for item in Tag.CATEGORY_CHOICES]
+    logger.debug('categories available: %s' % CATEGORIES)
+
     for i, row in enumerate(rows):
       if not row['slug'] :
         logger.debug('line %s: empty "slug", skipping.' % i)
         continue
+
+
+      if not row['category'] or not row['category'] in  CATEGORIES:
+        logger.debug('line %s: category "%s" not matching %s, skipping.' % (i, row['category'], CATEGORIES))
+        continue
+
+      _category = row['category'].strip()
 
       _slug = row['slug'].strip()
 
@@ -238,9 +248,11 @@ class Command(BaseCommand):
         logger.debug('line %s: "slug" length is excessive, BREAK!' % i)
         break;
 
-      tag, created = Tag.objects.get_or_create(slug=_slug, category=options.get('category', Tag.KEYWORD))
-      logger.debug('tag saved {slug:%s, created:%s, name:%s}' % (tag.slug, created, tag.name))
+      # this will raise an error if the tag exists already (changing category is not permitted here)
+      tag, created = Tag.objects.get_or_create(slug=_slug, category=_category)
+
       tag.name = row.get('name', '').strip()
+
 
       _data = data_structure.copy()
       
@@ -248,6 +260,7 @@ class Command(BaseCommand):
         utils.nested_set(_data, path, row[key], as_list=is_list)
       
       tag.data = _data['data']
+      logger.debug('tag saved {slug:%s, created:%s, name:%s}' % (tag.slug, created, tag.name))
       tag.save()
 
     #with transaction.atomic():  
