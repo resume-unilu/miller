@@ -210,6 +210,9 @@ class Document(models.Model):
         ) AS x
         WHERE x.id = miller_document.id
       """]), [value for value, _w, _c in contents] +  [self.id])
+
+    logger.debug('document {pk:%s, slug:%s} search_vector updated.'%(self.pk, self.slug))
+    
     return contents
     # this is searchable as SELECT id FROM miller_document WHERE search_vector @@ to_tsquery('simple', 'descript:*')
 
@@ -487,9 +490,6 @@ class Document(models.Model):
     else:
       super(Document, self).save(*args, **kwargs)
 
-    if self._saved == 1:
-      self.update_search_vector()
-
 
 @receiver(pre_save, sender=Document)
 def complete_instance(sender, instance, **kwargs):
@@ -524,6 +524,10 @@ def dispatcher(sender, instance, created, **kwargs):
     logger.debug('document@post_save  {pk:%s} no need to save the instance again.' % instance.pk)
   if created:  
     follow(instance.owner, instance)
+
+  from miller.tasks import document_update_search_vectors
+
+  document_update_search_vectors.delay(instance.pk)
 
 
 

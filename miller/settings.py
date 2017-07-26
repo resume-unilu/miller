@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'captcha',
     'miller',
     'actstream',
-    'dbbackup'
+    # 'dbbackup'
     #'django_seo_js'
     
 ]
@@ -251,6 +251,18 @@ AUTHENTICATION_BACKENDS = (
 #............
 WHOOSH_ROOT = os.path.join(BASE_DIR, 'whoosh')
 
+
+#............
+#
+# CELERY
+# Redis db:5
+#............
+BROKER_URL = 'redis://localhost:6379/5'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
 #............
 #
 # RSS
@@ -319,6 +331,12 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'logs', 'doi.log'),
             'formatter': 'lite'
         },
+        'celery': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'celery.log'),
+            'formatter': 'lite'
+        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -348,6 +366,10 @@ LOGGING = {
         },
         'miller.doi': {
             'handlers': ['doi'],
+            'level': 'DEBUG'
+        },
+        'miller.celery': {
+            'handlers': ['celery'],
             'level': 'DEBUG'
         },
         'console': {
@@ -443,6 +465,19 @@ MILLER_DOI_ENDPOINT  = 'https://mds.test.datacite.org'
 MILLER_DOI_AUTH      = ('username', 'password')
 MILLER_DOI_HOST      = 'https://your-doi-registerd-domain.org' # check your DOI provider.
 MILLER_DOI_RESOLVER  = 'https://doi.org/' # should not change that.
+
+# content types for your items.
+MILLER_DOI_RESOLVER_CONTENT_TYPES = (
+  ('text/x-bibliography', ''),
+)
+
+MILLER_DOI_RESOLVER_STYLES = (
+  ('apa', 'APA'),
+  ('mla', 'MLA'),
+  ('chicago-author-date', 'chicago-author-date')
+)
+
+
 
 # feel free to add your own oembed service in localsettings.
 MILLER_OEMBEDS = {

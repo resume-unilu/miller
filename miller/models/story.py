@@ -198,6 +198,14 @@ class Story(models.Model):
     verbose_name_plural = 'stories'
 
 
+  def get_DOI_title(self):
+    """
+    Return the title for DOI based on curren tsettings
+    """
+    tags = self.tags.all()
+
+   # tags = self.tags.filter(category=Tag.PUBLISHING)
+    return u' '.join([self.title] + [t.name for t in tags])
 
 
   
@@ -379,6 +387,9 @@ class Story(models.Model):
         ) AS x
         WHERE x.id = miller_story.id
       """]), [value for value, _w, _c in contents] +  [self.id])
+
+    logger.debug('story {pk:%s, slug:%s} search_vector updated.'%(self.pk, self.slug))
+    
     return contents
 
   # unstore (usually when deleted)
@@ -951,6 +962,11 @@ def dispatcher(sender, instance, created, **kwargs):
     # send emails if status has changed.
     instance.dispatch_status_changed(created)
 
+  logger.debug('story@post_save {pk:%s}' % instance.pk)
+
+  from miller.tasks import story_update_search_vectors
+
+  story_update_search_vectors.delay(instance.pk)
   # always store in whoosh.
   # instance.store()
 
