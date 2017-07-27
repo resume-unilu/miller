@@ -1,4 +1,4 @@
-{% block subject %}Welcome on RESuME, {{username}}{% endblock %}
+{% block subject %}Welcome on {{site_name}}, {{username}}{% endblock %}
 {% block plain %}
 Cher {{fullname}}, 
 
