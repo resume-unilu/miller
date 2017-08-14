@@ -162,81 +162,35 @@ class DocumentViewSet(viewsets.ModelViewSet):
     if not form.is_valid():
       raise ValidationError(form.errors)
 
-    # check if there is no document
+    # check if there is no document in the archive matching the url.
     url = form.cleaned_data['url']
 
+
+   
     ckey = 'oembed:%s' % url
 
     if not request.query_params.get('nocache', None) and cache.has_key(ckey):
       return Response(cache.get(ckey))
 
-    def perform_request(url, headers={}, params=None, timeout=5):
-      try:
-        res = requests.get(url, headers=headers, params=params, timeout=timeout)
-      except Exception as e:
-        raise ParseError({
-          'error': '%s' % e
-        })
-
-      try:
-        res.raise_for_status()
-      except HTTPError as e:
-        if e.response.status_code == 404:
-          raise NotFound({
-            'error': '%s' % e
-          })
-
-        raise ParseError({
-          'error': '%s' % e
-        })
-
-      return res
-
+    # not done? perform requests etc...
+    from miller.embedder import custom_noembed, perform_request
+    
+    # only top part of the content to get metadata.
     res = perform_request(url, headers={'Range':'bytes=0-20000'})
     content_type  = res.headers.get('content-type', '').split(';')[0]
     provider_url = self.headers.get('Host', None)
+
     if not provider_url:
       from urlparse import urlparse
       o = urlparse(url)
       provider_url = o.netloc
 
-    # we can have the case content-type is 'application/pdf;charset=UTF-8'
-    if content_type in ("application/pdf", "application/x-pdf",):
-      d = {
-        "url": url,
-        "provider_url": provider_url,
-        "title": "",
-        "height": 780,
-        "width": 600,
-        "html": "<iframe src=\"https://drive.google.com/viewerng/viewer?url=%s&embedded=true\" width=\"600\" height=\"780\" style=\"border: none;\"></iframe>" % url,
-        "version": "1.0",
-        "provider_name": provider_url,
-        "type": "rich",
-        "info": {
-          'service': 'miller',
-        }
-      }
-
-      cache.set(ckey, d)
-      return Response(d)
-
-    elif content_type.startswith('image/'):
-      d = {
-        "url": url,
-        "provider_url": provider_url,
-        "title": "",
-        "height": 780,
-        "width": 600,
-        "version": "1.0",
-        "provider_name": provider_url,
-        "type": "photo",
-        "info": {
-          'service': 'miller',
-        }
-      }
-      cache.set(ckey, d)
-      return Response(d)
-
+    # enable smart oembedding. cfr settings.MILLER_OEMBEDS_MAPPER
+    e = custom_noembed(url=url, content_type=content_type, provider_url=provider_url)
+    
+    if e:
+      cache.set(ckey, e)
+      return Response(e)
       # is it an image or similar?
       # https://www.hdg.de/lemo/img_hd/bestand/objekte/biografien/schaeuble-wolfgang_foto_LEMO-F-5-051_bbst.jpg
 
