@@ -489,7 +489,7 @@ MILLER_OEMBEDS = {
 
 MILLER_OEMBEDS_MAPPER = (
   # (type, regex, function) 
-  ('timeline', r'(?P<protocol>https?):\/\/(?P<path>cdn.knightlab.com\/libs\/timeline\d?\/latest\/embed\/.*)', 'miller.embedder.timelinejs'),
+  ('timeline', r'(?P<protocol>https?):\/\/(?P<path>cdn.knightlab.com\/libs\/timeline\d?\/latest\/embed\/[^&]*)', 'miller.embedder.timelinejs'),
 )
 
 

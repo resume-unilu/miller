@@ -61,7 +61,7 @@ urlpatterns = [
   # missing images service (e.g.crop)
   url(r'^services/images', services.images),
 
-  url(r'^timelinejs/(?P<gsid>[A-Za-z0-9\-]+)$', views.timelinejs), #iframe for timelinejs, given a google spreadsheet id so that we can use our own style.
+  url(r'^timelinejs/(?P<gsid>[A-Za-z0-9\-_]+)$', views.timelinejs), #iframe for timelinejs, given a google spreadsheet id so that we can use our own style.
   
   url(r'^login/$', auth_views.login, {'template_name': 'miller/login.html'}, name='login_view'), # views.login_view, name='login_view'),
   # url(r'^login/$', views.login_view, name='login_view'),
