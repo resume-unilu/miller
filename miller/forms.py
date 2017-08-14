@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import re
 from django import forms
+from django.conf import settings
+
 from captcha.fields import CaptchaField
 from django.contrib.auth.models import User
 from registration.forms import RegistrationFormUniqueEmail
+
 
 
 class ExtractCaptionFromStory(forms.Form):
@@ -42,3 +46,11 @@ class URLForm(forms.Form):
 class GitTagForm(forms.Form):
   tag = forms.RegexField(max_length=24, regex=r'^[a-zA-Z\-\_\.\d]+$', required=True)
   message = forms.CharField(max_length=128, required=False)
+
+
+class DOICiteForm(forms.Form):
+  LANGUAGE_CHOICES = tuple((re.sub(r'([a-z]{2})$', lambda x: x.group(1).upper(), lang[0]), lang[1]) for lang in settings.LANGUAGES)
+
+  contentType = forms.ChoiceField(choices=settings.MILLER_DOI_RESOLVER_CONTENT_TYPES)
+  style       = forms.ChoiceField(choices=settings.MILLER_DOI_RESOLVER_STYLES) 
+  locale      = forms.ChoiceField(choices=LANGUAGE_CHOICES, required=False) 

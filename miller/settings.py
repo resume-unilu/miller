@@ -456,6 +456,7 @@ MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 MILLER_SNAPSHOT_WIDTH = 234
 MILLER_SNAPSHOT_HEIGHT = None
 
+
 # DOI creation, used in `api/story/<pk>/doi` GET(read) or POST (create) endpoint. 
 # If `MILLER_DOI_ENABLED=True`, you should have a DOI prefix cfr.https://mds.datacite.org/
 MILLER_DOI_ENABLED   = False
@@ -512,8 +513,11 @@ MILLER_URL_REQUEST_TIMEOUT = 15
 MILLER_STATIC_PAGES = ['guide-for-authors', 'people', 'project', 'terms-of-use']
 MILLER_STATIC_PAGES_ROOT = os.path.join(BASE_DIR, 'client/src/pages')
 
+MILLER_TIMELINEJS_STYLESHEET = None
+
 # feel free to add as many category you wish in local_settings!
-MILLER_TAG_CATEGORY_CHOICES = (('static', 'static page'), )
+MILLER_TAG_CATEGORY_CHOICES  = (('static', 'static page'), )
+MILLER_DOCUMENT_TYPE_CHOICES = (('timeline', 'timeline'), )
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:

@@ -57,6 +57,11 @@ def home(request):
   return render(request, "miller/index.html")
   #, _share(request))
 
+def timelinejs(request, gsid):
+  return render(request, "miller/timelinejs.iframe.html", {
+    'gsid': gsid,
+    'stylesheet_url': settings.MILLER_TIMELINEJS_STYLESHEET
+  })
 # @cache_page(60 * 15)
 # @csrf_protect
 # def login_view(request):

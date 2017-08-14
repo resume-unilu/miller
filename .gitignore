@@ -32,3 +32,5 @@ docs/
 
 # google verification file
 google*.html
+
+*.psql

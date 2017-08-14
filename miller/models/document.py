@@ -71,7 +71,7 @@ class Document(models.Model):
     (AV, 'audiovisual'),
 
     (ENTITY, 'entity: see data type property'), # use the type field inside data JsonField.
-  )
+  ) + settings.MILLER_DOCUMENT_TYPE_CHOICES
 
   DEFAULT_OEMBED = {
     'provider_name': '',

@@ -1,0 +1,13 @@
+<html>
+  <head>
+  <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+  {% if stylesheet_url %}<link rel="stylesheet" href="{{stylesheet_url}}">{% endif %}
+  <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+  </head>
+  <body>
+  <div id='tl-{{gsid}}'></div>
+    <script type="text/javascript">
+      timeline = new TL.Timeline('tl-{{gsid}}', 'https://docs.google.com/spreadsheets/d/{{gsid}}/pubhtml');
+    </script>
+  </body>
+</html>

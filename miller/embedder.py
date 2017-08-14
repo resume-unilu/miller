@@ -30,15 +30,28 @@ def perform_request(url, headers={}, params=None, timeout=5):
 
   return res
 
+
 def timelinejs(m):
   """
   add support for knightlab timelines (as rich links)
-  http://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=0AmNxBKGzRxw8dE9rbThJX0RCUmxheW1oOUMxWEdLd3c&font=Georgia-Helvetica&maptype=TERRAIN&lang=en&height=650
+  Follow the https://timeline.knightlab.com/docs/instantiate-a-timeline.html
+
+  e.g. http://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=0AmNxBKGzRxw8dE9rbThJX0RCUmxheW1oOUMxWEdLd3c&font=Georgia-Helvetica&maptype=TERRAIN&lang=en&height=650
   """
   url = 'https://%s' % m.group('path')
+  # get the google spreadsheet id
+  gsid = re.search(r'source=(.*)', url)
+  if not gsid:
+    return None
+
+  gsid = gsid.group(1)
+
   d = {
     "url": url,
-    "html": "<iframe src='%s' width=\"600\" height=\"780\" webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>" % url,
+    "html": '<iframe src="%(host)s/timelinejs/%(gsid)s" frameBorder="0"></iframe>' % {
+      'host': settings.MILLER_HOST,
+      'gsid': gsid
+    },
     "type": "timeline",
     "version": "1.0",
     "provider_name": 'TimelineJS',
