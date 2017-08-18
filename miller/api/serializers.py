@@ -181,12 +181,12 @@ class CreateDocumentSerializer(serializers.ModelSerializer):
 class LiteMentionSerializer(serializers.ModelSerializer):
   slug     = serializers.ReadOnlyField()
   data     = JsonField()
-  # covers   = LiteDocumentSerializer(many=True)
+  covers   = LiteDocumentSerializer(many=True)
   tags     = TagSerializer(many=True)
   authors  = AuthorSerializer(many=True)
   class Meta:
     model = Mention
-    fields = ('id', 'slug', 'data', 'tags', 'authors')
+    fields = ('id', 'slug', 'data', 'tags', 'authors', 'covers')
 
 
 # Story Serializer to use in action lists
