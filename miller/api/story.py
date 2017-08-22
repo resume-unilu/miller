@@ -125,6 +125,7 @@ class StoryViewSet(viewsets.ModelViewSet):
         context={'request': request},
     )
     d = serializer.data
+
     #print 'set cache', ckey
     cache.set(ckey, d)
 
@@ -181,7 +182,9 @@ class StoryViewSet(viewsets.ModelViewSet):
       story.data['doi'] = d.format()
       story.save()
       
-    doi = d.retrieve()
+    url = d.retrieve()
+    # if it does exist, send me the citation
+    #ref = d.cite()
     # serializer = LiteStorySerializer(story, context={'request': request})
 
     # res = serializer.data
@@ -192,8 +195,48 @@ class StoryViewSet(viewsets.ModelViewSet):
     # })
 
     return Response({
-      'doi': doi
+      'doi': d._id,
+      'url': url
     })
+
+
+  @detail_route(methods=['get'], url_path='doi/cite')
+  def doi_cite(self, request, pk):
+    from miller.forms import DOICiteForm
+    
+    form = DOICiteForm(request.GET)
+    
+    if not form.is_valid():
+      raise ValidationError(form.errors)
+
+    qpk = {'pk': pk} if pk.isdigit() else {'slug': pk}
+    story = get_object_or_404(Story.objects.filter(status=Story.PUBLIC), **qpk)
+
+    ckey = story.get_cache_key(extra='%s.%s' % (form.cleaned_data['contentType'], form.cleaned_data['style']))
+    # if cache.has_key(ckey):
+    #   d = cache.get(ckey)
+    #   d.update({
+    #     'cache': True
+    #   })
+    #   return Response(d)
+
+    from miller.doi import DataciteDOI
+    
+    
+    doi = DataciteDOI(story=story)
+    ref = doi.cite(**form.cleaned_data)
+
+    _d = {
+      'doi': doi._id,
+      'url': doi._url,
+      'citation': ref,
+      'params': form.cleaned_data
+    }
+
+    cache.set(ckey, _d, timeout=None)
+
+  
+    return Response(_d)
 
 
   @detail_route(methods=['get', 'post'], url_path='doi/metadata')
@@ -211,9 +254,14 @@ class StoryViewSet(viewsets.ModelViewSet):
       
     if request.method == 'POST':
       xml = m.create()
-    else:
-      xml = m.retrieve() if not request.query_params.get('test', None) else m.serialize()
-
+    elif request.query_params.get('test', None):
+      if request.query_params.get('content-type') == 'xml':
+        xml = m.serialize()
+      else:
+        return HttpResponse(m.serialize('json'), content_type='text/json')
+  
+    else :
+      xml = m.retrieve()
     return HttpResponse(xml, content_type='text/xml')
 
 

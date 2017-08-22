@@ -66,7 +66,13 @@ class Author(models.Model):
           %(ORCID)s
           <affiliation>%(affiliation)s</affiliation>
         </contributor>
-        """ %{
+        """ % self.asDictContributor()
+
+    return cre
+
+
+  def asDictContributor(self, contributorType='RelatedPerson'):
+    return {
         'contributorType': contributorType,
         'contributorName': u', '.join(filter(None, (self.data.get('lastname'),self.data.get('firstname')))),
         'givenName': self.data.get('firstname', ''),
@@ -74,8 +80,6 @@ class Author(models.Model):
         'ORCID': '' if not self.orcid else '<nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">%s</nameIdentifier>'% self.orcid,
         'affiliation': self.affiliation if self.affiliation else ''
     }
-
-    return cre
 
 
   def asXMLCreator(self):
@@ -89,15 +93,24 @@ class Author(models.Model):
           <familyName>%(familyName)s</familyName>%(ORCID)s
           <affiliation>%(affiliation)s</affiliation>
         </creator>
-        """ %{
-        'creatorName': u', '.join(filter(None, (self.data.get('lastname'),self.data.get('firstname')))),
-        'givenName': self.data.get('firstname', ''),
-        'familyName': self.data.get('lastname', ''),
-        'ORCID': '' if not self.orcid else '<nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">%s</nameIdentifier>'% self.orcid,
-        'affiliation': self.affiliation if self.affiliation else ''
-    }
+        """ % self.asDictCreator()
 
     return cre
+
+
+  def asDictCreator(self):
+    """
+    serialize as Dict <creator> for doi metadata preview (JSON api)
+    """
+    cre = {
+      'creatorName': u', '.join(filter(None, (self.data.get('lastname'),self.data.get('firstname')))),
+      'givenName': self.data.get('firstname', ''),
+      'familyName': self.data.get('lastname', ''),
+      'ORCID': '' if not self.orcid else '<nameIdentifier schemeURI="http://orcid.org/" nameIdentifierScheme="ORCID">%s</nameIdentifier>'% self.orcid,
+      'affiliation': self.affiliation if self.affiliation else ''
+    }
+    return cre
+
 
   class Meta:
     app_label="miller"

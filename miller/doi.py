@@ -14,6 +14,7 @@ def urlize(*args):
 class DataciteDOI():
   prefix    = settings.MILLER_DOI_PREFIX
   publisher = settings.MILLER_DOI_PUBLISHER
+  publisherprefix = settings.MILLER_DOI_PUBLISHER_PREFIX
   endpoint  = urlize(settings.MILLER_DOI_ENDPOINT, 'doi')
   auth      = settings.MILLER_DOI_AUTH
   baseurl   = settings.MILLER_DOI_HOST 
@@ -24,15 +25,16 @@ class DataciteDOI():
     self._id     = story.data.get('doi', self.format())
     self._url = '%s/' % urlize(self.baseurl, 'story', story.slug)
     
-  def cite(self, contentType="text/x-bibliography" ,style='apa'):
+  def cite(self, contentType="text/x-bibliography" ,style='apa', locale='fr-FR'):
     """
     Return a formatted version of the doi, if the doi is registered.
     Check https://citation.crosscite.org/docs.html for the different versions
     """
     url = urlize(settings.MILLER_DOI_RESOLVER, self._id)
+    print 'MILLER_DOI_RESOLVER', contentType, style, locale
     try:
       res = requests.get(url=url, headers={
-        'accept': '%s; style=%s' % (contentType, style)
+        'accept': '%s; style=%s; locale=%s' % (contentType, style, locale)
       })
     except ConnectionError as e:
       logger.exception(e)
@@ -44,7 +46,10 @@ class DataciteDOI():
     try:
       res.raise_for_status()
     except HTTPError as e:
+      if res.status_code == 404:
+        raise NotFound()
       raise e
+
     logger.debug('%s'% res.headers)
     return res.text
 
@@ -61,7 +66,7 @@ class DataciteDOI():
     }
 
   def format(self):
-    return urlize(self.prefix, '%s-%s' % (self.story.short_url, self.story.date.year))
+    return urlize(self.prefix, '%s-%s-%s' % (self.publisherprefix, self.story.short_url, self.story.date.year))
 
   @staticmethod
   
@@ -154,7 +159,7 @@ class DataciteDOI():
 class DataciteDOIMetadata(DataciteDOI):
   endpoint  = urlize(settings.MILLER_DOI_ENDPOINT, 'metadata')
 
-  def serialize(self):
+  def serialize(self, contentType='xml'):
     """
     Return a serialized version of the dictionary given
     """
@@ -162,41 +167,56 @@ class DataciteDOIMetadata(DataciteDOI):
 
     supervisors = self.story.owner.authorship.exclude(pk__in=authors.values_list('pk',flat=True))[0:1]
 
-    xml = u"""
-        <?xml version="1.0" encoding="UTF-8"?>
-      <resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd">
-        <identifier identifierType="DOI">%(DOI)s</identifier>
-        <creators>%(creators)s</creators>
-        <contributors>%(contributors)s</contributors>
-        <titles>
-          <title>%(title)s</title>
-        </titles>
-        <publisher>%(publisher)s</publisher>
-        <publicationYear>%(publicationYear)s</publicationYear>
-        <resourceType resourceTypeGeneral="%(resourceTypeGeneral)s">%(resourceType)s</resourceType>
-        <dates>
-          <date dateType="Updated">%(lastUpdate)s</date>
-        </dates>
-        <descriptions><description descriptionType="Abstract">%(abstract)s</description></descriptions>
-        <alternateIdentifiers>
-          <alternateIdentifier alternateIdentifierType="URL">%(url)s
-          </alternateIdentifier>
-        </alternateIdentifiers>
-      </resource> """ % {
-        'DOI': self._id,
-        'creators': u''.join([author.asXMLCreator() for author in authors]),
-        'contributors': u''.join([author.asXMLContributor(contributorType="Supervisor") for author in supervisors]),
-        'title': self.story.title,
-        'publisher': self.publisher,
-        'publicationYear': '%s' % self.story.date.year,
-        'lastUpdate': '%s' % self.story.date_last_modified.strftime('%Y-%m-%d'),
-        'resourceTypeGeneral': 'Text',
-        'resourceType': 'article',
-        'abstract': self.story.abstract,
-        'url': self._url
-      }
+    publicationYear = '%s' % (self.story.date_created.year if self.story.date_created.year != self.story.date.year else self.story.date.year)
 
-    return re.sub(r'\n\s+','', xml.strip().encode('utf-8'))
+    contents = {
+      'DOI': self._id,
+      'creators': u''.join([author.asXMLCreator() for author in authors]),
+      'contributors': u''.join([author.asXMLContributor(contributorType="Supervisor") for author in supervisors]),
+      'title': self.story.get_DOI_title(),
+      'publisher': self.publisher,
+      'publicationYear': '%s' % self.story.date_created.year,
+      'lastUpdate': '%s' % self.story.date_last_modified.strftime('%Y-%m-%d'),
+      'resourceTypeGeneral': 'Text',
+      'resourceType': 'article',
+      'abstract': self.story.abstract,
+      'url': self._url
+    }
+
+    if contentType == 'xml':
+      xml = u"""
+          <?xml version="1.0" encoding="UTF-8"?>
+        <resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd">
+          <identifier identifierType="DOI">%(DOI)s</identifier>
+          <creators>%(creators)s</creators>
+          <contributors>%(contributors)s</contributors>
+          <titles>
+            <title>%(title)s</title>
+          </titles>
+          <publisher>%(publisher)s</publisher>
+          <publicationYear>%(publicationYear)s</publicationYear>
+          <resourceType resourceTypeGeneral="%(resourceTypeGeneral)s">%(resourceType)s</resourceType>
+          <dates>
+            <date dateType="Updated">%(lastUpdate)s</date>
+          </dates>
+          <descriptions><description descriptionType="Abstract">%(abstract)s</description></descriptions>
+          <alternateIdentifiers>
+            <alternateIdentifier alternateIdentifierType="URL">%(url)s
+            </alternateIdentifier>
+          </alternateIdentifiers>
+        </resource> """ % contents
+
+      return re.sub(r'\n\s+','', xml.strip().encode('utf-8'))
+    elif contentType == 'json':
+      contents.update({
+        'creators': [author.asDictCreator() for author in authors],
+        'contributors': [author.asDictContributor(contributorType="Supervisor") for author in supervisors],
+      })
+      import json
+      from django.core.serializers.json import DjangoJSONEncoder
+      return json.dumps(contents, cls=DjangoJSONEncoder)
+
+    return None
 
 
   def create(self):

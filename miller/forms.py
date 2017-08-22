@@ -54,3 +54,5 @@ class DOICiteForm(forms.Form):
   contentType = forms.ChoiceField(choices=settings.MILLER_DOI_RESOLVER_CONTENT_TYPES)
   style       = forms.ChoiceField(choices=settings.MILLER_DOI_RESOLVER_STYLES) 
   locale      = forms.ChoiceField(choices=LANGUAGE_CHOICES, required=False) 
+
+

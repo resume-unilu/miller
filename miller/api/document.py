@@ -194,28 +194,40 @@ class DocumentViewSet(viewsets.ModelViewSet):
       # is it an image or similar?
       # https://www.hdg.de/lemo/img_hd/bestand/objekte/biografien/schaeuble-wolfgang_foto_LEMO-F-5-051_bbst.jpg
 
+    import micawber
+    try:
+      providers = micawber.bootstrap_basic()
+      d = providers.request(url)
+
     # check noembed! e.g; for flickr. We should check if the url is in the pattern specified.
-    noembed = perform_request('https://noembed.com/embed', params={
-      'url': url
-    });
-    d = noembed.json()
+    # noembed = perform_request('https://noembed.com/embed', params={
+    #   'url': url
+    # });
+    # d = noembed.json()
+    except Exception as e:
+      logger.exception(e)
+      d = {
+        'error': 'unknown',
+        "url": url,
+        "encoding": res.encoding,
+        #"provider_name":  ogd.get('site_name'),
+        #"description": ogd.get('description'),
+        "type": "link",
+        "html": ''
+      }
+    
+    return Response(d)
 
-    if not 'error' in d:
-      d.update({
-        "info": {
-          'service': 'noembed'
-        }
-      })
-      return Response(d)
+    # if not 'error' in d:
+    #   d.update({
+    #     "info": {
+    #       'service': 'noembed'
+    #     }
+    #   })
+    #   return Response(d)
 
-    d = {
-      "url": url,
-      "encoding": res.encoding,
-      #"provider_name":  ogd.get('site_name'),
-      #"description": ogd.get('description'),
-      "type": "link",
-      "html": ''
-    }
+    
+    # return Response(d)
 
     def quickmeta(doc, name, attrs={}, key='name'):
       attrs = {

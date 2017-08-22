@@ -3,7 +3,7 @@ import requests, re
 from django.conf import settings
 from django.utils.module_loading import import_string
 from rest_framework.exceptions import ValidationError, PermissionDenied, ParseError, NotFound
-
+from requests.exceptions import HTTPError
 
 def perform_request(url, headers={}, params=None, timeout=5):
   """

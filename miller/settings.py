@@ -462,6 +462,7 @@ MILLER_SNAPSHOT_HEIGHT = None
 MILLER_DOI_ENABLED   = False
 MILLER_DOI_PREFIX    = 'XX.YYYY'
 MILLER_DOI_PUBLISHER = 'Miller'
+MILLER_DOI_PUBLISHER_PREFIX = 'Miller' # To be used in WIthout space, only A-Z A-z 0-9 chars, max 10chars. TO
 MILLER_DOI_ENDPOINT  = 'https://mds.test.datacite.org'
 MILLER_DOI_AUTH      = ('username', 'password')
 MILLER_DOI_HOST      = 'https://your-doi-registerd-domain.org' # check your DOI provider.
