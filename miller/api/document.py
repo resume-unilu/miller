@@ -205,9 +205,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     # });
     # d = noembed.json()
     except Exception as e:
-      logger.exception(e)
+      # logger.exception(e)
+      # Normally: provider not found
       d = {
         'error': 'unknown',
+        'errorDetails': '%s' %e,
         "url": url,
         "encoding": res.encoding,
         #"provider_name":  ogd.get('site_name'),
@@ -215,8 +217,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
         "type": "link",
         "html": ''
       }
-    
-    return Response(d)
+    else:
+      return Response(d)
 
     # if not 'error' in d:
     #   d.update({
