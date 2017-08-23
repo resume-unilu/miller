@@ -2,13 +2,19 @@ import requests, logging, re
 
 from django.conf import settings
 from requests.exceptions import ConnectionError, HTTPError
-from rest_framework.exceptions import ValidationError, AuthenticationFailed, NotFound, PermissionDenied, ParseError
+from rest_framework.exceptions import ValidationError, APIException, AuthenticationFailed, NotFound, PermissionDenied, ParseError
 
 
 logger = logging.getLogger('miller.doi')
 
 def urlize(*args):
     return '/'.join(s.strip('/') for s in filter(lambda x: isinstance(x, basestring), args))
+
+
+class ServiceUnavailable(APIException):
+  status_code = 503
+  default_detail = 'Service temporarily unavailable, try again later.'
+  default_code = 'service_unavailable'
 
 
 class DataciteDOI():
@@ -38,7 +44,7 @@ class DataciteDOI():
       })
     except ConnectionError as e:
       logger.exception(e)
-      raise e
+      raise ServiceUnavailable()
     else:
       logger.debug('%s GET %s received %s' % (self._log_prefix(), url, res.status_code))
     
@@ -122,6 +128,12 @@ class DataciteDOI():
       
       res = getattr(requests, method.lower())(url=url, data=data, auth=self.auth, headers=headers)
     except ConnectionError as e:
+      logger.exception(e)
+      raise NotFound({
+        'error': 'ConnectionError',
+        'errorDescription': 'Service not ready. ConnectionError %s' % e    
+      })
+    except:
       logger.exception(e)
       raise e
     else:
