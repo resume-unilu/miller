@@ -478,7 +478,9 @@ MILLER_DOI_RESOLVER_STYLES = (
   ('mla', 'MLA'),
   ('chicago-author-date', 'chicago-author-date')
 )
-
+MILLER_DOI_TAG_CATEGORIES_FOR_SUBJECT = ['keyword']
+MILLER_DOI_TAG_CATEGORIES_FOR_TITLE = ['publishing']
+MILLER_DOI_TAG_SLUGS_FOR_TITLE = [] # e.g  put here specific tags (their slugs) you want to export to DOI system
 
 
 # feel free to add your own oembed service in localsettings.

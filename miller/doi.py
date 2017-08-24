@@ -72,7 +72,7 @@ class DataciteDOI():
     }
 
   def format(self):
-    return urlize(self.prefix, '%s-%s-%s' % (self.publisherprefix, self.story.short_url, self.story.date.year))
+    return urlize(self.prefix, '%s-%s-%s' % (self.publisherprefix, self.story.short_url, self.story.date_created.year))
 
   @staticmethod
   
@@ -192,9 +192,10 @@ class DataciteDOIMetadata(DataciteDOI):
       'resourceTypeGeneral': 'Text',
       'resourceType': 'article',
       'abstract': self.story.abstract,
+      'subjects': u''.join([u''.join(tag.asXMLSubjects()) for tag in self.story.tags.filter(category__in=settings.MILLER_DOI_TAG_CATEGORIES_FOR_SUBJECT)]),
       'url': self._url
     }
-
+    
     if contentType == 'xml':
       xml = u"""
           <?xml version="1.0" encoding="UTF-8"?>
@@ -212,6 +213,7 @@ class DataciteDOIMetadata(DataciteDOI):
             <date dateType="Updated">%(lastUpdate)s</date>
           </dates>
           <descriptions><description descriptionType="Abstract">%(abstract)s</description></descriptions>
+          <subjects>%(subjects)s</subjects>
           <alternateIdentifiers>
             <alternateIdentifier alternateIdentifierType="URL">%(url)s
             </alternateIdentifier>

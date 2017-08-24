@@ -202,12 +202,21 @@ class Story(models.Model):
     """
     Return the title for DOI based on curren tsettings
     """
-    tags = self.tags.all()
+    #tags = self.tags.all()
+    _title = self.title
+    tags = []
 
-   # tags = self.tags.filter(category=Tag.PUBLISHING)
-    return u' '.join([self.title] + [t.name for t in tags])
+    if settings.MILLER_DOI_TAG_SLUGS_FOR_TITLE: 
+      tags = [t.name for t in self.tags.filter(slug__in=settings.MILLER_DOI_TAG_SLUGS_FOR_TITLE)]
 
+    if settings.MILLER_DOI_TAG_CATEGORIES_FOR_TITLE: 
+      tags = tags + [t.name for t in self.tags.filter(category__in=settings.MILLER_DOI_TAG_CATEGORIES_FOR_TITLE)]
 
+    if tags:
+      _title = u'{0}. {1}'.format(_title.strip('. \t\n\r'), u', '.join([t for t in tags]))
+
+    return _title
+  
   
   def get_cache_key(self, extra=None):
     """

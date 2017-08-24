@@ -54,6 +54,15 @@ class Tag(models.Model):
   def __unicode__(self):
     return '%s (%s)' % (self.name, self.category)
 
+  def asXMLSubjects(self):
+    """ return a subject collection """
+    subjects = []
+    for key,value in self.data.get('name', dict()).iteritems():
+      lang = key.lower().replace('_','-')
+      subjects.append(u'<subject xml:lang="{0}">{1}</subject>'.format(lang,value))
+    if not subjects:
+      subjects.append(u'<subject>{0}</subject>'.format(self.name))
+    return subjects
 
   @staticmethod
   def get_search_Q(query):
