@@ -12,7 +12,18 @@ from django.utils.translation import ugettext_lazy as _
 
 from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment, Review, Page, Ngrams
 
-codemirror_json_widget = CodeMirrorTextarea(mode="css", theme="elegant", config={ 
+class CodeMirrorJSONField(CodeMirrorTextarea):
+  """
+  Indented json field.
+  """
+  def render(self, name, value, attrs=None):
+    try:
+      value = json.dumps(json.loads(value),indent=2)
+    except:
+      pass
+    return super(CodeMirrorJSONField, self).render(name, value, attrs)
+
+codemirror_json_widget = CodeMirrorJSONField(mode="css", theme="elegant", config={ 
   'fixedGutter': True, 
   'lineNumbers':True, 
   'matchBrackets': True,
@@ -27,6 +38,8 @@ codemirror_md_widget = CodeMirrorTextarea(mode="markdown", theme="elegant", conf
   'autoCloseBrackets': True,
   'lineWrapping': True
 })
+
+
 
 class BlogTagsListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
@@ -249,8 +262,9 @@ class StoryAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
     super(StoryAdminForm, self).__init__(*args, **kwargs)
     self.fields['contents'].widget = codemirror_md_widget
+    self.fields['abstract'].widget= codemirror_md_widget
     self.fields['data'].widget = codemirror_json_widget
-
+    
 
   def clean_metadata(self):
     try:
