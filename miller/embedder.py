@@ -1,5 +1,5 @@
 # a collection of embedding functions
-import requests, re
+import requests, re, urllib
 from django.conf import settings
 from django.utils.module_loading import import_string
 from rest_framework.exceptions import ValidationError, PermissionDenied, ParseError, NotFound
@@ -67,7 +67,7 @@ def custom_noembed(url, content_type, provider_url):
       "title": "",
       "height": 780,
       "width": 600,
-      "html": "<iframe src=\"https://drive.google.com/viewerng/viewer?url=%s&embedded=true\" width=\"600\" height=\"780\" style=\"border: none;\"></iframe>" % url,
+      "html": "<iframe src=\"https://drive.google.com/viewerng/viewer?url={0}&embedded=true\" width=\"600\" height=\"780\" style=\"border: none;\"></iframe>".format(urllib.quote(url)),
       "version": "1.0",
       "provider_name": provider_url,
       "type": "rich",
