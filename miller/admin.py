@@ -117,20 +117,13 @@ class UserAdmin(BaseUserAdmin):
 class AuthorAdminForm(forms.ModelForm):
   def __init__(self, *args, **kwargs):
     super(AuthorAdminForm, self).__init__(*args, **kwargs)
-    self.fields['metadata'].widget = codemirror_json_widget
+    self.fields['data'].widget = codemirror_json_widget
 
-  def clean_metadata(self):
-    try:
-      metadata = json.loads(self.cleaned_data['metadata'])
-    except ValueError as e:
-      raise forms.ValidationError(u'%s'%e)
-      # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
-    
-    return self.cleaned_data['metadata']
-
+  
 
 class AuthorAdmin(admin.ModelAdmin):
-  search_fields = ['fullname', 'metadata']
+  search_fields = ['fullname', 'data']
+  exclude = ['metadata']
   form = AuthorAdminForm
 
 

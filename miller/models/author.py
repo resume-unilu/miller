@@ -16,6 +16,11 @@ logger = logging.getLogger('miller')
 
 orcid_regex = RegexValidator(regex=r'^[\d\-]+$', message="ORCID should contain only numbers and '-' sign")
     
+def initial_data():
+  return {
+    'firstname': '',
+    'lastname': ''
+  }
 
 class Author(models.Model):
 
@@ -25,11 +30,12 @@ class Author(models.Model):
     'firstname': '',
     'lastname': ''
   }, indent=1))
-  data        = JSONField(default=dict)
+  data        = JSONField(default=initial_data)
 
   orcid       = models.CharField(max_length=24, validators=[orcid_regex], blank=True) #if any
   slug        = models.CharField(max_length=140, unique=True, blank=True)
   user        = models.ForeignKey(User, related_name='authorship', blank=True, null=True, on_delete=models.CASCADE)
+
 
   @property
   def dmetadata(self):
