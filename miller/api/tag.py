@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.db.models import Count
 
 from rest_framework import serializers,viewsets
@@ -26,7 +27,7 @@ class TagViewSet(viewsets.ModelViewSet):
   def list(self, request):
     tags = Tag.objects.all()
     if not request.user.is_staff:
-      tags = tags.filter(category=Tag.KEYWORD)
+      tags = tags.filter(category__in=settings.MILLER_NON_STAFF_TAG_CATEGORIES)
 
     g = Glue(request=request, queryset=tags)
     page    = self.paginate_queryset(g.queryset)
