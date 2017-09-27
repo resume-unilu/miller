@@ -193,6 +193,8 @@ class Command(TaskCommand):
           ])).strip()
         }
       })
+
+      print story.data
       #print story.title, row['title'].strip()
 
       if not story.data.get('title').get('en_US', None):
@@ -213,7 +215,8 @@ class Command(TaskCommand):
       
       story.tags.add(biotag)
       story.covers.add(doc)
-      story.authors.add(owner.user.authorship.first())
+      if dcreated:
+        story.authors.add(owner.user.authorship.first())
       story.save()
 
       logger.debug('ok - story {slug:%s, created:%s} saved' % (story.slug, created))
