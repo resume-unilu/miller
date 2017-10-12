@@ -184,6 +184,7 @@ class LiteMentionSerializer(serializers.ModelSerializer):
   covers   = LiteDocumentSerializer(many=True)
   tags     = TagSerializer(many=True)
   authors  = AuthorSerializer(many=True)
+  status   = serializers.ReadOnlyField(source='to_story.status')
 
   class Meta:
     model = Mention
