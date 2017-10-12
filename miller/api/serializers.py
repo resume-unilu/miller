@@ -184,9 +184,10 @@ class LiteMentionSerializer(serializers.ModelSerializer):
   covers   = LiteDocumentSerializer(many=True)
   tags     = TagSerializer(many=True)
   authors  = AuthorSerializer(many=True)
+
   class Meta:
     model = Mention
-    fields = ('id', 'slug', 'data', 'tags', 'authors', 'covers')
+    fields = ('id', 'slug', 'data', 'tags', 'authors', 'covers', 'status')
 
 
 # Story Serializer to use in action lists
