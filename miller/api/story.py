@@ -266,6 +266,7 @@ class StoryViewSet(viewsets.ModelViewSet):
 
 
 
+
   @detail_route(methods=['get'])
   def download(self, request, pk):
     q = self._getUserAuthorizations(request)
@@ -304,6 +305,26 @@ class StoryViewSet(viewsets.ModelViewSet):
     response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (story.slug,mimetypes.guess_extension(mimetype))
     
     return response
+
+
+  @list_route(methods=['post'], url_path='priority/(?P<ids>[0-9,]+)')
+  def priority(self, request, ids):
+    stories = self._getUserAuthorizations(request)
+    
+    """
+    Given an array of IDS, reset the priotity of each story automatically based on order
+    """
+    story_ids = filter(None, ids.split(','))
+    max_priority = len(story_ids)
+    for c, pk in enumerate(story_ids):
+      
+      story = get_object_or_404(stories, pk=pk)
+      story.priority = max_priority - c
+      story.save()
+
+    return Response({
+      'ids': story_ids
+    })
 
 
   @detail_route(methods=['get'])
