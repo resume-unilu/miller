@@ -3,6 +3,7 @@ __*.*
 !__init__.py
 *.sqlite3
 *.pyc
+*.sql
 
 backup/
 contents/

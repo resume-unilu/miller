@@ -456,6 +456,8 @@ MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 MILLER_SNAPSHOT_WIDTH = 234
 MILLER_SNAPSHOT_HEIGHT = None
 
+# MILLER_DOCUMENTS_GOOGLE_SPREADSHEET = 'https://docs.google.com/spreadsheets/d/<YOUR GOOGLE SPREADHSEET ID>/edit#gid=0'
+MILLER_DOCUMENTS_GOOGLE_SPREADSHEET = None
 
 # DOI creation, used in `api/story/<pk>/doi` GET(read) or POST (create) endpoint. 
 # If `MILLER_DOI_ENABLED=True`, you should have a DOI prefix cfr.https://mds.datacite.org/
