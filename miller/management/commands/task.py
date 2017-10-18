@@ -261,7 +261,7 @@ class Command(BaseCommand):
 
       _slug = row['slug'].strip()
       _type = row['type'].strip()
-
+      _docs = row.get('related_documents|list', '').split(',')
       # Document model fields
       if 'attachment' in row:
         if not row['attachment']:
@@ -306,9 +306,9 @@ class Command(BaseCommand):
         doc.attachment.name = row['attachment']
         
         doc.create_snapshot()
-      # doc.save()
 
       doc.save()
+
       logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {
         'line': i,
         'slug': _slug,
@@ -316,6 +316,25 @@ class Command(BaseCommand):
         'pk': doc.pk,
         'created': created
       })
+
+    # add related documents!!!
+    if 'related_documents|list' in row:
+      for i, row in enumerate(rows):
+        _docs = filter(None, row.get('related_documents|list', '').split(','))
+        if not _docs or not row.get('slug') or not row.get('type'):
+          continue
+
+        _slug = row['slug'].strip()
+        _type = row['type'].strip()
+
+        logger.debug('line {0}: document {1} need to be connected to: {2}'.format(i, _slug, _docs))
+      
+        doc = Document.objects.get(slug=_slug)
+        related = Document.objects.filter(slug__in=_docs)
+        doc.documents.add(*related)
+        doc.save()
+        logger.debug('line {0}: document {1} connected to: {2}'.format(i, _slug,[d.slug for d in doc.documents.all()]))
+        
 
 
   def bulk_import_gs_as_tags(self, url=None, sheet=None, use_cache=False, **options):
