@@ -262,6 +262,12 @@ class Command(BaseCommand):
       _slug = row['slug'].strip()
       _type = row['type'].strip()
       _docs = row.get('related_documents|list', '').split(',')
+      _has_attachment = 'attachment' in row and row['attachment'] and len(row['attachment'].strip()) > 0
+
+      # read just one line of the CSV
+      if 'pk' in options and options.get('pk') is not None and options.get('pk') != row['slug']:
+        continue
+      
       # Document model fields
       if 'attachment' in row:
         if not row['attachment']:
@@ -275,6 +281,20 @@ class Command(BaseCommand):
       if 'date__year' in row and not row['date__year']:
         logger.warning('line {0}: empty "date__year" and empty "url" when "attachment" is in header, skipping for {1}.'.format(i, _slug))
         continue
+      
+
+      if _has_attachment: 
+        _attachment_path    = row['attachment'].strip()
+        _attachment_abspath = os.path.join(settings.MEDIA_ROOT, _attachment_path)
+        _attachment_exists  = os.path.exists(_attachment_abspath)
+        # logger.debug(u'line {0}: attachment found, \n   - datum: {1}\n   - real: {2}\n   exists: {3}'.format(i, row['attachment'], _attachment_abspath, _attachment_exists))
+        # check that the file exists; otherwise skip everything
+        if not _attachment_exists:
+          logger.warning('line %s: no real path has been found for the attachment, skipping.' % i)
+          continue
+
+
+      
 
 
 
@@ -302,6 +322,11 @@ class Command(BaseCommand):
         doc.fill_from_url()
 
       # print doc.data
+      if _has_attachment:
+        # check that the file exists; otherwise skip everything
+        logger.debug(u'line {0}: assign attachment: {1}'.format(i, _attachment_path))
+        doc.attachment.name = _attachment_path
+
       if 'attachment' in row and len(row['attachment'].strip()) > 0:
         doc.attachment.name = row['attachment']
         
