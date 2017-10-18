@@ -38,6 +38,7 @@ class Command(BaseCommand):
     'update_localisation',
     'update_localisation_gs',
     'bulk_import_gs_as_documents',
+    'bulk_import_public_gs_as_documents',
     'bulk_import_gs_as_tags',
     'bulk_import_gs_as_biographies',
     # tasks migration related.
@@ -76,6 +77,20 @@ class Command(BaseCommand):
         dest='sheet',
         default=False,
         help='google spreadsheet url sheeet name',
+    )
+
+    parser.add_argument(
+        '--gsid',
+        dest='gsid',
+        default=False,
+        help='google spreadsheet ID',
+    )
+
+    parser.add_argument(
+        '--gid',
+        dest='gid',
+        default=False,
+        help='google spreadsheet sheet ID',
     )
 
 
@@ -152,9 +167,6 @@ class Command(BaseCommand):
     cache.clear();
 
   
-
-  
-
   def bulk_import_gs_as_documents(self, url=None, sheet=None, use_cache=False, **options):
     if not url:
       raise Exception('please specify a google spreadsheet url with the --url parameter')
@@ -200,6 +212,101 @@ class Command(BaseCommand):
       # print doc.data
       if 'attachment' in row and len(row['attachment'].strip()) > 0:
          doc.attachment.name = row['attachment']
+
+      doc.save()
+      logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {
+        'line': i,
+        'slug': _slug,
+        'type': _type,
+        'pk': doc.pk,
+        'created': created
+      })
+
+
+  def bulk_import_public_gs_as_documents(self, gsid=False, gid=False, use_cache=False, **options):
+    if not gsid:
+      if not settings.MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID:
+        raise Exception('please specify a google spreadsheet url with the --url parameter')
+      else:
+        gsid = settings.MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID
+
+    logger.debug('GSID %s' % gsid)
+    rows, headers = utils.bulk_import_public_gs(gsid=gsid, gid=gid, use_cache=use_cache, required_headers=['slug', 'type']);
+
+    owner = Profile.objects.filter(user__is_staff=True).first()
+
+    if not owner:
+      raise Exception('no Profile object defined in the database!')
+
+    data_paths =  utils.data_paths(headers=headers) 
+    print data_paths
+
+    
+
+    # basic data structure based on headers column
+    data_structure = {}
+
+    for i, path, is_list in data_paths:
+      utils.nested_set(data_structure, path, {})
+
+    logger.debug('data__* fields have been transformed to: %s' % data_structure)
+
+    
+      
+
+    for i, row in enumerate(rows):
+      if not row.get('slug') or not row.get('type'):
+        logger.debug('line %s: empty "slug" or empty "type", skipping.' % i)
+        continue
+
+      _slug = row['slug'].strip()
+      _type = row['type'].strip()
+
+      # Document model fields
+      if 'attachment' in row:
+        if not row['attachment']:
+          if 'url' in row and not row['url']:
+            logger.warning('line {0}: empty "attachment" and empty "url" when "attachment" is in header, skipping for {1}.'.format(i, _slug))
+            continue
+          elif not 'url' in row:
+            logger.warning('line {0}: empty "attachment", but "attachment" is in header, skipping for {1}.'.format(i, _slug))
+            continue
+
+      if 'date__year' in row and not row['date__year']:
+        logger.warning('line {0}: empty "date__year" and empty "url" when "attachment" is in header, skipping for {1}.'.format(i, _slug))
+        continue
+
+
+
+      doc, created = Document.objects.get_or_create(slug=_slug, type=_type, defaults={
+        'owner': owner.user
+      })
+      doc.title = row['title'].strip()
+
+      _data = data_structure.copy()
+      
+      
+
+      for key, path, is_list in data_paths:
+        utils.nested_set(_data, path, row[key], as_list=is_list)
+      
+
+      # Clean data structure
+      if 'place_type' in _data['data'] and 'coordinates' in _data['data'] and not row['data__place_type']:
+        logger.debug('line {0}: clean data.coordinates from data_paths for {1}'.format(i, _slug))
+        _data['data'].pop('coordinates', None)
+
+      doc.data = _data['data']
+
+      if 'url' in row and len(row['url'].strip()) > 0:
+        doc.fill_from_url()
+
+      # print doc.data
+      if 'attachment' in row and len(row['attachment'].strip()) > 0:
+        doc.attachment.name = row['attachment']
+        
+        doc.create_snapshot()
+      # doc.save()
 
       doc.save()
       logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {

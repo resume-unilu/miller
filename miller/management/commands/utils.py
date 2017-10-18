@@ -44,6 +44,46 @@ def data_paths(headers):
   return [(x, x.split('|')[0].split('__'), x.split('|')[-1] == 'list') for x in filter(lambda x: isinstance(x, basestring) and x.startswith('data__'), headers)]
 
 
+def bulk_import_public_gs(gsid, gid, use_cache=True, required_headers=['slug']):
+  # if not 'sheet':
+  url = 'https://docs.google.com/spreadsheets/d/e/{0}/pub'.format(gsid)
+  print url, gsid, gid
+  ckey = 'gs:%s:%s' % (gsid, gid) 
+  print ckey
+
+  if cache.has_key(ckey):
+    #print 'serve cahced', ckey
+    logger.debug('getting csv from cache: %s' % ckey)
+    contents = cache.get(ckey)
+  else:
+    logger.debug('loading csv...%s'%url)
+    
+    #   raise Exception('please provide the sheet to load')
+    response = requests.get(url, stream=True, params={
+      'gid': gid,
+      'single': 'true',
+      'output': 'csv'
+    })
+
+    response.encoding = 'utf8'
+    contents = response.content
+    print 'done'
+    cache.set(ckey, contents, timeout=None)
+
+  # print [r for r in unicode_csv_reader(utf8_data=response.content, delimiter=',')]
+  import csv
+  # print contents
+  reader = csv.DictReader(contents.splitlines(), delimiter=',') 
+  
+  return [row for row in reader], reader.fieldnames
+# import csv
+
+# def unicode_csv_reader(utf8_data, **kwargs):
+#     csv_reader = csv.DictReader(utf8_data, **kwargs)
+#     for row in csv_reader:
+#         yield {unicode(key, 'utf-8'):unicode(value, 'utf-8') for key, value in row.iteritems()}
+
+
 def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
   """
   return rows and headers from the CSV representation of a google spreadsheet.
