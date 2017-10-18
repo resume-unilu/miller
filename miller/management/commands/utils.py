@@ -51,7 +51,7 @@ def bulk_import_public_gs(gsid, gid, use_cache=True, required_headers=['slug']):
   ckey = 'gs:%s:%s' % (gsid, gid) 
   print ckey
 
-  if cache.has_key(ckey):
+  if use_cache and cache.has_key(ckey):
     #print 'serve cahced', ckey
     logger.debug('getting csv from cache: %s' % ckey)
     contents = cache.get(ckey)
