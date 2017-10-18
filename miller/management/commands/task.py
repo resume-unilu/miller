@@ -356,6 +356,7 @@ class Command(BaseCommand):
       
         doc = Document.objects.get(slug=_slug)
         related = Document.objects.filter(slug__in=_docs)
+        doc.documents.clear()
         doc.documents.add(*related)
         doc.save()
         logger.debug('line {0}: document {1} connected to: {2}'.format(i, _slug,[d.slug for d in doc.documents.all()]))
