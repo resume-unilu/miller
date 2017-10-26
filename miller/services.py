@@ -89,7 +89,7 @@ def images(request):
   with Image(filename=filename) as img:
     for a,b in funcs:
       if a == 'T':
-        args = map(lambda x: int(x) if x.isnumeric() else x,b.split('-'))
+        args = map(lambda x: int(x) if x.isnumeric() else x,b.split(','))
         generate_snapshot(filename, filenameout, width=args[0], height=args[-1], crop=True)
         return streamHttpResponse(filenameout)
       else:
