@@ -4,7 +4,8 @@ from django.conf import settings
 
 
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication,TokenAuthentication
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
 
@@ -13,6 +14,12 @@ from wand.image import Image
 from miller.helpers import streamHttpResponse, generate_snapshot
 
 
+class TokenAuthSupportQueryString(TokenAuthentication):
+  def authenticate(self, request):
+    if 'token' in request.query_params:
+      return self.authenticate_credentials(request.query_params.get('token').strip())
+    else:
+      return super(TokenAuthSupportQueryString, self).authenticate(request)
 
 @api_view()
 def suggest(request):
@@ -26,6 +33,7 @@ def suggest(request):
   
 
 @api_view()
+@authentication_classes([SessionAuthentication, TokenAuthSupportQueryString])
 def images(request):
   """
   request sample
