@@ -70,18 +70,10 @@ def bulk_import_public_gs(gsid, gid, use_cache=True, required_headers=['slug']):
     print 'done'
     cache.set(ckey, contents, timeout=None)
 
-  # print [r for r in unicode_csv_reader(utf8_data=response.content, delimiter=',')]
   import csv
-  # print contents
   reader = csv.DictReader(contents.splitlines(), delimiter=',') 
   
   return [row for row in reader], reader.fieldnames
-# import csv
-
-# def unicode_csv_reader(utf8_data, **kwargs):
-#     csv_reader = csv.DictReader(utf8_data, **kwargs)
-#     for row in csv_reader:
-#         yield {unicode(key, 'utf-8'):unicode(value, 'utf-8') for key, value in row.iteritems()}
 
 
 def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):

@@ -28,6 +28,7 @@ class Command(TaskCommand):
   available_tasks = (
     'search_ngrams_table',
     'update_search_vectors',
+    'search',
     'update_ngrams_table',
     'clean_ngrams_table',
     'clean_leaves_ngrams_table',
@@ -113,6 +114,17 @@ class Command(TaskCommand):
       
       logger.debug('ngrams found: [%s]' % u' / '.join([u'%s (%s)' % (n.get('ngrams__segment'), n.get('ngrams__slug')) for n in ngrams]))
       
+
+  def search(self, query=None, model=False, **options):
+    logger.debug('task: search')
+
+    q = Document.get_search_Q(query)
+    
+    docs = Document.objects.filter(q)
+    print docs.count
+
+
+
 
   def update_search_vectors(self, pk=None, model=False, **options):
     logger.debug('task: update_search_vectors')
