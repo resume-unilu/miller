@@ -19,11 +19,15 @@ from .pagination import FacetedPagination
 
 from wsgiref.util import FileWrapper
 
+from django.conf import settings
+from django.utils.module_loading import import_string
+DOCUMENT_LIST_SERIALIZER = getattr(settings, 'DOCUMENT_LIST_SERIALIZER', 'miller.api.serializers.LiteDocumentSerializer')
+list_serializer_class = import_string(DOCUMENT_LIST_SERIALIZER)
 
 class DocumentViewSet(viewsets.ModelViewSet):
-  queryset = Document.objects.all()
+  queryset = Document.objects.all().prefetch_related('documents')
   serializer_class = CreateDocumentSerializer
-  list_serializer_class = LiteDocumentSerializer
+  list_serializer_class = list_serializer_class
   pagination_class = FacetedPagination
 
 
@@ -37,9 +41,9 @@ class DocumentViewSet(viewsets.ModelViewSet):
     attachment = doc.download(outputFormat='iiif')
     # should be ZIP
     mimetype = mimetypes.guess_type(attachment)[0]
-    
+
     response = StreamingHttpResponse(FileWrapper( open(attachment), 8192), content_type=mimetype)
-    response['Content-Length'] = os.path.getsize(attachment)  
+    response['Content-Length'] = os.path.getsize(attachment)
     response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (doc.slug, mimetypes.guess_extension(mimetype))
 
     return response
@@ -65,7 +69,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     return self.get_paginated_response(serializer.data)
 
 
-  
+
   @list_route(methods=['get'])
   def search(self, request):
     """
@@ -78,11 +82,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     form = SearchQueryForm(request.query_params)
     if not form.is_valid():
       return Response(form.errors, status=status.HTTP_201_CREATED)
-    
+
     # get the results
     g = Glue(request=request, queryset=self.queryset)
-    
-    # queryset = g.queryset.annotate(matches=RawSQL("SELECT 
+
+    # queryset = g.queryset.annotate(matches=RawSQL("SELECT
     page    = self.paginate_queryset(g.queryset.distinct())
 
     # get hort_url to get results out of whoosh
@@ -105,12 +109,12 @@ class DocumentViewSet(viewsets.ModelViewSet):
   @list_route(methods=['get'])
   def suggest(self, request):
     """
-    quggest querystring based on this model search 
+    quggest querystring based on this model search
     """
     form = SearchQueryForm(request.query_params)
     if not form.is_valid():
       return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     g = Glue(request=request, queryset=self.queryset, perform_q=False)
 
     ckey = g.get_hash(request=request)
@@ -120,20 +124,20 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     from django.contrib.postgres.search import SearchVector
     from django.contrib.postgres.search import TrigramSimilarity
-    # provided a q 
+    # provided a q
 
-    
+
     queryset = g.queryset.annotate(
       similarity=TrigramSimilarity('ngrams__segment', form.cleaned_data['q']),
     ).filter(similarity__gt=0.35).order_by('-similarity').values_list('ngrams__segment', flat=True).distinct()[:5]
-    # SELECT DISTINCT "miller_ngrams"."segment", 
-    #     SIMILARITY("miller_ngrams"."segment", europeenne) 
-    #     FROM "miller_document" LEFT OUTER JOIN "miller_ngrams_documents" 
-    #     ON ("miller_document"."id" = "miller_ngrams_documents"."document_id") 
-    #     LEFT OUTER JOIN "miller_ngrams" 
-    #     ON ("miller_ngrams_documents"."ngrams_id" = "miller_ngrams"."id") 
-    #     WHERE SIMILARITY("miller_ngrams"."segment", europeenne) > 0.25 
-    # ORDER BY SIMILARITY("miller_ngrams"."segment", europeenne) 
+    # SELECT DISTINCT "miller_ngrams"."segment",
+    #     SIMILARITY("miller_ngrams"."segment", europeenne)
+    #     FROM "miller_document" LEFT OUTER JOIN "miller_ngrams_documents"
+    #     ON ("miller_document"."id" = "miller_ngrams_documents"."document_id")
+    #     LEFT OUTER JOIN "miller_ngrams"
+    #     ON ("miller_ngrams_documents"."ngrams_id" = "miller_ngrams"."id")
+    #     WHERE SIMILARITY("miller_ngrams"."segment", europeenne) > 0.25
+    # ORDER BY SIMILARITY("miller_ngrams"."segment", europeenne)
     # DESC LIMIT 20
     # print queryset.query
     d = {
@@ -166,7 +170,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     url = form.cleaned_data['url']
 
 
-   
+
     ckey = 'oembed:%s' % url
 
     if not request.query_params.get('nocache', None) and cache.has_key(ckey):
@@ -174,7 +178,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     # not done? perform requests etc...
     from miller.embedder import custom_noembed, perform_request
-    
+
     # only top part of the content to get metadata.
     res = perform_request(url, headers={'Range':'bytes=0-20000'})
     content_type  = res.headers.get('content-type', '').split(';')[0]
@@ -187,7 +191,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     # enable smart oembedding. cfr settings.MILLER_OEMBEDS_MAPPER
     e = custom_noembed(url=url, content_type=content_type, provider_url=provider_url)
-    
+
     if e:
       cache.set(ckey, e)
       return Response(e)
@@ -228,7 +232,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     #   })
     #   return Response(d)
 
-    
+
     # return Response(d)
 
     def quickmeta(doc, name, attrs={}, key='name'):
@@ -268,7 +272,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
       d['description'] = '' if not tag else u"".join([t['content'] for t in tag])
 
     if not d['title']:
-      
+
       try:
         d['title'] = doc.html.head.title.text
       except AttributeError:
