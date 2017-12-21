@@ -183,7 +183,8 @@ class Document(models.Model):
     from django.db import connection
     
     fields = (('title', 'A'), ('description', 'B'))
-    contents = []
+    # initialize with slug.
+    contents = [(self.slug, 'A', 'simple')]
 
     for _field, _weight in fields:
       default_value = self.data.get(_field, None)
