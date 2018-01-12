@@ -319,6 +319,7 @@ class Command(BaseCommand):
       doc.data = _data['data']
 
       if 'url' in row and len(row['url'].strip()) > 0:
+        doc.url = row['url'].strip()
         doc.fill_from_url()
 
       # print doc.data
