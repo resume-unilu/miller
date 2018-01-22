@@ -12,6 +12,7 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
   type  = serializers.ReadOnlyField(source='document.type')
   title = serializers.ReadOnlyField(source='document.title')
   slug  = serializers.ReadOnlyField(source='document.slug')
+  url   = serializers.ReadOnlyField(source='document.url')
   src   = OptionalFileField(source='document.attachment')
   short_url = serializers.ReadOnlyField(source='document.short_url')
   copyrights = serializers.ReadOnlyField(source='document.copyrights')
@@ -22,7 +23,7 @@ class CaptionSerializer(serializers.HyperlinkedModelSerializer):
 
   class Meta:
     model = Caption
-    fields = ('id', 'document_id', 'title', 'slug', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'attachment', 'data')
+    fields = ('id', 'document_id', 'title', 'slug', 'url', 'type', 'copyrights', 'caption', 'short_url', 'src', 'snapshot', 'attachment', 'data')
 
 
 class UserSerializer(serializers.ModelSerializer):
