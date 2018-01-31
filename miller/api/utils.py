@@ -1,14 +1,17 @@
 import json, re, types
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.core.exceptions import FieldError
 
 WATERFALL_IN = '__all'
 waterfallre = re.compile(WATERFALL_IN + r'$')
 
 
-class Glue():
+class Glue(object):
   def __init__(self, request, queryset, extra_ordering=[], perform_q=True):
+
+
     self.filters, self.filtersWaterfall = filters_from_request(request=request)
     self.excludes, self.excludesWaterfall = filters_from_request(request=request, field_name='exclude')
     
@@ -65,7 +68,10 @@ class Glue():
     m = hashlib.md5()
     m.update(json.dumps(request.query_params, ensure_ascii=False))
     return m.hexdigest()
-    
+  
+  def get_verbose_hash(self, request):
+    return json.dumps(request.query_params, sort_keys=True, ensure_ascii=False)
+
 
   def get_verbose_info(self):
     _d = {
@@ -105,6 +111,23 @@ class Glue():
       else:
        _validated_ordering.append('%s%s'%('-' if _reverse else '', _field))
     return _validated_ordering
+
+
+class CachedGlue(Glue):
+  """
+  Used when caching is needed, prevent validation if cache is present.
+  Note that queryset will be empty of cache is present...
+  """
+  def __init__(self, request, queryset, extra_ordering=[], perform_q=True, cache_prefix=None):
+    if cache_prefix:
+      self.cache_key = u'{0}.{1}'.format(cache_prefix, self.get_verbose_hash(request=request))
+      self.is_in_cache = cache.has_key(self.cache_key) and not request.query_params.get('nocache', None) 
+    
+    if self.is_in_cache:
+      return None
+    super(CachedGlue, self).__init__(request=request, queryset=queryset, extra_ordering=extra_ordering, perform_q=perform_q)
+
+
 
 # usage in viewsets.ModelViewSet methods, e;g. retrieve: 
 # filters = filters_from_request(request=self.request) 

@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from miller.models import Document
 from miller.forms import URLForm, SearchQueryForm
 from miller.api.serializers import MatchingDocumentSerializer, LiteDocumentSerializer, DocumentSerializer, CreateDocumentSerializer
-from miller.api.utils import Glue, filters_from_request
+from miller.api.utils import Glue, CachedGlue, filters_from_request
 
 from requests.exceptions import HTTPError, Timeout
 from .pagination import FacetedPagination
@@ -25,7 +25,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
   serializer_class = CreateDocumentSerializer
   list_serializer_class = LiteDocumentSerializer
   pagination_class = FacetedPagination
-
 
   @detail_route(methods=['get'])
   def download(self, request, pk):
@@ -59,10 +58,19 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 
   def list(self, request):
-    g = Glue(request=request, queryset=self.queryset.distinct())
-    page    = self.paginate_queryset(g.queryset)
-    serializer = self.list_serializer_class(page, many=True, context={'request': request})
-    return self.get_paginated_response(serializer.data)
+    g = CachedGlue(request=request, queryset=self.queryset.distinct(), cache_prefix=Document.get_cache_key(pk='LIST'))
+    if g.is_in_cache:
+      return Response(cache.get(g.cache_key))
+
+    page = self.paginate_queryset(g.queryset)
+    if not request.query_params.get('detailed', None):
+      serializer = self.list_serializer_class(page, many=True, context={'request': request})
+    else:
+      serializer = DocumentSerializer(page, many=True, context={'request': request})
+    
+    serialized = self.paginator.get_paginated_response_as_dict(data=serializer.data) 
+    cache.set(g.cache_key, serialized)
+    return Response(serialized)
 
 
   

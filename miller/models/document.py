@@ -174,6 +174,15 @@ class Document(models.Model):
     return models.Q(search_vector=search_query)
 
 
+  @staticmethod
+  def get_cache_key(pk, extra=None):
+    """
+    get current cachekey name  based on random generated shorten url
+    (to be used in redis cache)
+    """
+    return 'document.%s.%s' % (pk, extra) if extra else 'document.%s' % pk
+
+
   def update_search_vector(self):
     """
     Fill the search_vector using self.data:
@@ -403,7 +412,7 @@ class Document(models.Model):
       else:
         logger.debug('snapshot generated for document {pk:%s}, page %s' % (self.pk, page))
 
-    
+  
       
 
   def noembed(self):

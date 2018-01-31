@@ -30,6 +30,9 @@ class VerbosePagination(LimitOffsetPagination):
   queryset_verbose  = None
   queryset_warnings = None
 
+  
+    
+
   def set_queryset_warnings(self, warnings):
     self.queryset_warnings = warnings
 
@@ -55,19 +58,24 @@ class FacetedPagination(VerbosePagination):
 
     facets_queryset = None
 
-    def paginate_queryset(self, queryset, request, view=None):
-      self.facets_queryset = queryset
-      return super(FacetedPagination, self).paginate_queryset(queryset, request, view=view)
-
-    def get_paginated_response(self, data):
-      return Response(OrderedDict(filter(None,[
+    def get_paginated_response_as_dict(self, data):
+      res = OrderedDict(filter(None,[
           ('count', self.count),
           ('next', self.get_next_link()),
           ('previous', self.get_previous_link()),
           ('results', data),
           ('facets', self.get_facets()),
           ('warnings', self.queryset_warnings) if self.queryset_warnings else None
-      ])))
+      ]))
+      return res
+
+    def paginate_queryset(self, queryset, request, view=None):
+      self.facets_queryset = queryset
+      return super(FacetedPagination, self).paginate_queryset(queryset, request, view=view)
+
+    def get_paginated_response(self, data):
+      res = self.get_paginated_response_as_dict(data=data)
+      return Response(res)
 
     def get_facets(self):
 
