@@ -428,6 +428,7 @@ CACHES = {
         'LOCATION': 'localhost:6379',
         'OPTIONS': {
             'DB': 2,
+            'COMPRESSOR': "django_redis.compressors.zlib.ZlibCompressor"
         }
     },
 }
@@ -453,8 +454,15 @@ MILLER_LOCALISATION_TABLE = os.path.join(BASE_DIR, 'client/src/locale/locale-all
 MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 
 # default width value for helpers generate_snapshot. Set width OR height to None or to 0 means following the original image ratio.
-MILLER_SNAPSHOT_WIDTH = 234
+MILLER_SNAPSHOT_WIDTH = 260
 MILLER_SNAPSHOT_HEIGHT = None
+
+# property name in .data, dpi, maximum dimension
+MILLER_RESOLUTIONS = [
+  ('thumbnail', 72, 260),
+  ('low', 72, 800),
+  ('medium', 96, 1000)
+]
 
 # MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = <YOUR GOOGLE SPREADSHEET ID >
 # from 'https://docs.google.com/spreadsheets/d/<YOUR GOOGLE SPREADHSEET ID>/edit#gid=0'

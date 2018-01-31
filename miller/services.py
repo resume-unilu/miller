@@ -83,7 +83,8 @@ def images(request):
     'c': 'crop',
     't': 'transform', # crop and resize
     'T': 'thumbnail',
-    'r': 'resize'
+    'r': 'resize',
+    'F': 'fit'
   }
 
   with Image(filename=filename) as img:
@@ -94,7 +95,9 @@ def images(request):
         return streamHttpResponse(filenameout)
       else:
         args = map(lambda x: int(x) if x.isnumeric() else x, b.split(','))
-      
+      if a == 'F':
+        generate_snapshot(filename, filenameout, width=args[0])
+        return streamHttpResponse(filenameout)
       try:
         getattr(img,available_funcs[a])(*args)
         img.save(filename=filenameout)

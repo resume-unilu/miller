@@ -29,10 +29,10 @@ def streamHttpResponse(filename):
   return response
 
 
-
-def generate_snapshot(filename, output, width, height, crop=False):
+def generate_snapshot(filename, output, width, height, crop=False, resolution=72):
   """
-  Use liquid_rescale to scale down snapshots to the desired dimension
+  Use liquid_rescale to scale down snapshots to the desired dimension.
+  params key defines a data field to be updated with new properties.
   """
   from wand.image import Image
   
@@ -52,7 +52,7 @@ def generate_snapshot(filename, output, width, height, crop=False):
   if not width and not height:
     raise Exception('At least one dimension should be provided, width OR height')
 
-  with Image(filename=filename) as img:
+  with Image(filename=filename, resolution=resolution) as img:
     ratio = 1.0*img.width/img.height
     d['width']  = img.width
     d['height'] = img.height

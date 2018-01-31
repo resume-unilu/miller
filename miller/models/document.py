@@ -183,6 +183,11 @@ class Document(models.Model):
     return 'document.%s.%s' % (pk, extra) if extra else 'document.%s' % pk
 
 
+  @staticmethod
+  def snapshot_attachment_file_name(instance, filename):
+    return os.path.join(instance.type, 'snapshots', filename)
+
+
   def update_search_vector(self):
     """
     Fill the search_vector using self.data:
