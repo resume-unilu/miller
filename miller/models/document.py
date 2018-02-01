@@ -333,6 +333,155 @@ class Document(models.Model):
       self.data['reference'] = self.data['title']
 
 
+  def create_snapshot_from_attachment(self, override=True):
+    """
+    Generate snapshot image of a PDF file otr other attachment (@todo: docx)
+    Get the page number from doc.data directly.
+    Return the snapshot path relative to settings.MEDIA_ROOT.
+    """
+    if self.mimetype == 'application/pdf':
+      # filepath is the PDF snapshot.
+
+      # page pdf to generate pdf with. given in doc.data['thumbnail_page']
+      page = int(self.data['thumbnail_page']) if 'thumbnail_page' in self.data else 1
+      
+      # snapshot relative file path.
+      snapshot = Document.snapshot_attachment_file_name(
+        instance=self, 
+        filename='{pk}-p.{page}.pdf.png'.format(pk=self.short_url, page=page)
+      )
+
+      # absolute location of filepath.
+      filepath = os.path.join(settings.MEDIA_ROOT, snapshot)
+
+      # generate a pdf snapshot file.
+      try:
+        d = helpers.generate_pdf_snapshot(pdffile=self.attachment.path, output=filepath, page=page)
+      except Exception as e:
+        logger.exception(e)
+        return
+      return snapshot
+    
+
+  def create_snapshots_folder(self):
+    """
+    Generate a folder in order to store snapshots. below MEDIA_ROOT according to file type
+    """
+    snapshots_path = os.path.join(settings.MEDIA_ROOT, self.type, 'snapshots')
+    try:
+      os.makedirs(os.path.dirname(snapshots_path))
+    except OSError:
+      # directory exists, pass .
+      pass
+    except Exception as e:
+      logger.exception(e)
+      return
+    return snapshots_path
+
+
+  def create_snapshots(self, resolutions=None, override=True):
+    """
+    Create multisize snapshots and add relaive width and height to <Document instance>.data
+    It follows settings.MILLER_RESOLUTIONS
+    param boolean override: if True, default behavior, this allows file overriding.
+    """
+    if not resolutions:
+      resolutions = settings.MILLER_RESOLUTIONS
+
+    # first error    
+    if not self.attachment or not getattr(self.attachment, 'path', None):
+      logger.error(u'pk={pk} snapshot cannot be generated, empty attachment field.'.format(pk=self.pk))
+      return
+    
+    # generate dir if there is none. Check logger exception for results.
+    if not self.create_snapshots_folder():
+      logger.error(u'pk={pk} snapshot cannot be generated, couldn\'t create snapshot folder!'.format(pk=self.pk))
+      return
+    
+    # get filepath according to mimetype. 
+    # Since Pdf files are often given as attachments, filepath for the multisize snapshots is stored in ... doc.snapshot FileField.
+    if self.mimetype.split('/')[0] == 'image':
+      filepath = self.attachment.path
+    elif self.mimetype == 'application/pdf':
+      pdfsnapshot = self.create_snapshot_from_attachment(override=override)
+      filepath = os.path.join(settings.MEDIA_ROOT, pdfsnapshot)
+      self.snapshot = pdfsnapshot
+    else:
+      logger.error(u'pk={pk} snapshot cannot be generated: not a compatible type choiche.'.format(pk=self.pk))
+      return
+
+    # special warning: cannot find attachment.
+    if not os.path.exists(self.attachment.path):
+      logger.error(u'pk={pk} snapshot cannot be generated, attached file {path} does not exist.'.format(pk=self.pk, path=self.attachment.path))
+      return
+
+    #print filepath, settings.MILLER_HOST
+    # log file metadata.
+    logger.debug(u'pk={pk} generating snapshot with slug={slug}, type={type} and mimetype={mimetype} ...'.format(
+      pk=self.pk, 
+      type=self.type, 
+      mimetype=self.mimetype, 
+      slug=self.slug
+    ))
+
+    _d = {'original': {}}
+
+    for field, resolution, width, height, max_size in resolutions:
+      filename = Document.snapshot_attachment_file_name(
+        instance=self, 
+        filename='{pk}.{field}.jpg'.format(
+          pk=self.short_url, 
+          field=field
+      ))
+      
+      # print outfile, doc.attachment.path
+      _d[field] = {
+        'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, filename))
+      }
+
+      try:
+        snapshot = helpers.generate_snapshot(
+          filename   = filepath, 
+          output     = os.path.join(settings.MEDIA_ROOT, filename), 
+          width      = width,
+          height     = height, 
+          resolution = resolution,
+          max_size   = max_size
+        )
+      except Exception as e:
+        logger.exception(e)
+        return
+
+      snapshot_width  = int(snapshot['snapshot_width'])
+      snapshot_height = int(snapshot['snapshot_height'])
+      
+      # save first width.
+      if 'width' not in _d['original']:
+        _d['original'].update({
+          'width' : snapshot['width'],
+          'height': snapshot['height'],
+        })
+
+      logger.debug('pk={pk} snapshot generated, field={field}, resolution={resolution}, max_size={max_size}, size={width}x{height}!'.format(
+        pk         = self.pk,
+        field      = field,
+        resolution = resolution,
+        max_size   = max_size,
+        width      = snapshot_width,
+        height     = snapshot_height
+      ))
+      
+      _d[field].update({
+        'width' : snapshot_width,
+        'height': snapshot_height
+      })
+
+    self.data['resolutions'] = _d
+    # force save when in save() pipeline
+    self._dirty = True
+    
+    #print self.data
+
 
   # dep. brew install ghostscript, brew install imagemagick
   def create_snapshot(self):

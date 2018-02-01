@@ -439,6 +439,7 @@ CACHES = {
 #
 #............
 MILLER_WS_HOST = None # override in your localsettings with the full address for your websocket e;g. ws://resume.cvce.eu
+MILLER_HOST = 'http://localhost:8000' # devault dev server
 MILLER_HOST_PROTOCOL = 'http' # used by miller.sitemaps module
 MILLER_DEBUG = True
 
@@ -457,11 +458,13 @@ MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 MILLER_SNAPSHOT_WIDTH = 260
 MILLER_SNAPSHOT_HEIGHT = None
 
-# property name in .data, dpi, maximum dimension
+# property name in .data, dpi, maximum dimension. Usage:
+# for field, resolution, width, height, max_size in settings.MILLER_RESOLUTIONS:
+#    ...
 MILLER_RESOLUTIONS = [
-  ('thumbnail', 72, 260),
-  ('low', 72, 800),
-  ('medium', 96, 1000)
+  ('thumbnail', 72, MILLER_SNAPSHOT_WIDTH, MILLER_SNAPSHOT_HEIGHT, None),
+  ('low',       72, None, None, 800),
+  ('medium',    96, None, None, 1000)
 ]
 
 # MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = <YOUR GOOGLE SPREADSHEET ID >

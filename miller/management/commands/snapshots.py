@@ -44,38 +44,8 @@ class Command(TaskCommand):
     # The `iterator()` method ensures only a few rows are fetched from
     # the database at a time, saving memory.
     for doc in docs.iterator():
-      
-      if not doc.attachment or not getattr(doc.attachment, 'path', None):
-        logger.warning('  pk={0} snapshot cannot be generated.'.format(doc.pk))
-        continue
-
-      if not os.path.exists(doc.attachment.path):
-        logger.warning('  pk={0} snapshot cannot be generated, attached file does not exist.'.format(doc.pk))
-        continue
-
-      
-      if doc.mimetype.split('/')[0] == 'image' or doc.type in [Document.IMAGE, Document.PHOTO]:
-        logger.debug('  pk={0} snapshot type={1}'.format(doc.pk, doc.type))
-        
-        _d = {}
-
-        for field, resolution, max_size in settings.MILLER_RESOLUTIONS:
-
-          print field
-          filename = Document.snapshot_attachment_file_name(doc, filename='{pk}.{field}.jpg'.format(pk=doc.short_url, field=field))
-          outfile = os.path.join(settings.MEDIA_ROOT, filename)
-
-          print outfile, doc.attachment.path
-          _d[field] = {
-            'url': filename
-          }
-          size = helpers.generate_snapshot(filename=doc.attachment.path, output=outfile, width=max_size, height=None, resolution=resolution)
-          print size
-        doc.data['resolutions'] = _d
-        
-          #Document.snapshot_attachment_file_name(doc, )
-
-        print doc.data
+      doc.create_snapshots()
+      doc.save()
 
       # try:
         
