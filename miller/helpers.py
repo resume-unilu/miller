@@ -29,10 +29,11 @@ def streamHttpResponse(filename):
   return response
 
 
-def generate_snapshot(filename, output, width, height, crop=False, resolution=72):
+def generate_snapshot(filename, output, width=None, height=None, crop=False, resolution=72, max_size=None):
   """
   Use liquid_rescale to scale down snapshots to the desired dimension.
   params key defines a data field to be updated with new properties.
+  @param fit maximum dimension in width OR height
   """
   from wand.image import Image
   
@@ -49,30 +50,40 @@ def generate_snapshot(filename, output, width, height, crop=False, resolution=72
 
   d = {}
 
-  if not width and not height:
-    raise Exception('At least one dimension should be provided, width OR height')
+  if not width and not height and not max_size:
+    raise Exception('At least one dimension should be provided, width OR height OR size')
 
   with Image(filename=filename, resolution=resolution) as img:
     ratio = 1.0*img.width/img.height
     d['width']  = img.width
     d['height'] = img.height
-
+    if max_size:
+      if img.width > img.height:
+        width = max_size
+        height = width / ratio
+      elif img.width < img.height:
+        height = max_size
+        width = ratio * height
+      else: #squared image
+        height = width = max_size
     # resize to the minimum, then crop
-    if not height:
+    elif not height:
       height = width / ratio
-    
-    if not width:
-      width = ratio*height
+    elif not width:
+      width = ratio * height
+
+    d['snapshot_width']  = width
+    d['snapshot_height'] = height
 
     if not crop:
       img.transform(resize='%sx%s'% (width, height))
     else:
-      print 'ici', img.width, img.height
+      # print 'ici', img.width, img.height
       if img.width > img.height :
         # width greated than height
         img.transform(resize='x%s'%width)
       elif img.width < img.height:
-        print 'ici', img.width, img.height
+        # print 'ici', img.width, img.height
         img.transform(resize='%sx'%height)
       else:
         img.transform(resize='%sx%s'% (width, height))
@@ -87,6 +98,29 @@ def generate_snapshot(filename, output, width, height, crop=False, resolution=72
     img.save(filename=output)
     return d      
 
+
+def generate_pdf_snapshot(pdffile, output, page=1, extension='png', background_color='white', alpha_channel='remove', resolution=150):
+  """
+  Generate a PDF snapshot of the desired format and resolution.
+  Page is 1 based.
+  """
+  #import PyPDF2
+  #pdf_im = PyPDF2.PdfFileReader(pdffile)
+  from wand.image import Image, Color
+  # Converting first page into PNG file
+  print pdffile, output
+  print page
+  with Image(filename='{name}[{page}]'.format(name=pdffile, page=page-1), resolution=150) as img:
+    img.format = extension
+    img.background_color = Color(background_color) # Set white background.
+    img.alpha_channel = alpha_channel
+    _d ={
+      'width': img.height,
+      'height': img.width
+    }
+    img.save(filename=output)
+  print _d
+  return _d
 
 
 def get_previous_and_next(iterable):
