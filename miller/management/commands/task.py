@@ -338,7 +338,7 @@ class Command(BaseCommand):
       if _has_attachment:
         # check that the file exists; otherwise skip everything
         logger.debug(u'line {0}: assign attachment: {1}'.format(i, _attachment_path))
-        doc.attachment.name = _attachment_abspath
+        doc.attachment.name = _attachment_path
 
       if _has_attachment or _has_snapshot:
         # create snapshots
