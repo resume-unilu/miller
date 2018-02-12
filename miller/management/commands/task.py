@@ -263,6 +263,7 @@ class Command(BaseCommand):
       _type = row['type'].strip()
       _docs = row.get('related_documents|list', '').split(',')
       _has_attachment = 'attachment' in row and row['attachment'] and len(row['attachment'].strip()) > 0
+      _has_snapshot = 'snapshot' in row and row['snapshot'] and len(row['snapshot'].strip()) > 0
 
       # read just one line of the CSV
       if 'pk' in options and options.get('pk') is not None and options.get('pk') != row['slug']:
@@ -282,6 +283,12 @@ class Command(BaseCommand):
         logger.warning('line {0}: empty "date__year" and empty "url" when "attachment" is in header, skipping for {1}.'.format(i, _slug))
         continue
       
+      if _has_snapshot:
+        logger.debug('line {line}: found snapshot for {slug}, {snapshot}'.format(line=i, slug=_slug, snapshot=row['snapshot']))
+
+        _snapshot_path      = row['snapshot'].strip()
+        _snapshot_abspath = os.path.join(settings.MEDIA_ROOT, _snapshot_path)
+        _snapshot_exists  = os.path.exists(_snapshot_abspath)
 
       if _has_attachment: 
         _attachment_path    = row['attachment'].strip()
@@ -323,25 +330,27 @@ class Command(BaseCommand):
         doc.fill_from_url()
 
       # print doc.data
+      if _has_snapshot:
+        # check that the file exists; otherwise skip everything
+        logger.debug(u'line {0}: assign snapshot: {1}'.format(i, _snapshot_path))
+        doc.snapshot.name = _snapshot_path
+
       if _has_attachment:
         # check that the file exists; otherwise skip everything
         logger.debug(u'line {0}: assign attachment: {1}'.format(i, _attachment_path))
-        doc.attachment.name = _attachment_path
+        doc.attachment.name = _attachment_abspath
 
-      if 'attachment' in row and len(row['attachment'].strip()) > 0:
-        doc.attachment.name = row['attachment']
-        
-        doc.create_snapshot()
+      if _has_attachment or _has_snapshot:
+        # create snapshots
+        doc.create_snapshots(custom_logger=logger)
 
       doc.save()
 
-      logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {
-        'line': i,
-        'slug': _slug,
-        'type': _type,
-        'pk': doc.pk,
-        'created': created
-      })
+      
+      logger.debug('line {line}: document {created}, pk={pk}, type={type}, slug={slug}.'.format(line= i,slug= _slug, type= _type,
+        pk= doc.pk,
+        created= 'CREATED' if created else 'UPDATED'
+      ))
 
     # add related documents!!!
     if 'related_documents|list' in row:

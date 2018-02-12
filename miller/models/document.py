@@ -379,25 +379,37 @@ class Document(models.Model):
     return snapshots_path
 
 
-  def create_snapshots(self, resolutions=None, override=True):
+  def create_snapshots(self, resolutions=None, override=True, custom_logger=None):
     """
     Create multisize snapshots and add relaive width and height to <Document instance>.data
     It follows settings.MILLER_RESOLUTIONS
     param boolean override: if True, default behavior, this allows file overriding.
     """
+    if not custom_logger:
+      custom_logger = logger
     if not resolutions:
       resolutions = settings.MILLER_RESOLUTIONS
 
     # first error    
     if not self.attachment or not getattr(self.attachment, 'path', None):
-      logger.error(u'pk={pk} snapshot cannot be generated, empty attachment field.'.format(pk=self.pk))
+      custom_logger.error(u'pk={pk} snapshot cannot be generated, empty attachment field.'.format(pk=self.pk))
       return
     
     # generate dir if there is none. Check logger exception for results.
     if not self.create_snapshots_folder():
-      logger.error(u'pk={pk} snapshot cannot be generated, couldn\'t create snapshot folder!'.format(pk=self.pk))
+      custom_logger.error(u'pk={pk} snapshot cannot be generated, couldn\'t create snapshot folder!'.format(pk=self.pk))
       return
     
+    # generate the mimetype based on the attachment.
+    if not self.mimetype:
+      mimetype, encoding =  mimetypes.guess_type(self.attachment.path, strict=True)
+      if mimetype:
+        custom_logger.debug(u'pk={pk} get mimetype, found: {mimetype}'.format(pk=self.pk,mimetype=mimetype ))
+      
+        self.mimetype = mimetype
+    
+    custom_logger.debug(u'pk={pk} using mimetype, found: {mimetype}'.format(pk=self.pk,mimetype=self.mimetype))
+      
     # get filepath according to mimetype. 
     # Since Pdf files are often given as attachments, filepath for the multisize snapshots is stored in ... doc.snapshot FileField.
     if self.mimetype.split('/')[0] == 'image':
@@ -406,18 +418,20 @@ class Document(models.Model):
       pdfsnapshot = self.create_snapshot_from_attachment(override=override)
       filepath = os.path.join(settings.MEDIA_ROOT, pdfsnapshot)
       self.snapshot = pdfsnapshot
+    elif self.mimetype == 'video/mp4' and self.snapshot:
+      filepath = self.snapshot.path
     else:
-      logger.error(u'pk={pk} snapshot cannot be generated: not a compatible type choiche.'.format(pk=self.pk))
+      custom_logger.error(u'pk={pk} snapshot cannot be generated: not a compatible type choiche (mimetype: {mimetype}).'.format(pk=self.pk, mimetype= self.mimetype))
       return
 
     # special warning: cannot find attachment.
-    if not os.path.exists(self.attachment.path):
-      logger.error(u'pk={pk} snapshot cannot be generated, attached file {path} does not exist.'.format(pk=self.pk, path=self.attachment.path))
+    if not os.path.exists(filepath):
+      custom_logger.error(u'pk={pk} snapshot cannot be generated, attached file {path} does not exist.'.format(pk=self.pk, path=filepath))
       return
 
     #print filepath, settings.MILLER_HOST
     # log file metadata.
-    logger.debug(u'pk={pk} generating snapshot with slug={slug}, type={type} and mimetype={mimetype} ...'.format(
+    custom_logger.debug(u'pk={pk} generating snapshot with slug={slug}, type={type} and mimetype={mimetype} ...'.format(
       pk=self.pk, 
       type=self.type, 
       mimetype=self.mimetype, 
@@ -449,7 +463,7 @@ class Document(models.Model):
           max_size   = max_size
         )
       except Exception as e:
-        logger.exception(e)
+        custom_logger.exception(e)
         return
 
       snapshot_width  = int(snapshot['snapshot_width'])
@@ -462,7 +476,7 @@ class Document(models.Model):
           'height': snapshot['height'],
         })
 
-      logger.debug('pk={pk} snapshot generated, field={field}, resolution={resolution}, max_size={max_size}, size={width}x{height}!'.format(
+      custom_logger.debug('pk={pk} snapshot generated, field={field}, resolution={resolution}, max_size={max_size}, size={width}x{height}!'.format(
         pk         = self.pk,
         field      = field,
         resolution = resolution,
@@ -476,7 +490,17 @@ class Document(models.Model):
         'height': snapshot_height
       })
 
+      if field == 'thumbnail':
+        # save thumbnail along with its width and height
+        self.data.update({
+          'thumbnail_width': snapshot_width,
+          'thumbnail_height': snapshot_height
+        })
+
     self.data['resolutions'] = _d
+    
+
+
     # force save when in save() pipeline
     self._dirty = True
     
