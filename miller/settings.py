@@ -467,6 +467,12 @@ MILLER_RESOLUTIONS = [
   ('medium',    96, None, None, 1000)
 ]
 
+# for extension, mimetype in settings.MILLER_AUDIO_SOURCES_TYPES
+MILLER_AUDIO_SOURCES_TYPES = [
+  ('ogg', 'audio/ogg'),
+  ('mp3', 'audio/mpeg')
+]
+
 # MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = <YOUR GOOGLE SPREADSHEET ID >
 # from 'https://docs.google.com/spreadsheets/d/<YOUR GOOGLE SPREADHSEET ID>/edit#gid=0'
 MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = None

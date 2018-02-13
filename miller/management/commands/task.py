@@ -303,8 +303,6 @@ class Command(BaseCommand):
 
       
 
-
-
       doc, created = Document.objects.get_or_create(slug=_slug, type=_type, defaults={
         'owner': owner.user
       })
@@ -343,6 +341,32 @@ class Command(BaseCommand):
       if _has_attachment or _has_snapshot:
         # create snapshots
         doc.create_snapshots(custom_logger=logger)
+
+      if _type == 'audio' and _attachment_exists:
+        # logger.info('line {line}: adding audio'.format(line=i))
+        sources = []
+        for extension, audiomimetype in settings.MILLER_AUDIO_SOURCES_TYPES:
+          # verify that the file exist.
+          audiosource = '{filename}.{extension}'.format(
+            filename=os.path.basename(os.path.splitext(_attachment_path)[0]),
+            extension=extension
+          )
+          audiosource_abspath = os.path.join(os.path.dirname(_attachment_abspath), audiosource)
+          if os.path.exists(audiosource_abspath):
+            logger.debug('line {line}: adding audio {extension}, source={source}'.format(line=i, extension=extension, source=audiosource_abspath))
+            sources.append({
+              'src': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, os.path.dirname(_attachment_path), audiosource)),
+              'type': audiomimetype
+            })
+          else:
+            logger.warning('line {line}: CANNOT ADD audio {extension}, source={source} not found'.format(line=i, extension=extension, source=audiosource_abspath))
+          
+          #print extension, audiosource
+        doc.data.update({
+          'sources': sources
+        })
+
+        print doc.data['sources']
 
       doc.save()
 
