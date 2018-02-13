@@ -471,10 +471,13 @@ class Document(models.Model):
       
       # save first width.
       if 'width' not in _d['original']:
-        _d['original'].update({
-          'width' : snapshot['width'],
-          'height': snapshot['height'],
-        })
+        _dim = {
+          'width' : int(snapshot['width']),
+          'height': int(snapshot['height'])
+        }
+        _d['original'].update(_dim)
+        self.data.update(_dim)
+
 
       custom_logger.debug('pk={pk} snapshot generated, field={field}, resolution={resolution}, max_size={max_size}, size={width}x{height}!'.format(
         pk         = self.pk,
