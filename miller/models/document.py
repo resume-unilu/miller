@@ -416,6 +416,9 @@ class Document(models.Model):
       filepath = self.attachment.path
     elif self.mimetype == 'application/pdf':
       pdfsnapshot = self.create_snapshot_from_attachment(override=override)
+      if not pdfsnapshot:
+        custom_logger.error(u'pk={pk} snapshot cannot be generated, probably this is due to PDF error.'.format(pk=self.pk))
+        return
       filepath = os.path.join(settings.MEDIA_ROOT, pdfsnapshot)
       self.snapshot = pdfsnapshot
     elif self.mimetype == 'video/mp4' and self.snapshot:
