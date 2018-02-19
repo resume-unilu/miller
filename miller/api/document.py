@@ -62,10 +62,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     if g.is_in_cache:
       return Response(cache.get(g.cache_key))
 
-    page = self.paginate_queryset(g.queryset)
     if not request.query_params.get('detailed', None):
+      page = self.paginate_queryset(g.queryset)
       serializer = self.list_serializer_class(page, many=True, context={'request': request})
     else:
+      page = self.paginate_queryset(g.queryset.prefetch_related('documents'))
       serializer = DocumentSerializer(page, many=True, context={'request': request})
     
     serialized = self.paginator.get_paginated_response_as_dict(data=serializer.data) 
