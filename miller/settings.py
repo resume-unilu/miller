@@ -426,6 +426,7 @@ CACHES = {
     'default': {
         'BACKEND': 'redis_cache.RedisCache',
         'LOCATION': 'localhost:6379',
+        'TIMEOUT': None,
         'OPTIONS': {
             'DB': 2,
             'COMPRESSOR': "django_redis.compressors.zlib.ZlibCompressor"
