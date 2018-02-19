@@ -112,7 +112,7 @@ def images(request):
             width = settings.MILLER_CROPPING_MAX_SIZE
             height = width / ratio
           elif img.width < img.height:
-            height = max_size
+            height = settings.MILLER_CROPPING_MAX_SIZE
             width = ratio * height
           else: 
             #squared image

@@ -44,7 +44,7 @@ class Command(TaskCommand):
     # The `iterator()` method ensures only a few rows are fetched from
     # the database at a time, saving memory.
     for doc in docs.iterator():
-      doc.create_snapshots()
+      doc.create_snapshots(custom_logger=logger)
       doc.save()
 
       # try:
