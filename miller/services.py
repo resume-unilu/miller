@@ -103,7 +103,7 @@ def images(request):
         getattr(img,available_funcs[a])(*args)
         img.resolution = (settings.MILLER_CROPPING_RESOLUTION, settings.MILLER_CROPPING_RESOLUTION)
         # transform resize image automatically based on settings
-        if settings.MILLER_CROPPING_AUTO_RESIZE:
+        if settings.MILLER_CROPPING_AUTO_RESIZE and (img.width > settings.MILLER_CROPPING_MAX_SIZE or img.height > settings.MILLER_CROPPING_MAX_SIZE):
           # calculate ratio 
           ratio = 1.0*img.width/img.height
           # dummy var init
