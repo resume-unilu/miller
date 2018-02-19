@@ -29,7 +29,7 @@ def streamHttpResponse(filename):
   return response
 
 
-def generate_snapshot(filename, output, width=None, height=None, crop=False, resolution=72, max_size=None):
+def generate_snapshot(filename, output, width=None, height=None, crop=False, resolution=72, max_size=None, compression_quality=95):
   """
   Use liquid_rescale to scale down snapshots to the desired dimension.
   params key defines a data field to be updated with new properties.
@@ -94,7 +94,9 @@ def generate_snapshot(filename, output, width=None, height=None, crop=False, res
     d['thumbnail_height'] = img.height
     
     
-    
+    img.resolution = (resolution, resolution)
+    img.compression_quality = compression_quality
+
     img.save(filename=output)
     return d      
 
