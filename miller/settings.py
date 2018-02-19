@@ -467,6 +467,12 @@ MILLER_RESOLUTIONS = [
   ('medium',    96, None, None, 1000)
 ]
 
+# resize automatically big images to serve in a normal screen
+MILLER_CROPPING_AUTO_RESIZE = True
+MILLER_CROPPING_MAX_SIZE = 2000
+MILLER_CROPPING_RESOLUTION = 96
+MILLER_CROPPING_COMPRESSION_QUALITY = 95
+
 # for extension, mimetype in settings.MILLER_AUDIO_SOURCES_TYPES
 MILLER_AUDIO_SOURCES_TYPES = [
   ('ogg', 'audio/ogg'),

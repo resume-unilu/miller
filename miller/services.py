@@ -10,6 +10,7 @@ from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
 
 from wand.image import Image
+from wand.exceptions import ModuleError
 
 from miller.helpers import streamHttpResponse, generate_snapshot
 
@@ -70,8 +71,8 @@ def images(request):
   if not os.path.exists(filename):
     return Response({"error": "requested image was not found"}, status=status.HTTP_404_NOT_FOUND)
 
-  if os.path.exists(filenameout):
-    return streamHttpResponse(filenameout)
+  #if os.path.exists(filenameout):
+  #  return streamHttpResponse(filenameout)
 
   # get distinct wand methods
   funcs = re.findall(r'(?P<func>[a-zA-Z])\[?(?P<args>[\d\-%x,]+)\]?',functions)
@@ -87,7 +88,7 @@ def images(request):
     'F': 'fit'
   }
 
-  with Image(filename=filename) as img:
+  with Image(filename=filename, resolution=300) as img:
     for a,b in funcs:
       if a == 'T':
         args = map(lambda x: int(x) if x.isnumeric() else x,b.split(','))
@@ -100,6 +101,23 @@ def images(request):
         return streamHttpResponse(filenameout)
       try:
         getattr(img,available_funcs[a])(*args)
+        img.resolution = (settings.MILLER_CROPPING_RESOLUTION, settings.MILLER_CROPPING_RESOLUTION)
+        # transform resize image automatically based on settings
+        if settings.MILLER_CROPPING_AUTO_RESIZE:
+          # calculate ratio 
+          ratio = 1.0*img.width/img.height
+          # dummy var init
+          width = height = 0
+          if img.width > img.height:
+            width = settings.MILLER_CROPPING_MAX_SIZE
+            height = width / ratio
+          elif img.width < img.height:
+            height = max_size
+            width = ratio * height
+          else: 
+            #squared image
+            height = width = max_size
+          img.transform(resize='%sx%s'% (width, height))
         img.save(filename=filenameout)
       except TypeError as e:
         return Response({"exception": '%s' % e, 'type': 'TypeError'},  status=status.HTTP_400_BAD_REQUEST)
@@ -110,5 +128,7 @@ def images(request):
       except ModuleError as e:
         print e
         return Response({"exception": '%s' % e, 'type': 'ModuleError'},  status=status.HTTP_400_BAD_REQUEST)
+      except NameError as e:
+        return Response({"exception": '%s' % e, 'type': 'NameError'}, status=status.HTTP_400_BAD_REQUEST)
       else:
         return streamHttpResponse(filenameout)
