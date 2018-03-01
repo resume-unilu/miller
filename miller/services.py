@@ -101,8 +101,6 @@ def images(request):
         return streamHttpResponse(filenameout)
       try:
         getattr(img,available_funcs[a])(*args)
-        img.resolution = (settings.MILLER_CROPPING_RESOLUTION, settings.MILLER_CROPPING_RESOLUTION)
-        img.compression_quality = settings.MILLER_CROPPING_COMPRESSION_QUALITY
         # transform resize image automatically based on settings
         if settings.MILLER_CROPPING_AUTO_RESIZE and (img.width > settings.MILLER_CROPPING_MAX_SIZE or img.height > settings.MILLER_CROPPING_MAX_SIZE):
           # calculate ratio 
@@ -119,6 +117,8 @@ def images(request):
             #squared image
             height = width = max_size
           img.transform(resize='%sx%s'% (width, height))
+          img.resolution = (settings.MILLER_CROPPING_RESOLUTION, settings.MILLER_CROPPING_RESOLUTION)
+          img.compression_quality = settings.MILLER_CROPPING_COMPRESSION_QUALITY
         img.save(filename=filenameout)
       except TypeError as e:
         return Response({"exception": '%s' % e, 'type': 'TypeError'},  status=status.HTTP_400_BAD_REQUEST)
