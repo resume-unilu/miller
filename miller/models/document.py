@@ -263,18 +263,21 @@ class Document(models.Model):
     writer.commit()
 
   # download remote pdfs allowing to produce snapshots. This should be followed by save() :)
-  def fill_from_url(self):
-    logger.debug('on document {pk:%s}' %  self.url)
+  def fill_from_url(self, custom_logger=None):
+    if not custom_logger:
+      custom_logger = logger
+
+    custom_logger.debug('on document {pk:%s}' %  self.url)
         
     if self.url: 
-      logger.debug('url: %s for document {pk:%s}' % (self.url, self.pk))
+      custom_logger.debug('url: %s for document {pk:%s}' % (self.url, self.pk))
 
       try:
         res = requests.get(self.url, timeout=settings.MILLER_URL_REQUEST_TIMEOUT, stream=True)
 
         if res.status_code == requests.codes.ok:
           self.mimetype = res.headers['content-type'].split(';')[0].lower()
-          logger.debug('mimetype found: %s for document {pk:%s}' % (self.mimetype, self.pk))
+          custom_logger.debug('mimetype found: %s for document {pk:%s}' % (self.mimetype, self.pk))
           if self.mimetype == 'application/pdf':
             # Create a temporary file
             filename = self.url.split('/')[-1]
@@ -290,7 +293,7 @@ class Document(models.Model):
             # complete writing.
             lf.flush()
 
-            logger.debug('saving attachment: %s for document {pk:%s}' % (filename, self.pk))
+            custom_logger.debug('saving attachment: %s for document {pk:%s}' % (filename, self.pk))
             outfile = os.path.join(settings.MEDIA_PRIVATE_ROOT, self.type, self.short_url)
 
             try:
@@ -304,9 +307,10 @@ class Document(models.Model):
             self.save()
             # clean tempfile
             lf.close()
-      
+      except requests.exceptions.ConnectionError:
+        custom_logger.error('url: %s for document {pk:%s} ConnectionError...' % (self.url, self.pk))
       except requests.exceptions.Timeout:
-        logger.debug('url: %s for document {pk:%s} TIMEOUT...' % (self.url, self.pk))
+        custom_logger.error('url: %s for document {pk:%s} TIMEOUT...' % (self.url, self.pk))
           
 
   def fill_from_metadata(self):
