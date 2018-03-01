@@ -394,9 +394,9 @@ class Document(models.Model):
     if not resolutions:
       resolutions = settings.MILLER_RESOLUTIONS
 
-    # first error    
-    if not self.attachment or not getattr(self.attachment, 'path', None):
-      custom_logger.error(u'pk={pk} snapshot cannot be generated, empty attachment field.'.format(pk=self.pk))
+    # document doesn't have an attachment / snapshots   
+    if (not self.attachment or not getattr(self.attachment, 'path', None)) and (not self.snapshot or not getattr(self.snapshot, 'path', None)):
+      custom_logger.error(u'pk={pk} snapshot cannot be generated, empty attachment or empty snapshot field.'.format(pk=self.pk))
       return
     
     # generate dir if there is none. Check logger exception for results.
@@ -451,13 +451,14 @@ class Document(models.Model):
     _d = {'original': {}}
 
     for field, resolution, width, height, max_size in resolutions:
+
       filename = Document.snapshot_attachment_file_name(
         instance=self, 
         filename='{pk}.{field}.jpg'.format(
           pk=self.short_url, 
           field=field
       ))
-      
+      # print filename, self.short_url
       # print outfile, doc.attachment.path
       _d[field] = {
         'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, filename))
