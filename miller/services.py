@@ -88,7 +88,7 @@ def images(request):
     'F': 'fit'
   }
 
-  with Image(filename=filename, resolution=300) as img:
+  with Image(filename=filename, resolution=settings.MILLER_CROPPING_RESOLUTION) as img:
     for a,b in funcs:
       if a == 'T':
         args = map(lambda x: int(x) if x.isnumeric() else x,b.split(','))
