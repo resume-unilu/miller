@@ -421,7 +421,10 @@ class Document(models.Model):
         return
       filepath = os.path.join(settings.MEDIA_ROOT, pdfsnapshot)
       self.snapshot = pdfsnapshot
-    elif self.mimetype == 'video/mp4' and self.snapshot:
+    elif self.mimetype == 'video/mp4':
+      if not self.snapshot:
+        custom_logger.error(u'pk={pk} snapshot cannot be generated, no valid snapshot found'.format(pk=self.pk))
+        return
       filepath = self.snapshot.path
     else:
       custom_logger.error(u'pk={pk} snapshot cannot be generated: not a compatible type choiche (mimetype: {mimetype}).'.format(pk=self.pk, mimetype= self.mimetype))
