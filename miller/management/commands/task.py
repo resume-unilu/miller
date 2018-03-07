@@ -356,7 +356,8 @@ class Command(BaseCommand):
 
       if _has_attachment or _has_snapshot:
         # create snapshots
-        doc.create_snapshots(custom_logger=logger)
+        if not 'resolutions' in doc.data:
+          doc.create_snapshots(custom_logger=logger)
 
       if _type == 'audio' and _attachment_exists:
         # logger.info('line {line}: adding audio'.format(line=i))

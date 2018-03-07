@@ -42,9 +42,12 @@ class Command(TaskCommand):
 
     logger.debug('settings.MILLER_ATTACHMENT_MAX_SIZE: {0}'.format(settings.MILLER_ATTACHMENT_MAX_SIZE))
     if pk:
-      docs = docs.filter(pk=pk)
+      docs = docs.filter(slug=pk)
 
     for doc in docs.iterator():
+      if not 'resolutions' in doc.data:
+        print 'skipping document, snapshots are not there yet'
+        continue
       print doc.slug
       print '    type       :', doc.type
       print '    short_url  :', doc.short_url
@@ -84,6 +87,12 @@ class Command(TaskCommand):
       
       #doc.attachment.name = row['attachment']
       #
+      doc.data['resolutions']['attachment'] = {
+        'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, doc.attachment.name)), 
+      }
+
+      doc.attachment.name = filename
+      # print doc.data['resolutions']
       doc.save()
       # print newfile # snapshot
       # doc.create_snapshots(custom_logger=logger)
