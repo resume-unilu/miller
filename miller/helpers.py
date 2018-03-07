@@ -29,7 +29,7 @@ def streamHttpResponse(filename):
   return response
 
 
-def generate_snapshot(filename, output, width=None, height=None, crop=False, resolution=72, max_size=None, compression_quality=95):
+def generate_snapshot(filename, output, width=None, height=None, crop=False, resolution=72, max_size=None, compression_quality=95, progressive=False):
   """
   Use liquid_rescale to scale down snapshots to the desired dimension.
   params key defines a data field to be updated with new properties.
@@ -96,12 +96,14 @@ def generate_snapshot(filename, output, width=None, height=None, crop=False, res
     
     img.resolution = (resolution, resolution)
     img.compression_quality = compression_quality
-
+    
+    if progressive:
+      img.format = 'pjpeg'
     img.save(filename=output)
     return d      
 
 
-def generate_pdf_snapshot(pdffile, output, page=1, extension='png', background_color='white', alpha_channel='remove', resolution=150):
+def generate_pdf_snapshot(pdffile, output, page=1, extension='png', background_color='white', alpha_channel='remove', resolution=150, compression_quality=95):
   """
   Generate a PDF snapshot of the desired format and resolution.
   Page is 1 based.
@@ -112,14 +114,18 @@ def generate_pdf_snapshot(pdffile, output, page=1, extension='png', background_c
   # Converting first page into PNG file
   print pdffile, output
   print page
-  with Image(filename='{name}[{page}]'.format(name=pdffile, page=page-1), resolution=150) as img:
+  with Image(filename='{name}[{page}]'.format(name=pdffile, page=page-1), resolution=resolution) as img:
     img.format = extension
     img.background_color = Color(background_color) # Set white background.
     img.alpha_channel = alpha_channel
+    # img.compression_quality = compression_quality
+    img.resolution = (resolution, resolution)
+
     _d ={
       'width': img.height,
       'height': img.width
     }
+
     img.save(filename=output)
   print _d
   return _d

@@ -59,6 +59,13 @@ class Command(BaseCommand):
     )
 
     parser.add_argument(
+        '--filters',
+        dest='filters',
+        default=None,
+        help='json string for django ORM filter function',
+    )
+
+    parser.add_argument(
         '--model',
         dest='model',
         default=False,
@@ -111,6 +118,9 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     start = time.time()
+    if options['filters']:
+      options['filters'] = json.loads(options['filters'])
+      
     if options['taskname'] in self.available_tasks:
       getattr(self, options['taskname'])(**options)
     else:
@@ -193,7 +203,7 @@ class Command(BaseCommand):
 
     for i, row in enumerate(rows):
       if not row['slug'] or not row['type']:
-        logger.debug('line %s: empty "slug" or empty "type", skipping.' % i)
+        # logger.debug('line %s: empty "slug" or empty "type", skipping.' % i)
         continue
       _slug = row['slug'].strip()
       _type = row['type'].strip()
@@ -268,6 +278,12 @@ class Command(BaseCommand):
       # read just one line of the CSV
       if 'pk' in options and options.get('pk') is not None and options.get('pk') != row['slug']:
         continue
+
+      #if 'filters' in options and options.get('filters') is not None :
+      #  print 'oototototototo'
+
+      #  if(row['slug'])
+      #  break;
       
       # Document model fields
       if 'attachment' in row:

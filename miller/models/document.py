@@ -728,8 +728,11 @@ def dispatcher(sender, instance, created, **kwargs):
     follow(instance.owner, instance)
 
   from miller.tasks import document_update_search_vectors
-
-  document_update_search_vectors.delay(instance.pk)
+  
+  try:
+    document_update_search_vectors.delay(instance.pk)
+  except Exception as e:
+    logger.exception(e)
 
 
 
