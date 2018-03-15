@@ -205,7 +205,7 @@ class Command(BaseCommand):
       if not row['slug'] or not row['type']:
         # logger.debug('line %s: empty "slug" or empty "type", skipping.' % i)
         continue
-      _slug = row['slug'].strip()
+      _slug = re.sub('\s','',row['slug'])
       _type = row['type'].strip()
 
       doc, created = Document.objects.get_or_create(slug=_slug, type=_type, defaults={
@@ -221,7 +221,8 @@ class Command(BaseCommand):
       doc.data.update(_data['data'])
       # print doc.data
       if 'attachment' in row and len(row['attachment'].strip()) > 0:
-         doc.attachment.name = row['attachment']
+        # must be relative to MEDIA_ROOT
+        doc.attachment.name = row['attachment']
 
       doc.save()
       logger.debug('line %(line)s: document created {pk:%(pk)s, type:%(type)s, slug:%(slug)s, created:%(created)s}' % {
@@ -233,7 +234,8 @@ class Command(BaseCommand):
       })
 
 
-  def bulk_import_public_gs_as_documents(self, gsid=False, gid=False, use_cache=False, **options):
+
+  def bulk_import_public_gs_as_documents(self, gsid=False, gid=False, use_cache=False, pk=None, **options):
     if not gsid:
       if not settings.MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID:
         raise Exception('please specify a google spreadsheet url with the --url parameter')
@@ -249,7 +251,8 @@ class Command(BaseCommand):
       raise Exception('no Profile object defined in the database!')
 
     data_paths =  utils.data_paths(headers=headers) 
-    print data_paths
+    logger.info('found {0} data columns, first: {1}'.format(len(data_paths), data_paths[0]))
+    # print data_paths
 
     
 
@@ -259,12 +262,18 @@ class Command(BaseCommand):
     for i, path, is_list in data_paths:
       utils.nested_set(data_structure, path, {})
 
-    logger.debug('data__* fields have been transformed to: %s' % data_structure)
+    logger.info('data__* fields have been transformed to: {0} \n\n---\n'.format(data_structure))
 
-    
-      
+    _has_pk = pk is not None
+    if(_has_pk):
+      logger.info('looking for: {0} \n\n---\n'.format(pk)) 
+
 
     for i, row in enumerate(rows):
+      # read just one line of the CSV
+      if _has_pk and pk != row['slug']:
+        continue
+
       if not row.get('slug') or not row.get('type'):
         logger.debug('line %s: empty "slug" or empty "type", skipping.' % i)
         continue
@@ -272,18 +281,14 @@ class Command(BaseCommand):
       _slug = row['slug'].strip()
       _type = row['type'].strip()
       _docs = row.get('related_documents|list', '').split(',')
+
+      if re.match(r'^[a-zA-Z\-\d]+$', _slug) is None:
+        logger.error('line {0}: slug "{1}" does not match slug rules, exit'.format(i, _slug))
+        break
+
       _has_attachment = 'attachment' in row and row['attachment'] and len(row['attachment'].strip()) > 0
       _has_snapshot = 'snapshot' in row and row['snapshot'] and len(row['snapshot'].strip()) > 0
 
-      # read just one line of the CSV
-      if 'pk' in options and options.get('pk') is not None and options.get('pk') != row['slug']:
-        continue
-
-      #if 'filters' in options and options.get('filters') is not None :
-      #  print 'oototototototo'
-
-      #  if(row['slug'])
-      #  break;
       
       # Document model fields
       if 'attachment' in row:
@@ -302,19 +307,24 @@ class Command(BaseCommand):
       if _has_snapshot:
         logger.debug('line {line}: found snapshot for {slug}, {snapshot}'.format(line=i, slug=_slug, snapshot=row['snapshot']))
 
-        _snapshot_path      = row['snapshot'].strip()
+        _snapshot_path    = row['snapshot'].strip()
         _snapshot_abspath = os.path.join(settings.MEDIA_ROOT, _snapshot_path)
         _snapshot_exists  = os.path.exists(_snapshot_abspath)
 
       if _has_attachment: 
+        # must be relative to MEDIA_ROOT
         _attachment_path    = row['attachment'].strip()
         _attachment_abspath = os.path.join(settings.MEDIA_ROOT, _attachment_path)
         _attachment_exists  = os.path.exists(_attachment_abspath)
+
+        if re.match(r'^[a-zA-Z\-\d_/\.]+$', _attachment_path) is None:
+          logger.error('line {0}: attachment "{1}" does not match slug rules, exit'.format(i, _attachment_path))
+          break
         # logger.debug(u'line {0}: attachment found, \n   - datum: {1}\n   - real: {2}\n   exists: {3}'.format(i, row['attachment'], _attachment_abspath, _attachment_exists))
         # check that the file exists; otherwise skip everything
         if not _attachment_exists:
-          logger.warning('line %s: no real path has been found for the attachment, skipping.' % i)
-          continue
+          logger.warning('line {0}: no real path has been found for the attachment, skipping. Path: {1}'.format(i, _attachment_path))
+          break
 
 
       
@@ -334,10 +344,10 @@ class Command(BaseCommand):
 
       # Clean data structure
       if 'place_type' in _data['data'] and 'coordinates' in _data['data'] and not row['data__place_type']:
-        logger.debug('line {0}: clean data.coordinates from data_paths for {1}'.format(i, _slug))
+        logger.debug('line {0}: remove data.coordinates property from data_paths for {1}'.format(i, _slug))
         _data['data'].pop('coordinates', None)
 
-      doc.data = _data['data']
+      doc.data.update(_data['data'])
 
       if 'url' in row and len(row['url'].strip()) > 0:
         doc.url = row['url'].strip()
@@ -354,10 +364,10 @@ class Command(BaseCommand):
         logger.debug(u'line {0}: assign attachment: {1}'.format(i, _attachment_path))
         doc.attachment.name = _attachment_path
 
-      if _has_attachment or _has_snapshot:
+      #if _has_attachment or _has_snapshot:
         # create snapshots
-        if not 'resolutions' in doc.data:
-          doc.create_snapshots(custom_logger=logger)
+        #if not 'resolutions' in doc.data:
+        #  doc.create_snapshots(custom_logger=logger)
 
       if _type == 'audio' and _attachment_exists:
         # logger.info('line {line}: adding audio'.format(line=i))
