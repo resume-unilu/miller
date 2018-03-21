@@ -21,12 +21,12 @@ def convert_bytes(num):
 
 class Command(TaskCommand):
   """
-  Usage sample: 
+  Usage sample:
   python manage.py snapshots all
 
   """
   help = 'A lot of tasks dealing with snapshots, preview images etc..'
-  
+
 
   available_tasks = (
     'resize_attachment',
@@ -53,21 +53,21 @@ class Command(TaskCommand):
       print '    short_url  :', doc.short_url
       print '    orig. path :', doc.attachment.name
       print '    orig. size :', os.stat(doc.attachment.path).st_size, '(', convert_bytes(os.stat(doc.attachment.path).st_size) , ')'
-      
+
       _, file_extension = os.path.splitext(doc.attachment.name)
       print '    orig. ext  :', file_extension
-      
+
       filename = Document.snapshot_attachment_file_name(
-        instance=doc, 
+        instance=doc,
         filename='{pk}.full{ext}'.format(pk=doc.short_url, ext=file_extension)
       )
-      
+
       print '    new path   :', filename
       newfile = os.path.join(settings.MEDIA_ROOT, filename)
-      
+
       snapshot = helpers.generate_snapshot(
-        filename    = doc.attachment.path, 
-        output      = newfile, 
+        filename    = doc.attachment.path,
+        output      = newfile,
         width       = None,
         height      = None,
         resolution  = settings.MILLER_ATTACHMENT_RESOLUTION,
@@ -76,19 +76,19 @@ class Command(TaskCommand):
       )
 
       print '    new size   :', os.stat(newfile).st_size, '(', convert_bytes(os.stat(newfile).st_size) , ')'
-      
+
       from PIL import Image, ImageFile
 
       with Image.open(newfile) as img_file:
         img_file.save(newfile, optimize=True, progressive=True)
-      
+
       print '    comp. size :', os.stat(newfile).st_size, '(', convert_bytes(os.stat(newfile).st_size) , ')'
       print snapshot
-      
+
       #doc.attachment.name = row['attachment']
       #
       doc.data['resolutions']['attachment'] = {
-        'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, doc.attachment.name)), 
+        'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, doc.attachment.name)),
       }
 
       doc.attachment.name = filename
@@ -98,12 +98,12 @@ class Command(TaskCommand):
       # doc.create_snapshots(custom_logger=logger)
       #doc.save()
 
-    
+
 
   def settings(self, **options):
     logger.debug('settings.MILLER_RESOLUTIONS: {0}'.format(settings.MILLER_RESOLUTIONS))
 
-  def multisize(self, pk=None, **options):
+  def multisize(self, pk=None, override=False, **options):
     self.settings(**options)
 
     docs = Document.objects.exclude(Q(attachment='') | Q(attachment__exact=None))
@@ -116,11 +116,14 @@ class Command(TaskCommand):
     # The `iterator()` method ensures only a few rows are fetched from
     # the database at a time, saving memory.
     for doc in docs.iterator():
+      if not override and 'resolutions' in doc.data:
+        print('skip')
+        continue
       doc.create_snapshots(custom_logger=logger)
       doc.save()
 
       # try:
-        
+
       #   d = helpers.generate_snapshot(filename=doc.attachment.path, output=outfile, width=settings.MILLER_SNAPSHOT_WIDTH, height=settings.MILLER_SNAPSHOT_HEIGHT)
       # if d:
       #   self.data.update(d)
