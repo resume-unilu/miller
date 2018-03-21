@@ -19,15 +19,16 @@ logger = logging.getLogger('console')
 
 class Command(TaskCommand):
   """
-  Usage sample: 
+  Usage sample:
   python manage.py vectors snapshot --pk=991
   """
   help = 'A lot of tasks dealing with ngrams and Postgres vectors'
-  
+
 
   available_tasks = (
     'search_ngrams_table',
     'update_search_vectors',
+    'get_search_vector',
     'search',
     'update_ngrams_table',
     'clean_ngrams_table',
@@ -48,18 +49,18 @@ class Command(TaskCommand):
   def clean_ngrams_table(self, **options):
     """
     Remove all ngrams from ngrams table.
-    Usage: 
+    Usage:
     python manage.py vectors clean_ngrams_table
     """
     logger.debug('task: clean_ngrams_table')
     logger.debug('... total: %s ngrams' % Ngrams.objects.count())
     print Ngrams.objects.all().delete()
-    
+
 
   def clean_leaves_ngrams_table(self, **options):
     """
     Remove unused ngrams from ngrams table. use only in case of emergency.
-    Usage: 
+    Usage:
     python manage.py vectors clean_leaves_ngrams_table
     """
     logger.debug('task: clean_leaves_ngrams_table')
@@ -68,7 +69,7 @@ class Command(TaskCommand):
     ngr = Ngrams.objects.annotate(num_documents=Count('documents'))
 
     print ngr.filter(num_documents__lte=1).delete()
-    # logger.debug('... deleting ngrams, %s' % 
+    # logger.debug('... deleting ngrams, %s' %
     logger.debug('... now %s ngrams in table after deleting leaves.' % Ngrams.objects.count())
 
 
@@ -76,13 +77,13 @@ class Command(TaskCommand):
   def read_ngrams_table(self, model, **options):
     """
     Remove unused ngrams from ngrams table.
-    Usage: 
+    Usage:
     python manage.py vectors read_ngrams_table
     """
     logger.debug('task: read_ngrams_table')
     if model == 'document':
       logger.debug('... total: %s ngrams' % Ngrams.objects.count())
-      
+
       ngr = Ngrams.objects.annotate(num_documents=Count('documents'))
 
       logger.debug('... top 500')
@@ -93,7 +94,7 @@ class Command(TaskCommand):
   def search_ngrams_table(self, query=None, model=False, **options):
     """
     Test ngrams table contents.
-    Usage: 
+    Usage:
     python manage.py vectors search_ngrams_table --query=alaska
     """
     logger.debug('task: search_ngrams_table')
@@ -103,27 +104,36 @@ class Command(TaskCommand):
     if model == 'document':
       from django.contrib.postgres.search import SearchVector
       from django.contrib.postgres.search import TrigramSimilarity
-      # provided a q 
+      # provided a q
       logger.debug(u'using "%s"' % query)
-    
+
       ngrams = Document.objects.annotate(
         similarity=TrigramSimilarity('ngrams__segment', query),
       ).filter(similarity__gt=0.35).order_by('-similarity').values('ngrams__segment', 'ngrams__slug').distinct()[:10]
       if not ngrams:
         logger.debug('not found!')
-      
+
       logger.debug('ngrams found: [%s]' % u' / '.join([u'%s (%s)' % (n.get('ngrams__segment'), n.get('ngrams__slug')) for n in ngrams]))
-      
+
 
   def search(self, query=None, model=False, **options):
     logger.debug('task: search')
 
-    q = Document.get_search_Q(query)
-    
-    docs = Document.objects.filter(q)
-    print docs.count
+    if model == 'document':
+        q = Document.get_search_Q(query)
+
+        docs = Document.objects.filter(q)
+        print docs.count
 
 
+  def get_search_vector(self, pk, model=False, **options):
+    if model == 'document':
+        doc = Document.objects.get(pk=pk) if pk.isdigit() else Document.objects.get(slug=pk)
+        logger.debug('task: get_search_vector for document pk:{0}, slug:{1}'.format(pk, doc.slug))
+        print 'title: {0}'.format(doc.title,)
+        print '--- search vector:'
+        print doc.search_vector
+        print '---'
 
 
   def update_search_vectors(self, pk=None, model=False, **options):
@@ -145,7 +155,7 @@ class Command(TaskCommand):
         logger.debug('task: update_search_vectors for story {pk:%s, slug:%s}' % (story.pk, story.slug))
     else:
       logger.error('task: please provide a valid model to update_whoosh: "document" or "story"...')
-  
+
 
   def update_ngrams_table(self, pk=None, model=False, **options):
     """
@@ -165,7 +175,7 @@ class Command(TaskCommand):
         indexed_contents = doc.update_search_vector()
 
         sentences = Ngrams.punktSentenceTokenize(u'.\n'.join([idx[0] for idx in indexed_contents]))
-        
+
         logger.debug('  - sentences: %s' % len(sentences))
         if pk:
           print sentences
@@ -182,10 +192,10 @@ class Command(TaskCommand):
           ngs   = Ngrams.prepare(ngs)
 
           logger.debug('  ... %s/%s, found %s ngrams' % (ids+1, len(sentences), len(ngs)))
-          
+
           # pseudo bulk_create
           slugs = []
-          
+
           for idx, ngram in enumerate(ngs):
             # stopwords? or directly in grams slugify function
             if ngram['slug'] in slugs:
@@ -196,7 +206,7 @@ class Command(TaskCommand):
 
             if pk:
               logger.debug('    %s %s (%s)' % (idx, ngram['segment'], ngram['slug']))
-            
+
             # add to local list of slugs
             slugs.append(ngram['slug'])
 
@@ -220,7 +230,3 @@ class Command(TaskCommand):
           doc.save()
 
       # clear all ngrams that do not belong to any documents
-      
-
-
-
