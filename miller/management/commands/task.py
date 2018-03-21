@@ -19,11 +19,11 @@ logger = logging.getLogger('console')
 
 class Command(BaseCommand):
   """
-  Usage sample: 
+  Usage sample:
   python manage.py task snapshot --pk=991
   """
   help = 'Initialize the JSON field metadata for Story instances'
-  
+
 
   available_tasks = (
     'noembed',
@@ -70,6 +70,13 @@ class Command(BaseCommand):
         dest='model',
         default=False,
         help='miller model name',
+    )
+
+    parser.add_argument(
+        '--override',
+        dest='override',
+        default=False,
+        help='force override',
     )
 
     parser.add_argument(
@@ -120,22 +127,22 @@ class Command(BaseCommand):
     start = time.time()
     if options['filters']:
       options['filters'] = json.loads(options['filters'])
-      
+
     if options['taskname'] in self.available_tasks:
       getattr(self, options['taskname'])(**options)
     else:
       logger.debug('command NOT FOUND, tasks availables: ["%s"]' % '","'.join(self.available_tasks))
     end = time.time()
     logger.debug('command finished in %s seconds.' % (end - start))
-  
-  
-  
+
+
+
 
 
   def migrate_documents(self, **options):
     logger.debug('task: migrate_documents')
     docs = Document.objects.filter(data={})
-    
+
     for doc in docs.iterator():
       logger.debug('task: migrate_documents for document {pk:%s}' % doc.pk)
       d = doc.dmetadata
@@ -146,7 +153,7 @@ class Command(BaseCommand):
   def migrate_stories(self, **options):
     logger.debug('task: migrate_stories')
     stories = Story.objects.filter(data={})
-    
+
     logger.debug('task: migrate_stories for %s stories with empty data' % stories.count())
     for story in stories.iterator():
       logger.debug('task: migrate_stories for document {pk:%s}' % story.pk)
@@ -159,7 +166,7 @@ class Command(BaseCommand):
   def migrate_authors(self, **options):
     logger.debug('task: migrate_authors')
     authors = Author.objects.all()
-    
+
     for author in authors.iterator():
       logger.debug('task: migrate_authors for authorument {pk:%s}' % author.pk)
       d = author.dmetadata
@@ -176,7 +183,7 @@ class Command(BaseCommand):
     from django.core.cache import cache
     cache.clear();
 
-  
+
   def bulk_import_gs_as_documents(self, url=None, sheet=None, use_cache=False, **options):
     if not url:
       raise Exception('please specify a google spreadsheet url with the --url parameter')
@@ -184,14 +191,14 @@ class Command(BaseCommand):
     logger.debug('loading %s' % url)
 
     rows, headers = utils.bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'type'])
-    
+
     # owner is the first staff user
     owner = Profile.objects.filter(user__is_staff=True).first()
 
     if not owner:
       raise Exception('no Profile object defined in the database!')
 
-    data_paths =  utils.data_paths(headers=headers) 
+    data_paths =  utils.data_paths(headers=headers)
     print data_paths
     # basic data structure based on headers column
     data_structure = {}
@@ -214,10 +221,10 @@ class Command(BaseCommand):
       doc.title = row['title'].strip()
 
       _data = data_structure.copy()
-      
+
       for key, path, is_list in data_paths:
         utils.nested_set(_data, path, row[key], as_list=is_list)
-      
+
       doc.data.update(_data['data'])
       # print doc.data
       if 'attachment' in row and len(row['attachment'].strip()) > 0:
@@ -248,10 +255,10 @@ class Command(BaseCommand):
     if not owner:
       raise Exception('no Profile object defined in the database!')
 
-    data_paths =  utils.data_paths(headers=headers) 
+    data_paths =  utils.data_paths(headers=headers)
     print data_paths
 
-    
+
 
     # basic data structure based on headers column
     data_structure = {}
@@ -261,8 +268,8 @@ class Command(BaseCommand):
 
     logger.debug('data__* fields have been transformed to: %s' % data_structure)
 
-    
-      
+
+
 
     for i, row in enumerate(rows):
       if not row.get('slug') or not row.get('type'):
@@ -284,7 +291,7 @@ class Command(BaseCommand):
 
       #  if(row['slug'])
       #  break;
-      
+
       # Document model fields
       if 'attachment' in row:
         if not row['attachment']:
@@ -298,7 +305,7 @@ class Command(BaseCommand):
       if 'date__year' in row and not row['date__year']:
         logger.warning('line {0}: empty "date__year" and empty "url" when "attachment" is in header, skipping for {1}.'.format(i, _slug))
         continue
-      
+
       if _has_snapshot:
         logger.debug('line {line}: found snapshot for {slug}, {snapshot}'.format(line=i, slug=_slug, snapshot=row['snapshot']))
 
@@ -306,7 +313,7 @@ class Command(BaseCommand):
         _snapshot_abspath = os.path.join(settings.MEDIA_ROOT, _snapshot_path)
         _snapshot_exists  = os.path.exists(_snapshot_abspath)
 
-      if _has_attachment: 
+      if _has_attachment:
         _attachment_path    = row['attachment'].strip()
         _attachment_abspath = os.path.join(settings.MEDIA_ROOT, _attachment_path)
         _attachment_exists  = os.path.exists(_attachment_abspath)
@@ -317,7 +324,7 @@ class Command(BaseCommand):
           continue
 
 
-      
+
 
       doc, created = Document.objects.get_or_create(slug=_slug, type=_type, defaults={
         'owner': owner.user
@@ -325,12 +332,12 @@ class Command(BaseCommand):
       doc.title = row['title'].strip()
 
       _data = data_structure.copy()
-      
-      
+
+
 
       for key, path, is_list in data_paths:
         utils.nested_set(_data, path, row[key], as_list=is_list)
-      
+
 
       # Clean data structure
       if 'place_type' in _data['data'] and 'coordinates' in _data['data'] and not row['data__place_type']:
@@ -377,7 +384,7 @@ class Command(BaseCommand):
             })
           else:
             logger.warning('line {line}: CANNOT ADD audio {extension}, source={source} not found'.format(line=i, extension=extension, source=audiosource_abspath))
-          
+
           #print extension, audiosource
         doc.data.update({
           'sources': sources
@@ -387,7 +394,7 @@ class Command(BaseCommand):
 
       doc.save()
 
-      
+
       logger.debug('line {line}: document {created}, pk={pk}, type={type}, slug={slug}.'.format(line= i,slug= _slug, type= _type,
         pk= doc.pk,
         created= 'CREATED' if created else 'UPDATED'
@@ -404,14 +411,14 @@ class Command(BaseCommand):
         _type = row['type'].strip()
 
         logger.debug('line {0}: document {1} need to be connected to: {2}'.format(i, _slug, _docs))
-      
+
         doc = Document.objects.get(slug=_slug)
         related = Document.objects.filter(slug__in=_docs)
         doc.documents.clear()
         doc.documents.add(*related)
         doc.save()
         logger.debug('line {0}: document {1} connected to: {2}'.format(i, _slug,[d.slug for d in doc.documents.all()]))
-        
+
 
 
   def bulk_import_gs_as_tags(self, url=None, sheet=None, use_cache=False, **options):
@@ -421,8 +428,8 @@ class Command(BaseCommand):
     logger.debug('loading %s' % url)
 
     rows, headers = utils.bulk_import_gs(url=url, sheet=sheet, use_cache=use_cache, required_headers=['slug', 'category', 'data__provider'])
-    
-    data_paths =  utils.data_paths(headers=headers) 
+
+    data_paths =  utils.data_paths(headers=headers)
     data_structure = {}
 
     for i, path, is_list in data_paths:
@@ -458,29 +465,29 @@ class Command(BaseCommand):
 
 
       _data = data_structure.copy()
-      
+
       for key, path, is_list in data_paths:
         utils.nested_set(_data, path, row[key], as_list=is_list)
-      
+
       tag.data = _data['data']
       logger.debug('tag saved {slug:%s, created:%s, name:%s}' % (tag.slug, created, tag.name))
       tag.save()
 
-    #with transaction.atomic():  
-      
+    #with transaction.atomic():
+
     #     for row in r:
     #       tag, created = Tag.objects.get_or_create(category=Tag.KEYWORD, name=row['name'],slug=row['slug']);
     #       print created, tag
 
   def update_localisation_gs(self,  **options):
-    """ 
+    """
     load the csv specified in MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET, if any provided.
     """
     url = settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET
     # something like https://docs.google.com/spreadsheets/d/{yourid}/edit#gid=0
     if not url:
       raise Exception('no google spreadsheet link in settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET')
-    
+
     #print url
 
     m = re.match(r'https://docs.google.com/spreadsheets/d/([^/]*)', url)
@@ -498,21 +505,22 @@ class Command(BaseCommand):
     #   print row
     logger.debug('writing csv file at settings.MILLER_LOCALISATION_TABLE:%s', settings.MILLER_LOCALISATION_TABLE)
     with open(settings.MILLER_LOCALISATION_TABLE, 'wb') as f:
-      for chunk in response.iter_content(chunk_size=1024): 
+      for chunk in response.iter_content(chunk_size=1024):
         if chunk: # filter out keep-alive new chunks
           f.write(chunk)
-    
+
     logger.debug('now updating localisation...')
     self.update_localisation(**options)
 
 
   def update_localisation(self,  **options):
-    """ 
+    """
     load the csv specified in MILLER_LOCALISATION_TABLE
     """
     logger.debug('looking for the csv file at settings.MILLER_LOCALISATION_TABLE: %s'%settings.MILLER_LOCALISATION_TABLE)
     import unicodecsv as csv
-    
+    import codecs
+
     with open(settings.MILLER_LOCALISATION_TABLE) as f:
       rows = csv.DictReader(f, encoding='utf-8')
       translations = {}
@@ -520,7 +528,7 @@ class Command(BaseCommand):
         for lang, t, language_code, idx in settings.LANGUAGES:
           if not language_code in translations:
             translations[language_code] = {}
-          
+
           translations[language_code].update({
             row[u'KEY']: row[u'en_US'] if not row[language_code] else row[language_code]
           })
@@ -528,13 +536,18 @@ class Command(BaseCommand):
       for language_code, value in translations.iteritems():
         print language_code
         localename = os.path.join(os.path.dirname(settings.MILLER_LOCALISATION_TABLE), 'locale-%s.json' % language_code)
-          
+
         with open(localename, "w") as wtf:
           logger.debug('creating: %s'%localename)
           wtf.write(json.dumps(translations[language_code],indent=2))
 
-            #print row
-    pass
+      completejson = os.path.join(os.path.dirname(settings.MILLER_LOCALISATION_TABLE), 'locale.json')
+
+      with codecs.open(completejson, "w", "utf-8") as f:
+        logger.debug('creating: %s'%completejson)
+        f.write(json.dumps(translations, indent=2, sort_keys=True, ensure_ascii=False))
+
+
 
   def update_whoosh(self,  **options):
     logger.debug('looking for a whoosh index...')
@@ -542,7 +555,7 @@ class Command(BaseCommand):
 
     _model = options.get('model', None)
     logger.debug('whoosh index for --model: %s...'% _model)
-    
+
     if _model == 'story':
       stories = Story.objects.filter(pk=options.get('pk')) if options.get('pk', None) is not None else Story.objects.all()
       print  options.get('pk', None)
@@ -559,7 +572,7 @@ class Command(BaseCommand):
           break
         else:
           logger.debug('task: update_whoosh for story {pk:%s} success' % story.pk)
-      
+
     elif _model == 'document':
       docs =  Document.objects.filter(pk=options.get('pk')) if options.get('pk', None) is not None else Document.objects.all()
 
@@ -576,13 +589,13 @@ class Command(BaseCommand):
           logger.debug('task: update_whoosh for doc {pk:%s} success' % doc.pk)
     else:
       logger.debug('task: please provide a valid model to update_whoosh: "document" or "story"...')
-        
+
 
   def noembed(self, **options):
     logger.debug('task: noembed!')
     if not options['pk']:
       raise Exception('--pk not found')
-    
+
     logger.debug('task: noembed for {document:%s}' % options['pk'])
 
     doc = Document.objects.get(pk=options['pk'])
@@ -597,7 +610,7 @@ class Command(BaseCommand):
     logger.debug('task: snapshot!')
     if not options['pk']:
       raise Exception('--pk not found')
-    
+
     logger.debug('task: snapshot for {document:%s}' % options['pk'])
 
     doc = Document.objects.get(pk=options['pk'])
@@ -653,4 +666,3 @@ class Command(BaseCommand):
   #cleaning story.DELETED older than 2 months
   def cleanbin(self, **options):
     logger.debug('task: cleanbin')
-      
