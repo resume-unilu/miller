@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'actstream',
     # 'dbbackup'
     #'django_seo_js'
-    
+
 ]
 
 DBBACKUP_STORAGE         = 'django.core.files.storage.FileSystemStorage'
@@ -191,7 +191,7 @@ SIMPLEMDE_OPTIONS = {
     'autosave': {
         'enabled': True
     },
-    
+
     'spellChecker': False
 }
 
@@ -203,7 +203,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'dist')
 MEDIA_URL   = '/media/'
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 ZIP_ROOT    = os.path.join(MEDIA_ROOT, 'zip')
-    
+
 # media files will be stored here as technical copies. It has to be related to MEDIA root
 MEDIA_PRIVATE_RELATIVE_PATH  = 'private'
 MEDIA_PRIVATE_ROOT = os.path.join(MEDIA_ROOT, 'private')
@@ -211,7 +211,7 @@ MEDIA_PRIVATE_ROOT = os.path.join(MEDIA_ROOT, 'private')
 
 GIT_ROOT = os.path.join(BASE_DIR, 'contents')
 GIT_COMMITTER = {
-    'name': "A committer", 
+    'name': "A committer",
     'email': "committer@example.com"
 }
 
@@ -412,7 +412,7 @@ CODEMIRROR_PATH = r'js/codemirror'
 #............
 #
 # DJANGO-REGISTRATION SETTINGS
-# 
+#
 #............
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -420,7 +420,7 @@ ACCOUNT_ACTIVATION_DAYS = 7
 #............
 #
 # DJANGO-REDIS-CACHE
-# 
+#
 #............
 CACHES = {
     'default': {
@@ -474,6 +474,10 @@ MILLER_CROPPING_MAX_SIZE = 2000
 MILLER_CROPPING_RESOLUTION = 96
 MILLER_CROPPING_COMPRESSION_QUALITY = 95
 
+# MILLER SEARCH VECTORS FOR documents
+MILLER_VECTORS_MULTILANGUAGE_FIELDS = (('title', 'A'), ('description', 'B'))
+MILLER_VECTORS_INITIAL_FIELDS = (('title', 'A', 'simple'),) # ('slug', 'A', 'simple'))
+
 # reduce images to a bare minimum. for images only.
 MILLER_ATTACHMENT_MAX_SIZE = 3000
 MILLER_ATTACHMENT_RESOLUTION = 72
@@ -491,7 +495,7 @@ MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = None
 MILLER_DOCUMENTS_DEFAULTS_START_DATE = '1000-01-01'
 MILLER_DOCUMENTS_DEFAULTS_END_DATE = '2098-01-01'
 
-# DOI creation, used in `api/story/<pk>/doi` GET(read) or POST (create) endpoint. 
+# DOI creation, used in `api/story/<pk>/doi` GET(read) or POST (create) endpoint.
 # If `MILLER_DOI_ENABLED=True`, you should have a DOI prefix cfr.https://mds.datacite.org/
 MILLER_DOI_ENABLED   = False
 MILLER_DOI_PREFIX    = 'XX.YYYY'
@@ -526,7 +530,7 @@ MILLER_OEMBEDS = {
 }
 
 MILLER_OEMBEDS_MAPPER = (
-  # (type, regex, function) 
+  # (type, regex, function)
   ('timeline', r'(?P<protocol>https?):\/\/(?P<path>cdn.knightlab.com\/libs\/timeline\d?\/latest\/embed\/[^&]*)', 'miller.embedder.timelinejs'),
 )
 
