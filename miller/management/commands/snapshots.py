@@ -127,6 +127,8 @@ class Command(TaskCommand):
     # the database at a time, saving memory.
     for doc in docs.iterator():
       if not override and 'resolutions' in doc.data:
+        if pk:
+          logger.debug('data field of the selected document already contains resolutions. add --override!')
         continue
       doc.create_snapshots(custom_logger=logger)
       doc.save()
