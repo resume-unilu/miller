@@ -34,7 +34,7 @@ class Command(TaskCommand):
     'settings'
   )
 
-  def optimise(self, pk=None, **options):
+  def optimise(self, pk=None, override=False, **options):
     """
     Create an optimised version for documents typed IMAGE attachents.
     Add or update data.resolution.full for the documents, so it needs resolution field to be in place.
@@ -52,6 +52,12 @@ class Command(TaskCommand):
       print '    short_url  :', doc.short_url
       print '    orig. path :', doc.attachment.name
       print '    orig. size :', os.stat(doc.attachment.path).st_size, '(', convert_bytes(os.stat(doc.attachment.path).st_size) , ')'
+
+      if not override and 'resolutions' in doc.data and 'full' in doc.data['resolutions']:
+        if pk:
+          logger.debug('data field of the selected document already contains "full" resolutions. add --override!')
+        continue
+
 
       _, file_extension = os.path.splitext(doc.attachment.name)
       print '    orig. ext  :', file_extension
