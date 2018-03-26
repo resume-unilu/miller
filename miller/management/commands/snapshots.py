@@ -29,26 +29,25 @@ class Command(TaskCommand):
 
 
   available_tasks = (
-    'resize_attachment',
+    'optimise',
     'multisize',
     'settings'
   )
 
-  def resize_attachment(self, pk=None, **options):
+  def optimise(self, pk=None, **options):
     """
-    Reduce attachments to selected file
+    Create an optimised version for documents typed IMAGE attachents.
+    Add or update data.resolution.full for the documents, so it needs resolution field to be in place.
     """
     docs = Document.objects.exclude(Q(attachment='') | Q(attachment__exact=None)).filter(type=Document.IMAGE)
 
     logger.debug('settings.MILLER_ATTACHMENT_MAX_SIZE: {0}'.format(settings.MILLER_ATTACHMENT_MAX_SIZE))
     if pk:
-      docs = docs.filter(slug=pk)
+      docs = docs.filter(pk=pk) if pk.isdigit() else docs.filter(slug=pk)
 
     for doc in docs.iterator():
-      if not 'resolutions' in doc.data:
-        print 'skipping document, snapshots are not there yet'
-        continue
-      print doc.slug
+
+      print doc.pk, doc.slug
       print '    type       :', doc.type
       print '    short_url  :', doc.short_url
       print '    orig. path :', doc.attachment.name
@@ -75,6 +74,9 @@ class Command(TaskCommand):
         compression_quality    = settings.MILLER_ATTACHMENT_COMPRESSION_QUALITY,
       )
 
+      if not snapshot:
+        raise Exception('no snapshot created!')
+
       print '    new size   :', os.stat(newfile).st_size, '(', convert_bytes(os.stat(newfile).st_size) , ')'
 
       from PIL import Image, ImageFile
@@ -83,15 +85,23 @@ class Command(TaskCommand):
         img_file.save(newfile, optimize=True, progressive=True)
 
       print '    comp. size :', os.stat(newfile).st_size, '(', convert_bytes(os.stat(newfile).st_size) , ')'
-      print snapshot
+
 
       #doc.attachment.name = row['attachment']
       #
-      doc.data['resolutions']['attachment'] = {
-        'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, doc.attachment.name)),
+      if not 'resolutions' in doc.data:
+        doc.data['resolutions'] = {}
+
+      doc.data['resolutions']['full'] = {
+        'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, filename)),
+        'width': snapshot['thumbnail_width'],
+        'height': snapshot['thumbnail_height']
       }
 
-      doc.attachment.name = filename
+      print '    new width  :', doc.data['resolutions']['full']['width']
+      print '    new height :', doc.data['resolutions']['full']['height']
+
+      # doc.attachment.name = filename
       # print doc.data['resolutions']
       doc.save()
       # print newfile # snapshot
