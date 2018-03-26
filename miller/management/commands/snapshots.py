@@ -47,16 +47,17 @@ class Command(TaskCommand):
 
     for doc in docs.iterator():
 
-      print doc.pk, doc.slug
-      print '    type       :', doc.type
-      print '    short_url  :', doc.short_url
-      print '    orig. path :', doc.attachment.name
-      print '    orig. size :', os.stat(doc.attachment.path).st_size, '(', convert_bytes(os.stat(doc.attachment.path).st_size) , ')'
 
       if not override and 'resolutions' in doc.data and 'full' in doc.data['resolutions']:
         if pk:
           logger.debug('data field of the selected document already contains "full" resolutions. add --override!')
         continue
+
+      print doc.pk, doc.slug
+      print '    type       :', doc.type
+      print '    short_url  :', doc.short_url
+      print '    orig. path :', doc.attachment.name
+      print '    orig. size :', os.stat(doc.attachment.path).st_size, '(', convert_bytes(os.stat(doc.attachment.path).st_size) , ')'
 
 
       _, file_extension = os.path.splitext(doc.attachment.name)
