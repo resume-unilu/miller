@@ -130,10 +130,12 @@ class Command(TaskCommand):
     if model == 'document':
         doc = Document.objects.get(pk=pk) if pk.isdigit() else Document.objects.get(slug=pk)
         logger.debug('task: get_search_vector for document pk:{0}, slug:{1}'.format(pk, doc.slug))
-        print 'title: {0}'.format(doc.title,)
+        print u'title: {0}'.format(doc.title,)
         print '--- search vector:'
         print doc.search_vector
         print '---'
+    else:
+        raise Exception('please specify a valid model using --model parameter')
 
 
   def update_search_vectors(self, pk=None, model=False, **options):
