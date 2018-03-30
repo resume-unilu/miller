@@ -6,11 +6,10 @@
 <div class="container">
   <div class="row">
     <div class="col" style="background-color: #fff; margin-bottom: 30px;">
-      <h1>{% lookupmulti locale "contact us" language %}{{language}}</h1>
+      <h1>{% lookupmulti locale "contact us" language %}</h1>
       {% if form.errors %}
       <p>{% lookupmulti locale "please correct the errors in the contact form" language %}</p>
       {% endif %}
-      {% if email_status == ''}
     </div>
   </div>
   <form role="form" method="POST" action="">
@@ -49,7 +48,7 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="form-group {% if form.errors.content %}has-error{% endif %}">
-          <label for="id_signup_content">{% lookupmulti locale "email content" language %}*</label>
+          <label for="id_signup_content">{% lookupmulti locale "contact message" language %}*</label>
           {% if form.errors.content %}
           <div>{{errors.content.code}}</div>
           {% endif %}
@@ -71,12 +70,18 @@
           {% endif %}
           </div>
         </div>
-
+        {% if next %}
         <input type="hidden" value="{{ next }}" name="next" />
+        {% endif %}
+        <input type="hidden" value="{{ language }}" name="language" />
         {% csrf_token %}
       </div>
     </div>
-
+    {% if next %}
+    <a class="btn btn-secondary" href='{{ next }}' type="submit">
+      <span>&larr; {% lookupmulti locale "back" language %}</span>
+    </a>
+    {% endif %}
     <button class="btn btn-secondary" type="submit">
       <span>{% lookupmulti locale "send message" language %}</span>
     </button>
