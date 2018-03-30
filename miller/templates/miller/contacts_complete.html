@@ -1,0 +1,24 @@
+{% extends 'miller/index.html'%}
+{% load staticfiles %}
+{% load miller_extras %}
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col" style="background-color: #fff; margin-bottom: 30px;">
+      <h1>{% lookupmulti locale "contact us" language %}</h1>
+    </div>
+  </div>
+  {% if next %}
+  <div class="row">
+    <div class="col-sm-12">
+      <p>{% lookupmulti locale "thank you your message has been received correctly" language True %}</p>
+
+      <a class="btn btn-secondary" href='{{ next }}' type="submit">
+        <span>&larr; {% lookupmulti locale "back" language %}</span>
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
