@@ -40,6 +40,15 @@ class SignupForm(RegistrationFormUniqueEmail):
   last_name   = forms.CharField(min_length=3, max_length=128, widget=forms.TextInput)
   affiliation = forms.CharField(required=False, max_length=500, widget=forms.TextInput)
 
+
+class ContactForm(forms.Form):
+  captcha     = CaptchaField()
+  first_name  = forms.CharField(min_length=3, max_length=128, widget=forms.TextInput)
+  last_name   = forms.CharField(min_length=3, max_length=128, widget=forms.TextInput)
+  content     = forms.CharField(required=True, max_length=1000, widget=forms.TextInput)
+  email_from  = forms.EmailField(required=True, widget=forms.TextInput)
+
+
 class URLForm(forms.Form):
   url = forms.URLField()
 
@@ -52,7 +61,5 @@ class DOICiteForm(forms.Form):
   LANGUAGE_CHOICES = tuple((re.sub(r'([a-z]{2})$', lambda x: x.group(1).upper(), lang[0]), lang[1]) for lang in settings.LANGUAGES)
 
   contentType = forms.ChoiceField(choices=settings.MILLER_DOI_RESOLVER_CONTENT_TYPES)
-  style       = forms.ChoiceField(choices=settings.MILLER_DOI_RESOLVER_STYLES) 
-  locale      = forms.ChoiceField(choices=LANGUAGE_CHOICES, required=False) 
-
-
+  style       = forms.ChoiceField(choices=settings.MILLER_DOI_RESOLVER_STYLES)
+  locale      = forms.ChoiceField(choices=LANGUAGE_CHOICES, required=False)
