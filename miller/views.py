@@ -101,12 +101,17 @@ def contact_view(request):
     })
     if form.is_valid():
         #print 'contact_view IS VALID'
+        context = {
+            'site_name': settings.MILLER_TITLE
+        }
+        context.update(form.cleaned_data)
+        
         try:
           tmp = send_templated_mail(
             template_name='contact_confirmation_for_staff.en',
             from_email=form.cleaned_data['email_from'],
             recipient_list=[settings.DEFAULT_FROM_EMAIL],
-            context=form.cleaned_data,
+            context=context,
             fail_silenty=False,
             #create_link=True
           )
@@ -115,7 +120,7 @@ def contact_view(request):
             template_name='contact_confirmation_for_recipient.{0}'.format(language),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[form.cleaned_data['email_from']],
-            context=form.cleaned_data,
+            context=context,
             fail_silenty=False,
             #create_link=True
           )
