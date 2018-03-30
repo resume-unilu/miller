@@ -92,6 +92,8 @@ def contact_view(request):
   if next:
      import re
      next = '{0}/{1}'.format(settings.MILLER_HOST, re.sub(r'^[^\/]*\/*', '', next));
+  else:
+     next = settings.MILLER_HOST
 
   if request.method == 'POST':
     form = ContactForm(request.POST, initial={
