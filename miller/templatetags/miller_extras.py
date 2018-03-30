@@ -41,7 +41,7 @@ def lookup(obj, path, language):
 
 
 @register.simple_tag()
-def lookupmulti(obj, key, language):
+def lookupmulti(obj, key, language, html=False):
     """
     Lookup in single translation json file for simplicity sake
     usage: ?
@@ -52,12 +52,15 @@ def lookupmulti(obj, key, language):
 
     # get language if any
     content = obj.get(languageKey, {}).get(key, None)
+
     if content is not None:
-        return content
+        return mark_safe(markdown(content, extensions=['markdown.extensions.nl2br'])) if html else content
 
     # get default language if any
     content = obj.get(defaultLanguageKey, {}).get(key, None)
-    return content if content is not None else key
+    if content is not None:
+        return mark_safe(markdown(content, extensions=['markdown.extensions.nl2br'])) if html else content
+    return key
 
 
 @register.simple_tag()
@@ -68,6 +71,7 @@ def signedby(html=False):
 @register.simple_tag()
 def htmlsignedby():
   return signedby(html=True)
+
 
 
 @register.simple_tag()
