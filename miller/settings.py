@@ -154,7 +154,7 @@ LANGUAGES = [
     ('en-us', _('US English'), 'en_US', 'english'),
     # ('en-gb', _('British English'), 'en_GB', 'english'),
 ]
-
+LANGUAGES_ISO_6391 = ['fr','en','de']
 
 TIME_ZONE = 'UTC'
 
