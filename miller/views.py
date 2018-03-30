@@ -82,12 +82,23 @@ def activation_complete(request):
 @csrf_protect
 def contact_view(request):
   email_status = 'ready'
+  language = request.POST.get('lang','en') if request.method == 'POST' else request.GET.get('lang','en')
+  next = request.POST.get('next',None) if request.method == 'POST' else request.GET.get('next',None)
+
+  # we don't check available languages. Default is good.
+  if not language in settings.LANGUAGES_ISO_6391:
+     language = 'en'
+  # should be done in form... @todo
+  if next:
+     import re
+     next = '{0}/{1}'.format(settings.MILLER_HOST, re.sub(r'^[^\/]*\/*', '', next));
+
   if request.method == 'POST':
     form = ContactForm(request.POST, initial={
       'date_joined': datetime.datetime
     })
     if form.is_valid():
-        print 'contact_view IS VALID'
+        #print 'contact_view IS VALID'
         try:
           tmp = send_templated_mail(
             template_name='contact_confirmation_for_staff.en',
@@ -97,15 +108,31 @@ def contact_view(request):
             fail_silenty=False,
             #create_link=True
           )
+          # send recipient email
+          tmp = send_templated_mail(
+            template_name='contact_confirmation_for_recipient.{0}'.format(language),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[form.cleaned_data['email_from']],
+            context=form.cleaned_data,
+            fail_silenty=False,
+            #create_link=True
+          )
         except Exception as e:
           logger.debug('sending contact email failed')
           logger.exception(e)
           email_status = 'exception'
-          
+
         else:
           logger.info('sending contact email success')
           email_status = 'success'
           # return a different template with the go back button here
+          return render(request, 'miller/contacts_complete.html', {
+            'form': form,
+            'next': next,
+            'errors': {},
+            'language': language,
+            'locale': _loadlocale()
+          })
   else:
     form = ContactForm(initial={
       'date_joined': datetime.datetime
@@ -114,8 +141,9 @@ def contact_view(request):
   return render(request, 'miller/contacts.html', {
     'form': form,
     'errors': {} if form.is_valid() else form.errors.as_json(),
+    'next': next,
     'email_status': email_status,
-    'language': 'en',
+    'language': language,
     'locale': _loadlocale()
   })
 
