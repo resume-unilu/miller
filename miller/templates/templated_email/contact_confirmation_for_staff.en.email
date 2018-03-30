@@ -1,0 +1,26 @@
+{% load miller_extras %}
+{% block subject %}{{site_name}} - contact form {% endblock %}
+{% block plain %}
+Dear Staff Member,
+
+"{{first_name}} {{last_name}}" <{{email_from}}> left a message on the contact form:
+
+> {{content}}
+
+Best regards,
+
+{% signedby %}
+
+{% endblock %}
+
+{% block html %}
+  <p>Dear Staff Member,</p>
+
+  <p>"{{first_name}} {{last_name}}" <{{email_from}}> left a message on the contact form:</p>
+
+  <blockquote>{{content}}</blockquote>
+
+  <p>Best regards,</p>
+
+  {% htmlsignedby %}
+{% endblock %}
