@@ -452,6 +452,7 @@ MILLER_LOCALE = os.path.join(BASE_DIR, 'client/src/locale/locale-all.csv')
 MILLER_LOCALE_ROOT = os.path.join(BASE_DIR, 'client/src/locale')
 
 MILLER_LOCALISATION_TABLE = os.path.join(BASE_DIR, 'client/src/locale/locale-all.csv')
+MILLER_LOCALISATION_TABLE_AS_JSON = None # unless tehre is a JSON version of the MILLER_LOCALISATION_TABLE csv is 'client/src/locale/locale-all.json'.
 
 MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 

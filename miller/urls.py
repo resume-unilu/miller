@@ -62,16 +62,18 @@ urlpatterns = [
   url(r'^services/images', services.images),
 
   url(r'^timelinejs/(?P<gsid>[A-Za-z0-9\-_]+)$', views.timelinejs), #iframe for timelinejs, given a google spreadsheet id so that we can use our own style.
-  
+
   url(r'^login/$', auth_views.login, {'template_name': 'miller/login.html'}, name='login_view'), # views.login_view, name='login_view'),
   # url(r'^login/$', views.login_view, name='login_view'),
-  
+
   url(r'^signup/$', views.signup_view, name='signup_view'),
 
 
   url(r'^logout/$', views.logout_view, name='logout_view'),
   url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
-  
+
+  url(r'^contact-us/$', views.contact_view, name='contact_view'),
+
   url(r'^latest/rss\.xml$', LatestEntriesFeed(), name='latest_rss'),
   url(r'^latest/atom/$', AtomLatestEntriesFeed()),
 
@@ -100,7 +102,7 @@ urlpatterns = urlpatterns + [
   url(r'^accessibility/story/(?P<pk>[A-Za-z0-9\-]+)$', views.accessibility_story, name='accessibility_story'),
   url(r'^accessibility/collection/(?P<pk>[A-Za-z0-9\-]+)$', views.accessibility_collection, name='accessibility_collection'),
   url(r'^accessibility/author/(?P<author>[A-Za-z0-9\-]+)/publications$', views.accessibility_author, name='accessibility_author'),
-  
+
   # sitemaps for search engines...
   url(r'^accessibility/sitemap\.xml$', sitemaps_views.index, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.html'}),
   url(r'^accessibility/sitemap-(?P<section>.+)\.xml$', sitemaps_views.sitemap, {'sitemaps': sitemaps, 'template_name': 'sitemaps/sitemap.section.html'},
@@ -108,16 +110,16 @@ urlpatterns = urlpatterns + [
 
   # doi access (redirection) for search engine.
   url(r'^accessibility/doi/(?P<prefix>[\d\.A-Za-z\-]+)/(?P<short_url>[A-Za-z\d]+)-(?P<publication_year>\d+)$', views.accessibility_doi, name='accessibility_doi'),
-  
+
   url(r'^accessibility/(?P<page>[A-Za-z\-]+)$', views.accessibility_page, name='accessibility_page'),
-  
+
 
 
 
   # oaht2 toolkit here
   url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-     
-  
+
+
   # url(r'^(?!(login|logout)).*$', views.home, name='app'),
   url(r'^(?!favicon\.ico|api/|admin/|signup|media).*$', views.home, name='app')
 ]

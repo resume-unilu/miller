@@ -14,7 +14,7 @@ from django.views.decorators.cache import cache_page
 
 from templated_email import get_templated_mail, send_templated_mail
 
-from miller.forms import LoginForm, SignupForm
+from miller.forms import LoginForm, SignupForm, ContactForm
 from miller.models import Author, Story, Page
 
 
@@ -30,6 +30,7 @@ def _share(request=None, extra={}):
     'settings': json.dumps(settings.MILLER_SETTINGS),
     'oembeds': json.dumps(settings.MILLER_OEMBEDS)
   }
+
 
 
   # if request.user.is_authenticated():
@@ -51,6 +52,14 @@ def _share(request=None, extra={}):
   d.update(extra)
   return d
 
+def _loadlocale():
+    """
+    Load locale from JSON file if any.
+    """
+    if settings.MILLER_LOCALISATION_TABLE_AS_JSON is not None:
+        contents = json.load(open(settings.MILLER_LOCALISATION_TABLE_AS_JSON))
+    return contents if contents else {}
+
 # views here
 @ensure_csrf_cookie
 def home(request):
@@ -62,46 +71,6 @@ def timelinejs(request, gsid):
     'gsid': gsid,
     'stylesheet_url': settings.MILLER_TIMELINEJS_STYLESHEET
   })
-# @cache_page(60 * 15)
-# @csrf_protect
-# def login_view(request):
-#   print 'login'
-#   if request.user.is_authenticated():
-#     print 'is authenticated...'
-#     return redirect('home')
-
-#   form = LoginForm(request.POST)
-#   next = request.GET.get('next', 'home')
-
-#   login_message = {
-#     'next': next if len( next ) else 'home'
-#   }
-
-#   if request.method != 'POST':
-#     return render(request, "login.html", _share(request, extra=login_message))
-
-#   if not request.POST.get('remember_me', None):
-#     request.session.set_expiry(0)
-
-#   if form.is_valid():
-#     user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-#     if user is not None:
-#       if user.is_active:
-#         login(request, user)
-#         # @todo: Redirect to next page
-
-#         return redirect(login_message['next'])
-#       else:
-#         login_message['error'] = _("user has been disabled")
-#     else:
-#       login_message['error'] = _("invalid credentials")
-#       # Return a 'disabled account' error message
-#   else:
-#     login_message['error'] = _("invalid credentials")
-#     login_message['invalid_fields'] = form.errors
-  
-#   return render(request, 'miller/login.html', _share(request, extra=login_message))
-
 
 @csrf_protect
 def activation_complete(request):
@@ -109,6 +78,46 @@ def activation_complete(request):
   return render(request, 'registration/activation_complete.html',  _share(request, extra={
     'form': form
   }))
+
+@csrf_protect
+def contact_view(request):
+  email_status = 'ready'
+  if request.method == 'POST':
+    form = ContactForm(request.POST, initial={
+      'date_joined': datetime.datetime
+    })
+    if form.is_valid():
+        print 'contact_view IS VALID'
+        try:
+          tmp = send_templated_mail(
+            template_name='contact_confirmation_for_staff.en',
+            from_email=form.cleaned_data['email_from'],
+            recipient_list=[settings.DEFAULT_FROM_EMAIL],
+            context=form.cleaned_data,
+            fail_silenty=False,
+            #create_link=True
+          )
+        except Exception as e:
+          logger.debug('sending contact email failed')
+          logger.exception(e)
+          email_status = 'exception'
+          
+        else:
+          logger.info('sending contact email success')
+          email_status = 'success'
+          # return a different template with the go back button here
+  else:
+    form = ContactForm(initial={
+      'date_joined': datetime.datetime
+    })
+
+  return render(request, 'miller/contacts.html', {
+    'form': form,
+    'errors': {} if form.is_valid() else form.errors.as_json(),
+    'email_status': email_status,
+    'language': 'en',
+    'locale': _loadlocale()
+  })
 
 
 @csrf_protect
@@ -144,11 +153,11 @@ def signup_view(request):
       aut = Author.objects.filter(user=user).first()
       aut.affiliation = form.cleaned_data['affiliation']
       aut.save()
-      
+
       logger.info('user-author saved  {author:%s, user.pk:%s}' % (aut, aut.user.pk))
 
-      
-      
+
+
       activation_key = signing.dumps(
         obj=user.username,
         salt=REGISTRATION_SALT
@@ -160,7 +169,7 @@ def signup_view(request):
       # print user.email
       try:
         tmp = send_templated_mail(
-          template_name='welcome.en_US', 
+          template_name='welcome.en_US',
           from_email=settings.DEFAULT_FROM_EMAIL,
           recipient_list=[user.email],
           context={
@@ -169,14 +178,14 @@ def signup_view(request):
             'fullname': aut.fullname,
             'site_name': settings.MILLER_TITLE,
             'site_url': settings.MILLER_SETTINGS['host']
-          }, 
+          },
           fail_silenty=False,
           #create_link=True
         )
         logger.info('activation email sent to user {pk:%s}' % user.pk)
       except Exception as e:
         logger.debug('sending activation email failed {pk:%s, key:%s}' % (user.pk, activation_key))
-      
+
         logger.exception(e)
       else:
         logger.info('registration success {pk:%s}' % user.pk)
@@ -187,7 +196,7 @@ def signup_view(request):
     'form': form
   })
 
-  
+
 # accessible doi
 def accessibility_doi(request, prefix, short_url, publication_year):
   story = get_object_or_404(Story.objects.filter(status=Story.PUBLIC), short_url=short_url)
@@ -206,7 +215,7 @@ def accessibility_page(request, page):
   page = get_object_or_404(Page, slug=page)
   #input_file = codecs.open(os.path.join(settings.PAGES_ROOT, "%s.md" % page), mode="r", encoding="utf-8")
   #text = input_file.read()
-  
+
   content = _share(request)
   content['contents'] = page.contents
   return render(request, "miller/accessibility/page.html", content)
@@ -221,7 +230,7 @@ def accessibility_index(request):
   highlights = Story.objects.filter(status=Story.PUBLIC, tags__slug='highlights').order_by('-date')[:10]
   top        = Story.objects.filter(status=Story.PUBLIC, tags__slug='top').order_by('-date')[:5]
   news       = Story.objects.filter(status=Story.PUBLIC, tags__slug='news').order_by('-date')[:10]
-  
+
 
   content['top']        = top
   content['highlights'] = highlights
@@ -232,7 +241,7 @@ def accessibility_index(request):
 
 # accessible story
 def accessibility_story(request, pk):
-  
+
   """ single story page """
   if request.user.is_staff:
     q = Story.objects.all()
@@ -288,15 +297,13 @@ def accessibility_author(request, author, tag=None):
   content = _share(request)
 
   author  = get_object_or_404(Author, slug=author)
-  
+
   stories = Story.objects.filter(authors=author, status=Story.PUBLIC).distinct()
-  
+
   if tag:
     stories = stories.filter(tags__slug=tag).distinct()
 
   content['author'] = author;
   content['stories'] = stories;
-  #stories = 
+  #stories =
   return render(request, "miller/accessibility/stories.html", content)
-
-
