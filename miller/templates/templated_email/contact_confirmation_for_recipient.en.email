@@ -1,0 +1,26 @@
+{% load miller_extras %}
+{% block subject %}{{site_name}} - contact form {% endblock %}
+{% block plain %}
+Dear {{first_name}},
+
+your message on the contact form of the ww1 website [ww1.lu](https://ww1.lu)  has been successful sent to our staff.
+
+> {{content}}
+
+Best regards,
+
+{% signedby %}
+
+{% endblock %}
+
+{% block html %}
+  <p>Dear {{first_name}},</p>
+
+  <p>your message on the contact form of the ww1 website [ww1.lu](https://ww1.lu)  has been successful sent to our staff.</p>
+
+  <blockquote>{{content}}</blockquote>
+
+  <p>Best regards,</p>
+
+  {% htmlsignedby %}
+{% endblock %}
