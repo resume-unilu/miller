@@ -17,7 +17,7 @@ class MagicLinks(Extension):
 @register.simple_tag()
 def publication_title():
   return settings.MILLER_TITLE
-  
+
 
 @register.simple_tag()
 def lookup(obj, path, language):
@@ -38,9 +38,26 @@ def lookup(obj, path, language):
   if not keys:
     return ''
   return contents.get(keys[0], '')
- 
-  
 
+
+@register.simple_tag()
+def lookupmulti(obj, key, language):
+    """
+    Lookup in single translation json file for simplicity sake
+    usage: ?
+
+    """
+    languageKey = [item[2] for item in settings.LANGUAGES if language in item[0]][0]
+    defaultLanguageKey = [item[2] for item in settings.LANGUAGES if item[0] == settings.LANGUAGE_CODE][0]
+
+    # get language if any
+    content = obj.get(languageKey, {}).get(key, None)
+    if content is not None:
+        return content
+
+    # get default language if any
+    content = obj.get(defaultLanguageKey, {}).get(key, None)
+    return content if content is not None else key
 
 
 @register.simple_tag()
@@ -57,7 +74,7 @@ def htmlsignedby():
 def markdownit(text, language):
   if not text:
     return ''
-    
+
   desiredLanguage = [item[2] for item in settings.LANGUAGES if item[0] == language][0]
   defaultLanguage = [item[2] for item in settings.LANGUAGES if item[0] == settings.LANGUAGE_CODE][0]
 
@@ -89,7 +106,7 @@ def coverage(cover):
       settings.MILLER_SETTINGS['host'],
       cover.snapshot.url
     ])
-  
+
   url = cover.data['thumbnail_url'] if 'thumbnail_url' in cover.data else None
   if not url:
     url = cover.dmetadata['preview'] if 'preview' in cover.data else None
@@ -97,7 +114,7 @@ def coverage(cover):
     url = cover.snapshot if cover.snapshot else cover.attachment
   if not url:
     url = cover.data['media_url'] if 'media_ur' in cover.data else None
- 
+
   if not url:
     url = cover.data['url'] if 'url' in cover.data else None
     # || cover.metadata.preview || _.get(cover, 'metadata.urls.Preview')  || cover.snapshot || cover.attachment || cover.metadata.url;
@@ -105,7 +122,7 @@ def coverage(cover):
     url = cover.snapshot if cover.snapshot else cover.attachment
 
   ## prefix (media_url) if not an absolute url
-  
+
 
   return url;
 
@@ -132,6 +149,6 @@ def shorten(text, maxwords=5):
     # if(!sentence.match(/\?\!\.$/)){
     #   sentence += ' '
     # }
-    
+
     sentence = '%s ...' % sentence
   return sentence;
