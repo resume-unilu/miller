@@ -452,14 +452,18 @@ class Command(BaseCommand):
 
         logger.debug('line {0}: document {1} need to be connected to: {2}'.format(i, _slug, _docs))
 
-        doc = Document.objects.get(slug=_slug)
-        related = Document.objects.filter(slug__in=_docs)
-        # since this is a symmetrical relationship, we do the cleansing before bulk importing the data.
-        # This happens in a separate command.
-        # doc.documents.clear()
-        doc.documents.add(*related)
-        doc.save()
-        logger.debug('line {0}: document {1} connected to: {2}'.format(i, _slug,[d.slug for d in doc.documents.all()]))
+        try:
+            doc = Document.objects.get(slug=_slug)
+        except Document.DoesNotExist:
+            logger.error('line {0}: document {1} does not exist'.format(i, _slug))
+        else:
+            related = Document.objects.filter(slug__in=_docs)
+            # since this is a symmetrical relationship, we do the cleansing before bulk importing the data.
+            # This happens in a separate command.
+            # doc.documents.clear()
+            doc.documents.add(*related)
+            doc.save()
+            logger.debug('line {0}: document {1} connected to: {2}'.format(i, _slug,[d.slug for d in doc.documents.all()]))
 
 
 
