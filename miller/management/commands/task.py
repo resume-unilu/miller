@@ -30,8 +30,10 @@ class Command(BaseCommand):
     'snapshot', # require document pk, e.g python manage.py task snapshot --pk=991
     'snapshots', # handle pdf snapshot, python manage.py task snapshots
     'snapshots404',
+    'echo_d2d_relationships',
     'cleanbin',
     'clean_cache',
+    'clean_d2d_relationships',
     'update_ngrams_table',
     'update_whoosh',
     'update_search_vectors',
@@ -182,6 +184,32 @@ class Command(BaseCommand):
     logger.debug('task: clean_cache')
     from django.core.cache import cache
     cache.clear();
+
+
+  def echo_d2d_relationships(self, pk=None, **options):
+    """
+    print a tab separated list of d2d relationships.
+    usage:
+    ./manage.py task echo_d2d_relationships > dump.csv
+    """
+    docs = Document.objects.filter(pk=pk) if pk else Document.objects.all()
+    print(u'\t'.join(['id', 'slug', 'type', 'related_documents|list']))
+    for doc in docs.iterator():
+        if doc.documents.count() :
+            print(u'\t'.join([str(doc.pk), doc.slug, doc.type, u','.join([s for s in doc.documents.values_list('slug', flat=True)])]))
+
+
+  def clean_d2d_relationships(self, pk=None, **options):
+    logger.debug('task: clean_d2d_relationships')
+
+    docs = Document.objects.filter(pk=pk) if pk else Document.objects.all()
+
+    for doc in docs.iterator():
+        c = doc.documents.count()
+        if c:
+            print('cleaning', str(doc.pk), doc.slug, doc.type, c)
+            doc.documents.clear()
+            doc.save()
 
 
   def bulk_import_gs_as_documents(self, url=None, sheet=None, use_cache=False, **options):
@@ -426,7 +454,9 @@ class Command(BaseCommand):
 
         doc = Document.objects.get(slug=_slug)
         related = Document.objects.filter(slug__in=_docs)
-        doc.documents.clear()
+        # since this is a symmetrical relationship, we do the cleansing before bulk importing the data.
+        # This happens in a separate command.
+        # doc.documents.clear()
         doc.documents.add(*related)
         doc.save()
         logger.debug('line {0}: document {1} connected to: {2}'.format(i, _slug,[d.slug for d in doc.documents.all()]))
