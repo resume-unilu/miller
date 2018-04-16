@@ -17,23 +17,23 @@ def dbpedia(wiki_id, use_cache=True):
 
   ckey = 'dbpedia:%s' % wiki_id
   logger.debug('dbpedia: loading contents for {wiki_id:%s, url: https://dbpedia.org/data/%s.json}' % (wiki_id, wiki_id))
-    
+
   if use_cache and cache.has_key(ckey):
     logger.debug('dbpedia: returning cached contents.')
     return json.loads(cache.get(ckey))
-  
+
   # perform the resuestto dbpedia json endpoint
   res = requests.get('https://dbpedia.org/data/%s.json' % wiki_id)
   res.raise_for_status()
-  
+
   contents  = res.json()
 
   if use_cache:
     cache.set(ckey, res.text, timeout=None)
-  
+
 
   logger.debug('dbpedia: {status_code:%s, wiki_id:%s}, url: https://dbpedia.org/data/%s.json' % (res.status_code, wiki_id, wiki_id))
-  
+
   return contents
 
 
@@ -44,11 +44,31 @@ def data_paths(headers):
   return [(x, x.split('|')[0].split('__'), x.split('|')[-1] == 'list') for x in filter(lambda x: isinstance(x, basestring) and x.startswith('data__'), headers)]
 
 
+def get_public_gs_contents(gsid, gid=None, single=False, output='csv'):
+    """
+    given a google spreadsheet id "published to the web", request the csv contents
+    """
+    url = 'https://docs.google.com/spreadsheets/d/e/{0}/pub?output=csv'.format(gsid)
+
+    params = {
+      'gid': gid,
+      'output': output
+    }
+
+    response = requests.get(url, stream=True, params=params)
+    response.encoding = 'utf8'
+    # print response.status_code
+    if response.status_code != 200:
+      raise Exception('bad response {0} for current url {1}'.format(response.status_code, url))
+
+    return response.content
+
+
 def bulk_import_public_gs(gsid, gid, use_cache=True, required_headers=['slug']):
   # if not 'sheet':
   url = 'https://docs.google.com/spreadsheets/d/e/{0}/pub'.format(gsid)
   print url, gsid, gid
-  ckey = 'gs:%s:%s' % (gsid, gid) 
+  ckey = 'gs:%s:%s' % (gsid, gid)
   print ckey
 
   if use_cache and cache.has_key(ckey):
@@ -57,7 +77,7 @@ def bulk_import_public_gs(gsid, gid, use_cache=True, required_headers=['slug']):
     contents = cache.get(ckey)
   else:
     logger.debug('loading csv...%s'%url)
-    
+
     #   raise Exception('please provide the sheet to load')
     response = requests.get(url, stream=True, params={
       'gid': gid,
@@ -71,8 +91,8 @@ def bulk_import_public_gs(gsid, gid, use_cache=True, required_headers=['slug']):
     cache.set(ckey, contents, timeout=None)
 
   import csv
-  reader = csv.DictReader(contents.splitlines(), delimiter=',') 
-  
+  reader = csv.DictReader(contents.splitlines(), delimiter=',')
+
   return [row for row in reader], reader.fieldnames
 
 
@@ -80,7 +100,7 @@ def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
   """
   return rows and headers from the CSV representation of a google spreadsheet.
   This requires:
-  
+
   url   = options['url']
   sheet = options['sheet']
 
@@ -92,7 +112,7 @@ def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
     raise Exception('please provide the sheet to load')
 
   logger.debug('using cache: %s' % use_cache)
-  
+
   m = re.match(r'https://docs.google.com/spreadsheets/d/([^/]*)', url)
   if not m:
     raise Exception('bad url! Must meet the https://docs.google.com/spreadsheets/d/ format and it should be reachable by link')
@@ -106,7 +126,7 @@ def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
     contents = json.loads(cache.get(ckey))
   else:
     logger.debug('getting csv from https://docs.google.com/spreadsheets/d/%(key)s/gviz/tq?tqx=out:csv&sheet=%(sheet)s' % {
-      'key': key, 
+      'key': key,
       'sheet': sheet
     })
     response = requests.get('https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:json&sheet=%s' % (key, sheet), stream=True)
@@ -118,21 +138,21 @@ def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
     except Exception as e:
       logger.debug('cannot find contents... Did you share the google spreadsheet as viewable LINK?')
       raise e
-   
 
-  # _headers = contents['table']['cols'][0] if contents['table']['cols'][0]["label"] else contents['table']['rows'][0]['c'] 
-  has_headers_in_cols = len(contents['table']['cols'][0]["label"].strip()) > 0 
+
+  # _headers = contents['table']['cols'][0] if contents['table']['cols'][0]["label"] else contents['table']['rows'][0]['c']
+  has_headers_in_cols = len(contents['table']['cols'][0]["label"].strip()) > 0
   headers = map(lambda x:x[u'label'] if type(x) is dict else None, contents['table']['cols']) if has_headers_in_cols else map(lambda x:x[u'v'] if type(x) is dict else None, contents['table']['rows'][0]['c'] );
   logger.debug('headers: %s' % headers)
-  
+
   numrows = len(contents['table']['rows']);
   rows = []
-  # deis 
+  # deis
   if bool(set(required_headers) - set(headers)):
     raise Exception('the first row of the google spreadsheet should be dedicated to headers. This script looks for at least two columns named [%s] that have not been found. Go back here once done :D' % ','.join(required_headers))
 
   for i in range(0 if has_headers_in_cols else 1, numrows):
-    
+
 
     row = map(lambda x:x[u'v'] if type(x) is dict else None, contents['table']['rows'][i]['c'])
     rows.append(dict(filter(lambda x:x[0] is not None, zip(headers, row))))
