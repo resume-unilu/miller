@@ -525,10 +525,25 @@ class Command(BaseCommand):
     #       tag, created = Tag.objects.get_or_create(category=Tag.KEYWORD, name=row['name'],slug=row['slug']);
     #       print created, tag
 
-  def update_localisation_gs(self,  **options):
+  def update_localisation_gs(self, gid=None, gsid=None, **options):
     """
     load the csv specified in MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET, if any provided.
     """
+    if gsid:
+      logger.debug('Downloading translation contents from published google spreadsheet: {0} ...'.format(gsid))
+
+      contents = utils.get_public_gs_contents(gsid=gsid, gid=gid if gid else '0')
+      logger.debug('contents downloaded.')
+      logger.debug('Writing csv file at settings.MILLER_LOCALISATION_TABLE {0}'.format(settings.MILLER_LOCALISATION_TABLE))
+
+      with open(settings.MILLER_LOCALISATION_TABLE, 'wb') as f:
+        f.write(contents)
+
+      logger.debug('updating localisation...')
+      self.update_localisation(**options)
+
+      return
+
     url = settings.MILLER_LOCALISATION_TABLE_GOOGLE_SPREADSHEET
     # something like https://docs.google.com/spreadsheets/d/{yourid}/edit#gid=0
     if not url:
