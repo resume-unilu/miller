@@ -163,6 +163,8 @@ def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
 def nested_set(dic, keys, value, as_list=False):
   for key in keys[:-1]:
     dic = dic.setdefault(key, {})
+  if dic is None:
+    raise ValueError('key "{0}" is not a valid dict! Checking "{1}"'.format(key, u'__'.join(keys)))
   if not as_list:
     if not value:
       dic[keys[-1]] = None
