@@ -195,8 +195,15 @@ class Command(BaseCommand):
     docs = Document.objects.filter(pk=pk) if pk else Document.objects.all()
     print(u'\t'.join(['id', 'slug', 'type', 'related_documents|list']))
     for doc in docs.iterator():
-        if doc.documents.count() :
-            print(u'\t'.join([str(doc.pk), doc.slug, doc.type, u','.join([s for s in doc.documents.values_list('slug', flat=True)])]))
+      if doc.documents.count() :
+        print(u'\t'.join([
+          str(doc.pk),
+          doc.slug,
+          doc.type,
+          u','.join([
+            s for s in doc.documents.values_list('slug', flat=True)])
+          ]
+        ).encode('utf8'))
 
 
   def clean_d2d_relationships(self, pk=None, **options):
@@ -289,7 +296,6 @@ class Command(BaseCommand):
     data_paths =  utils.data_paths(headers=headers)
     # print data_paths, rows
     logger.info('found {0} data columns, first: {1}'.format(len(data_paths), data_paths[0]))
-    # print data_paths
 
 
 
