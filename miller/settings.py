@@ -490,6 +490,8 @@ MILLER_AUDIO_SOURCES_TYPES = [
   ('mp3', 'audio/mpeg')
 ]
 
+MILLER_IMPORT_DOCUMENTS_FIELDS = ['title', 'type', 'url']
+
 # MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = <YOUR GOOGLE SPREADSHEET ID >
 # from 'https://docs.google.com/spreadsheets/d/<YOUR GOOGLE SPREADHSEET ID>/edit#gid=0'
 MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = None
