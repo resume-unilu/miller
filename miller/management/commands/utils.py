@@ -180,7 +180,9 @@ def nested_set(dic, keys, value, as_list=False):
   if dic is None:
     raise ValueError('key "{0}" is not a valid dict! Checking "{1}"'.format(key, u'__'.join(keys)))
   if not as_list:
-    if not value:
+    if isinstance(value, bool):
+      dic[keys[-1]] = value
+    elif not value:
       dic[keys[-1]] = None
     elif keys[-1] in ('start_date', 'end_date'):
       # print('nested:', keys[-1], value)
