@@ -117,6 +117,7 @@ class Command(TaskCommand):
       except Document.DoesNotExist:
         doc = Document(slug=slug, type=type, owner=owner.user)
 
+
       # update non data fields
       for key in settings.MILLER_IMPORT_DOCUMENTS_FIELDS:
         try:
@@ -175,5 +176,6 @@ class Command(TaskCommand):
 
 
       doc.save()
+      logger.info(u'item "{0}"({1}) completed.\n'.format(slug, type))
 
-    self.set_related_docs_from_json(filepath, strict, **options)
+    
