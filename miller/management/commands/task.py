@@ -372,14 +372,14 @@ class Command(BaseCommand):
 
 
 
-      doc, created = Document.objects.get_or_create(slug=_slug, type=_type, defaults={
-        'owner': owner.user
+      doc, created = Document.objects.get_or_create(slug=_slug, defaults={
+        'owner': owner.user,
+        'type': _type
       })
       doc.title = row['title'].strip()
+      doc.type = _type
 
       _data = data_structure.copy()
-
-
 
       for key, path, is_list in data_paths:
         utils.nested_set(_data, path, row[key], as_list=is_list)
