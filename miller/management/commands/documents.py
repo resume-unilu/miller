@@ -81,7 +81,7 @@ class Command(TaskCommand):
     The JSON file comes thanks to the [google-spreadsheet-to-json](https://www.npmjs.com/package/google-spreadsheet-to-json)
 
     usage:
-
+    python manage.py documents import_from_json --file ./docs.json
     """
     if filepath is None:
       raise Exception('filepath should be specified')
@@ -173,9 +173,8 @@ class Command(TaskCommand):
           doc.data.update({
             'sources': sources
           })
-
+        # add path to attachment name
+        doc.attachment.name = attachment_path
 
       doc.save()
       logger.info(u'item "{0}"({1}) completed.\n'.format(slug, type))
-
-    
