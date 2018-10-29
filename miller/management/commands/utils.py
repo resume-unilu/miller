@@ -44,6 +44,20 @@ def data_paths(headers):
   return [(x, x.split('|')[0].split('__'), x.split('|')[-1] == 'list') for x in filter(lambda x: isinstance(x, basestring) and x.startswith('data__'), headers)]
 
 
+def get_data_from_dict(obj):
+  headers = obj.keys()
+  # print(headers, obj)
+  dp = data_paths(headers=headers)
+  data = {}
+
+  # for i, path, is_list in dp:
+  #   nested_set(data, path, {})
+  # print('data', data)
+  for key, path, is_list in dp:
+    nested_set(data, path, obj[key], as_list=is_list)
+  return data
+
+
 def get_public_gs_contents(gsid, gid=None, single=False, output='csv'):
     """
     given a google spreadsheet id "published to the web", request the csv contents
@@ -169,16 +183,21 @@ def nested_set(dic, keys, value, as_list=False):
     if not value:
       dic[keys[-1]] = None
     elif keys[-1] in ('start_date', 'end_date'):
-      m = re.search(r'(^Date\(?)(\d{4})[,\-](\d{1,2})[,\-](\d{1,2})\)', value)
-      if m is not None:
-        if m.group(1) is not None:
-          # this makes use of Date(1917,4,21) google spreadsheet dateformat.
-          # also note that month 4 is not April but is May (wtf)
-          logger.debug('parsing date field: %s, value: %s' % (keys[-1],value))
-          dic[keys[-1]] = datetime.datetime(year=int(m.group(2)), month=int(m.group(3)) + 1, day=int(m.group(4))).isoformat()
+      # print('nested:', keys[-1], value)
+      if isinstance(value, basestring):
+        m = re.search(r'(^Date\(?)(\d{4})[,\-](\d{1,2})[,\-](\d{1,2})\)', value)
+        if m is not None:
+          if m.group(1) is not None:
+            # this makes use of Date(1917,4,21) google spreadsheet dateformat.
+            # also note that month 4 is not April but is May (wtf)
+            logger.debug('parsing date field: %s, value: %s' % (keys[-1],value))
+            dic[keys[-1]] = datetime.datetime(year=int(m.group(2)), month=int(m.group(3)) + 1, day=int(m.group(4))).isoformat()
+          else:
+             # 0 padded values, 1917-05-21
+             dic[keys[-1]] = datetime.datetime.strptime('%s-%s-%s' % (m.group(2), m.group(3), m.group(4)), '%Y-%M-%d').isoformat()
         else:
-          # 0 padded values, 1917-05-21
-          dic[keys[-1]] = datetime.datetime.strptime('%s-%s-%s' % (m.group(2), m.group(3), m.group(4)), '%Y-%M-%d').isoformat()
+          logger.debug('parsing digit date field: %s, value: %s' % (keys[-1],value))
+          dic[keys[-1]] = value
       else:
         dic[keys[-1]] = value
     else:
