@@ -562,7 +562,7 @@ MILLER_TIMELINEJS_STYLESHEET = None
 
 # feel free to add as many category you wish in local_settings!
 MILLER_TAG_CATEGORY_CHOICES  = (('static', 'static page'), )
-MILLER_DOCUMENT_TYPE_CHOICES = (('timeline', 'timeline'), )
+MILLER_DOCUMENT_TYPE_CHOICES = (('timeline', 'timeline'), ('csv', 'csv'))
 
 # the settings above are the generic ones. Shall you need to change something, override the default values in a local_settings.py file instead.
 try:
