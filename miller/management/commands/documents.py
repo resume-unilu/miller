@@ -74,14 +74,22 @@ class Command(TaskCommand):
 
 
 
-  def import_from_json(self, filepath, strict, **options):
+  def import_from_json(self, filepath, strict, pk, **options):
     """
     Update the document table with the documents stored in the json file
     specified in param `filepath`.
     The JSON file comes thanks to the [google-spreadsheet-to-json](https://www.npmjs.com/package/google-spreadsheet-to-json)
 
     usage:
-    python manage.py documents import_from_json --file ./docs.json
+
+        python manage.py documents import_from_json --file ./docs.json
+
+    or, for single document
+
+        python manage.py documents import_from_json --file ./docs.json --pk doc-slug
+
+    If there is a not-empty `attachment` property, the `strict` option
+    checks whether the given path actually exists; otherwise it blocks the import task.
     """
     if filepath is None:
       raise Exception('filepath should be specified')
@@ -92,6 +100,8 @@ class Command(TaskCommand):
 
     with open(filepath) as f:
       docs = filter(lambda x: 'slug' in x, flatten(json.load(f)))
+      if pk is not None:
+        docs = filter(lambda x: x['slug'] == pk, docs)
 
     if not docs:
       raise Exception('json file looks empty!')
