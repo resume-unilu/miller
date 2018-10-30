@@ -490,6 +490,11 @@ MILLER_AUDIO_SOURCES_TYPES = [
   ('mp3', 'audio/mpeg')
 ]
 
+MILLER_VIDEO_SUBTITLES_TYPES = [
+  ('srt', 'text/plain'),
+  ('vtt', 'text/vtt')
+]
+
 MILLER_IMPORT_DOCUMENTS_FIELDS = ['title', 'type', 'url']
 
 # MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = <YOUR GOOGLE SPREADSHEET ID >

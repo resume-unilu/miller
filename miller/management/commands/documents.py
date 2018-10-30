@@ -194,5 +194,34 @@ class Command(TaskCommand):
         # add path to attachment name
         doc.attachment.name = attachment_path
 
+      if type == 'video':
+        # look for language specific subtitles in the video folder.
+        subtitles = {}
+        for extension, submimetype in settings.MILLER_VIDEO_SUBTITLES_TYPES:
+          subtitles[extension] = {}
+
+          for c,t,lang,s in settings.LANGUAGES:
+            # verify that the file exist.
+            subtitle_filename = 'video/{slug}.{lang}.{extension}'.format(**{
+              'slug': slug,
+              'lang': lang,
+              'extension': extension
+            })
+            subtitle_filepath = os.path.join(settings.MEDIA_ROOT, subtitle_filename)
+
+            if os.path.exists(subtitle_filepath):
+              logger.info(u'item "{0}"({1}) local {2} subtitles FOUND for {3} at {4}'.format(
+                slug, type, extension, lang, subtitle_filepath
+              ))
+              subtitles[extension][lang] = os.path.join(settings.MILLER_HOST, '/'.join(s.strip('/') for s in [settings.MEDIA_URL, subtitle_filename]))
+            else:
+              logger.warning(u'item "{0}"({1}) local {2} subtitles for {3} NOT FOUND at {4}'.format(
+                slug, type, extension, lang, subtitle_filepath
+              ))
+
+        doc.data.update({
+          'subtitles': subtitles
+        })
+
       doc.save()
       logger.info(u'item "{0}"({1}) completed.\n'.format(slug, type))
