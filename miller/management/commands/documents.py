@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # tasks for documents
-import logging, json, re, os
+import logging, json, re, os, collections
 from .task import Command as TaskCommand
 from .utils import get_data_from_dict
 from miller.models import Profile, Document
@@ -101,7 +101,15 @@ class Command(TaskCommand):
     with open(filepath) as f:
       docs = filter(lambda x: 'slug' in x, flatten(json.load(f)))
       if pk is not None:
+        logger.debug('--pk param specified, we update documents where pk={0} ...'.format(pk))
         docs = filter(lambda x: x['slug'] == pk, docs)
+
+      # check duplicates in slug field.
+      slugs = map(lambda x: x['slug'], docs)
+      unique_slugs = set(slugs)
+      if len(slugs) != len(unique_slugs):
+        dupes = [item for item, count in collections.Counter(slugs).items() if count > 1]
+        raise Exception('there are {0} duplicates: {1}'.format(len(dupes), dupes))
 
     if not docs:
       raise Exception('json file looks empty!')
