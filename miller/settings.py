@@ -495,6 +495,16 @@ MILLER_VIDEO_SUBTITLES_TYPES = [
   ('vtt', 'text/vtt')
 ]
 
+MILLER_3DOBJECT_TYPES = [
+  ('png', 'image/png'),
+  ('mtl', 'text/plain'),
+  ('jpg', 'image/jpeg'),
+  ('obj', 'text/plain')
+]
+
+
+
+
 MILLER_IMPORT_DOCUMENTS_FIELDS = ['title', 'type', 'url']
 
 # MILLER_DOCUMENTS_GOOGLE_SPREADSHEET_ID = <YOUR GOOGLE SPREADSHEET ID >
