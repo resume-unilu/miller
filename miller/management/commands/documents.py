@@ -166,7 +166,7 @@ class Command(TaskCommand):
         doc.attachment.name = attachment_path
 
       # check if the type/slug correspond to a real dir below MEDIA_ROOT
-      dirpath = os.path.join(settings.MEDIA_ROOT, '{type}/{slug}'.format(
+      dirpath = os.path.join(settings.MEDIA_ROOT, u'{type}/{slug}'.format(
         type=type,
         slug=slug
       ))
