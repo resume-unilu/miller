@@ -3,7 +3,7 @@
 # tasks for documents
 import logging, json, re, os, collections
 from .task import Command as TaskCommand
-from .utils import get_data_from_dict
+from .utils import get_data_from_dict, get_dirlist
 from miller.models import Profile, Document
 from django.conf import settings
 from pydash import flatten
@@ -163,36 +163,29 @@ class Command(TaskCommand):
           break
         logger.info(u'item "{0}"({1}) has attachment "{2}"'.format(slug, type, attachment_path))
 
-        if type == 'audio':
-          # logger.info('line {line}: adding audio'.format(line=i))
-          sources = []
-          for extension, audiomimetype in settings.MILLER_AUDIO_SOURCES_TYPES:
-            # verify that the file exist.
-            audiosource = '{filename}.{extension}'.format(
-              filename=os.path.basename(os.path.splitext(attachment_path)[0]),
-              extension=extension
-            )
-            audiosource_abspath = os.path.join(os.path.dirname(attachment_abspath), audiosource)
-            if os.path.exists(audiosource_abspath):
-              logger.debug('line {line}: adding audio {extension}, source={source}'.format(line=i, extension=extension, source=audiosource_abspath))
-              sources.append({
-                'src': '{host}{file}'.format(
-                    host=settings.MILLER_HOST,
-                    file=os.path.join(
-                        settings.MEDIA_URL,
-                        os.path.dirname(attachment_path), audiosource
-                )),
-                'type': audiomimetype
-              })
-            else:
-              logger.warning('line {line}: CANNOT ADD audio {extension}, source={source} not found'.format(line=i, extension=extension, source=audiosource_abspath))
-
-          # print extension, audiosource
-          doc.data.update({
-            'sources': sources
-          })
-        # add path to attachment name
         doc.attachment.name = attachment_path
+
+      # check if the type/slug correspond to a real dir below MEDIA_ROOT
+      dirpath = os.path.join(settings.MEDIA_ROOT, '{type}/{slug}'.format(
+        type=type,
+        slug=slug
+      ))
+
+      if os.path.isdir(dirpath):
+        logger.info('Document {0} has a matching media folder, dirpath: {1}'.format(slug, dirpath))
+
+        # in this case, attachment is a folder containing all items
+        doc.data.update({
+          'sources': get_dirlist(
+            dirpath = dirpath,
+            media_url = '{type}/{slug}'.format(
+              type = type,
+              slug = slug
+            ),
+            types = settings.MILLER_3DOBJECT_TYPES + settings.MILLER_AUDIO_SOURCES_TYPES
+          )
+        })
+
 
       if type == 'video':
         # look for language specific subtitles in the video folder.
