@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # utils
-import re, logging, requests, json, datetime
+import os, re, logging, requests, json, datetime
 from django.core.cache import cache
 
 logger = logging.getLogger('console')
 
+from django.conf import settings
 
 def dbpedia(wiki_id, use_cache=True):
   """
@@ -172,6 +173,42 @@ def bulk_import_gs(url, sheet, use_cache=True, required_headers=['slug']):
     rows.append(dict(filter(lambda x:x[0] is not None, zip(headers, row))))
 
   return rows, headers
+
+def to_media_url(dir, filepath):
+  """
+  Retrun media related filepath
+  """
+  return '{host}{file}'.format(
+    host = settings.MILLER_HOST,
+    file = os.path.join(settings.MEDIA_URL, dir, filepath)
+  )
+
+def get_dirlist(dirpath, media_url, types):
+  """
+  return a list of filenames by extension
+
+  Parameters
+  ----------
+  dirpath: str
+    existing dirpath location (absolute)
+  types: tuple
+    is a tuple of `("extension", "mimetype")` tuples
+
+  """
+  logger.info('get_dirlist of: {0}'.format(dirpath))
+
+  if not os.path.isdir(dirpath):
+    raise TypeError('\'dirpath\' should be a real dir path...!')
+  l = []
+  for filepath in os.listdir(dirpath):
+    ext = filepath.split('.')[-1]
+    mimetypes = [item[1] for item in types if item[0] == ext]
+
+    l.append({
+      'src': to_media_url(dir=media_url, filepath=filepath),
+      'type': mimetypes[0] if mimetypes else None
+    })
+  return l
 
 
 def nested_set(dic, keys, value, as_list=False):
