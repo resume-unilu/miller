@@ -127,7 +127,7 @@ class Command(TaskCommand):
     docs = Document.objects.exclude(Q(attachment='') | Q(attachment__exact=None))
     if pk:
       docs = docs.filter(pk=pk)
-    self._create_snapshots(docs)
+    self._create_snapshots(docs, override=override)
 
 
   def from_pdf(self, pk=None, override=False, **options):
