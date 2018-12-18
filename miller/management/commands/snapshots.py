@@ -31,7 +31,8 @@ class Command(TaskCommand):
   available_tasks = (
     'optimise',
     'multisize',
-    'settings'
+    'settings',
+    'from_pdf',
   )
 
   def optimise(self, pk=None, override=False, **options):
@@ -120,34 +121,28 @@ class Command(TaskCommand):
   def settings(self, **options):
     logger.debug('settings.MILLER_RESOLUTIONS: {0}'.format(settings.MILLER_RESOLUTIONS))
 
+
   def multisize(self, pk=None, override=False, **options):
     self.settings(**options)
-
     docs = Document.objects.exclude(Q(attachment='') | Q(attachment__exact=None))
-
     if pk:
       docs = docs.filter(pk=pk)
+    self._create_snapshots(docs)
 
-    print options
 
-    # The `iterator()` method ensures only a few rows are fetched from
-    # the database at a time, saving memory.
+  def from_pdf(self, pk=None, override=False, **options):
+    logger.debug('filter documents by type pdf')
+    docs = Document.objects.filter(type='pdf').exclude(Q(attachment='') | Q(attachment__exact=None))
+    if pk:
+      docs = docs.filter(pk=pk)
+    logger.debug('{0} documents found'.format(docs.count()))
+    self._create_snapshots(docs, override=override)
+
+
+  def _create_snapshots(self, docs, override=False):
     for doc in docs.iterator():
       if not override and 'resolutions' in doc.data:
-        if pk:
-          logger.debug('data field of the selected document already contains resolutions. add --override!')
+        logger.debug('data field for {0} document already contains resolutions. add --override!'.format(doc.pk))
         continue
       doc.create_snapshots(custom_logger=logger)
       doc.save()
-
-      # try:
-
-      #   d = helpers.generate_snapshot(filename=doc.attachment.path, output=outfile, width=settings.MILLER_SNAPSHOT_WIDTH, height=settings.MILLER_SNAPSHOT_HEIGHT)
-      # if d:
-      #   self.data.update(d)
-
-      #   doc.create_snapshot()
-      # except Exception as e:
-      #   logger.exception(e)
-
-    logger.info('oh.')
