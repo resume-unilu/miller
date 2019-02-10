@@ -213,7 +213,7 @@ class Document(models.Model):
       contents.append((value, _weight, 'simple'))
 
     q = ' || '.join(["setweight(to_tsvector('simple', COALESCE(%%s,'')), '%s')" % weight for value, weight, _config in contents])
-    
+
     with connection.cursor() as cursor:
       cursor.execute(''.join(["""
         UPDATE miller_document SET search_vector = x.weighted_tsv FROM (
@@ -383,6 +383,23 @@ class Document(models.Model):
       return
     return snapshots_path
 
+  def create_iiif(self, resolutions=None, override=True, custom_logger=None):
+    """
+    Create multisize iiif url and add relative width and height to <Document instance>.data
+    It follows settings.MILLER_RESOLUTIONS
+    param boolean override: if True, default behavior, this allows file overriding.
+    """
+    if not custom_logger:
+      custom_logger = logger
+    if not resolutions:
+      resolutions = settings.MILLER_RESOLUTIONS
+    # document doesn't have an attachment / snapshots
+    if (not self.attachment or not getattr(self.attachment, 'path', None)) and (not self.snapshot or not getattr(self.snapshot, 'path', None)):
+      custom_logger.error(u'pk={pk} snapshot cannot be generated, empty attachment or empty snapshot field.'.format(pk=self.pk))
+      return
+
+
+
 
   def create_snapshots(self, resolutions=None, override=True, custom_logger=None):
     """
@@ -421,11 +438,17 @@ class Document(models.Model):
       filepath = self.attachment.path
     elif self.mimetype == 'application/pdf':
       pdfsnapshot = self.create_snapshot_from_attachment(override=override)
+
       if not pdfsnapshot:
-        custom_logger.error(u'pk={pk} snapshot cannot be generated, probably this is due to PDF error.'.format(pk=self.pk))
-        return
-      filepath = os.path.join(settings.MEDIA_ROOT, pdfsnapshot)
-      self.snapshot = pdfsnapshot
+        if self.snapshot and getattr(self.snapshot, 'path', None):
+          custom_logger.debug('snapshot manually set')
+          filepath = self.snapshot.path
+        else:
+          custom_logger.error(u'pk={pk} snapshot cannot be generated, probably this is due to PDF error.'.format(pk=self.pk))
+          return
+      else:
+        filepath = os.path.join(settings.MEDIA_ROOT, pdfsnapshot)
+        self.snapshot = pdfsnapshot
     elif self.mimetype == 'video/mp4':
       if not self.snapshot:
         custom_logger.error(u'pk={pk} snapshot cannot be generated, no valid snapshot found'.format(pk=self.pk))
