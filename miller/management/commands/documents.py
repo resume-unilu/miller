@@ -148,7 +148,7 @@ class Command(TaskCommand):
       doc.data.update(doc_data['data'])
 
       if has_snapshot:
-        logger.debug('line {line}: found snapshot for {slug}, {snapshot}'.format(line=i, slug=slug, snapshot=row['snapshot']))
+        # logger.debug('line {line}: found snapshot for {slug}, {snapshot}'.format(line=i, slug=slug, snapshot=row['snapshot']))
 
         snapshot_path    = row['snapshot'].strip()
         snapshot_abspath = os.path.join(settings.MEDIA_ROOT, snapshot_path)
