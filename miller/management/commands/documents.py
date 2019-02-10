@@ -154,7 +154,7 @@ class Command(TaskCommand):
         snapshot_abspath = os.path.join(settings.MEDIA_ROOT, snapshot_path)
         snapshot_exists  = os.path.exists(snapshot_abspath)
 
-        doc.snapshot.name = attachment_path
+        doc.snapshot.name = snapshot_path
 
       if has_attachment:
         # must be relative to MEDIA_ROOT
