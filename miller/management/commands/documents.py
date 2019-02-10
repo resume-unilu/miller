@@ -147,15 +147,24 @@ class Command(TaskCommand):
       doc_data = get_data_from_dict(row)
       doc.data.update(doc_data['data'])
 
+      if has_snapshot:
+        logger.debug('line {line}: found snapshot for {slug}, {snapshot}'.format(line=i, slug=_slug, snapshot=row['snapshot']))
+
+        snapshot_path    = row['snapshot'].strip()
+        snapshot_abspath = os.path.join(settings.MEDIA_ROOT, snapshot_path)
+        snapshot_exists  = os.path.exists(snapshot_abspath)
+
+        doc.snapshot.name = attachment_path
+
       if has_attachment:
         # must be relative to MEDIA_ROOT
         attachment_path    = row['attachment'].strip()
         attachment_abspath = os.path.join(settings.MEDIA_ROOT, attachment_path)
         attachment_exists  = os.path.exists(attachment_abspath)
 
-        if strict and re.match(r'^[a-zA-Z\-\d_/\.àéèçàâôûîê]+$', attachment_path) is None:
-          logger.error(u'item {0}: attachment "{1}" does not match slug rules, exit'.format(slug, attachment_path))
-          break
+        # if strict and re.match(r'^[a-zA-Z\-\d_/\.àéèçàâôûîê]+$', attachment_path) is None:
+        #   logger.error(u'item {0}: attachment "{1}" does not match slug rules, exit'.format(slug, attachment_path))
+        #   break
         # logger.debug(u'line {0}: attachment found, \n   - datum: {1}\n   - real: {2}\n   exists: {3}'.format(i, row['attachment'], _attachment_abspath, _attachment_exists))
         # check that the file exists; otherwise skip everything
         if strict and not attachment_exists:
