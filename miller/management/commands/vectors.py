@@ -213,7 +213,7 @@ class Command(TaskCommand):
             slugs.append(ngram['slug'])
 
             try:
-              ng, created = Ngrams.objects.get_or_create(slug=ngram['slug'], defaults={
+              ng, created = Ngrams.objects.get_or_create(slug=ngram['slug'][:50], defaults={
                 'segment': ngram['segment']
               })
               doc.ngrams_set.add(ng)
@@ -221,7 +221,8 @@ class Command(TaskCommand):
               if created:
                 newly = newly + 1
             except Exception as e:
-              raise e
+              # skip if dataerror
+              continue
               #else:
               #  logger.debug('  ... idx: %s, slug:%s, created:%s' % (idx, slug, created))
         logger.debug('  ... ngrams duplicates: %s' % dupes)
