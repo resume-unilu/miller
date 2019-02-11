@@ -56,9 +56,10 @@ def _loadlocale():
     """
     Load locale from JSON file if any.
     """
+    contents = {}
     if settings.MILLER_LOCALISATION_TABLE_AS_JSON is not None:
         contents = json.load(open(settings.MILLER_LOCALISATION_TABLE_AS_JSON))
-    return contents if contents else {}
+    return contents
 
 # views here
 @ensure_csrf_cookie
