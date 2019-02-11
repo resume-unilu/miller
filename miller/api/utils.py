@@ -66,7 +66,8 @@ class Glue(object):
   def get_hash(self, request):
     import hashlib
     m = hashlib.md5()
-    m.update(json.dumps(request.query_params, ensure_ascii=False))
+    s = json.dumps(request.query_params, ensure_ascii=False).encode('utf8')
+    m.update(s)
     return m.hexdigest()
   
   def get_verbose_hash(self, request):
