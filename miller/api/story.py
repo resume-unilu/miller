@@ -78,7 +78,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     #     for chunk in f.chunks():
     #         destination.write(chunk)
 
-    
+
 
   # retrieve by PK or slug
   def retrieve(self, request, *args, **kwargs):
@@ -152,13 +152,12 @@ class StoryViewSet(viewsets.ModelViewSet):
       self.paginator.set_queryset_warnings(g.warnings)
       self.paginator.set_queryset_verbose(g.get_verbose_info())
 
-    page    = self.paginate_queryset(stories)
-    
+    page = self.paginate_queryset(stories)
+    serializer = LiteStorySerializer(page, many=True, context={'request': request})
+
     if page is not None:
-      serializer = LiteStorySerializer(page, many=True, context={'request': request})
       return self.get_paginated_response(serializer.data)
 
-    serializer = LiteStorySerializer(page, many=True, context={'request': request})
     return Response(serializer.data)
 
 
