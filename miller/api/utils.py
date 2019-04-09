@@ -13,8 +13,6 @@ waterfallre = re.compile(WATERFALL_IN + r'$')
 
 class Glue(object):
   def __init__(self, request, queryset, extra_ordering=[], perform_q=True):
-
-
     self.filters, self.filtersWaterfall = filters_from_request(request=request)
     self.excludes, self.excludesWaterfall = filters_from_request(request=request, field_name='exclude')
 
@@ -29,7 +27,11 @@ class Glue(object):
 
 
     try:
-      self.queryset = self.queryset.exclude(**self.excludes).filter(**self.filters)
+      filters = self._extract_filters()
+      self.queryset = self.queryset.exclude(**self.excludes)
+
+      for f in filters:
+        self.queryset = self.queryset.filter(**f)
 
       if perform_q and self.search_query:
         self.queryset = self.queryset.filter(self.search_query)
@@ -96,6 +98,16 @@ class Glue(object):
     featured_queryset = featured_queryset.annotate(order=Value(1, output_field=IntegerField()))
     stories = stories.annotate(order=Value(2, output_field=IntegerField()))
     return featured_queryset.union(stories).order_by('order', '-date')
+
+  def _extract_filters(self):
+    filters = []
+    for name, value in self.filters.items():
+      if isinstance(value, (list, tuple)):
+        filters.extend([{name: v} for v in value])
+      else:
+        filters.append({name: value})
+    return filters
+
 
   def get_hash(self, request):
     import hashlib
