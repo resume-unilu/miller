@@ -74,10 +74,17 @@
         </div>
 
         <div class="form-group {% if form.errors.affiliation %}has-error{% endif %}">
-          <label for="id_signup_affiliation">affiliation</label>
-          <input type="text" value='{{ form.affiliation.value|default_if_none:"" }}' class="form-control" id="id_signup_affiliation"  name="affiliation" placeholder="university, country ..." >
+        <label for="id_signup_affiliation">affiliation*</label>
+            <select name="affiliation" id="id_signup_affiliation" class="form-control" value='{{ form.affiliation.value|default_if_none:"" }}' required>
+                <option value="civil society">civil society</option>
+                <option value="government">government</option>
+                <option value="municipalities">municipalities</option>
+                <option value="research">research</option>
+                <option value="schools">schools</option>
+                <option value="entreprises">entreprises</option>
+            </select>
         </div>
-        
+
         <div class="form-group {% if form.errors.tos %}has-error{% endif %}">
           
           <label for="id_signup_tos">I've read and accept the <a target='_blank' href="/terms-of-use">terms of use</a></label>
