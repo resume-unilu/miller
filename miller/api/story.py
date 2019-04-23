@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json, os, mimetypes
+import zipfile
 
 from collections import OrderedDict
 
@@ -18,6 +19,7 @@ from rest_framework import serializers,viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import  api_view, permission_classes, detail_route, list_route # cfr StoryViewSet
 
+from miller import settings
 from miller.forms import GitTagForm
 from miller.models import Story, Tag, Document, Caption, Comment, Review
 from miller.api.utils import Glue
@@ -283,6 +285,24 @@ class StoryViewSet(viewsets.ModelViewSet):
       
     return response
 
+  @detail_route(methods=['get'], url_path='download/many')
+  def downloadMany(self, request, pk):
+    q = self._getUserAuthorizations(request)
+
+    zip_path = os.path.join(settings.MEDIA_ROOT, request.user.profile.short_url, 'articles.zip')
+    zipf = zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED)
+
+    all_pks = pk.split(',')
+    for id_ in all_pks:
+      story = get_object_or_404(q, pk=id_)
+      zipf.write(story.download(outputFormat='pdf'), '{}.pdf'.format(story.slug))
+    zipf.close()
+
+    mimetype = mimetypes.guess_type(zip_path)[0]
+    response = StreamingHttpResponse(FileWrapper(open(zip_path), 8192), content_type=mimetype)
+    response['Content-Length'] = os.path.getsize(zip_path)
+    response['Content-Disposition'] = 'attachment; filename="articles.zip"'
+    return response
 
   @detail_route(methods=['get'], url_path='download/source')
   def downloadSource(self, request, pk):
