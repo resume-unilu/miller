@@ -19,6 +19,8 @@ from django.db.models.signals import pre_delete, post_save, m2m_changed, pre_sav
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.template.loader import get_template
+import xhtml2pdf.pisa as pisa
 
 # from jsonfield import JSONField
 from git import Repo, Commit, Actor, Tree
@@ -675,41 +677,20 @@ class Story(models.Model):
       self.date_last_modified.strftime("%s"), 
       extension if extension is not None else outputFormat
     ), True)
-    
-    if os.path.exists(outputfile):
-      print "do not regenerate", outputfile, self.date_last_modified.strftime("%s")
-      return outputfile
 
-    tempoutputfile = user_path(self, '__%s.md' % self.short_url)
-    logger.debug('story {pk:%s} creating temp file.' % self.pk)
-    authors   =  u", ".join([u'%s' % t.fullname for t in self.authors.all()])
-    tags      = u",".join([u'%s' % t.slug for t in self.tags.filter(category=Tag.KEYWORD)])
-    
-    # rewrite links for interactive PDF
-    with codecs.open(tempoutputfile, "w", "utf-8") as temp:
-      temp.write(u'\n\n'.join([
-        # u"#%s" % self.title,
-        # u"> %s" % self.abstract if self.abstract else "",
-        # generate citation, signatures
-        self.contents
-      ]))
+    print '-----------\n{}\n-----------'.format(outputfile)
+    # TODO(Michael): To uncomment
+    # if os.path.exists(outputfile):
+    #   print "do not regenerate", outputfile, self.date_last_modified.strftime("%s")
+    #   return outputfile
 
-    # reverted = re.sub(r'#(#+)', r'\1', contents) 
-    pypandoc.convert_file(tempoutputfile, outputFormat, outputfile=outputfile, 
-      extra_args=[
-        '--base-header-level=1', 
-        '--latex-engine=xelatex',
-        '--template=%s' % settings.MILLER_TEX,
-        '-V', 'geometry:top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm',
-        '-V', 'footer=%s' % settings.MILLER_TITLE,
-        '-V', 'title=%s' % self.title.replace('&', '\&'),
-        '-V', 'author=%s' % ', '.join([u'%s (%s)' % (a.fullname, a.affiliation) for a in self.authors.all()]),
-        '-V', 'keywords=%s' % tags,
-        '-V','abstract=%s' % self.abstract.replace('&', '\&') if self.abstract else ''
-      ])
-    # once done,
-    os.remove(tempoutputfile)
+    template = get_template('pdf_template.html')
+    html = template.render({
+      'story': self,
+      'authors': ', '.join([u'%s (%s)' % (a.fullname, a.affiliation) for a in self.authors.all()])
+    })
 
+    pisa.CreatePDF(html, file(outputfile, "w"))
     return outputfile
 
 
