@@ -1,8 +1,11 @@
 import json, re, types
-from django.db.models import Q
+from django.db.models import Q, Value, IntegerField
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.exceptions import FieldError
+
+from miller.models import Story
+from miller.models.tag import Tag
 
 WATERFALL_IN = '__all'
 waterfallre = re.compile(WATERFALL_IN + r'$')
@@ -10,11 +13,9 @@ waterfallre = re.compile(WATERFALL_IN + r'$')
 
 class Glue(object):
   def __init__(self, request, queryset, extra_ordering=[], perform_q=True):
-
-
     self.filters, self.filtersWaterfall = filters_from_request(request=request)
     self.excludes, self.excludesWaterfall = filters_from_request(request=request, field_name='exclude')
-    
+
     self.overlaps = overlaps_from_request(request=request)
     self.ordering = orderby_from_request(request=request)
     self.extra_ordering = extra_ordering
@@ -26,14 +27,18 @@ class Glue(object):
 
 
     try:
-      self.queryset = self.queryset.exclude(**self.excludes).filter(**self.filters)
-      
+      filters = self._extract_filters()
+      self.queryset = self.queryset.exclude(**self.excludes)
+
+      for f in filters:
+        self.queryset = self.queryset.filter(**f)
+
       if perform_q and self.search_query:
         self.queryset = self.queryset.filter(self.search_query)
 
       if self.overlaps:
         self.queryset = self.queryset.filter(self.overlaps)
-        
+
 
     except FieldError as e:
       self.warnings = {
@@ -58,17 +63,58 @@ class Glue(object):
     # print self.warnings, self.excludes
 
     if self.ordering is not None:
-      #print self.ordering, '--', self.validated_ordering()
-      self.queryset = self.queryset.order_by(*self.validated_ordering())
+      if self.ordering == ['featured']:
+        self.queryset = self._stories_orderby_featured()
+      else:
+        self.queryset = self.queryset.order_by(*self.validated_ordering()).distinct()
 
-    #print self.queryset.query
-  
+  def _stories_orderby_featured(self):
+    # This method should only be called for stories
+    if self.queryset.model is not Story:
+      return self.queryset
+
+    featured_sql = """
+    SELECT story.*
+    FROM miller_story story
+    JOIN miller_story_tags tags ON story.id = tags.story_id
+    JOIN (
+      SELECT MAX(story.date) as max_date, tag.id as tag_id
+      FROM miller_story story
+      JOIN miller_story_tags tags ON story.id = tags.story_id
+      JOIN miller_tag tag ON tag.id = tags.tag_id
+      WHERE tag.category = 'organisation' AND story.status = 'public'
+      GROUP BY tag.id
+      ) as st ON st.tag_id = tags.tag_id and st.max_date = story.date;
+    """
+    # Convert RawQuerySet into QuerySet (Cause to execute the query, not the best thing, but since the number of
+    # featured items will always be very small, we accept that)
+    featured_stories = map(lambda s: s.id, Story.objects.raw(featured_sql))
+    featured_queryset = Story.objects.filter(pk__in=featured_stories)
+
+    # Remove the featured stories from the complete story list
+    stories = self.queryset.exclude(id__in=featured_stories)
+
+    # We use annotations to be able to place the featured stories at the top of the list
+    featured_queryset = featured_queryset.annotate(order=Value(1, output_field=IntegerField()))
+    stories = stories.annotate(order=Value(2, output_field=IntegerField()))
+    return featured_queryset.union(stories).order_by('order', '-date')
+
+  def _extract_filters(self):
+    filters = []
+    for name, value in self.filters.items():
+      if isinstance(value, (list, tuple)):
+        filters.extend([{name: v} for v in value])
+      else:
+        filters.append({name: value})
+    return filters
+
+
   def get_hash(self, request):
     import hashlib
     m = hashlib.md5()
     m.update(json.dumps(request.query_params, ensure_ascii=False))
     return m.hexdigest()
-  
+
   def get_verbose_hash(self, request):
     return json.dumps(request.query_params, sort_keys=True, ensure_ascii=False)
 
@@ -81,7 +127,7 @@ class Glue(object):
     }
     return _d
 
-  
+
   def validated_ordering(self):
     _validated_ordering = []
     for field in self.ordering:
@@ -121,16 +167,16 @@ class CachedGlue(Glue):
   def __init__(self, request, queryset, extra_ordering=[], perform_q=True, cache_prefix=None):
     if cache_prefix:
       self.cache_key = u'{0}.{1}'.format(cache_prefix, self.get_verbose_hash(request=request))
-      self.is_in_cache = cache.has_key(self.cache_key) and not request.query_params.get('nocache', None) 
-    
+      self.is_in_cache = cache.has_key(self.cache_key) and not request.query_params.get('nocache', None)
+
     if self.is_in_cache:
       return None
     super(CachedGlue, self).__init__(request=request, queryset=queryset, extra_ordering=extra_ordering, perform_q=perform_q)
 
 
 
-# usage in viewsets.ModelViewSet methods, e;g. retrieve: 
-# filters = filters_from_request(request=self.request) 
+# usage in viewsets.ModelViewSet methods, e;g. retrieve:
+# filters = filters_from_request(request=self.request)
 # qs = stories.objects.filter(**filters).order_by(*orderby)
 def filters_from_request(request, field_name='filters'):
   filters = request.query_params.get(field_name, None)
@@ -168,7 +214,7 @@ def filters_from_request(request, field_name='filters'):
 def search_from_request(request, klass):
   #print klass
   # understand if request has a search query
-  search_query = request.query_params.get('q', None) 
+  search_query = request.query_params.get('q', None)
   if search_query is None or len(search_query) < 2: #ignore less than two letters.
     return None
   else:
@@ -180,7 +226,7 @@ def search_from_request(request, klass):
     else:
       return q
 
-  
+
 
 
 def overlaps_from_request(request, field_name='overlaps'):
@@ -188,13 +234,13 @@ def overlaps_from_request(request, field_name='overlaps'):
   Handle date range overlaps with django Q, since filters like `start_date__gt` and `end_date__lt` do not handle range verlaps
 
   Translate in dango Q
-  
+
   case 1: left overlap (or outer) aka lov
-       S |------------>| T 
+       S |------------>| T
     OS|----------->OT ..........--> OT?
 
   case 2: right overlap (or inner) aka rov
-       S |------------>| T 
+       S |------------>| T
              OS|--->OT ..........--> OT?
 
 
@@ -210,15 +256,15 @@ def overlaps_from_request(request, field_name='overlaps'):
   return lov | rov
 
 
-# usage in viewsets.ModelViewSet methods, e;g. retrieve: 
-# orderby = orderby_from_request(request=self.request) 
+# usage in viewsets.ModelViewSet methods, e;g. retrieve:
+# orderby = orderby_from_request(request=self.request)
 # qs = stories.objects.all().order_by(*orderby)
 def orderby_from_request(request):
   orderby = request.query_params.get('orderby', None)
   return orderby.split(',') if orderby is not None else None
 
-# get corresponding serializer class to content_type.model property. `content_type` is instance of django.contrib.contenttypes.models.ContentType 
-# https://docs.djangoproject.com/en/1.10/ref/contrib/contenttypes/#django.contrib.contenttypes.models.ContentType  
+# get corresponding serializer class to content_type.model property. `content_type` is instance of django.contrib.contenttypes.models.ContentType
+# https://docs.djangoproject.com/en/1.10/ref/contrib/contenttypes/#django.contrib.contenttypes.models.ContentType
 def get_serializer(content_type):
   # map of model names / serializers class
   if content_type.model == 'user':
@@ -248,3 +294,17 @@ def get_serialized(instance):
   if serializer is None:
     return None
   return serializer(instance).data
+
+
+def is_orderby_featured(request):
+  return orderby_from_request(request=request) == ['featured']
+
+
+def stories_orderby_featured(stories):
+  organisations = Tag.objects.filter(category='organisation')
+  featured = []
+  for oganisation in organisations:
+    # [s.tags.filter(id=oganisation.id).exists() for s in stories]
+    stories.objects.get(tags__contains=organisations)
+
+  return stories
