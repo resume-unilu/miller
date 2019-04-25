@@ -1,18 +1,76 @@
-<div class="header">
-    <h1>{{ story.title }}</h1>
-    <p class="authors">
-        {{ authors }}
-    </p>
+<div id="container">
+    <div class="header">
+        <h1>{{ story.title }}</h1>
+        <p class="authors">
+            {{ authors | safe }} | {{ date_last_modified | date:"d.m.Y" }}
+        </p>
+    </div>
+
+    <div class="row">
+        {% if cover_image %}
+            <div class="col cover-container">
+                <img src="{{ cover_image }}" class="cover">
+            </div>
+        {% endif %}
+        <div class="col abstract-container">
+            <h4>Abstract</h4>
+            <p class="abstract">
+                {{ story.abstract }}
+            </p>
+        </div>
+    </div>
+
+    <div class="content">
+        {{ content | safe }}
+    </div>
 </div>
 
+
 <style>
-    h1 {
-        font-size: 20px;
+    #container {
+    font-family: sans-serif;
+    line-height: 115%;
+    }
+
+
+    .content p {
+    margin-left: 5px;
+    margin-top: 5px;
+    }
+
+    @page {
+    margin: 0.8cm;
     }
 
     .header {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    }
+
+    .cover {
+    max-width: 95%;
+    margin-top: 25px;
+    }
+
+    .abstract, .content {
+    text-align: justify;
+    }
+
+    .row {
+    {#content: "";#}
+    display: table;
+    clear: both;
+    }
+    .col {
+    float: left;
+    }
+
+    .cover-container {
+        width: 50%;
+    }
+
+    .abstract-container {
+        width: 40%;
     }
 </style>
