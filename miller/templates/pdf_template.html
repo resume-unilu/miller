@@ -1,6 +1,6 @@
 <div id="container">
     <div class="header">
-        <h1>{{ story.title }}</h1>
+        <span id="mainTitle">{{ title }}</span>
         <p class="authors">
             {{ authors | safe }} | {{ date_last_modified | date:"d.m.Y" }}
         </p>
@@ -10,14 +10,29 @@
         {% if cover_image %}
             <div class="col cover-container">
                 <img src="{{ cover_image }}" class="cover">
+                <div class="tags" style="margin-top: 10px">
+                    <span class="tag activity">{{ activity }}</span>
+                    {% for tag in tags %}
+                        <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
             </div>
         {% endif %}
-        <div class="col abstract-container">
+
+        <div class="{% if cover_image %} col abstract-container {% endif %}">
             <h4>Abstract</h4>
             <p class="abstract">
-                {{ story.abstract }}
+                {{ abstract }}
             </p>
         </div>
+        {% if not cover_image %}
+            <div class="tags">
+                <span class="tag activity">{{ activity }}</span>
+                {% for tag in tags %}
+                    <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     <div class="content">
@@ -32,10 +47,18 @@
     line-height: 115%;
     }
 
+    #mainTitle {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .content {
+        margin-top: 20px;
+    }
 
     .content p {
-    margin-left: 5px;
-    margin-top: 5px;
+        margin-left: 5px;
+        margin-top: 5px;
     }
 
     @page {
@@ -58,7 +81,6 @@
     }
 
     .row {
-    {#content: "";#}
     display: table;
     clear: both;
     }
@@ -73,4 +95,23 @@
     .abstract-container {
         width: 40%;
     }
+    .tag {
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 700;
+        color: rgb(69, 69, 69);
+    }
+
+    .activity {
+        color: black;
+    }
+    .tag:after {
+        content: " - ";
+    }
+
+    .tag:last-child:after {
+        content: "";
+    }
+
+    h1, h2 { margin-top: 40px; }
 </style>

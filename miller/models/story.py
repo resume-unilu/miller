@@ -654,9 +654,13 @@ class Story(models.Model):
     cover_image = self.covers.get().url if self.covers.exists() else None
 
     # Fill the html template
+    # TODO(Michael): Set correct langage
     template = get_template('pdf_template.html')
     html = template.render({
-      'story': self,
+      'title': self.title,
+      'abstract': self.abstract,
+      'activity': 'Project',
+      'tags': [t.data['name']['en_US'] for t in self.tags.filter(category=Tag.KEYWORD)],
       'date_last_modified': self.date_last_modified,
       'content': content,
       'authors': ', '.join([u'<b>{}</b>{}'.format(a.fullname, ' ({})'.format(a.affiliation) if a.affiliation else '') for a in self.authors.all()]),
