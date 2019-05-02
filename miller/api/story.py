@@ -288,11 +288,14 @@ class StoryViewSet(viewsets.ModelViewSet):
   @detail_route(methods=['get'], url_path='download/many')
   def downloadMany(self, request, pk):
     q = self._getUserAuthorizations(request)
+    all_pks = pk.split(',')
 
-    zip_path = os.path.join(settings.MEDIA_ROOT, request.user.profile.short_url, 'articles.zip')
+    dest_dir = request.user.profile.short_url if request.user.is_authenticated() else ''
+    # Limit to 40 items to build the name to avoid to go over the 255 chars filename length
+    zip_filename = 'articles_{}.zip'.format('_'.join(all_pks[:40]))
+    zip_path = os.path.join(settings.MEDIA_ROOT, dest_dir, zip_filename)
     zipf = zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED)
 
-    all_pks = pk.split(',')
     for id_ in all_pks:
       story = get_object_or_404(q, pk=id_)
       zipf.write(story.download(outputFormat='pdf'), '{}.pdf'.format(story.slug))
