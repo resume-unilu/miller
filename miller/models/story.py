@@ -659,7 +659,7 @@ class Story(models.Model):
     html = template.render({
       'title': self.title,
       'abstract': self.abstract,
-      'activity': 'Project',
+      'activity': [t.data['name']['en_US'] for t in self.tags.filter(category=Tag.WRITING)],
       'tags': [t.data['name']['en_US'] for t in self.tags.filter(category=Tag.KEYWORD)],
       'date_last_modified': self.date_last_modified,
       'content': content,

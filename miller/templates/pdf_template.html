@@ -11,7 +11,10 @@
             <div class="col cover-container">
                 <img src="{{ cover_image }}" class="cover">
                 <div class="tags" style="margin-top: 10px">
-                    <span class="tag activity">{{ activity }}</span>
+                    {% for act in activity %}
+                        <span class="tag activity">{{ act }}</span>
+                    {% endfor %}
+
                     {% for tag in tags %}
                         <span class="tag">{{ tag }}</span>
                     {% endfor %}
@@ -27,7 +30,9 @@
         </div>
         {% if not cover_image %}
             <div class="tags">
-                <span class="tag activity">{{ activity }}</span>
+                {% for act in activity %}
+                    <span class="tag activity">{{ act }}</span>
+                {% endfor %}
                 {% for tag in tags %}
                     <span class="tag">{{ tag }}</span>
                 {% endfor %}
