@@ -647,28 +647,31 @@ class Story(models.Model):
     self.version = short_sha
     logger.debug('story {pk:%s} gitCommit {hash:%s,short:%s} done.' % (self.pk, c, short_sha))
 
-  def _generate_output_file_html(self, outputfile):
-    # Use pandoc to convert markdown to html
-    content = pypandoc.convert_text(self.contents, 'html', format='md')
-
-    cover_image = self.covers.get().url if self.covers.exists() else None
-
-    # Fill the html template
-    # TODO(Michael): Set correct langage
-    template = get_template('pdf_template.html')
-    html = template.render({
+  def _get_render_data(self, lang='en_US'):
+    cover_image = None
+    if self.covers.exists():
+      cover = self.covers.get()
+      cover_image = cover.attachment.path if cover.url is None else cover.url
+    return {
       'title': self.title,
       'abstract': self.abstract,
-      'activity': [t.data['name']['en_US'] for t in self.tags.filter(category=Tag.WRITING)],
-      'tags': [t.data['name']['en_US'] for t in self.tags.filter(category=Tag.KEYWORD)],
+      'activity': [t.data['name'][lang] for t in self.tags.filter(category=Tag.WRITING)],
+      'tags': [t.data['name'][lang] for t in self.tags.filter(category=Tag.KEYWORD)],
       'date_last_modified': self.date_last_modified,
-      'content': content,
       'authors': ', '.join([u'<b>{}</b>{}'.format(a.fullname, ' ({})'.format(a.affiliation) if a.affiliation else '') for a in self.authors.all()]),
       'cover_image': cover_image
-    })
+    }
+
+  def _generate_output_file_html(self, outputfile):
+    # Use pandoc to convert markdown to html
+    render_data = self._get_render_data('en_US')
+    render_data['content'] = pypandoc.convert_text(self.contents, 'html', format='md')
+
+    template = get_template('pdf_template.html')
+    html = template.render(render_data)
 
     # Convert html into pdf and write outputfile
-    HTML(string=html).write_pdf(target=outputfile)
+    HTML(string=html, base_url='/').write_pdf(target=outputfile)
 
   def _generate_output_file(self, outputfile, outputFormat):
     tempoutputfile = user_path(self, '__%s.md' % self.short_url)
