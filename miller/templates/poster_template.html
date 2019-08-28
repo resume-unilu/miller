@@ -1,0 +1,130 @@
+<div id="container">
+    <div class="header">
+        <span id="mainTitle">{{ title }}</span>
+        <p class="authors">
+            {{ authors | safe }} | {{ date_last_modified | date:"d.m.Y" }}
+        </p>
+    </div>
+
+    <div class="row">
+        {% if cover_image %}
+            <div class="col cover-container">
+                <img src="{{ cover_image }}" class="cover">
+                <div class="tags" style="margin-top: 10px">
+                    {% for act in activity %}
+                        <span class="tag activity">{{ act }}</span>
+                    {% endfor %}
+
+                    {% for tag in tags %}
+                        <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="{% if cover_image %} col abstract-container {% endif %}">
+            <h4>Abstract</h4>
+            <p class="abstract">
+                {{ abstract }}
+            </p>
+        </div>
+        {% if not cover_image %}
+            <div class="tags">
+                {% for act in activity %}
+                    <span class="tag activity">{{ act }}</span>
+                {% endfor %}
+                {% for tag in tags %}
+                    <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="content">
+        {{ content | safe }}
+    </div>
+</div>
+
+
+<style>
+    #container {
+    font-family: sans-serif;
+    line-height: 115%;
+    }
+
+    #mainTitle {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .content {
+        margin-top: 20px;
+    }
+
+    .content p {
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+
+    @page {
+        margin: 0.8cm;
+        size: A3 landscape;
+    }
+
+    .header {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .cover {
+    max-width: 95%;
+    margin-top: 25px;
+    }
+
+    .abstract, .content {
+    text-align: justify;
+    }
+
+    .row {
+    display: table;
+    clear: both;
+    }
+    .col {
+    float: left;
+    }
+
+    .cover-container {
+        width: 50%;
+        max-width: 800px;
+    }
+
+    .abstract-container {
+        width: 40%;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .tag {
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 700;
+        color: rgb(69, 69, 69);
+    }
+
+    .activity {
+        color: black;
+    }
+    .tag:after {
+        content: " - ";
+    }
+
+    .tag:last-child:after {
+        content: "";
+    }
+
+    p {
+        color: rgb(60, 60, 60);
+    }
+
+    h1, h2 { margin-top: 40px; }
+</style>
