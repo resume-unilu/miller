@@ -141,7 +141,7 @@ class LiteDocumentSerializer(serializers.ModelSerializer):
   attachment = OptionalFileField()
   class Meta:
     model = Document
-    fields = ('id', 'title', 'slug', 'mimetype', 'type', 'data', 'url', 'attachment', 'snapshot')
+    fields = ('id', 'title', 'slug', 'mimetype', 'type', 'data', 'url', 'attachment', 'snapshot', 'copyrights')
 
 
 
