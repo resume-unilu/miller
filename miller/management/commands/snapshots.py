@@ -126,7 +126,8 @@ class Command(TaskCommand):
     self.settings(**options)
     docs = Document.objects.exclude(Q(attachment='') | Q(attachment__exact=None))
     if pk:
-      docs = docs.filter(pk=pk)
+      docs = Document.objects.filter(pk=pk)
+    logger.debug('n of documents: {0}'.format(docs.count()))
     self._create_snapshots(docs, override=override)
 
 

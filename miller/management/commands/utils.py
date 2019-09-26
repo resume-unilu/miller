@@ -224,7 +224,7 @@ def nested_set(dic, keys, value, as_list=False):
     elif keys[-1] in ('start_date', 'end_date'):
       # print('nested:', keys[-1], value)
       if isinstance(value, basestring):
-        m = re.search(r'(^Date\(?)(\d{4})[,\-](\d{1,2})[,\-](\d{1,2})\)', value)
+        m = re.search(r'(^Date\(?)?(\d{4})[,\-](\d{1,2})[,\-](\d{1,2})\)?', value)
         if m is not None:
           if m.group(1) is not None:
             # this makes use of Date(1917,4,21) google spreadsheet dateformat.
@@ -233,7 +233,7 @@ def nested_set(dic, keys, value, as_list=False):
             dic[keys[-1]] = datetime.datetime(year=int(m.group(2)), month=int(m.group(3)) + 1, day=int(m.group(4))).isoformat()
           else:
              # 0 padded values, 1917-05-21
-             dic[keys[-1]] = datetime.datetime.strptime('%s-%s-%s' % (m.group(2), m.group(3), m.group(4)), '%Y-%M-%d').isoformat()
+             dic[keys[-1]] = datetime.datetime.strptime('%s-%s-%s' % (m.group(2), m.group(3), m.group(4)), '%Y-%m-%d').isoformat()
         else:
           logger.debug('parsing digit date field: %s, value: %s' % (keys[-1],value))
           dic[keys[-1]] = value
