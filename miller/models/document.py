@@ -363,6 +363,7 @@ class Document(models.Model):
       try:
         d = helpers.generate_pdf_snapshot(pdffile=self.attachment.path, output=filepath, page=page)
       except Exception as e:
+        print e
         logger.exception(e)
         return
       return snapshot
@@ -431,12 +432,15 @@ class Document(models.Model):
         self.mimetype = mimetype
 
     custom_logger.debug(u'pk={pk} using mimetype, found: {mimetype}'.format(pk=self.pk,mimetype=self.mimetype))
-
     # get filepath according to mimetype.
     # Since Pdf files are often given as attachments, filepath for the multisize snapshots is stored in ... doc.snapshot FileField.
-    if self.mimetype.split('/')[0] == 'image':
+    if self.snapshot:
+      custom_logger.debug(u'pk={pk} snapshot found...'.format(pk=self.pk))
+      filepath = self.snapshot.path
+    elif self.mimetype.split('/')[0] == 'image':
       filepath = self.attachment.path
     elif self.mimetype == 'application/pdf':
+      custom_logger.debug(u'pk={pk} generating snapshot for the pdf file ...'.format(pk=self.pk))
       pdfsnapshot = self.create_snapshot_from_attachment(override=override)
 
       if not pdfsnapshot:
@@ -453,6 +457,9 @@ class Document(models.Model):
       if not self.snapshot:
         custom_logger.error(u'pk={pk} snapshot cannot be generated, no valid snapshot found'.format(pk=self.pk))
         return
+      filepath = self.snapshot.path
+    elif self.snapshot:
+      custom_logger.debug(u'pk={pk} snapshot found...'.format(pk=self.pk))
       filepath = self.snapshot.path
     else:
       custom_logger.error(u'pk={pk} snapshot cannot be generated: not a compatible type choiche (mimetype: {mimetype}).'.format(pk=self.pk, mimetype= self.mimetype))
@@ -488,6 +495,8 @@ class Document(models.Model):
         'url': '{host}{file}'.format(host=settings.MILLER_HOST, file=os.path.join(settings.MEDIA_URL, filename))
       }
 
+      custom_logger.error(u'pk={pk} snapshot: {path} ready...'.format(pk=self.pk, path=filepath))
+      
       try:
         snapshot = helpers.generate_snapshot(
           filename   = filepath,

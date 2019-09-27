@@ -23,17 +23,17 @@ class CodeMirrorJSONField(CodeMirrorTextarea):
       pass
     return super(CodeMirrorJSONField, self).render(name, value, attrs)
 
-codemirror_json_widget = CodeMirrorJSONField(mode="css", theme="elegant", config={ 
-  'fixedGutter': True, 
-  'lineNumbers':True, 
+codemirror_json_widget = CodeMirrorJSONField(mode="css", theme="elegant", config={
+  'fixedGutter': True,
+  'lineNumbers':True,
   'matchBrackets': True,
   'autoCloseBrackets': True,
   'lineWrapping': True
 })
 
-codemirror_md_widget = CodeMirrorTextarea(mode="markdown", theme="elegant", config={ 
-  'fixedGutter': True, 
-  'lineNumbers':True, 
+codemirror_md_widget = CodeMirrorTextarea(mode="markdown", theme="elegant", config={
+  'fixedGutter': True,
+  'lineNumbers':True,
   'matchBrackets': True,
   'autoCloseBrackets': True,
   'lineWrapping': True
@@ -50,7 +50,7 @@ class BlogTagsListFilter(admin.SimpleListFilter):
     parameter_name = 'type-of-blogpost'
 
     def lookups(self, request, model_admin):
-        
+
         """
         Returns a list of tuples. The first element in each
         tuple is the coded value for the option that will
@@ -59,7 +59,7 @@ class BlogTagsListFilter(admin.SimpleListFilter):
         in the right sidebar.
         """
         return Tag.objects.filter(category=Tag.BLOG).values_list('slug', 'name')
-        
+
 
     def queryset(self, request, queryset):
         """
@@ -80,7 +80,7 @@ class WritingTagsListFilter(admin.SimpleListFilter):
     parameter_name = 'type-of-writing'
 
     def lookups(self, request, model_admin):
-        
+
         """
         Returns a list of tuples. The first element in each
         tuple is the coded value for the option that will
@@ -89,7 +89,7 @@ class WritingTagsListFilter(admin.SimpleListFilter):
         in the right sidebar.
         """
         return Tag.objects.filter(category=Tag.WRITING).values_list('slug', 'name')
-        
+
 
     def queryset(self, request, queryset):
         """
@@ -119,7 +119,7 @@ class AuthorAdminForm(forms.ModelForm):
     super(AuthorAdminForm, self).__init__(*args, **kwargs)
     self.fields['data'].widget = codemirror_json_widget
 
-  
+
 
 class AuthorAdmin(admin.ModelAdmin):
   search_fields = ['fullname', 'data']
@@ -140,7 +140,7 @@ class DocumentAdminForm(forms.ModelForm):
     except ValueError as e:
       raise forms.ValidationError(u'%s'%e)
       # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
-    
+
     return self.cleaned_data['contents']
 
 
@@ -161,7 +161,7 @@ class DataProviderListFilter(admin.SimpleListFilter):
         in the right sidebar.
         """
         from collections import Counter
-        from django.contrib.postgres.fields.jsonb import KeyTextTransform 
+        from django.contrib.postgres.fields.jsonb import KeyTextTransform
 
         qs = model_admin.get_queryset(request).annotate(types=KeyTextTransform('provider', 'data')).values_list('types', flat=True)
         q = [(x, _('%s'%x)) for x in set(filter(None,[q for q in qs]))]
@@ -201,7 +201,7 @@ class DataTypeListFilter(admin.SimpleListFilter):
         in the right sidebar.
         """
         from collections import Counter
-        from django.contrib.postgres.fields.jsonb import KeyTextTransform 
+        from django.contrib.postgres.fields.jsonb import KeyTextTransform
 
         qs = model_admin.get_queryset(request).annotate(types=KeyTextTransform('type', 'data')).values_list('types', flat=True)
         return ( (x, _('%s'%x)) for x in set([q for q in qs]))
@@ -236,7 +236,7 @@ class DataTypeListFilter(admin.SimpleListFilter):
 
 
 class DocumentAdmin(admin.ModelAdmin):
-  search_fields = ['title', 'contents', 'url', 'slug']
+  search_fields = ['title', 'contents', 'url', 'slug', 'short_url']
   exclude=['copyright']
   list_filter = ('type', DataTypeListFilter,)
   form = DocumentAdminForm
@@ -257,7 +257,7 @@ class StoryAdminForm(forms.ModelForm):
     self.fields['contents'].widget = codemirror_md_widget
     self.fields['abstract'].widget= codemirror_md_widget
     self.fields['data'].widget = codemirror_json_widget
-    
+
 
   def clean_metadata(self):
     try:
@@ -265,7 +265,7 @@ class StoryAdminForm(forms.ModelForm):
     except ValueError as e:
       raise forms.ValidationError(u'%s'%e)
       # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
-    
+
     return self.cleaned_data['metadata']
 
 
@@ -302,7 +302,7 @@ class TagAdminForm(forms.ModelForm):
     super(TagAdminForm, self).__init__(*args, **kwargs)
     self.fields['data'].widget = codemirror_json_widget
 
-  
+
 
 class TagAdmin(admin.ModelAdmin):
   search_fields = ['name', 'slug']
@@ -322,7 +322,7 @@ class CommentAdminForm(forms.ModelForm):
     except ValueError as e:
       raise forms.ValidationError(u'%s'%e)
       # Expecting property name enclosed in double quotes: line 14 column 5 (char 1275)
-    
+
     return self.cleaned_data['contents']
 
 
@@ -340,7 +340,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 class NgramsAdmin(admin.ModelAdmin):
   search_fields = ['slug']
-  
+
 
 class ReviewAdmin(admin.ModelAdmin):
   search_fields = ['contents', 'assignee']

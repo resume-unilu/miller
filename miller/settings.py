@@ -456,17 +456,20 @@ MILLER_LOCALISATION_TABLE_AS_JSON = None # unless tehre is a JSON version of the
 
 MILLER_TEX = os.path.join(BASE_DIR, 'miller.tex')
 
-# default width value for helpers generate_snapshot. Set width OR height to None or to 0 means following the original image ratio.
-MILLER_SNAPSHOT_WIDTH = 260
+# default width value for helpers generate_snapshot.
+# Set width OR height to None or to 0 means following the original image ratio.
+# THose values will be used to generate a snapshot if a snapshot is not available.
+# THe snapshot will then be used to generate different resolutions for the image
+MILLER_SNAPSHOT_WIDTH = 1000
 MILLER_SNAPSHOT_HEIGHT = None
 
 # property name in .data, dpi, maximum dimension. Usage:
 # for field, resolution, width, height, max_size in settings.MILLER_RESOLUTIONS:
 #    ...
 MILLER_RESOLUTIONS = [
-  ('thumbnail', 72, MILLER_SNAPSHOT_WIDTH, MILLER_SNAPSHOT_HEIGHT, None),
+  ('thumbnail', 72, 260, None, None),
   ('low',       72, None, None, 800),
-  ('medium',    96, None, None, 1000)
+  ('medium',    196, None, None, 1000)
 ]
 
 # resize automatically big images to serve in a normal screen. for crop purposes only.

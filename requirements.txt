@@ -76,6 +76,6 @@ txaio==2.5.2
 unicodecsv==0.14.1
 uWSGI==2.0.12
 vine==1.1.4
-Wand==0.4.2
+# Wand==0.4.2
 Whoosh==2.7.4
 zope.interface==4.3.2

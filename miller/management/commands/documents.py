@@ -7,6 +7,7 @@ from .utils import get_data_from_dict, get_dirlist
 from miller.models import Profile, Document
 from django.conf import settings
 from pydash import flatten
+from django.utils.encoding import smart_str
 
 logger = logging.getLogger('console')
 
@@ -145,6 +146,8 @@ class Command(TaskCommand):
 
       # udpate data fields (basically, fill empty data_structure)
       doc_data = get_data_from_dict(row)
+      print(row)
+      print(doc_data)
       doc.data.update(doc_data['data'])
 
       if has_snapshot:
@@ -179,9 +182,10 @@ class Command(TaskCommand):
         type=type,
         slug=slug
       ))
+      logger.info(u'dirpath: {0}'.format(dirpath));
 
       if os.path.isdir(dirpath):
-        logger.info('Document {0} has a matching media folder, dirpath: {1}'.format(slug, dirpath))
+        logger.info(u'Document {0} has a matching media folder, dirpath: {1}'.format(slug, dirpath))
 
         # in this case, attachment is a folder containing all items
         doc.data.update({
