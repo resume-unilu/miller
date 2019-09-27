@@ -13,15 +13,15 @@ from whoosh import qparser, analysis
 
 from whoosh.qparser import MultifieldParser
 from whoosh.query import Term, And, Or, Every
-    
+
 logger = logging.getLogger('miller')
 
 
 
-        
+
 def streamHttpResponse(filename):
   """
-  Given an existing filename, 
+  Given an existing filename,
   """
   mimetype    = mimetypes.guess_type(filename)[0]
   response = StreamingHttpResponse(FileWrapper(open(filename), 8192), content_type=mimetype)
@@ -36,7 +36,7 @@ def generate_snapshot(filename, output, width=None, height=None, crop=False, res
   @param fit maximum dimension in width OR height
   """
   from wand.image import Image
-  
+
   # clean
   try:
     os.remove(output)
@@ -48,12 +48,14 @@ def generate_snapshot(filename, output, width=None, height=None, crop=False, res
   except OSError:
     pass
 
+  print("resolution: {}, filename: {}".format(resolution, filename))
   d = {}
 
   if not width and not height and not max_size:
     raise Exception('At least one dimension should be provided, width OR height OR size')
 
   with Image(filename=filename, resolution=resolution) as img:
+    print("dimensions: {}, {}".format(img.width, img.height))
     ratio = 1.0*img.width/img.height
     d['width']  = img.width
     d['height'] = img.height
@@ -92,15 +94,15 @@ def generate_snapshot(filename, output, width=None, height=None, crop=False, res
 
     d['thumbnail_width']  = img.width
     d['thumbnail_height'] = img.height
-    
-    
+
+
     img.resolution = (resolution, resolution)
     img.compression_quality = compression_quality
-    
+
     if progressive:
       img.format = 'pjpeg'
     img.save(filename=output)
-    return d      
+    return d
 
 
 def generate_pdf_snapshot(pdffile, output, page=1, extension='png', background_color='white', alpha_channel='remove', resolution=150, compression_quality=95):
@@ -164,7 +166,7 @@ def get_previous_and_next(iterable):
 def get_values_from_dict(obj, key):
   """
   Given a obj, recursively look for values given the key specified.
-  Return a flat 
+  Return a flat
   """
   out = []
   if type(obj) == dict:
@@ -206,7 +208,7 @@ def get_unique_slug(instance, trigger, max_length=140):
   return slug
 
 
-def create_short_url(): 
+def create_short_url():
   return shortuuid.uuid()[:7]
 
 
@@ -221,20 +223,20 @@ def get_whoosh_index(force_create=False):
   ngramAnalyzer = NgramWordAnalyzer( minsize=2, maxsize=4)
 
   schema = Schema(
-    title     = TEXT(analyzer=analyzer, spelling=True, stored=True, field_boost=3.0), 
-    abstract  = TEXT(analyzer=analyzer, stored=True, field_boost=2.0), 
-    path      = ID(unique=True, stored=True), 
-    authors   = TEXT(analyzer=analyzer, sortable=True, field_boost=1.5), 
-    content   = TEXT(analyzer=analyzer, stored=True), 
-    tags      = KEYWORD(sortable=True, commas=True, field_boost=1.5, lowercase=True), 
+    title     = TEXT(analyzer=analyzer, spelling=True, stored=True, field_boost=3.0),
+    abstract  = TEXT(analyzer=analyzer, stored=True, field_boost=2.0),
+    path      = ID(unique=True, stored=True),
+    authors   = TEXT(analyzer=analyzer, sortable=True, field_boost=1.5),
+    content   = TEXT(analyzer=analyzer, stored=True),
+    tags      = KEYWORD(sortable=True, commas=True, field_boost=1.5, lowercase=True),
     status    = KEYWORD,
     classname = KEYWORD,
     typeahead = TEXT(spelling=True, stored=True, phrase=False)
   )
-    
+
   if not os.path.exists(settings.WHOOSH_ROOT):
     os.mkdir(settings.WHOOSH_ROOT)
-  
+
   if not exists_in(settings.WHOOSH_ROOT) or force_create:
     index = create_in(settings.WHOOSH_ROOT, schema)
   else:
@@ -251,7 +253,7 @@ def typeahead_whoosh_index(query):
     corrector = searcher.corrector("typeahead")
     for token in [token.text for token in a(u'photographie de p')]:
       suggestionList = corrector.suggest(token, limit=10)
-      print suggestionList      
+      print suggestionList
 
 
     #print list(ix.searcher().search(parser.parse('serge*')))
@@ -290,7 +292,7 @@ def search_whoosh_index(query, offset=0, limit=10, *args, **kwargs):
     parser = MultifieldParser(['content', 'authors', 'tags', 'title', 'abstract'], ix.schema)
     # user query
     q = parser.parse(query)
-    
+
     if not query:
       q = Every()
       print 'arch'
@@ -305,13 +307,13 @@ def search_whoosh_index(query, offset=0, limit=10, *args, **kwargs):
     # restrict_q = Or([Term("path", u'%s' % d.id) for d in qs])
     #print 'query', q, allow_q, kwargs
     with ix.searcher() as searcher:
-      # From WHOOSH documentation: 
-      # > Currently, searching for page 100 with pagelen of 10 takes the same amount of time as using Searcher.search() 
+      # From WHOOSH documentation:
+      # > Currently, searching for page 100 with pagelen of 10 takes the same amount of time as using Searcher.search()
       #   to find the first 1000 results
       results = searcher.search(q, filter=allow_q, limit=right, terms=True)
       count = len(results)
 
-      
+
       for hit in list(results)[offset:]:
         res.append({
           # 'title': hit['title'],
@@ -361,7 +363,7 @@ def get_or_create_zotero_collection(username):
   for coll in colls:
     if coll['data']['name'] == username:
       return False, coll, zot
-  
+
   # create collection
   collreq = zot.create_collection([{
     'name': username
@@ -383,7 +385,7 @@ def fill_zotero_collection(filename, collection, zotero):
   pass
 
 
-  
+
 def tokenize(content):
   words = set()                                                       #C
   for match in WORDS_RE.finditer(content.lower()):                    #D
@@ -391,4 +393,3 @@ def tokenize(content):
       if len(word) >= 2:                                              #F
           words.add(word)                                             #F
   return words
-
