@@ -446,6 +446,7 @@ MILLER_DEBUG = True
 
 MILLER_TITLE = 'Miller'
 MILLER_DESCRIPTION = 'Developed by the University of Luxembourg'
+MILLER_KEYWORDS = 'miller,miller project'
 MILLER_SIGNEDBY = u'Miller Editorial Team\n'
 
 MILLER_LOCALE = os.path.join(BASE_DIR, 'client/src/locale/locale-all.csv')

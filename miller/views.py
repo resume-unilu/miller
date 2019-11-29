@@ -26,6 +26,7 @@ def _share(request=None, extra={}):
   d = {
     'title': settings.MILLER_TITLE,
     'description': settings.MILLER_DESCRIPTION,
+    'keywords': settings.MILLER_KEYWORDS,
     'debug': settings.MILLER_DEBUG,
     'settings': json.dumps(settings.MILLER_SETTINGS),
     'oembeds': json.dumps(settings.MILLER_OEMBEDS)
@@ -63,8 +64,7 @@ def _loadlocale():
 # views here
 @ensure_csrf_cookie
 def home(request):
-  return render(request, "miller/index.html")
-  #, _share(request))
+  return render(request, "miller/index.html", _share(request))
 
 def timelinejs(request, gsid):
   return render(request, "miller/timelinejs.iframe.html", {
