@@ -5,7 +5,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8 col-sm-offset-2">
-    <h3>Sign up to {{title}}</h3>
+    <h3>Sign up to <a href="/">{{title}}</a></h3>
       {% if form.errors %}
         <p>Please correct the errors below before proceeding.</p>
       {% endif %}
@@ -104,6 +104,8 @@
 
         <input type="hidden" value="{{ next }}" name="next" />
         {% csrf_token %}
+
+      <p><b>After registration, please validate your account using the link sent to you by email.</b></p>
         <div class="btn-line-group ">
           <a class="btn-line" href='{% url "login_view" %}'>
             <span translate="login" class="ng-scope"><span style='' class='icon icon-arrow-left-circle'></span> back to log in</span>

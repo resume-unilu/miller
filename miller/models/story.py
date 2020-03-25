@@ -658,7 +658,7 @@ class Story(models.Model):
       'activity': [t.data['name'][lang] for t in self.tags.filter(category=Tag.WRITING)],
       'tags': [t.data['name'][lang] for t in self.tags.filter(category=Tag.KEYWORD)],
       'date_last_modified': self.date_last_modified,
-      'authors': ', '.join([u'<b>{}</b>'.format(a.fullname for a in self.authors.all())]),
+      'authors': ', '.join(['<b>{}</b>'.format(a.fullname) for a in self.authors.all()]),
       'cover_image': cover_image
     }
 
@@ -670,9 +670,6 @@ class Story(models.Model):
     target_template = 'poster_template.html' if size == 'A3' else 'pdf_template.html'
     template = get_template(target_template)
     html = template.render(render_data)
-
-    with open('/home/mbremec/Documents/projects/kc4s/output_poster.html', 'w') as f:
-      f.write(html.encode('utf8'))
 
     # Convert html into pdf and write outputfile
     HTML(string=html, base_url='/').write_pdf(target=outputfile)
@@ -718,11 +715,9 @@ class Story(models.Model):
       extension if extension is not None else outputFormat
     ), True)
 
-    print '-----------\n{}\n-----------'.format(outputfile)
-    # TODO(Michael): To uncomment
-    # if os.path.exists(outputfile):
-    #   print "do not regenerate", outputfile, self.date_last_modified.strftime("%s")
-    #   return outputfile
+    if os.path.exists(outputfile):
+      print "do not regenerate", outputfile, self.date_last_modified.strftime("%s")
+      return outputfile
 
     if outputFormat == 'pdf' and medium == 'html':
       self._generate_output_file_html(outputfile, output_size)

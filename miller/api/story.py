@@ -279,7 +279,9 @@ class StoryViewSet(viewsets.ModelViewSet):
     
     response = StreamingHttpResponse(FileWrapper( open(attachment), 8192), content_type=mimetype)
     response['Content-Length'] = os.path.getsize(attachment)  
-    response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (story.slug,mimetypes.guess_extension(mimetype))
+    response['Content-Disposition'] = 'attachment; filename="%s%s%s"' % (story.slug,
+                                                                         '_poster' if output_size == 'A3' else '',
+                                                                         mimetypes.guess_extension(mimetype))
       
     return response
 

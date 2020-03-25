@@ -69,7 +69,7 @@ urlpatterns = [
   url(r'^signup/$', views.signup_view, name='signup_view'),
 
 
-  url(r'^logout/$', views.logout_view, name='logout_view'),
+  url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout_view'),
   url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
 
   url(r'^contact-us/$', views.contact_view, name='contact_view'),

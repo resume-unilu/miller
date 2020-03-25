@@ -25,12 +25,11 @@ class Glue(object):
     if perform_q:
       self.search_query = search_from_request(request=request, klass=queryset.model)
 
-
     try:
-      filters = self._extract_filters()
-      self.queryset = self.queryset.exclude(**self.excludes)
+      filters, additional_filters = self._extract_filters()
+      self.queryset = self.queryset.exclude(**self.excludes).filter(**filters)
 
-      for f in filters:
+      for f in additional_filters:
         self.queryset = self.queryset.filter(**f)
 
       if perform_q and self.search_query:
@@ -100,13 +99,18 @@ class Glue(object):
     return featured_queryset.union(stories).order_by('order', '-date')
 
   def _extract_filters(self):
-    filters = []
+    filters = {}
+    additionnal_filters = []
     for name, value in self.filters.items():
-      if isinstance(value, (list, tuple)):
-        filters.extend([{name: v} for v in value])
-      else:
-        filters.append({name: value})
-    return filters
+      if '__and' not in name:
+        filters[name] = value
+        continue
+
+      new_name = name.replace('__and', '')
+      for v in value:
+        additionnal_filters.append({new_name: v})
+
+    return filters, additionnal_filters
 
 
   def get_hash(self, request):
