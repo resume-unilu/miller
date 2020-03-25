@@ -658,17 +658,21 @@ class Story(models.Model):
       'activity': [t.data['name'][lang] for t in self.tags.filter(category=Tag.WRITING)],
       'tags': [t.data['name'][lang] for t in self.tags.filter(category=Tag.KEYWORD)],
       'date_last_modified': self.date_last_modified,
-      'authors': ', '.join([u'<b>{}</b>{}'.format(a.fullname, ' ({})'.format(a.affiliation) if a.affiliation else '') for a in self.authors.all()]),
+      'authors': ', '.join([u'<b>{}</b>'.format(a.fullname for a in self.authors.all())]),
       'cover_image': cover_image
     }
 
-  def _generate_output_file_html(self, outputfile):
+  def _generate_output_file_html(self, outputfile, size):
     # Use pandoc to convert markdown to html
     render_data = self._get_render_data('en_US')
     render_data['content'] = pypandoc.convert_text(self.contents, 'html', format='md')
 
-    template = get_template('pdf_template.html')
+    target_template = 'poster_template.html' if size == 'A3' else 'pdf_template.html'
+    template = get_template(target_template)
     html = template.render(render_data)
+
+    with open('/home/mbremec/Documents/projects/kc4s/output_poster.html', 'w') as f:
+      f.write(html.encode('utf8'))
 
     # Convert html into pdf and write outputfile
     HTML(string=html, base_url='/').write_pdf(target=outputfile)
@@ -707,7 +711,7 @@ class Story(models.Model):
 
   # convert the last saved content (markdown file) to a specific format (default: docx)
   # the media will be in the user MEDIA folder...
-  def download(self, outputFormat='docx', language=None, extension=None, medium='html'):
+  def download(self, outputFormat='docx', language=None, extension=None, medium='html', output_size='A4'):
     outputfile = user_path(self, '%s-%s.%s' % (
       self.short_url,
       self.date_last_modified.strftime("%s"),
@@ -721,7 +725,7 @@ class Story(models.Model):
     #   return outputfile
 
     if outputFormat == 'pdf' and medium == 'html':
-      self._generate_output_file_html(outputfile)
+      self._generate_output_file_html(outputfile, output_size)
     else:
       self._generate_output_file(outputfile, outputFormat)
 
