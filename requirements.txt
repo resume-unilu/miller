@@ -42,7 +42,7 @@ httplib2==0.10.3
 incremental==16.10.1
 jsonfield==1.0.3
 kombu==4.1.0
-lxml==3.6.4
+lxml==4.6.2
 Markdown==2.6.8
 micawber==0.3.4
 msgpack-python==0.4.8
