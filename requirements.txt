@@ -38,7 +38,7 @@ gevent-websocket==0.9.5
 gitdb==0.6.4
 GitPython==1.0.2
 greenlet==0.4.9
-httplib2==0.10.3
+httplib2==0.19.0
 incremental==16.10.1
 jsonfield==1.0.3
 kombu==4.1.0
