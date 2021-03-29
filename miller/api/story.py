@@ -273,15 +273,15 @@ class StoryViewSet(viewsets.ModelViewSet):
     q = self._getUserAuthorizations(request)
     story = get_object_or_404(q, pk=pk)
 
-
-    
-    attachment = story.download(outputFormat='pdf')
+    output_size = self.request.query_params.get('size', 'A4')
+    attachment = story.download(outputFormat='pdf', output_size=output_size)
     mimetype = mimetypes.guess_type(attachment)[0]
-    # print attachment,mimetype
     
     response = StreamingHttpResponse(FileWrapper( open(attachment), 8192), content_type=mimetype)
     response['Content-Length'] = os.path.getsize(attachment)  
-    response['Content-Disposition'] = 'attachment; filename="%s.%s"' % (story.slug,mimetypes.guess_extension(mimetype))
+    response['Content-Disposition'] = 'attachment; filename="%s%s%s"' % (story.slug,
+                                                                         '_poster' if output_size == 'A3' else '',
+                                                                         mimetypes.guess_extension(mimetype))
       
     return response
 

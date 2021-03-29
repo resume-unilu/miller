@@ -240,11 +240,6 @@ def accessibility_doi(request, prefix, short_url, publication_year):
   return render(request, "miller/accessibility/story.html", content)
 
 
-def logout_view( request ):
-  logout(request)
-  return redirect('home')
-
-
 # static pages, from markdown contents
 def accessibility_page(request, page):
   page = get_object_or_404(Page, slug=page)
