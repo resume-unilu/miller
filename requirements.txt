@@ -2,7 +2,7 @@ amqp==2.2.1
 appdirs==1.4.3
 asgi-redis==1.0.0
 asgiref==1.0.0
-autobahn==0.16.1
+autobahn==20.12.3
 BeautifulSoup==3.2.1
 beautifulsoup4==4.6.0
 bibtexparser==0.6.2
