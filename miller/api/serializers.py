@@ -218,7 +218,7 @@ class LiteStorySerializer(AnonymousLiteStorySerializer):
   
   class Meta:
     model = Story
-    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner',  'data')
+    fields = ('id', 'slug', 'short_url', 'date',  'date_created', 'date_last_modified', 'status', 'covers', 'authors', 'tags', 'owner',  'data', 'latitude', 'longitude')
 
 
 
@@ -241,7 +241,9 @@ class StorySerializer(LiteStorySerializer):
       'source',
       'authors','owner',
       'highlights',
-      'version'
+      'version',
+      'latitude',
+      'longitude'
     )
 
 
