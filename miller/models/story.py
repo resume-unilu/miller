@@ -913,10 +913,14 @@ class Story(models.Model):
       'story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
 
+  def prepare_map_description(self):
+    return 'By {}: {}... Read more on: https://www.aktioun-nohaltegkeet.lu/story/{}'.format(
+      ', '.join([a.fullname for a in self.authors.all()]), self.abstract.encode("utf-8"), self.slug)
+
   def prepare_map_data(self):
     return json.dumps({'feature': {
       'name': self.title,
-      'description': self.abstract,
+      'description': self.prepare_map_description(),
       "maps": [settings.OGM_DEFAULT_MAP],
       "contributors": [settings.OGM_DEFAULT_USER],
       "position": {
@@ -924,7 +928,7 @@ class Story(models.Model):
           "type": "Point"
       },
       "visibility": 1 if self.status == self.PUBLIC else 0
-    }}, ensure_ascii=False)
+    }}, ensure_ascii=True)
 
   def update_map(self):
     data = self.prepare_map_data()
