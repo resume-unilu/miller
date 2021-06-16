@@ -927,7 +927,7 @@ class Story(models.Model):
           "coordinates": [self.longitude, self.latitude],
           "type": "Point"
       },
-      "visibility": 1 if self.status == self.PUBLIC else 0
+      "visibility": 1 if self.status == self.PUBLIC else -1
     }}, ensure_ascii=True)
 
   def update_map(self):
