@@ -21,6 +21,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.template.loader import get_template
 from weasyprint import HTML
+import requests
 
 # from jsonfield import JSONField
 from git import Repo, Commit, Actor, Tree
@@ -129,6 +130,12 @@ class Story(models.Model):
 
   # add huge search field
   search_vector = SearchVectorField(null=True, blank=True)
+
+  # Map
+  maptype = models.CharField(max_length=50, default='opengreenmap')
+  mapid = models.CharField(max_length=50, blank=True, null=True)
+  latitude = models.CharField(max_length=50, blank=True, null=True)
+  longitude = models.CharField(max_length=50, blank=True, null=True)
 
   @property
   def dmetadata(self):
@@ -895,10 +902,85 @@ class Story(models.Model):
       else:
         logger.debug('story@save {pk:%s}: write_contents_to_path done.' % self.pk)
 
+    if (self.latitude or self.longitude) and self.mapid is None:
+      self.create_map()
+    elif self.latitude and self.longitude and self.mapid:
+      self.update_map()
+    elif self.mapid and not self.latitude and not self.longitude:
+      self.remove_map()
+
     logger.debug(
       'story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
 
+  def prepare_map_description(self):
+    return 'By {}: {}... Read more on: https://www.aktioun-nohaltegkeet.lu/story/{}'.format(
+      ', '.join([a.fullname for a in self.authors.all()]), self.abstract.encode("utf-8"), self.slug)
+
+  def prepare_map_data(self):
+    return json.dumps({'feature': {
+      'name': self.title,
+      'description': self.prepare_map_description(),
+      "maps": [settings.OGM_DEFAULT_MAP],
+      "contributors": [settings.OGM_DEFAULT_USER],
+      "position": {
+          "coordinates": [self.longitude, self.latitude],
+          "type": "Point"
+      },
+      "visibility": 1 if self.status == self.PUBLIC else -1
+    }}, ensure_ascii=True)
+
+  def update_map(self):
+    data = self.prepare_map_data()
+
+    try:
+      res = requests.patch(settings.OGM_URL + '/features/' + self.mapid, data, headers=settings.OGM_HEADERS)
+      return res.ok
+    except requests.exceptions.RequestException as e:
+      logger.error('Error while updating map for: {}: {}'.format(self, e))
+      return False
+    except Exception as e:
+      logger.error('Unknown error while updating map for: {}: {}'.format(self, e))
+      return False
+
+  def create_map(self):
+    data = self.prepare_map_data()
+    try:
+      res = requests.post(settings.OGM_URL + '/features', data, headers=settings.OGM_HEADERS)
+      if res.ok:
+        self.mapid = res.json()['feature']['_id']
+        return True
+      return False
+    except requests.exceptions.RequestException as e:
+      logger.error('Error while creating map for: {}: {}'.format(self, e))
+      return False
+    except KeyError:
+      logger.error('Error while creating map for, unable to find mapid in response: {}'.format(self))
+      return False
+    except Exception as e:
+      logger.error('Unknown error while creating map for: {}: {}'.format(self, e))
+      return False
+
+  def remove_map(self):
+    if self.mapid is None:
+      return True
+
+    try:
+      res = requests.delete(settings.OGM_URL + '/features/' + self.mapid, headers=settings.OGM_HEADERS)
+      if res.ok:
+        self.mapid = None
+        return True
+      return False
+    except requests.exceptions.RequestException as e:
+      logger.error('Error while removing map for: {}: {}'.format(self, e))
+      return False
+    except Exception as e:
+      logger.error('Unknown error while removing map for: {}: {}'.format(self, e))
+      return False
+
+  def publish_map(self):
+    # TODO(Michael): update the visibility to 1 when the article is made public
+    pass
 
 @receiver(pre_save, sender=Story)
 def clear_cache_on_save(sender, instance, **kwargs):
@@ -1031,6 +1113,8 @@ def delete_working_md(sender, instance, **kwargs):
   repo.index.commit(message=u"deleting %s" % instance.title, author=author, committer=committer)
 
   logger.debug('story@pre_delete {pk:%s} removed from git.' % instance.pk)
+
+  instance.remove_map()
 
 
 @receiver(pre_delete, sender=Story)

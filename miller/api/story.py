@@ -266,8 +266,6 @@ class StoryViewSet(viewsets.ModelViewSet):
     return HttpResponse(xml, content_type='text/xml')
 
 
-
-
   @detail_route(methods=['get'])
   def download(self, request, pk):
     q = self._getUserAuthorizations(request)
