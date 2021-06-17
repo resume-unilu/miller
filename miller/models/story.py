@@ -913,22 +913,38 @@ class Story(models.Model):
       'story@save {slug:%s,pk:%s} completed, ready to dispatch @postsave, time=%s' % (self.slug, self.pk, self._saved))
     super(Story, self).save(*args, **kwargs)
 
+  def validate_icon(self, icon):
+    try:
+      res = requests.get(settings.OGM_URL + '/icons/' + icon, headers=settings.OGM_HEADERS)
+      return res.ok
+    except Exception:
+      logger.error('Invalid icon: {}: {}'.format(self, icon))
+      return False
+
   def prepare_map_description(self):
     return 'By {}: {}... Read more on: https://www.aktioun-nohaltegkeet.lu/story/{}'.format(
       ', '.join([a.fullname for a in self.authors.all()]), self.abstract.encode("utf-8"), self.slug)
 
   def prepare_map_data(self):
-    return json.dumps({'feature': {
+    data = {
       'name': self.title,
       'description': self.prepare_map_description(),
       "maps": [settings.OGM_DEFAULT_MAP],
       "contributors": [settings.OGM_DEFAULT_USER],
       "position": {
-          "coordinates": [self.longitude, self.latitude],
-          "type": "Point"
+        "coordinates": [self.longitude, self.latitude],
+        "type": "Point"
       },
       "visibility": 1 if self.status == self.PUBLIC else -1
-    }}, ensure_ascii=True)
+    }
+    # Prepare icon
+    sdgs = [t.slug for t in self.tags.all() if t.category == 'SDG']
+    if len(sdgs):
+      icon = settings.OGM_ICONS.get(sdgs[0])
+      if icon is not None and self.validate_icon(icon):
+        data['icons'] = [icon]
+
+    return json.dumps({'feature': data}, ensure_ascii=True)
 
   def update_map(self):
     data = self.prepare_map_data()
