@@ -26,7 +26,11 @@ class Glue(object):
 
 
     try:
-      self.queryset = self.queryset.exclude(**self.excludes).filter(**self.filters)
+      filters, additional_filters = self._extract_filters()
+      self.queryset = self.queryset.exclude(**self.excludes).filter(**filters)
+
+      for f in additional_filters:
+        self.queryset = self.queryset.filter(**f)
       
       if perform_q and self.search_query:
         self.queryset = self.queryset.filter(self.search_query)
@@ -62,7 +66,21 @@ class Glue(object):
       self.queryset = self.queryset.order_by(*self.validated_ordering())
 
     #print self.queryset.query
-  
+
+  def _extract_filters(self):
+    filters = {}
+    additionnal_filters = []
+    for name, value in self.filters.items():
+      if '__and' not in name:
+        filters[name] = value
+        continue
+
+      new_name = name.replace('__and', '')
+      for v in value:
+        additionnal_filters.append({new_name: v})
+
+    return filters, additionnal_filters
+
   def get_hash(self, request):
     import hashlib
     m = hashlib.md5()
