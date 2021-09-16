@@ -29,6 +29,9 @@ from wsgiref.util import FileWrapper
 
 
 # ViewSets define the view behavior. Filter by status
+from miller.models.tag import update_keywords_usage_stats
+
+
 class StoryViewSet(viewsets.ModelViewSet):
   
   queryset = Story.objects.all()
@@ -136,7 +139,21 @@ class StoryViewSet(viewsets.ModelViewSet):
     
     
     return Response(d)
-  
+
+  def update(self, request, *args, **kwargs):
+    try:
+      instance = self.get_object()
+      current_keywords_ids = set([t.id for t in instance.tags.filter(category='keyword')])
+      updated_keywords_ids = set(request.data['data']['_ordering']['tags']['keyword'])
+
+      removed_keywords = current_keywords_ids - updated_keywords_ids
+      added_keywords = updated_keywords_ids - current_keywords_ids
+
+      if len(removed_keywords) != 0 or len(added_keywords) != 0:
+        update_keywords_usage_stats(removed_keywords, added_keywords)
+    except:
+      pass
+    return super(StoryViewSet, self).update(request, *args, **kwargs)
 
   def list(self, request):
     stories = self._getUserAuthorizations(request)

@@ -45,6 +45,7 @@ class Tag(models.Model):
   status     = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PUBLIC)
 
   data       = JSONField(default=dict)
+  usage_statistics = models.IntegerField(default=0)
 
   # search     = models.TextField(null=True, blank=True)# SearchVectorField(null=True, blank=True) # index search
   
@@ -88,3 +89,11 @@ class Tag(models.Model):
     # self.search = SearchVector('name', weight='A', config='simple')
 
     super(Tag, self).save(*args, **kwargs)
+
+
+def update_keywords_usage_stats(removed_keywords, added_keywords):
+  for pool, f in ((removed_keywords, -1), (added_keywords, 1)):
+    for tag_id in pool:
+      t = Tag.objects.get(pk=tag_id)
+      t.usage_statistics += f
+      t.save()
