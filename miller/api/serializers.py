@@ -61,7 +61,7 @@ class TagSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tag
-    fields = ('id', 'category', 'slug', 'name', 'status', 'data', 'stories', 'created')
+    fields = ('id', 'category', 'slug', 'name', 'status', 'data', 'stories', 'created', 'usage_statistics')
 
   def run_validators(self, value):
     for validator in self.validators:
