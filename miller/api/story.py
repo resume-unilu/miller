@@ -29,6 +29,7 @@ from wsgiref.util import FileWrapper
 
 
 # ViewSets define the view behavior. Filter by status
+from miller.models.hitcount import hit_count, StoryHit
 from miller.models.tag import update_keywords_usage_stats
 
 
@@ -96,6 +97,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       story = get_object_or_404(q, pk=kwargs['pk'])
 
+    story_hit_count = hit_count(request, story, StoryHit.VIEWED)
     ckey = story.get_cache_key()
     #transform contents if required.
     _parser = request.query_params.get('parser', None)
@@ -289,8 +291,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     q = self._getUserAuthorizations(request)
     story = get_object_or_404(q, pk=pk)
 
-
-    
+    hit_count(request, story, StoryHit.DOWNLOADED)
     attachment = story.download(outputFormat='pdf')
     mimetype = mimetypes.guess_type(attachment)[0]
     # print attachment,mimetype
