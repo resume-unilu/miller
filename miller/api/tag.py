@@ -25,7 +25,11 @@ class TagViewSet(viewsets.ModelViewSet):
   serializer_class = TagSerializer
 
   def list(self, request):
-    tags = Tag.objects.all()
+    if request.query_params.get('used_keywords', False):
+      tags = Tag.objects.filter(category='keyword', usage_statistics__gt=0).order_by('-usage_statistics')
+    else:
+      tags = Tag.objects.all()
+
     if not request.user.is_staff:
       tags = tags.filter(category__in=settings.MILLER_NON_STAFF_TAG_CATEGORIES)
 

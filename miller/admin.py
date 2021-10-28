@@ -10,7 +10,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment, Review, Page, Ngrams
+from miller.models import Profile, Story, Tag, Document, Caption, Mention, Author, Comment, Review, Page, Ngrams, StoryHit
 
 class CodeMirrorJSONField(CodeMirrorTextarea):
   """
@@ -382,6 +382,11 @@ class ReviewAdmin(admin.ModelAdmin):
       obj.assigned_by = request.user
     obj.save()
 
+
+class StoryHitAdmin(admin.ModelAdmin):
+    list_display = ['story', 'action', 'hits']
+
+
 # # Re-register UserAdmin
 admin.site.unregister(User)
 
@@ -396,3 +401,4 @@ admin.site.register(Comment, CommentAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Ngrams, NgramsAdmin)
 admin.site.register(Page, PageAdmin)
+admin.site.register(StoryHit, StoryHitAdmin)

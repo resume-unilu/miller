@@ -46,7 +46,6 @@ lxml==3.6.4
 Markdown==2.6.8
 micawber==0.3.4
 msgpack-python==0.4.8
-MySQL-python==1.2.5
 oauthlib==1.1.2
 olefile==0.44
 opengraph==0.5
@@ -74,8 +73,7 @@ sphinx-me==0.3
 Twisted==16.5.0
 txaio==2.5.2
 unicodecsv==0.14.1
-uWSGI==2.0.12
 vine==1.1.4
-Wand==0.4.2
+Wand==0.5.1
 Whoosh==2.7.4
 zope.interface==4.3.2

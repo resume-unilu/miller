@@ -1,7 +1,7 @@
 from actstream.models import Action
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers, validators
-from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review, Page
+from miller.models import Profile, Document, Tag, Story, Caption, Mention, Author, Comment, Review, Page, StoryHit
 from miller.api.fields import JsonField, HitField, OptionalFileField, ContentTypeField, IfJsonField
 from miller.api import utils
 
@@ -61,7 +61,7 @@ class TagSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Tag
-    fields = ('id', 'category', 'slug', 'name', 'status', 'data', 'stories', 'created')
+    fields = ('id', 'category', 'slug', 'name', 'status', 'data', 'stories', 'created', 'usage_statistics')
 
   def run_validators(self, value):
     for validator in self.validators:
@@ -227,6 +227,21 @@ class StorySerializer(LiteStorySerializer):
   documents  = CaptionSerializer(source='caption_set', many=True)
   stories    = LiteMentionSerializer(many=True)
   contents   = IfJsonField()
+  hitcount = serializers.SerializerMethodField()
+
+  def get_hitcount(self, story):
+    story_hits = StoryHit.objects.filter(story=story)
+    try:
+      read = story_hits.get(action=StoryHit.VIEWED).hits
+    except StoryHit.DoesNotExist:
+      read = None
+
+    try:
+      download = story_hits.get(action=StoryHit.DOWNLOADED).hits
+    except StoryHit.DoesNotExist:
+      download = None
+
+    return {'read': read, 'download': download}
 
   class Meta:
     model = Story
@@ -241,7 +256,8 @@ class StorySerializer(LiteStorySerializer):
       'source',
       'authors','owner',
       'highlights',
-      'version'
+      'version',
+      'hitcount'
     )
 
 

@@ -29,6 +29,10 @@ from wsgiref.util import FileWrapper
 
 
 # ViewSets define the view behavior. Filter by status
+from miller.models.hitcount import hit_count, StoryHit
+from miller.models.tag import update_keywords_usage_stats
+
+
 class StoryViewSet(viewsets.ModelViewSet):
   
   queryset = Story.objects.all()
@@ -93,6 +97,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     else:
       story = get_object_or_404(q, pk=kwargs['pk'])
 
+    hit_count(request, story, StoryHit.VIEWED)
     ckey = story.get_cache_key()
     #transform contents if required.
     _parser = request.query_params.get('parser', None)
@@ -136,7 +141,21 @@ class StoryViewSet(viewsets.ModelViewSet):
     
     
     return Response(d)
-  
+
+  def update(self, request, *args, **kwargs):
+    try:
+      instance = self.get_object()
+      current_keywords_ids = set([t.id for t in instance.tags.filter(category='keyword')])
+      updated_keywords_ids = set(request.data['data']['_ordering']['tags']['keyword'])
+
+      removed_keywords = current_keywords_ids - updated_keywords_ids
+      added_keywords = updated_keywords_ids - current_keywords_ids
+
+      if len(removed_keywords) != 0 or len(added_keywords) != 0:
+        update_keywords_usage_stats(removed_keywords, added_keywords)
+    except:
+      pass
+    return super(StoryViewSet, self).update(request, *args, **kwargs)
 
   def list(self, request):
     stories = self._getUserAuthorizations(request)
@@ -272,8 +291,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     q = self._getUserAuthorizations(request)
     story = get_object_or_404(q, pk=pk)
 
-
-    
+    hit_count(request, story, StoryHit.DOWNLOADED)
     attachment = story.download(outputFormat='pdf')
     mimetype = mimetypes.guess_type(attachment)[0]
     # print attachment,mimetype
