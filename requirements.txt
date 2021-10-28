@@ -28,7 +28,7 @@ django-simplemde==0.0.9
 django-socketio==0.3.9
 django-templated-email==2.0
 django-websocket-redis==0.4.6
-djangorestframework==3.6.3
+djangorestframework==3.11.2
 djoser==0.5.1
 Embedly==0.5.0
 feedparser==5.2.1
