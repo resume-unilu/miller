@@ -27,8 +27,11 @@ class TagViewSet(viewsets.ModelViewSet):
 
   def list(self, request):
     if request.query_params.get('used_keywords', False):
-      # TODO(Michael): Add context to order by -usage_statistics or -euro_usage_statistics
-      tags = Tag.objects.filter(category='keyword', usage_statistics__gt=0).order_by('-usage_statistics')
+      sort_method = request.query_params.get('statistics_sort', 'usage_statistics')
+      if sort_method not in ('usage_statistics', 'euro_usage_statistics'):
+        sort_method = 'usage_statistics'
+      tags = Tag.objects.filter(category='keyword', usage_statistics__gt=0).order_by('-{}'.format(sort_method))
+
     elif request.query_params.get('used_keywords_splitted', False):
       tags = Tag.objects.filter(category='keyword')
       if not request.user.is_staff:
