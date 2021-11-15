@@ -3,7 +3,8 @@ import json
 from django.conf import settings
 from django.db.models import Count
 
-from rest_framework import serializers,viewsets
+from rest_framework import serializers, viewsets, status
+from rest_framework.response import Response
 
 from miller.api.fields import JsonField
 from miller.api.serializers import TagSerializer
@@ -26,7 +27,26 @@ class TagViewSet(viewsets.ModelViewSet):
 
   def list(self, request):
     if request.query_params.get('used_keywords', False):
+      # TODO(Michael): Add context to order by -usage_statistics or -euro_usage_statistics
       tags = Tag.objects.filter(category='keyword', usage_statistics__gt=0).order_by('-usage_statistics')
+    elif request.query_params.get('used_keywords_splitted', False):
+      tags = Tag.objects.filter(category='keyword')
+      if not request.user.is_staff:
+        tags = tags.filter(category__in=settings.MILLER_NON_STAFF_TAG_CATEGORIES)
+
+      limit = int(request.query_params.get('limit', 20))
+      euro_tags = [(t, t.euro_usage_statistics) for t in tags.filter(euro_usage_statistics__gt=0).order_by('-euro_usage_statistics')[:limit]]
+      global_tags = [(t, t.usage_statistics) for t in tags.filter(usage_statistics__gt=0).order_by('-usage_statistics')[:limit]]
+
+      res = []
+      for tag, _ in sorted(euro_tags + global_tags, lambda a, b: a[1] > b[1]):
+        if tag not in res:
+          res.append(tag)
+
+      page = self.paginate_queryset(res)
+      serializer = TagSerializer(page, many=True, context={'request': request})
+      return self.get_paginated_response(serializer.data)
+
     else:
       tags = Tag.objects.all()
 

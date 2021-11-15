@@ -46,6 +46,7 @@ class Tag(models.Model):
 
   data       = JSONField(default=dict)
   usage_statistics = models.IntegerField(default=0)
+  euro_usage_statistics = models.IntegerField(default=0)
 
   # search     = models.TextField(null=True, blank=True)# SearchVectorField(null=True, blank=True) # index search
   
