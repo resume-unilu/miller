@@ -92,9 +92,12 @@ class Tag(models.Model):
     super(Tag, self).save(*args, **kwargs)
 
 
-def update_keywords_usage_stats(removed_keywords, added_keywords):
+def update_keywords_usage_stats(removed_keywords, added_keywords, context='usage_statistics'):
   for pool, f in ((removed_keywords, -1), (added_keywords, 1)):
     for tag_id in pool:
       t = Tag.objects.get(pk=tag_id)
-      t.usage_statistics += f
+      if context == 'euro_usage_statistics':
+        t.euro_usage_statistics += f
+      else:
+        t.usage_statistics += f
       t.save()

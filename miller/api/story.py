@@ -152,7 +152,12 @@ class StoryViewSet(viewsets.ModelViewSet):
       added_keywords = updated_keywords_ids - current_keywords_ids
 
       if len(removed_keywords) != 0 or len(added_keywords) != 0:
-        update_keywords_usage_stats(removed_keywords, added_keywords)
+        try:
+          context = ['usage_statistics', 'euro_usage_statistics'][instance.tags.filter(category='writing', slug='revue-ecu-euro').exists()]
+        except Tag.objects.DoesNotExist:
+          context = 'usage_statistics'
+
+        update_keywords_usage_stats(removed_keywords, added_keywords, context)
     except:
       pass
     return super(StoryViewSet, self).update(request, *args, **kwargs)
