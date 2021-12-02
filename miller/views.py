@@ -63,6 +63,9 @@ def _loadlocale():
 # views here
 @ensure_csrf_cookie
 def home(request):
+  user_agent = request.META['HTTP_USER_AGENT'].lower()
+  if 'trident' in user_agent or 'msie' in user_agent:
+    return render(request, "miller/noie.html")
   return render(request, "miller/index.html")
   #, _share(request))
 
