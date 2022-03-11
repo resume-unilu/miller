@@ -50,7 +50,7 @@ oauthlib==1.1.2
 olefile==0.44
 opengraph==0.5
 packaging==16.8
-Pillow==4.1.0
+Pillow==9.0.1
 psycopg2==2.7.1
 pydash==4.0.4
 PyJWT==1.4.0
