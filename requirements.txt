@@ -56,7 +56,7 @@ pydash==4.0.4
 PyJWT==1.4.0
 pypandoc==1.2.0
 pyparsing==2.2.0
-PyPDF2==1.25.1
+PyPDF2==1.27.5
 python-docx==0.8.6
 python-openid==2.2.5
 python-social-auth==0.2.16
