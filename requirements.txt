@@ -70,7 +70,7 @@ shortuuid==0.4.3
 six==1.10.0
 smmap==0.9.0
 sphinx-me==0.3
-Twisted==16.5.0
+Twisted==22.4.0
 txaio==2.5.2
 unicodecsv==0.14.1
 vine==1.1.4
